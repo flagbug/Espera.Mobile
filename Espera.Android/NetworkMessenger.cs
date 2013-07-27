@@ -35,6 +35,7 @@ namespace Espera.Android
             var client = new UdpClient(Port);
 
             UdpReceiveResult result;
+
             do
             {
                 result = await client.ReceiveAsync();
@@ -47,8 +48,6 @@ namespace Espera.Android
         public async Task ConnectAsync()
         {
             await this.client.ConnectAsync(this.serverAddress, Port);
-
-            await this.GetSongs();
         }
 
         public void Dispose()
@@ -56,7 +55,7 @@ namespace Espera.Android
             this.client.Close();
         }
 
-        public async Task<IEnumerable<Song>> GetSongs()
+        public async Task<IReadOnlyList<Song>> GetSongsAsync()
         {
             string json = await this.Get("get-library-content");
 
@@ -104,7 +103,8 @@ namespace Espera.Android
 
             while (recieved < buffer.Length)
             {
-                recieved += await this.client.GetStream().ReadAsync(buffer, recieved, buffer.Length);
+                int bytesRecieved = await this.client.GetStream().ReadAsync(buffer, recieved, buffer.Length - recieved);
+                recieved += bytesRecieved;
             }
         }
     }

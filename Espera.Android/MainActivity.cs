@@ -3,6 +3,7 @@ using Android.OS;
 using Android.Widget;
 using ReactiveUI;
 using ReactiveUI.Android;
+using System.Collections;
 using System.Reactive.Linq;
 
 namespace Espera.Android
@@ -18,6 +19,11 @@ namespace Espera.Android
 
         public MainViewModel ViewModel { get; set; }
 
+        private ListView ArtistListView
+        {
+            get { return this.FindViewById<ListView>(Resource.Id.artistList); }
+        }
+
         private Button DiscoverServerButton
         {
             get { return this.FindViewById<Button>(Resource.Id.discoverServerButton); }
@@ -26,6 +32,11 @@ namespace Espera.Android
         private TextView IpAddressTextView
         {
             get { return this.FindViewById<TextView>(Resource.Id.ipAddressTextView); }
+        }
+
+        private Button LoadArtistsButton
+        {
+            get { return this.FindViewById<Button>(Resource.Id.loadArtistsButton); }
         }
 
         protected override void OnCreate(Bundle bundle)
@@ -47,6 +58,15 @@ namespace Espera.Android
             this.ViewModel.DiscoverServerCommand.CanExecuteObservable.BindTo(this.DiscoverServerButton, x => x.Enabled);
 
             this.OneWayBind(this.ViewModel, x => x.IpAddress, x => x.IpAddressTextView.Text);
+
+            this.LoadArtistsButton.Click += (sender, args) => this.ViewModel.LoadArtistsCommand.Execute(null);
+            this.ViewModel.LoadArtistsCommand.IsExecuting
+                .Select(x => x ? "Loading..." : "Load artists")
+                .BindTo(this.LoadArtistsButton, x => x.Text);
+            this.ViewModel.LoadArtistsCommand.CanExecuteObservable.BindTo(this.LoadArtistsButton, x => x.Enabled);
+
+            this.OneWayBind(this.ViewModel, x => x.Artists, x => x.ArtistListView.Adapter,
+                list => new ArrayAdapter(this, global::Android.Resource.Layout.SimpleListItem1, (IList)list));
         }
     }
 }

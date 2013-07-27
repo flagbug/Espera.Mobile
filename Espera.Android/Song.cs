@@ -2,7 +2,7 @@ using System;
 
 namespace Espera.Android
 {
-    internal class Song
+    public class Song
     {
         public Song(string artist, string title, string genre, string album)
         {

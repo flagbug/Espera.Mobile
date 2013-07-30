@@ -6,15 +6,6 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/discoverServerButton" />
-    <TextView
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/ipAddressTextView" />
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/loadArtistsButton" />
     <ListView
         android:layout_width="fill_parent"

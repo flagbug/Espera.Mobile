@@ -48,6 +48,7 @@ namespace Espera.Android
         {
             base.OnDestroy();
 
+            NetworkMessenger.Instance.Dispose();
             BlobCache.Shutdown().Wait();
         }
 

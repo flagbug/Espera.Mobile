@@ -53,14 +53,16 @@ namespace Espera.Android
             return result.RemoteEndPoint.Address;
         }
 
-        public async Task AddSongToPlaylist(Song song)
+        public async Task<Tuple<int, string>> AddSongToPlaylist(Song song)
         {
             var parameters = new JObject
             {
                 { "songGuid", song.Guid.ToString() }
             };
 
-            await this.Send("post-playlist-song", parameters);
+            JObject response = await this.SendRequest("post-playlist-song", parameters);
+
+            return Tuple.Create(response["status"].ToObject<int>(), response["message"].ToString());
         }
 
         public async Task ConnectAsync(IPAddress address)
@@ -79,11 +81,13 @@ namespace Espera.Android
 
         public async Task<IReadOnlyList<Song>> GetSongsAsync()
         {
-            JObject response = await this.Send("get-library-content");
+            JObject response = await this.SendRequest("get-library-content");
 
-            List<Song> songs = response["songs"]
+            List<Song> songs = response["content"]["songs"]
                 .Select(s =>
-                    new Song(s["artist"].ToString(), s["title"].ToString(), s["genre"].ToString(), s["album"].ToString(), Guid.Parse(s["guid"].ToString())))
+                    new Song(s["artist"].ToString(), s["title"].ToString(), s["genre"].ToString(),
+                        s["album"].ToString(), TimeSpan.FromSeconds(s["duration"].ToObject<double>()),
+                        Guid.Parse(s["guid"].ToString())))
                 .ToList();
 
             return songs;
@@ -125,19 +129,6 @@ namespace Espera.Android
             }
         }
 
-        private async Task<JObject> Send(string action, JToken parameters = null)
-        {
-            var jMessage = new JObject
-            {
-                { "action", action },
-                { "parameters", parameters }
-            };
-
-            await this.SendMessage(jMessage);
-
-            return await this.ReceiveMessage();
-        }
-
         private async Task SendMessage(JObject content)
         {
             byte[] contentBytes = Encoding.Unicode.GetBytes(content.ToString());
@@ -151,6 +142,19 @@ namespace Espera.Android
 
             await client.GetStream().WriteAsync(message, 0, message.Length);
             await client.GetStream().FlushAsync();
+        }
+
+        private async Task<JObject> SendRequest(string action, JToken parameters = null)
+        {
+            var jMessage = new JObject
+            {
+                { "action", action },
+                { "parameters", parameters }
+            };
+
+            await this.SendMessage(jMessage);
+
+            return await this.ReceiveMessage();
         }
     }
 }

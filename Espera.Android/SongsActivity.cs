@@ -31,8 +31,11 @@ namespace Espera.Android
 
             var adapter = new SongsAdapter(this, songs);
             this.SongsListView.Adapter = adapter;
-            this.SongsListView.ItemClick += (sender, args) =>
-                NetworkMessenger.Instance.AddSongToPlaylist(adapter[args.Position]);
+            this.SongsListView.ItemClick += async (sender, args) =>
+            {
+                Tuple<int, string> response = await NetworkMessenger.Instance.AddSongToPlaylist(adapter[args.Position]);
+                Toast.MakeText(this, String.Format("{0} {1}", response.Item1, response.Item2), ToastLength.Short).Show();
+            };
         }
     }
 }

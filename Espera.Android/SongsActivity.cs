@@ -2,7 +2,7 @@ using Akavache;
 using Android.App;
 using Android.OS;
 using Android.Widget;
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
@@ -25,11 +25,14 @@ namespace Espera.Android
 
             string artist = this.Intent.GetStringExtra("artist");
 
-            IReadOnlyList<Song> songs = BlobCache.LocalMachine.GetObjectAsync<IReadOnlyList<Song>>("songs").Wait()
-                .Where(x => x.Artist == artist)
+            IReadOnlyList<Song> songs = BlobCache.InMemory.GetObjectAsync<IReadOnlyList<Song>>("songs").Wait()
+                .Where(x => x.Artist.Equals(artist, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
-            this.SongsListView.Adapter = new ArrayAdapter(this, global::Android.Resource.Layout.SimpleListItem1, (IList)songs);
+            var adapter = new SongsAdapter(this, songs);
+            this.SongsListView.Adapter = adapter;
+            this.SongsListView.ItemClick += (sender, args) =>
+                NetworkMessenger.Instance.AddSongToPlaylist(adapter[args.Position]);
         }
     }
 }

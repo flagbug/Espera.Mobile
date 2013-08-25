@@ -1,4 +1,6 @@
-﻿using Android.App;
+﻿using Akavache;
+using Android.App;
+using Android.Content;
 using Android.OS;
 using Android.Widget;
 using ReactiveUI;
@@ -23,8 +25,6 @@ namespace Espera.Android
 
         protected override void OnCreate(Bundle bundle)
         {
-            RxApp.Initialize();
-
             base.OnCreate(bundle);
 
             // Set our view from the "main" layout resource
@@ -41,7 +41,24 @@ namespace Espera.Android
             this.OneWayBind(this.ViewModel, x => x.Artists, x => x.ArtistListView.Adapter,
                 list => new ArrayAdapter(this, global::Android.Resource.Layout.SimpleListItem1, (IList)list));
             this.ArtistListView.ItemClick += (sender, args) =>
-                this.ViewModel.SelectedArtist = (string)this.ArtistListView.GetItemAtPosition(args.Position);
+                this.OpenArtist((string)this.ArtistListView.GetItemAtPosition(args.Position));
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            BlobCache.Shutdown().Wait();
+        }
+
+        private void OpenArtist(string selectedArtist)
+        {
+            this.ViewModel.SelectedArtist = selectedArtist;
+
+            var intent = new Intent(this, typeof(SongsActivity));
+            intent.PutExtra("artist", selectedArtist);
+
+            this.StartActivity(intent);
         }
     }
 }

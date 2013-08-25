@@ -1,10 +1,10 @@
+using Akavache;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
 
 namespace Espera.Android
 {
@@ -12,14 +12,14 @@ namespace Espera.Android
     {
         private readonly ObservableAsPropertyHelper<IReadOnlyList<string>> artists;
         private readonly ObservableAsPropertyHelper<IReadOnlyList<Song>> songs;
-        private IPAddress ipAdress;
 
         private string selectedArtist;
 
         public MainViewModel()
         {
             this.LoadArtistsCommand = new ReactiveCommand();
-            this.songs = this.LoadArtistsCommand.RegisterAsyncTask(_ => this.LoadSongsAsync())
+            this.songs = this.LoadArtistsCommand.Select(x => this.LoadSongsAsync())
+                .Merge()
                 .ToProperty(this, x => x.Songs);
 
             this.artists = this.songs
@@ -30,12 +30,6 @@ namespace Espera.Android
         public IReadOnlyList<string> Artists
         {
             get { return this.artists.Value; }
-        }
-
-        public IPAddress IpAddress
-        {
-            get { return this.ipAdress; }
-            set { this.RaiseAndSetIfChanged(ref this.ipAdress, value); }
         }
 
         public ReactiveCommand LoadArtistsCommand { get; private set; }
@@ -51,18 +45,19 @@ namespace Espera.Android
             get { return this.songs.Value; }
         }
 
-        private async Task<IReadOnlyList<Song>> LoadSongsAsync()
+        private IObservable<IReadOnlyList<Song>> LoadSongsAsync()
         {
-            if (this.IpAddress == null)
+            return Observable.StartAsync(async () =>
             {
-                this.ipAdress = await NetworkMessenger.DiscoverServer();
-            }
+                if (!NetworkMessenger.Instance.Connected)
+                {
+                    IPAddress address = await NetworkMessenger.DiscoverServer();
 
-            using (var messenger = new NetworkMessenger(this.IpAddress))
-            {
-                await messenger.ConnectAsync();
-                return await messenger.GetSongsAsync();
-            }
+                    await NetworkMessenger.Instance.ConnectAsync(address);
+                }
+            })
+            .Select(x => BlobCache.InMemory.GetAndFetchLatest("songs", () => NetworkMessenger.Instance.GetSongsAsync()))
+            .Merge();
         }
     }
 }

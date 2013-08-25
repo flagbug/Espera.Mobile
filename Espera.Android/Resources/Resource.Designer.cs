@@ -66,6 +66,9 @@ namespace Espera.Android
 			// aapt resource value: 0x7f050000
 			public const int loadArtistsButton = 2131034112;
 			
+			// aapt resource value: 0x7f050002
+			public const int songsList = 2131034114;
+			
 			static Id()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
@@ -81,6 +84,9 @@ namespace Espera.Android
 			
 			// aapt resource value: 0x7f030000
 			public const int Main = 2130903040;
+			
+			// aapt resource value: 0x7f030001
+			public const int Songs = 2130903041;
 			
 			static Layout()
 			{

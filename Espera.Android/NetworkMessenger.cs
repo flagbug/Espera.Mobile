@@ -12,22 +12,30 @@ namespace Espera.Android
 {
     internal class NetworkMessenger : IDisposable
     {
+        private static readonly Lazy<NetworkMessenger> instance;
         private static readonly int Port;
         private readonly TcpClient client;
-        private readonly IPAddress serverAddress;
+        private IPAddress serverAddress;
 
         static NetworkMessenger()
         {
             Port = 12345;
+            instance = new Lazy<NetworkMessenger>(() => new NetworkMessenger());
         }
 
-        public NetworkMessenger(IPAddress serverAddress)
+        public NetworkMessenger()
         {
-            if (serverAddress == null)
-                throw new ArgumentNullException("serverAddress");
-
-            this.serverAddress = serverAddress;
             this.client = new TcpClient();
+        }
+
+        public static NetworkMessenger Instance
+        {
+            get { return instance.Value; }
+        }
+
+        public bool Connected
+        {
+            get { return this.client.Connected; }
         }
 
         public static async Task<IPAddress> DiscoverServer()
@@ -45,8 +53,22 @@ namespace Espera.Android
             return result.RemoteEndPoint.Address;
         }
 
-        public async Task ConnectAsync()
+        public async Task AddSongToPlaylist(Song song)
         {
+            var parameters = new JObject
+            {
+                { "songGuid", song.Guid.ToString() }
+            };
+
+            await this.Send("post-playlist-song", parameters);
+        }
+
+        public async Task ConnectAsync(IPAddress address)
+        {
+            if (address == null)
+                throw new ArgumentNullException("address");
+
+            this.serverAddress = address;
             await this.client.ConnectAsync(this.serverAddress, Port);
         }
 
@@ -57,23 +79,18 @@ namespace Espera.Android
 
         public async Task<IReadOnlyList<Song>> GetSongsAsync()
         {
-            string json = await this.Get("get-library-content");
+            JObject response = await this.Send("get-library-content");
 
-            JToken array = JObject.Parse(json)["songs"];
-
-            List<Song> songs = array
+            List<Song> songs = response["songs"]
                 .Select(s =>
-                    new Song(s["artist"].ToString(), s["title"].ToString(), s["genre"].ToString(), s["album"].ToString()))
+                    new Song(s["artist"].ToString(), s["title"].ToString(), s["genre"].ToString(), s["album"].ToString(), Guid.Parse(s["guid"].ToString())))
                 .ToList();
 
             return songs;
         }
 
-        private async Task<string> Get(string action)
+        private async Task<JObject> ReceiveMessage()
         {
-            byte[] message = Encoding.Unicode.GetBytes(action + "\n");
-            this.client.Client.Send(message);
-
             var buffer = new byte[42];
 
             await this.RecieveAsync(buffer);
@@ -94,7 +111,7 @@ namespace Espera.Android
 
             string content = Encoding.Unicode.GetString(buffer);
 
-            return content;
+            return JObject.Parse(content);
         }
 
         private async Task RecieveAsync(byte[] buffer)
@@ -106,6 +123,34 @@ namespace Espera.Android
                 int bytesRecieved = await this.client.GetStream().ReadAsync(buffer, recieved, buffer.Length - recieved);
                 recieved += bytesRecieved;
             }
+        }
+
+        private async Task<JObject> Send(string action, JToken parameters = null)
+        {
+            var jMessage = new JObject
+            {
+                { "action", action },
+                { "parameters", parameters }
+            };
+
+            await this.SendMessage(jMessage);
+
+            return await this.ReceiveMessage();
+        }
+
+        private async Task SendMessage(JObject content)
+        {
+            byte[] contentBytes = Encoding.Unicode.GetBytes(content.ToString());
+            byte[] length = BitConverter.GetBytes(contentBytes.Length); // We have a fixed size of 4 bytes
+            byte[] headerBytes = Encoding.Unicode.GetBytes("espera-client-message");
+
+            var message = new byte[headerBytes.Length + length.Length + contentBytes.Length];
+            headerBytes.CopyTo(message, 0);
+            length.CopyTo(message, headerBytes.Length);
+            contentBytes.CopyTo(message, headerBytes.Length + length.Length);
+
+            await client.GetStream().WriteAsync(message, 0, message.Length);
+            await client.GetStream().FlushAsync();
         }
     }
 }

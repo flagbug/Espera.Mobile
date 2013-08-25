@@ -1,6 +1,8 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -93,40 +95,52 @@ namespace Espera.Android
             return songs;
         }
 
+        private static async Task<byte[]> DecompressContentAsync(byte[] buffer)
+        {
+            using (var stream = new GZipStream(new MemoryStream(buffer), CompressionMode.Decompress))
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await stream.CopyToAsync(memoryStream);
+                    return memoryStream.ToArray();
+                }
+            }
+        }
+
+        private async Task<byte[]> ReceiveAsync(int length)
+        {
+            var buffer = new byte[length];
+            int received = 0;
+
+            while (received < length)
+            {
+                int bytesRecieved = await this.client.GetStream().ReadAsync(buffer, received, buffer.Length - received);
+                received += bytesRecieved;
+            }
+
+            return buffer;
+        }
+
         private async Task<JObject> ReceiveMessage()
         {
-            var buffer = new byte[42];
-
-            await this.RecieveAsync(buffer);
+            byte[] buffer = await this.ReceiveAsync(42);
 
             string header = Encoding.Unicode.GetString(buffer);
 
             if (header != "espera-server-message")
                 throw new Exception("Holy batman, something went terribly wrong!");
 
-            buffer = new byte[4];
-            await this.RecieveAsync(buffer);
+            buffer = await this.ReceiveAsync(4);
 
             int length = BitConverter.ToInt32(buffer, 0);
 
-            buffer = new byte[length];
+            buffer = await this.ReceiveAsync(length);
 
-            await this.RecieveAsync(buffer);
+            byte[] decompressed = await DecompressContentAsync(buffer);
 
-            string content = Encoding.Unicode.GetString(buffer);
+            string content = Encoding.Unicode.GetString(decompressed);
 
             return JObject.Parse(content);
-        }
-
-        private async Task RecieveAsync(byte[] buffer)
-        {
-            int recieved = 0;
-
-            while (recieved < buffer.Length)
-            {
-                int bytesRecieved = await this.client.GetStream().ReadAsync(buffer, recieved, buffer.Length - recieved);
-                recieved += bytesRecieved;
-            }
         }
 
         private async Task SendMessage(JObject content)

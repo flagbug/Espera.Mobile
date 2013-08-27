@@ -1,6 +1,7 @@
 ﻿using Akavache;
 using Android.App;
 using Android.Content;
+using Android.Net.Wifi;
 using Android.OS;
 using Android.Widget;
 using ReactiveUI;
@@ -28,6 +29,18 @@ namespace Espera.Android
 
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
+
+            var wifiManager = (WifiManager)this.GetSystemService(WifiService);
+            if (!wifiManager.IsWifiEnabled)
+            {
+                var builder = new AlertDialog.Builder(this);
+                builder.SetTitle("Error");
+                builder.SetMessage("You have to enable Wifi.");
+                builder.SetPositiveButton("Enable", (sender, args) => wifiManager.SetWifiEnabled(true));
+                builder.SetNegativeButton("Exit", (sender, args) => this.Finish());
+
+                builder.Show();
+            }
 
             this.ViewModel = new MainViewModel();
 

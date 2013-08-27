@@ -64,7 +64,7 @@ namespace Espera.Android
 
             JObject response = await this.SendRequest("post-playlist-song", parameters);
 
-            return Tuple.Create(response["status"].ToObject<int>(), response["message"].ToString());
+            return CreateResponseInfo(response);
         }
 
         public async Task ConnectAsync(IPAddress address)
@@ -93,6 +93,23 @@ namespace Espera.Android
                 .ToList();
 
             return songs;
+        }
+
+        public async Task<Tuple<int, string>> PlaySongs(IEnumerable<Guid> guids)
+        {
+            var parameters = new JObject
+            {
+                {"guids", new JArray(guids.Select(x => x.ToString()).ToArray())}
+            };
+
+            JObject response = await this.SendRequest("post-play-instantly", parameters);
+
+            return CreateResponseInfo(response);
+        }
+
+        private static Tuple<int, string> CreateResponseInfo(JObject response)
+        {
+            return Tuple.Create(response["status"].ToObject<int>(), response["message"].ToString());
         }
 
         private static async Task<byte[]> DecompressContentAsync(byte[] buffer)

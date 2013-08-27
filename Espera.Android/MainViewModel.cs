@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace Espera.Android
 {
@@ -18,8 +19,8 @@ namespace Espera.Android
         public MainViewModel()
         {
             this.LoadArtistsCommand = new ReactiveCommand();
-            this.songs = this.LoadArtistsCommand.Select(x => this.LoadSongsAsync())
-                .Merge()
+            this.songs = this.LoadArtistsCommand
+                .RegisterAsyncTask(x => LoadSongsAsync())
                 .ToProperty(this, x => x.Songs);
 
             this.artists = this.songs
@@ -45,19 +46,20 @@ namespace Espera.Android
             get { return this.songs.Value; }
         }
 
-        private IObservable<IReadOnlyList<Song>> LoadSongsAsync()
+        private static async Task<IReadOnlyList<Song>> LoadSongsAsync()
         {
-            return Observable.StartAsync(async () =>
+            if (!NetworkMessenger.Instance.Connected)
             {
-                if (!NetworkMessenger.Instance.Connected)
-                {
-                    IPAddress address = await NetworkMessenger.DiscoverServer();
+                IPAddress address = await NetworkMessenger.DiscoverServer();
 
-                    await NetworkMessenger.Instance.ConnectAsync(address);
-                }
-            })
-            .Select(x => BlobCache.InMemory.GetAndFetchLatest("songs", () => NetworkMessenger.Instance.GetSongsAsync()))
-            .Merge();
+                await NetworkMessenger.Instance.ConnectAsync(address);
+            }
+
+            IReadOnlyList<Song> songs = await NetworkMessenger.Instance.GetSongsAsync();
+
+            await BlobCache.InMemory.InsertObject("songs", songs);
+
+            return songs;
         }
     }
 }

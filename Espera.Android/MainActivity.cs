@@ -5,7 +5,6 @@ using Android.OS;
 using Android.Widget;
 using ReactiveUI;
 using ReactiveUI.Android;
-using System.Collections;
 using System.Reactive.Linq;
 
 namespace Espera.Android
@@ -39,7 +38,7 @@ namespace Espera.Android
             this.ViewModel.LoadArtistsCommand.CanExecuteObservable.BindTo(this.LoadArtistsButton, x => x.Enabled);
 
             this.OneWayBind(this.ViewModel, x => x.Artists, x => x.ArtistListView.Adapter,
-                list => new ArrayAdapter(this, global::Android.Resource.Layout.SimpleListItem1, (IList)list));
+                list => new ArtistsAdapter(this, list));
             this.ArtistListView.ItemClick += (sender, args) =>
                 this.OpenArtist((string)this.ArtistListView.GetItemAtPosition(args.Position));
         }

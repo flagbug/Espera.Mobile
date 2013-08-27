@@ -81,6 +81,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArtistsAdapter.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="NetworkMessenger.cs" />

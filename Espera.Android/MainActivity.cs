@@ -50,8 +50,7 @@ namespace Espera.Android
                 .BindTo(this.LoadArtistsButton, x => x.Text);
             this.ViewModel.LoadArtistsCommand.CanExecuteObservable.BindTo(this.LoadArtistsButton, x => x.Enabled);
 
-            this.OneWayBind(this.ViewModel, x => x.Artists, x => x.ArtistListView.Adapter,
-                list => new ArtistsAdapter(this, list));
+            this.OneWayBind(this.ViewModel, x => x.Artists, x => x.ArtistListView.Adapter, list => new ArtistsAdapter(this, list));
             this.ArtistListView.ItemClick += (sender, args) =>
                 this.OpenArtist((string)this.ArtistListView.GetItemAtPosition(args.Position));
         }

@@ -11,7 +11,7 @@ namespace Espera.Android
     {
         private readonly IReadOnlyList<string> artists;
         private readonly Activity context;
-        private Dictionary<string, int> sections;
+        private readonly Dictionary<string, int> sections;
 
         public ArtistsAdapter(Activity context, IReadOnlyList<string> artists)
         {

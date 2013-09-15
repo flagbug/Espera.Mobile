@@ -1,6 +1,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -73,12 +74,36 @@ namespace Espera.Android
                 throw new ArgumentNullException("address");
 
             this.serverAddress = address;
-            await this.client.ConnectAsync(this.serverAddress, Port);
+            try
+            {
+                await this.client.ConnectAsync(this.serverAddress, Port);
+            }
+            catch (Exception ex)
+            {
+                Debugger.Break();
+                throw;
+            }
         }
 
         public void Dispose()
         {
             this.client.Close();
+        }
+
+        public async Task<Playlist> GetCurrentPlaylist()
+        {
+            JObject response = await this.SendRequest("get-current-playlist");
+
+            JToken content = response["content"];
+
+            string name = response["name"].ToString();
+
+            List<Song> songs = response["songs"]
+                .Select(x =>
+                    new Song(String.Empty, x["title"].ToString(), String.Empty, String.Empty, TimeSpan.Zero, Guid.Parse(x["guid"].ToString())))
+                .ToList();
+
+            return new Playlist(name, songs);
         }
 
         public async Task<IReadOnlyList<Song>> GetSongsAsync()

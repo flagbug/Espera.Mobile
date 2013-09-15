@@ -6,10 +6,15 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/loadArtistsButton" />
-    <ListView
+        android:id="@+id/connectButton" />
+    <Button
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/artistList"
-        android:fastScrollEnabled="true" />
+        android:layout_height="wrap_content"
+        android:id="@+id/loadArtistsButton"
+        android:text="Artists" />
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/loadCurrentPlaylistButton"
+        android:text="Playlist" />
 </LinearLayout>

@@ -85,10 +85,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArtistsActivity.cs" />
     <Compile Include="ArtistsAdapter.cs" />
+    <Compile Include="ArtistsViewModel.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="NetworkMessenger.cs" />
+    <Compile Include="Playlist.cs" />
+    <Compile Include="PlaylistActivity.cs" />
+    <Compile Include="PlaylistAdapter.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Song.cs" />
@@ -99,6 +104,9 @@
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <AndroidResource Include="Resources\Layout\Songs.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\Layout\Artists.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
   </ItemGroup>

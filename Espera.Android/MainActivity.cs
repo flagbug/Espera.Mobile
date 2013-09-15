@@ -1,6 +1,5 @@
 ﻿using Akavache;
 using Android.App;
-using Android.Content;
 using Android.Net.Wifi;
 using Android.OS;
 using Android.Widget;
@@ -13,9 +12,9 @@ namespace Espera.Android
     [Activity(Label = "Espera", MainLauncher = true, Icon = "@drawable/icon")]
     public class MainActivity : ReactiveActivity<MainViewModel>
     {
-        private ListView ArtistListView
+        private Button ConnectButton
         {
-            get { return this.FindViewById<ListView>(Resource.Id.artistList); }
+            get { return this.FindViewById<Button>(Resource.Id.connectButton); }
         }
 
         private Button LoadArtistsButton
@@ -23,12 +22,16 @@ namespace Espera.Android
             get { return this.FindViewById<Button>(Resource.Id.loadArtistsButton); }
         }
 
+        private Button LoadCurrentPlaylistButton
+        {
+            get { return this.FindViewById<Button>(Resource.Id.loadCurrentPlaylistButton); }
+        }
+
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
 
-            // Set our view from the "main" layout resource
-            SetContentView(Resource.Layout.Main);
+            this.SetContentView(Resource.Layout.Main);
 
             var wifiManager = (WifiManager)this.GetSystemService(WifiService);
             if (!wifiManager.IsWifiEnabled)
@@ -44,15 +47,16 @@ namespace Espera.Android
 
             this.ViewModel = new MainViewModel();
 
-            this.LoadArtistsButton.Click += (sender, args) => this.ViewModel.LoadArtistsCommand.Execute(null);
-            this.ViewModel.LoadArtistsCommand.IsExecuting
-                .Select(x => x ? "Loading..." : "Load artists")
-                .BindTo(this.LoadArtistsButton, x => x.Text);
-            this.ViewModel.LoadArtistsCommand.CanExecuteObservable.BindTo(this.LoadArtistsButton, x => x.Enabled);
+            this.ConnectButton.Click += (sender, args) => this.ViewModel.ConnectCommand.Execute(null);
+            this.ViewModel.ConnectCommand.IsExecuting
+                .Select(x => x ? "Connecting..." : "Connect")
+                .BindTo(this.ConnectButton, x => x.Text);
+            this.ViewModel.ConnectCommand.CanExecuteObservable.BindTo(this.ConnectButton, x => x.Enabled);
 
-            this.OneWayBind(this.ViewModel, x => x.Artists, x => x.ArtistListView.Adapter, list => new ArtistsAdapter(this, list));
-            this.ArtistListView.ItemClick += (sender, args) =>
-                this.OpenArtist((string)this.ArtistListView.GetItemAtPosition(args.Position));
+            this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadArtistsButton.Enabled);
+            this.LoadArtistsButton.Click += (sender, args) => this.StartActivity(typeof(ArtistsActivity));
+
+            this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadCurrentPlaylistButton.Enabled);
         }
 
         protected override void OnDestroy()
@@ -61,16 +65,6 @@ namespace Espera.Android
 
             NetworkMessenger.Instance.Dispose();
             BlobCache.Shutdown().Wait();
-        }
-
-        private void OpenArtist(string selectedArtist)
-        {
-            this.ViewModel.SelectedArtist = selectedArtist;
-
-            var intent = new Intent(this, typeof(SongsActivity));
-            intent.PutExtra("artist", selectedArtist);
-
-            this.StartActivity(intent);
         }
     }
 }

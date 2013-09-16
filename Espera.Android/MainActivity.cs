@@ -50,6 +50,7 @@ namespace Espera.Android
 
             this.ConnectButton.Click += (sender, args) => this.ViewModel.ConnectCommand.Execute(null);
             this.ViewModel.ConnectCommand.IsExecuting
+                .ObserveOn(RxApp.MainThreadScheduler) // RxUI has a bug where IsExecuting is not dispatched to the UI thread
                 .Select(x => x ? "Connecting..." : "Connect")
                 .BindTo(this.ConnectButton, x => x.Text);
             this.ViewModel.ConnectCommand.CanExecuteObservable.BindTo(this.ConnectButton, x => x.Enabled);

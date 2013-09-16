@@ -58,11 +58,11 @@ namespace Espera.Android
             return result.RemoteEndPoint.Address;
         }
 
-        public async Task<Tuple<int, string>> AddSongToPlaylist(Song song)
+        public async Task<Tuple<int, string>> AddSongToPlaylist(Guid songGuid)
         {
             var parameters = new JObject
             {
-                { "songGuid", song.Guid.ToString() }
+                { "songGuid", songGuid.ToString() }
             };
 
             JObject response = await this.SendRequest("post-playlist-song", parameters);

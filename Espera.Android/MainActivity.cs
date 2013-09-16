@@ -5,6 +5,7 @@ using Android.OS;
 using Android.Widget;
 using ReactiveUI;
 using ReactiveUI.Android;
+using System;
 using System.Reactive.Linq;
 
 namespace Espera.Android
@@ -53,10 +54,13 @@ namespace Espera.Android
                 .BindTo(this.ConnectButton, x => x.Text);
             this.ViewModel.ConnectCommand.CanExecuteObservable.BindTo(this.ConnectButton, x => x.Enabled);
 
+            this.ViewModel.ConnectionFailed.Subscribe(x => Toast.MakeText(this, "Connection failed", ToastLength.Long).Show());
+
             this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadArtistsButton.Enabled);
             this.LoadArtistsButton.Click += (sender, args) => this.StartActivity(typeof(ArtistsActivity));
 
             this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadCurrentPlaylistButton.Enabled);
+            this.LoadCurrentPlaylistButton.Click += (sender, args) => this.StartActivity(typeof(PlaylistActivity));
         }
 
         protected override void OnDestroy()

@@ -94,6 +94,7 @@
     <Compile Include="Playlist.cs" />
     <Compile Include="PlaylistActivity.cs" />
     <Compile Include="PlaylistAdapter.cs" />
+    <Compile Include="PlaylistViewModel.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Song.cs" />
@@ -107,6 +108,9 @@
       <SubType>AndroidResource</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\Layout\Artists.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\Layout\Playlist.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
   </ItemGroup>

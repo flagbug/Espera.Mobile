@@ -73,7 +73,10 @@ namespace Espera.Android
 			public const int loadCurrentPlaylistButton = 2131034115;
 			
 			// aapt resource value: 0x7f050004
-			public const int songsList = 2131034116;
+			public const int playList = 2131034116;
+			
+			// aapt resource value: 0x7f050005
+			public const int songsList = 2131034117;
 			
 			static Id()
 			{
@@ -95,7 +98,10 @@ namespace Espera.Android
 			public const int Main = 2130903041;
 			
 			// aapt resource value: 0x7f030002
-			public const int Songs = 2130903042;
+			public const int Playlist = 2130903042;
+			
+			// aapt resource value: 0x7f030003
+			public const int Songs = 2130903043;
 			
 			static Layout()
 			{

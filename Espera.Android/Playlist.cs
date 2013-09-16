@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Espera.Android
 {
-    internal class Playlist
+    public class Playlist
     {
         public Playlist(string name, IReadOnlyList<Song> songs)
         {

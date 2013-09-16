@@ -1,7 +1,6 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -74,15 +73,8 @@ namespace Espera.Android
                 throw new ArgumentNullException("address");
 
             this.serverAddress = address;
-            try
-            {
-                await this.client.ConnectAsync(this.serverAddress, Port);
-            }
-            catch (Exception ex)
-            {
-                Debugger.Break();
-                throw;
-            }
+
+            await this.client.ConnectAsync(this.serverAddress, Port);
         }
 
         public void Dispose()
@@ -96,9 +88,9 @@ namespace Espera.Android
 
             JToken content = response["content"];
 
-            string name = response["name"].ToString();
+            string name = content["name"].ToString();
 
-            List<Song> songs = response["songs"]
+            List<Song> songs = content["songs"]
                 .Select(x =>
                     new Song(String.Empty, x["title"].ToString(), String.Empty, String.Empty, TimeSpan.Zero, Guid.Parse(x["guid"].ToString())))
                 .ToList();

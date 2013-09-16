@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Exception = System.Exception;
 
@@ -17,6 +18,7 @@ namespace Espera.Android
         private static readonly Lazy<NetworkMessenger> instance;
         private static readonly int Port;
         private readonly TcpClient client;
+        private SemaphoreSlim gate;
         private IPAddress serverAddress;
 
         static NetworkMessenger()
@@ -25,9 +27,10 @@ namespace Espera.Android
             instance = new Lazy<NetworkMessenger>(() => new NetworkMessenger());
         }
 
-        public NetworkMessenger()
+        private NetworkMessenger()
         {
             this.client = new TcpClient();
+            this.gate = new SemaphoreSlim(1, 1);
         }
 
         public static NetworkMessenger Instance
@@ -157,6 +160,8 @@ namespace Espera.Android
 
         private async Task<JObject> ReceiveMessage()
         {
+            await this.gate.WaitAsync();
+
             byte[] buffer = await this.ReceiveAsync(42);
 
             string header = Encoding.Unicode.GetString(buffer);
@@ -171,6 +176,8 @@ namespace Espera.Android
             buffer = await this.ReceiveAsync(length);
 
             byte[] decompressed = await DecompressContentAsync(buffer);
+
+            this.gate.Release();
 
             string content = Encoding.Unicode.GetString(decompressed);
 
@@ -188,8 +195,12 @@ namespace Espera.Android
             length.CopyTo(message, headerBytes.Length);
             contentBytes.CopyTo(message, headerBytes.Length + length.Length);
 
+            await this.gate.WaitAsync(); // Concurrent network calls are bad
+
             await client.GetStream().WriteAsync(message, 0, message.Length);
             await client.GetStream().FlushAsync();
+
+            this.gate.Release();
         }
 
         private async Task<JObject> SendRequest(string action, JToken parameters = null)

@@ -17,7 +17,7 @@ namespace Espera.Android
             this.PlayPlaylistSongCommand = new ReactiveCommand();
             this.Message = this.PlayPlaylistSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance
                     .PlayPlaylistSong(this.Playlist.Songs[(int)x].Guid))
-                .Select(x => x.Item1 == 200 ? "Playling song" : "Playback failed");
+                .Select(x => x.Item1 == 200 ? "Playing song" : "Playback failed");
         }
 
         public ReactiveCommand LoadPlaylistCommand { get; private set; }

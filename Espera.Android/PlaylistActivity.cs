@@ -4,6 +4,7 @@ using Android.Widget;
 using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
+using System;
 
 namespace Espera.Android
 {
@@ -30,9 +31,11 @@ namespace Espera.Android
             this.SetContentView(Resource.Layout.Playlist);
 
             this.ViewModel = new PlaylistViewModel();
+            this.ViewModel.Message.Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show());
 
             this.OneWayBind(this.ViewModel, x => x.Playlist, x => x.PlaylistListView.Adapter,
                 playlist => playlist == null ? null : new PlaylistAdapter(this, playlist));
+            this.PlaylistListView.ItemClick += (sender, args) => this.ViewModel.PlayPlaylistSongCommand.Execute(args.Position);
 
             this.ViewModel.LoadPlaylistCommand.Execute(null);
         }

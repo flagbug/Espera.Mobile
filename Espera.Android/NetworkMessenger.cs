@@ -117,6 +117,18 @@ namespace Espera.Android
             return songs;
         }
 
+        public async Task<Tuple<int, string>> PlayPlaylistSong(Guid guid)
+        {
+            var parameters = new JObject
+            {
+                { "entryGuid", guid.ToString() }
+            };
+
+            JObject response = await this.SendRequest("post-play-playlist-song", parameters);
+
+            return CreateResponseInfo(response);
+        }
+
         public async Task<Tuple<int, string>> PlaySongs(IEnumerable<Guid> guids)
         {
             var parameters = new JObject

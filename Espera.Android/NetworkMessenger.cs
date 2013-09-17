@@ -95,7 +95,9 @@ namespace Espera.Android
 
             List<Song> songs = content["songs"]
                 .Select(x =>
-                    new Song(String.Empty, x["title"].ToString(), String.Empty, String.Empty, TimeSpan.Zero, Guid.Parse(x["guid"].ToString())))
+                    new Song(x["artist"].ToString(), x["title"].ToString(), String.Empty,
+                        String.Empty, TimeSpan.Zero, Guid.Parse(x["guid"].ToString()),
+                        x["source"].ToString() == "local" ? SongSource.Local : SongSource.Youtube))
                 .ToList();
 
             return new Playlist(name, songs);
@@ -109,7 +111,7 @@ namespace Espera.Android
                 .Select(s =>
                     new Song(s["artist"].ToString(), s["title"].ToString(), s["genre"].ToString(),
                         s["album"].ToString(), TimeSpan.FromSeconds(s["duration"].ToObject<double>()),
-                        Guid.Parse(s["guid"].ToString())))
+                        Guid.Parse(s["guid"].ToString()), SongSource.Local))
                 .ToList();
 
             return songs;

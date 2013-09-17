@@ -4,7 +4,7 @@ namespace Espera.Android
 {
     public class Song
     {
-        public Song(string artist, string title, string genre, string album, TimeSpan duration, Guid guid)
+        public Song(string artist, string title, string genre, string album, TimeSpan duration, Guid guid, SongSource source)
         {
             if (artist == null)
                 throw new ArgumentNullException("artist");
@@ -24,6 +24,7 @@ namespace Espera.Android
             this.Album = album;
             this.Duration = duration;
             this.Guid = guid;
+            this.Source = source;
         }
 
         public string Album { get; private set; }
@@ -35,6 +36,8 @@ namespace Espera.Android
         public string Genre { get; private set; }
 
         public Guid Guid { get; private set; }
+
+        public SongSource Source { get; private set; }
 
         public string Title { get; private set; }
     }

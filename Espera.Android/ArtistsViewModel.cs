@@ -17,7 +17,7 @@ namespace Espera.Android
         {
             this.Load = new ReactiveCommand();
             this.artists = this.Load.RegisterAsyncTask(x => LoadSongsAsync())
-               .Select(x => x.GroupBy(s => s.Artist).Select(g => g.Key).Distinct(StringComparer.InvariantCultureIgnoreCase).ToList())
+               .Select(x => x.GroupBy(s => s.Artist).Select(g => g.Key).Distinct(StringComparer.InvariantCultureIgnoreCase).OrderBy(_ => _).ToList())
                .ToProperty(this, x => x.Artists, new List<string>());
         }
 

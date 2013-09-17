@@ -1,18 +1,15 @@
-using Akavache;
 using Android.App;
 using Android.OS;
 using Android.Widget;
 using ReactiveUI;
+using ReactiveUI.Android;
 using ReactiveUI.Mobile;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Espera.Android
 {
     [Activity(Label = "Songs")]
-    public class SongsActivity : Activity
+    public class SongsActivity : ReactiveActivity<SongsViewModel>
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;
 
@@ -26,7 +23,7 @@ namespace Espera.Android
             get { return this.FindViewById<ListView>(Resource.Id.songsList); }
         }
 
-        protected override async void OnCreate(Bundle bundle)
+        protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
             this.autoSuspendHelper.OnCreate(bundle);
@@ -34,37 +31,33 @@ namespace Espera.Android
             this.SetContentView(Resource.Layout.Songs);
 
             string artist = this.Intent.GetStringExtra("artist");
+            this.ViewModel = new SongsViewModel(artist);
 
-            IReadOnlyList<Song> songs = await BlobCache.InMemory.GetObjectAsync<IReadOnlyList<Song>>("songs");
-
-            songs = songs.Where(x => x.Artist.Equals(artist, StringComparison.OrdinalIgnoreCase))
-               .ToList();
-
-            var adapter = new SongsAdapter(this, songs);
-            this.SongsListView.Adapter = adapter;
-            this.SongsListView.ItemClick += async (sender, args) =>
-            {
-                await this.PlaySongs(GetSongGuidsFromAdapater(adapter, args.Position));
-            };
+            this.OneWayBind(this.ViewModel, x => x.Songs, x => x.SongsListView.Adapter, x => new SongsAdapter(this, x));
+            this.SongsListView.ItemClick += (sender, args) => this.ViewModel.PlaySongsCommand.Execute(args.Position);
 
             this.SongsListView.ItemLongClick += (sender, args) =>
             {
                 var builder = new AlertDialog.Builder(this);
-                builder.SetItems(new[] { "Play", "Add to playlist" }, async (o, eventArgs) =>
+                builder.SetItems(new[] { "Play", "Add to playlist" }, (o, eventArgs) =>
                 {
                     switch (eventArgs.Which)
                     {
                         case 0:
-                            await this.PlaySongs(GetSongGuidsFromAdapater(adapter, args.Position));
+                            this.ViewModel.PlaySongsCommand.Execute(args.Position);
                             break;
 
                         case 1:
-                            await this.AddToPlaylist(adapter[args.Position].Guid);
+                            this.ViewModel.AddToPlaylistCommand.Execute(args.Position);
                             break;
                     }
                 });
                 builder.Create().Show();
             };
+
+            this.ViewModel.Message.Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show());
+
+            this.ViewModel.LoadArtistsCommand.Execute(null);
         }
 
         protected override void OnPause()
@@ -83,36 +76,6 @@ namespace Espera.Android
         {
             base.OnSaveInstanceState(outState);
             this.autoSuspendHelper.OnSaveInstanceState(outState);
-        }
-
-        private static IEnumerable<Guid> GetSongGuidsFromAdapater(SongsAdapter adapter, int start)
-        {
-            var guids = new List<Guid>();
-
-            for (int i = start; i < adapter.Count; i++)
-            {
-                guids.Add(adapter[i].Guid);
-            }
-
-            return guids;
-        }
-
-        private async Task AddToPlaylist(Guid guid)
-        {
-            Tuple<int, string> response = await NetworkMessenger.Instance.AddSongToPlaylist(guid);
-
-            string text = response.Item1 == 200 ? "Song added to playlist" : "Error adding song";
-
-            Toast.MakeText(this, text, ToastLength.Short).Show();
-        }
-
-        private async Task PlaySongs(IEnumerable<Guid> guids)
-        {
-            Tuple<int, string> response = await NetworkMessenger.Instance.PlaySongs(guids);
-
-            string text = response.Item1 == 200 ? "Playing songs" : "Error adding songs";
-
-            Toast.MakeText(this, text, ToastLength.Short).Show();
         }
     }
 }

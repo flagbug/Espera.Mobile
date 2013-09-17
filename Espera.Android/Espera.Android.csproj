@@ -101,6 +101,7 @@
     <Compile Include="Song.cs" />
     <Compile Include="SongsActivity.cs" />
     <Compile Include="SongsAdapter.cs" />
+    <Compile Include="SongsViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

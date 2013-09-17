@@ -5,6 +5,7 @@ using Android.OS;
 using Android.Widget;
 using ReactiveUI;
 using ReactiveUI.Android;
+using ReactiveUI.Mobile;
 using System;
 using System.Reactive.Linq;
 
@@ -13,6 +14,13 @@ namespace Espera.Android
     [Activity(Label = "Espera", MainLauncher = true, Icon = "@drawable/icon")]
     public class MainActivity : ReactiveActivity<MainViewModel>
     {
+        private readonly AutoSuspendActivityHelper autoSuspendHelper;
+
+        public MainActivity()
+        {
+            this.autoSuspendHelper = new AutoSuspendActivityHelper(this);
+        }
+
         private Button ConnectButton
         {
             get { return this.FindViewById<Button>(Resource.Id.connectButton); }
@@ -31,6 +39,7 @@ namespace Espera.Android
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
+            this.autoSuspendHelper.OnCreate(bundle);
 
             this.SetContentView(Resource.Layout.Main);
 
@@ -70,6 +79,24 @@ namespace Espera.Android
 
             NetworkMessenger.Instance.Dispose();
             BlobCache.Shutdown().Wait();
+        }
+
+        protected override void OnPause()
+        {
+            base.OnPause();
+            this.autoSuspendHelper.OnPause();
+        }
+
+        protected override void OnResume()
+        {
+            base.OnResume();
+            this.autoSuspendHelper.OnResume();
+        }
+
+        protected override void OnSaveInstanceState(Bundle outState)
+        {
+            base.OnSaveInstanceState(outState);
+            this.autoSuspendHelper.OnSaveInstanceState(outState);
         }
     }
 }

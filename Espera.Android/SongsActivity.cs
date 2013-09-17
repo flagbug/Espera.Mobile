@@ -3,6 +3,7 @@ using Android.App;
 using Android.OS;
 using Android.Widget;
 using ReactiveUI;
+using ReactiveUI.Mobile;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,13 @@ namespace Espera.Android
     [Activity(Label = "Songs")]
     public class SongsActivity : Activity
     {
+        private readonly AutoSuspendActivityHelper autoSuspendHelper;
+
+        public SongsActivity()
+        {
+            this.autoSuspendHelper = new AutoSuspendActivityHelper(this);
+        }
+
         private ListView SongsListView
         {
             get { return this.FindViewById<ListView>(Resource.Id.songsList); }
@@ -21,6 +29,7 @@ namespace Espera.Android
         protected override async void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
+            this.autoSuspendHelper.OnCreate(bundle);
 
             this.SetContentView(Resource.Layout.Songs);
 
@@ -56,6 +65,24 @@ namespace Espera.Android
                 });
                 builder.Create().Show();
             };
+        }
+
+        protected override void OnPause()
+        {
+            base.OnPause();
+            this.autoSuspendHelper.OnPause();
+        }
+
+        protected override void OnResume()
+        {
+            base.OnResume();
+            this.autoSuspendHelper.OnResume();
+        }
+
+        protected override void OnSaveInstanceState(Bundle outState)
+        {
+            base.OnSaveInstanceState(outState);
+            this.autoSuspendHelper.OnSaveInstanceState(outState);
         }
 
         private static IEnumerable<Guid> GetSongGuidsFromAdapater(SongsAdapter adapter, int start)

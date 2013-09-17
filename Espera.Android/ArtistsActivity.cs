@@ -4,12 +4,20 @@ using Android.OS;
 using Android.Widget;
 using ReactiveUI;
 using ReactiveUI.Android;
+using ReactiveUI.Mobile;
 
 namespace Espera.Android
 {
     [Activity(Label = "Artists")]
     public class ArtistsActivity : ReactiveActivity<ArtistsViewModel>
     {
+        private readonly AutoSuspendActivityHelper autoSuspendHelper;
+
+        public ArtistsActivity()
+        {
+            this.autoSuspendHelper = new AutoSuspendActivityHelper(this);
+        }
+
         private ListView ArtistListView
         {
             get { return this.FindViewById<ListView>(Resource.Id.artistList); }
@@ -18,6 +26,7 @@ namespace Espera.Android
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
+            this.autoSuspendHelper.OnCreate(bundle);
 
             this.SetContentView(Resource.Layout.Artists);
 
@@ -28,6 +37,24 @@ namespace Espera.Android
                 this.OpenArtist((string)this.ArtistListView.GetItemAtPosition(args.Position));
 
             this.ViewModel.Load.Execute(null);
+        }
+
+        protected override void OnPause()
+        {
+            base.OnPause();
+            this.autoSuspendHelper.OnPause();
+        }
+
+        protected override void OnResume()
+        {
+            base.OnResume();
+            this.autoSuspendHelper.OnResume();
+        }
+
+        protected override void OnSaveInstanceState(Bundle outState)
+        {
+            base.OnSaveInstanceState(outState);
+            this.autoSuspendHelper.OnSaveInstanceState(outState);
         }
 
         private void OpenArtist(string selectedArtist)

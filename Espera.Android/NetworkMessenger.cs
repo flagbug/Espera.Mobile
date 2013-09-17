@@ -18,7 +18,7 @@ namespace Espera.Android
         private static readonly Lazy<NetworkMessenger> instance;
         private static readonly int Port;
         private readonly TcpClient client;
-        private SemaphoreSlim gate;
+        private readonly SemaphoreSlim gate;
         private IPAddress serverAddress;
 
         static NetworkMessenger()
@@ -174,8 +174,6 @@ namespace Espera.Android
 
         private async Task<JObject> ReceiveMessage()
         {
-            await this.gate.WaitAsync();
-
             byte[] buffer = await this.ReceiveAsync(42);
 
             string header = Encoding.Unicode.GetString(buffer);
@@ -190,8 +188,6 @@ namespace Espera.Android
             buffer = await this.ReceiveAsync(length);
 
             byte[] decompressed = await DecompressContentAsync(buffer);
-
-            this.gate.Release();
 
             string content = Encoding.Unicode.GetString(decompressed);
 
@@ -209,12 +205,8 @@ namespace Espera.Android
             length.CopyTo(message, headerBytes.Length);
             contentBytes.CopyTo(message, headerBytes.Length + length.Length);
 
-            await this.gate.WaitAsync(); // Concurrent network calls are bad
-
             await client.GetStream().WriteAsync(message, 0, message.Length);
             await client.GetStream().FlushAsync();
-
-            this.gate.Release();
         }
 
         private async Task<JObject> SendRequest(string action, JToken parameters = null)
@@ -225,9 +217,15 @@ namespace Espera.Android
                 { "parameters", parameters }
             };
 
+            await this.gate.WaitAsync();
+
             await this.SendMessage(jMessage);
 
-            return await this.ReceiveMessage();
+            JObject response = await this.ReceiveMessage();
+
+            this.gate.Release();
+
+            return response;
         }
     }
 }

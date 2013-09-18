@@ -1,5 +1,6 @@
 ﻿using Akavache;
 using Android.App;
+using Android.Content.PM;
 using Android.Net.Wifi;
 using Android.OS;
 using Android.Widget;
@@ -11,7 +12,8 @@ using System.Reactive.Linq;
 
 namespace Espera.Android
 {
-    [Activity(Label = "Espera", MainLauncher = true, Icon = "@drawable/icon")]
+    [Activity(Label = "Espera", MainLauncher = true, Icon = "@drawable/icon",
+        ConfigurationChanges = ConfigChanges.Orientation)]
     public class MainActivity : ReactiveActivity<MainViewModel>
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;

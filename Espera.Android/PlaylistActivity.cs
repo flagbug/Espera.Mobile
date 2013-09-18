@@ -1,4 +1,5 @@
 using Android.App;
+using Android.Content.PM;
 using Android.OS;
 using Android.Widget;
 using ReactiveUI;
@@ -8,7 +9,7 @@ using System;
 
 namespace Espera.Android
 {
-    [Activity(Label = "Current Playlist")]
+    [Activity(Label = "Current Playlist", ConfigurationChanges = ConfigChanges.Orientation)]
     public class PlaylistActivity : ReactiveActivity<PlaylistViewModel>
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;

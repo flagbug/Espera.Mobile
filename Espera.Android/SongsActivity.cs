@@ -1,4 +1,5 @@
 using Android.App;
+using Android.Content.PM;
 using Android.OS;
 using Android.Widget;
 using ReactiveUI;
@@ -8,7 +9,7 @@ using System;
 
 namespace Espera.Android
 {
-    [Activity(Label = "Songs")]
+    [Activity(Label = "Songs", ConfigurationChanges = ConfigChanges.Orientation)]
     public class SongsActivity : ReactiveActivity<SongsViewModel>
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;

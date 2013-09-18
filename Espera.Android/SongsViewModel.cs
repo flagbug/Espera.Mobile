@@ -33,7 +33,7 @@ namespace Espera.Android
             var addToPlaylistMessage = this.AddToPlaylistCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.AddSongToPlaylist(this.Songs[(int)x].Guid))
                 .Select(x => x.Item1 == 200 ? "Song added to playlist" : "Error adding song");
 
-            this.Message = playSongsMessage.Merge(addToPlaylistMessage);
+            this.Message = playSongsMessage.Merge(addToPlaylistMessage).Throttle(TimeSpan.FromMilliseconds(200));
         }
 
         public ReactiveCommand AddToPlaylistCommand { get; private set; }

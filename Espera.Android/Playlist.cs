@@ -4,11 +4,14 @@ namespace Espera.Android
 {
     public class Playlist
     {
-        public Playlist(string name, IReadOnlyList<Song> songs)
+        public Playlist(string name, IReadOnlyList<Song> songs, int? currentIndex)
         {
             this.Name = name;
             this.Songs = songs;
+            this.CurrentIndex = currentIndex;
         }
+
+        public int? CurrentIndex { get; private set; }
 
         public string Name { get; private set; }
 

@@ -100,7 +100,9 @@ namespace Espera.Android
                         x["source"].ToString() == "local" ? SongSource.Local : SongSource.Youtube))
                 .ToList();
 
-            return new Playlist(name, songs);
+            int? currentIndex = content["current"].ToObject<int?>();
+
+            return new Playlist(name, songs, currentIndex);
         }
 
         public async Task<IReadOnlyList<Song>> GetSongsAsync()

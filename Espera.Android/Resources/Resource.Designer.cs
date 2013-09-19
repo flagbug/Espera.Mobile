@@ -45,7 +45,10 @@ namespace Espera.Android
 		{
 			
 			// aapt resource value: 0x7f020000
-			public const int Icon = 2130837504;
+			public const int CurrentSongIcon = 2130837504;
+			
+			// aapt resource value: 0x7f020001
+			public const int Icon = 2130837505;
 			
 			static Drawable()
 			{
@@ -59,6 +62,15 @@ namespace Espera.Android
 		
 		public partial class Id
 		{
+			
+			// aapt resource value: 0x7f050005
+			public const int Image = 2131034117;
+			
+			// aapt resource value: 0x7f050006
+			public const int PlaylistItemText1 = 2131034118;
+			
+			// aapt resource value: 0x7f050007
+			public const int PlaylistItemText2 = 2131034119;
 			
 			// aapt resource value: 0x7f050000
 			public const int artistList = 2131034112;
@@ -75,8 +87,8 @@ namespace Espera.Android
 			// aapt resource value: 0x7f050004
 			public const int playList = 2131034116;
 			
-			// aapt resource value: 0x7f050005
-			public const int songsList = 2131034117;
+			// aapt resource value: 0x7f050008
+			public const int songsList = 2131034120;
 			
 			static Id()
 			{
@@ -101,7 +113,10 @@ namespace Espera.Android
 			public const int Playlist = 2130903042;
 			
 			// aapt resource value: 0x7f030003
-			public const int Songs = 2130903043;
+			public const int PlaylistListItem = 2130903043;
+			
+			// aapt resource value: 0x7f030004
+			public const int Songs = 2130903044;
 			
 			static Layout()
 			{

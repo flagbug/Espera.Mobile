@@ -32,11 +32,12 @@ namespace Espera.Android
 
         public override View GetView(int position, View convertView, ViewGroup parent)
         {
-            View view = convertView ?? context.LayoutInflater.Inflate(global::Android.Resource.Layout.SimpleListItem2, null);
+            View view = convertView ?? context.LayoutInflater.Inflate(Resource.Layout.PlaylistListItem, null);
 
             Song song = this.playlist.Songs[position];
-            view.FindViewById<TextView>(global::Android.Resource.Id.Text1).Text = song.Title;
-            view.FindViewById<TextView>(global::Android.Resource.Id.Text2).Text = song.Source == SongSource.Local ? song.Artist : "YouTube";
+            view.FindViewById<TextView>(Resource.Id.PlaylistItemText1).Text = song.Title;
+            view.FindViewById<TextView>(Resource.Id.PlaylistItemText2).Text = song.Source == SongSource.Local ? song.Artist : "YouTube";
+            view.FindViewById<ImageView>(Resource.Id.Image).Visibility = position == playlist.CurrentIndex ? ViewStates.Visible : ViewStates.Gone;
 
             return view;
         }

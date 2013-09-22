@@ -9,7 +9,6 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Exception = System.Exception;
 
 namespace Espera.Android
 {
@@ -143,19 +142,35 @@ namespace Espera.Android
             return CreateResponseInfo(response);
         }
 
+        private static async Task<byte[]> CompressDataAsync(byte[] data)
+        {
+            using (var targetStream = new MemoryStream())
+            {
+                using (var stream = new GZipStream(targetStream, CompressionMode.Compress))
+                {
+                    await stream.WriteAsync(data, 0, data.Length);
+                }
+
+                return targetStream.ToArray();
+            }
+        }
+
         private static Tuple<int, string> CreateResponseInfo(JObject response)
         {
             return Tuple.Create(response["status"].ToObject<int>(), response["message"].ToString());
         }
 
-        private static async Task<byte[]> DecompressContentAsync(byte[] buffer)
+        private static async Task<byte[]> DecompressDataAsync(byte[] buffer)
         {
-            using (var stream = new GZipStream(new MemoryStream(buffer), CompressionMode.Decompress))
+            using (var sourceStream = new MemoryStream(buffer))
             {
-                using (var memoryStream = new MemoryStream())
+                using (var stream = new GZipStream(sourceStream, CompressionMode.Decompress))
                 {
-                    await stream.CopyToAsync(memoryStream);
-                    return memoryStream.ToArray();
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await stream.CopyToAsync(memoryStream);
+                        return memoryStream.ToArray();
+                    }
                 }
             }
         }
@@ -176,20 +191,13 @@ namespace Espera.Android
 
         private async Task<JObject> ReceiveMessage()
         {
-            byte[] buffer = await this.ReceiveAsync(42);
-
-            string header = Encoding.Unicode.GetString(buffer);
-
-            if (header != "espera-server-message")
-                throw new Exception("Holy batman, something went terribly wrong!");
-
-            buffer = await this.ReceiveAsync(4);
+            byte[] buffer = await this.ReceiveAsync(4);
 
             int length = BitConverter.ToInt32(buffer, 0);
 
             buffer = await this.ReceiveAsync(length);
 
-            byte[] decompressed = await DecompressContentAsync(buffer);
+            byte[] decompressed = await DecompressDataAsync(buffer);
 
             string content = Encoding.Unicode.GetString(decompressed);
 
@@ -199,13 +207,10 @@ namespace Espera.Android
         private async Task SendMessage(JObject content)
         {
             byte[] contentBytes = Encoding.Unicode.GetBytes(content.ToString());
+            contentBytes = await CompressDataAsync(contentBytes);
             byte[] length = BitConverter.GetBytes(contentBytes.Length); // We have a fixed size of 4 bytes
-            byte[] headerBytes = Encoding.Unicode.GetBytes("espera-client-message");
 
-            var message = new byte[headerBytes.Length + length.Length + contentBytes.Length];
-            headerBytes.CopyTo(message, 0);
-            length.CopyTo(message, headerBytes.Length);
-            contentBytes.CopyTo(message, headerBytes.Length + length.Length);
+            byte[] message = length.Concat(contentBytes).ToArray();
 
             await client.GetStream().WriteAsync(message, 0, message.Length);
             await client.GetStream().FlushAsync();

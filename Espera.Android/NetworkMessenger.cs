@@ -1,4 +1,7 @@
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ReactiveSockets;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,6 +9,9 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Reactive.Threading.Tasks;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,9 +22,9 @@ namespace Espera.Android
     {
         private static readonly Lazy<NetworkMessenger> instance;
         private static readonly int Port;
-        private readonly TcpClient client;
         private readonly SemaphoreSlim gate;
-        private IPAddress serverAddress;
+        private ReactiveClient client;
+        private IObservable<JObject> messagePipeline;
 
         static NetworkMessenger()
         {
@@ -28,8 +34,8 @@ namespace Espera.Android
 
         private NetworkMessenger()
         {
-            this.client = new TcpClient();
             this.gate = new SemaphoreSlim(1, 1);
+            this.messagePipeline = new Subject<JObject>();
         }
 
         public static NetworkMessenger Instance
@@ -39,7 +45,7 @@ namespace Espera.Android
 
         public bool Connected
         {
-            get { return this.client.Connected; }
+            get { return this.client.IsConnected; }
         }
 
         public static async Task<IPAddress> DiscoverServer()
@@ -74,14 +80,22 @@ namespace Espera.Android
             if (address == null)
                 throw new ArgumentNullException("address");
 
-            this.serverAddress = address;
+            this.client = new ReactiveClient(address.ToString(), Port);
 
-            await this.client.ConnectAsync(this.serverAddress, Port);
+            this.messagePipeline = this.client.Receiver.Buffer(4)
+                    .Select(length => BitConverter.ToInt32(length.ToArray(), 0))
+                    .Select(length => this.client.Receiver.Take(length).ToEnumerable().ToArray())
+                    .SelectMany(body => DecompressDataAsync(body).ToObservable())
+                    .Select(body => Encoding.Unicode.GetString(body))
+                    .Select(JObject.Parse)
+                    .SubscribeOn(RxApp.TaskpoolScheduler);
+
+            await this.client.ConnectAsync();
         }
 
         public void Dispose()
         {
-            this.client.Close();
+            this.client.Dispose();
         }
 
         public async Task<Playlist> GetCurrentPlaylist()
@@ -175,62 +189,42 @@ namespace Espera.Android
             }
         }
 
-        private async Task<byte[]> ReceiveAsync(int length)
-        {
-            var buffer = new byte[length];
-            int received = 0;
-
-            while (received < length)
-            {
-                int bytesRecieved = await this.client.GetStream().ReadAsync(buffer, received, buffer.Length - received);
-                received += bytesRecieved;
-            }
-
-            return buffer;
-        }
-
-        private async Task<JObject> ReceiveMessage()
-        {
-            byte[] buffer = await this.ReceiveAsync(4);
-
-            int length = BitConverter.ToInt32(buffer, 0);
-
-            buffer = await this.ReceiveAsync(length);
-
-            byte[] decompressed = await DecompressDataAsync(buffer);
-
-            string content = Encoding.Unicode.GetString(decompressed);
-
-            return JObject.Parse(content);
-        }
-
         private async Task SendMessage(JObject content)
         {
-            byte[] contentBytes = Encoding.Unicode.GetBytes(content.ToString());
+            byte[] contentBytes = Encoding.Unicode.GetBytes(content.ToString(Formatting.None));
             contentBytes = await CompressDataAsync(contentBytes);
             byte[] length = BitConverter.GetBytes(contentBytes.Length); // We have a fixed size of 4 bytes
 
             byte[] message = length.Concat(contentBytes).ToArray();
 
-            await client.GetStream().WriteAsync(message, 0, message.Length);
-            await client.GetStream().FlushAsync();
+            await this.gate.WaitAsync();
+            await client.SendAsync(message);
+            this.gate.Release();
         }
 
         private async Task<JObject> SendRequest(string action, JToken parameters = null)
         {
+            Guid id = Guid.NewGuid();
+
             var jMessage = new JObject
             {
                 { "action", action },
-                { "parameters", parameters }
+                { "parameters", parameters },
+                { "id", id.ToString()}
             };
 
-            await this.gate.WaitAsync();
+            var responseSubject = new AsyncSubject<JObject>();
+
+            this.messagePipeline.FirstAsync(x => x["id"].ToString() == id.ToString())
+                .Subscribe(x =>
+                {
+                    responseSubject.OnNext(x);
+                    responseSubject.OnCompleted();
+                });
 
             await this.SendMessage(jMessage);
 
-            JObject response = await this.ReceiveMessage();
-
-            this.gate.Release();
+            JObject response = await responseSubject;
 
             return response;
         }

@@ -60,6 +60,9 @@
     </Reference>
     <Reference Include="Mono.Android" />
     <Reference Include="mscorlib" />
+    <Reference Include="ReactiveSockets">
+      <HintPath>..\ext\ReactiveSockets.dll</HintPath>
+    </Reference>
     <Reference Include="ReactiveUI">
       <HintPath>..\ext\ReactiveUI.dll</HintPath>
     </Reference>

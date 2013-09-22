@@ -12,6 +12,7 @@ namespace Espera.Android
         {
             this.LoadPlaylistCommand = new ReactiveCommand();
             this.playlist = this.LoadPlaylistCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.GetCurrentPlaylist())
+                .Merge(NetworkMessenger.Instance.PlaylistChanged)
                 .ToProperty(this, x => x.Playlist);
 
             this.PlayPlaylistSongCommand = new ReactiveCommand();

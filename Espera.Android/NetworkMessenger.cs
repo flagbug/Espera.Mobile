@@ -48,6 +48,8 @@ namespace Espera.Android
             get { return this.client.IsConnected; }
         }
 
+        public IObservable<Playlist> PlaylistChanged { get; private set; }
+
         public static async Task<IPAddress> DiscoverServer()
         {
             var client = new UdpClient(Port);
@@ -88,7 +90,12 @@ namespace Espera.Android
                     .SelectMany(body => DecompressDataAsync(body).ToObservable())
                     .Select(body => Encoding.Unicode.GetString(body))
                     .Select(JObject.Parse)
-                    .SubscribeOn(RxApp.TaskpoolScheduler);
+                    .SubscribeOn(RxApp.TaskpoolScheduler)
+                    .Publish()
+                    .RefCount();
+
+            this.PlaylistChanged = this.messagePipeline.Where(x => x["type"].ToString() == "push")
+                .Select(x => Playlist.Deserialize(x["content"]));
 
             await this.client.ConnectAsync();
         }
@@ -104,18 +111,7 @@ namespace Espera.Android
 
             JToken content = response["content"];
 
-            string name = content["name"].ToString();
-
-            List<Song> songs = content["songs"]
-                .Select(x =>
-                    new Song(x["artist"].ToString(), x["title"].ToString(), String.Empty,
-                        String.Empty, TimeSpan.Zero, Guid.Parse(x["guid"].ToString()),
-                        x["source"].ToString() == "local" ? SongSource.Local : SongSource.Youtube))
-                .ToList();
-
-            int? currentIndex = content["current"].ToObject<int?>();
-
-            return new Playlist(name, songs, currentIndex);
+            return Playlist.Deserialize(content);
         }
 
         public async Task<IReadOnlyList<Song>> GetSongsAsync()

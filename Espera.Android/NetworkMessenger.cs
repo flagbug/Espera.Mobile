@@ -220,18 +220,13 @@ namespace Espera.Android
                 { "id", id.ToString()}
             };
 
-            var responseSubject = new AsyncSubject<JObject>();
-
-            this.messagePipeline.FirstAsync(x => x["id"].ToString() == id.ToString())
-                .Subscribe(x =>
-                {
-                    responseSubject.OnNext(x);
-                    responseSubject.OnCompleted();
-                });
+            var message = this.messagePipeline.FirstAsync(x => x["id"].ToString() == id.ToString())
+                .PublishLast();
+            message.Connect();
 
             await this.SendMessage(jMessage);
 
-            JObject response = await responseSubject;
+            JObject response = await message;
 
             return response;
         }

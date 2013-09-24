@@ -25,6 +25,7 @@ namespace Espera.Android
         private readonly SemaphoreSlim gate;
         private ReactiveClient client;
         private IObservable<JObject> messagePipeline;
+        private IDisposable messagePipelineConnection;
 
         static NetworkMessenger()
         {
@@ -84,15 +85,17 @@ namespace Espera.Android
 
             this.client = new ReactiveClient(address.ToString(), Port);
 
-            this.messagePipeline = this.client.Receiver.Buffer(4)
+            var conn = this.client.Receiver.Buffer(4)
                     .Select(length => BitConverter.ToInt32(length.ToArray(), 0))
                     .Select(length => this.client.Receiver.Take(length).ToEnumerable().ToArray())
                     .SelectMany(body => DecompressDataAsync(body).ToObservable())
                     .Select(body => Encoding.Unicode.GetString(body))
                     .Select(JObject.Parse)
                     .SubscribeOn(RxApp.TaskpoolScheduler)
-                    .Publish()
-                    .RefCount();
+                    .Publish();
+
+            this.messagePipeline = conn;
+            this.messagePipelineConnection = conn.Connect();
 
             this.PlaylistChanged = this.messagePipeline.Where(x => x["type"].ToString() == "push")
                 .Select(x => Playlist.Deserialize(x["content"]));
@@ -102,7 +105,15 @@ namespace Espera.Android
 
         public void Dispose()
         {
-            this.client.Dispose();
+            if (this.client != null)
+            {
+                this.client.Dispose();
+            }
+
+            if (this.messagePipelineConnection != null)
+            {
+                this.messagePipelineConnection.Dispose();
+            }
         }
 
         public async Task<Playlist> GetCurrentPlaylist()

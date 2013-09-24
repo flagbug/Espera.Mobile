@@ -15,8 +15,8 @@ namespace Espera.Android
 
         public ArtistsViewModel()
         {
-            this.Load = new ReactiveCommand();
-            this.artists = this.Load.RegisterAsyncTask(x => LoadSongsAsync())
+            this.LoadCommand = new ReactiveCommand();
+            this.artists = this.LoadCommand.RegisterAsyncTask(x => LoadSongsAsync())
                .Select(x => x.GroupBy(s => s.Artist).Select(g => g.Key).Distinct(StringComparer.InvariantCultureIgnoreCase).OrderBy(_ => _).ToList())
                .ToProperty(this, x => x.Artists, new List<string>());
         }
@@ -26,7 +26,7 @@ namespace Espera.Android
             get { return this.artists.Value; }
         }
 
-        public ReactiveCommand Load { get; private set; }
+        public ReactiveCommand LoadCommand { get; private set; }
 
         public string SelectedArtist
         {

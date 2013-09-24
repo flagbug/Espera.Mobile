@@ -6,6 +6,8 @@ using Android.Widget;
 using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
+using System;
+using System.Reactive.Linq;
 
 namespace Espera.Android
 {
@@ -13,6 +15,7 @@ namespace Espera.Android
     public class ArtistsActivity : ReactiveActivity<ArtistsViewModel>
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;
+        private ProgressDialog progressDialog;
 
         public ArtistsActivity()
         {
@@ -37,7 +40,27 @@ namespace Espera.Android
             this.ArtistListView.ItemClick += (sender, args) =>
                 this.OpenArtist((string)this.ArtistListView.GetItemAtPosition(args.Position));
 
-            this.ViewModel.Load.Execute(null);
+            this.progressDialog = new ProgressDialog(this);
+            this.progressDialog.SetMessage("Loading artists");
+            this.progressDialog.Indeterminate = true;
+            this.progressDialog.SetCancelable(false);
+
+            this.ViewModel.LoadCommand.IsExecuting.Skip(1)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(x =>
+                {
+                    if (x)
+                    {
+                        this.progressDialog.Show();
+                    }
+
+                    else
+                    {
+                        this.progressDialog.Hide();
+                    }
+                });
+
+            this.ViewModel.LoadCommand.Execute(null);
         }
 
         protected override void OnPause()

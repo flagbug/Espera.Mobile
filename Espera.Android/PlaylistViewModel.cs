@@ -15,6 +15,9 @@ namespace Espera.Android
                 .Merge(NetworkMessenger.Instance.PlaylistChanged)
                 .ToProperty(this, x => x.Playlist);
 
+            NetworkMessenger.Instance.PlaylistIndexChanged.Where(_ => this.Playlist != null)
+                .Subscribe(x => this.Playlist.CurrentIndex = x);
+
             this.PlayPlaylistSongCommand = new ReactiveCommand();
             this.Message = this.PlayPlaylistSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance
                     .PlayPlaylistSong(this.Playlist.Songs[(int)x].Guid))

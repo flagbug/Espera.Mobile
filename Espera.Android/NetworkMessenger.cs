@@ -51,6 +51,8 @@ namespace Espera.Android
 
         public IObservable<Playlist> PlaylistChanged { get; private set; }
 
+        public IObservable<int?> PlaylistIndexChanged { get; private set; }
+
         public static async Task<IPAddress> DiscoverServer()
         {
             var client = new UdpClient(Port);
@@ -97,8 +99,13 @@ namespace Espera.Android
             this.messagePipeline = conn;
             this.messagePipelineConnection = conn.Connect();
 
-            this.PlaylistChanged = this.messagePipeline.Where(x => x["type"].ToString() == "push")
+            var pushMessages = this.messagePipeline.Where(x => x["type"].ToString() == "push");
+
+            this.PlaylistChanged = pushMessages.Where(x => x["action"].ToString() == "update-current-playlist")
                 .Select(x => Playlist.Deserialize(x["content"]));
+
+            this.PlaylistIndexChanged = pushMessages.Where(x => x["action"].ToString() == "update-current-index")
+                .Select(x => x["content"]["index"].ToObject<int?>());
 
             await this.client.ConnectAsync();
         }
@@ -220,7 +227,8 @@ namespace Espera.Android
                 { "id", id.ToString()}
             };
 
-            var message = this.messagePipeline.FirstAsync(x => x["id"].ToString() == id.ToString())
+            var message = this.messagePipeline.Where(x => x["type"].ToString() == "response")
+                .FirstAsync(x => x["id"].ToString() == id.ToString())
                 .PublishLast();
             message.Connect();
 

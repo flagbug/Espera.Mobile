@@ -1,11 +1,15 @@
 using Android.App;
 using Android.Views;
 using Android.Widget;
+using ReactiveUI;
+using System;
+using System.Reactive.Linq;
 
 namespace Espera.Android
 {
     internal class PlaylistAdapter : BaseAdapter<Song>
     {
+        private readonly IDisposable changedSubscription;
         private readonly Activity context;
         private readonly Playlist playlist;
 
@@ -13,6 +17,10 @@ namespace Espera.Android
         {
             this.context = context;
             this.playlist = playlist;
+
+            this.changedSubscription = this.playlist.Changed
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(_ => this.NotifyDataSetChanged());
         }
 
         public override int Count
@@ -40,6 +48,13 @@ namespace Espera.Android
             view.FindViewById<ImageView>(Resource.Id.Image).Visibility = position == playlist.CurrentIndex ? ViewStates.Visible : ViewStates.Gone;
 
             return view;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            this.changedSubscription.Dispose();
         }
     }
 }

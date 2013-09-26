@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 
 namespace Espera.Android
@@ -16,9 +17,11 @@ namespace Espera.Android
         public ArtistsViewModel()
         {
             this.LoadCommand = new ReactiveCommand();
-            this.artists = this.LoadCommand.RegisterAsyncTask(x => LoadSongsAsync())
+            this.artists = this.LoadCommand.RegisterAsync(x => LoadSongsAsync().ToObservable().Timeout(TimeSpan.FromSeconds(15)))
                .Select(x => x.GroupBy(s => s.Artist).Select(g => g.Key).Distinct(StringComparer.InvariantCultureIgnoreCase).OrderBy(_ => _).ToList())
                .ToProperty(this, x => x.Artists, new List<string>());
+
+            this.Messages = this.LoadCommand.ThrownExceptions.Select(_ => "Loading artists failed");
         }
 
         public IReadOnlyList<string> Artists
@@ -27,6 +30,8 @@ namespace Espera.Android
         }
 
         public ReactiveCommand LoadCommand { get; private set; }
+
+        public IObservable<string> Messages { get; private set; }
 
         public string SelectedArtist
         {

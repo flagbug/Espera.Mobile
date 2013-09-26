@@ -60,6 +60,8 @@ namespace Espera.Android
                     }
                 });
 
+            this.ViewModel.Messages.Subscribe(x => Toast.MakeText(this, x, ToastLength.Long).Show());
+
             this.ViewModel.LoadCommand.Execute(null);
         }
 

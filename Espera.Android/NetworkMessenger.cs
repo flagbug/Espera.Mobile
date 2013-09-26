@@ -91,7 +91,7 @@ namespace Espera.Android
                     .Select(length => BitConverter.ToInt32(length.ToArray(), 0))
                     .Select(length => this.client.Receiver.Take(length).ToEnumerable().ToArray())
                     .SelectMany(body => DecompressDataAsync(body).ToObservable())
-                    .Select(body => Encoding.Unicode.GetString(body))
+                    .Select(body => Encoding.UTF8.GetString(body))
                     .Select(JObject.Parse)
                     .SubscribeOn(RxApp.TaskpoolScheduler)
                     .Publish();
@@ -205,7 +205,7 @@ namespace Espera.Android
 
         private async Task SendMessage(JObject content)
         {
-            byte[] contentBytes = Encoding.Unicode.GetBytes(content.ToString(Formatting.None));
+            byte[] contentBytes = Encoding.UTF8.GetBytes(content.ToString(Formatting.None));
             contentBytes = await CompressDataAsync(contentBytes);
             byte[] length = BitConverter.GetBytes(contentBytes.Length); // We have a fixed size of 4 bytes
 

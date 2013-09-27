@@ -11,7 +11,7 @@ using System.Reactive.Linq;
 namespace Espera.Android
 {
     [Activity(Label = "Current Playlist", ConfigurationChanges = ConfigChanges.Orientation)]
-    public class PlaylistActivity : ReactiveActivity<PlaylistViewModel>
+    public class PlaylistActivity : ReactiveActivity<PlaylistViewModel>, IHandleDisconnect
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;
 
@@ -76,6 +76,9 @@ namespace Espera.Android
 
             this.ViewModel.PlayNextSongCommand.CanExecuteObservable.Select(alphaSelector)
                 .Subscribe(x => this.PlayNextSongButton.Background.SetAlpha(x));
+
+            NetworkMessenger.Instance.Disconnected.FirstAsync()
+                .Subscribe(x => this.HandleDisconnect());
 
             this.ViewModel.LoadPlaylistCommand.Execute(null);
         }

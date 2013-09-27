@@ -12,7 +12,7 @@ using System.Reactive.Linq;
 namespace Espera.Android
 {
     [Activity(Label = "Artists", ConfigurationChanges = ConfigChanges.Orientation)]
-    public class ArtistsActivity : ReactiveActivity<ArtistsViewModel>
+    public class ArtistsActivity : ReactiveActivity<ArtistsViewModel>, IHandleDisconnect
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;
         private ProgressDialog progressDialog;
@@ -61,6 +61,9 @@ namespace Espera.Android
                 });
 
             this.ViewModel.Messages.Subscribe(x => Toast.MakeText(this, x, ToastLength.Long).Show());
+
+            NetworkMessenger.Instance.Disconnected.FirstAsync()
+                .Subscribe(x => this.HandleDisconnect());
 
             this.ViewModel.LoadCommand.Execute(null);
         }

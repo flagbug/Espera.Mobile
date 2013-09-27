@@ -10,7 +10,7 @@ using System;
 namespace Espera.Android
 {
     [Activity(Label = "Songs", ConfigurationChanges = ConfigChanges.Orientation)]
-    public class SongsActivity : ReactiveActivity<SongsViewModel>
+    public class SongsActivity : ReactiveActivity<SongsViewModel>, IHandleDisconnect
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;
 
@@ -57,6 +57,8 @@ namespace Espera.Android
             };
 
             this.ViewModel.Message.Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show());
+
+            NetworkMessenger.Instance.Disconnected.Subscribe(x => this.HandleDisconnect());
 
             this.ViewModel.LoadArtistsCommand.Execute(null);
         }

@@ -187,57 +187,6 @@
             <summary>Gets or sets a value that specifies the Time To Live (TTL) value of Internet Protocol (IP) packets sent by the <see cref="T:System.Net.Sockets.Socket" />.</summary>
             <returns>The TTL value.</returns>
         </member>
-        <member name="T:StringFormatWithExtension">
-            <summary>
-            Requires a reference to System.Web.
-            </summary>
-        </member>
-        <member name="M:StringFormatWithExtension.FormatWith(System.String,System.Object)">
-            <summary>
-            Formats the string with the given source object. 
-            Expression like {Id} are replaced with the corresponding 
-            property value in the <paramref name="source"/>. Supports 
-            all <see cref="M:System.Web.UI.DataBinder.Eval(System.Object,System.String)"/> expressions formats 
-            for property access.
-            </summary>
-        </member>
-        <member name="T:ReactiveSockets.Properties.Resources">
-            <summary>
-              A strongly-typed resource class, for looking up localized strings, etc.
-            </summary>
-        </member>
-        <member name="P:ReactiveSockets.Properties.Resources.ResourceManager">
-            <summary>
-              Returns the cached ResourceManager instance used by this class.
-            </summary>
-        </member>
-        <member name="P:ReactiveSockets.Properties.Resources.Culture">
-            <summary>
-              Overrides the current thread's CurrentUICulture property for all
-              resource lookups using this strongly typed resource class.
-            </summary>
-        </member>
-        <member name="P:ReactiveSockets.Properties.Resources.TcpClientSocket_DisconnectingNotConnected">
-            <summary>
-              Looks up a localized string similar to Cannot disconnect a disconnected socket..
-            </summary>
-        </member>
-        <member name="T:ReactiveSockets.Properties.Strings">
-            <summary>
-            Provides access to string resources.
-            </summary>
-        </member>
-        <member name="T:ReactiveSockets.Properties.Strings.TcpClientSocket">
-            <summary>
-            Provides access to string resources.
-            </summary>
-        </member>
-        <member name="P:ReactiveSockets.Properties.Strings.TcpClientSocket.DisconnectingNotConnected">
-            <summary>
-            Looks up a localized string similar to: 
-            Cannot disconnect a disconnected socket.
-            </summary>
-        </member>
         <member name="T:ReactiveSockets.ReactiveClient">
             <summary>
             Implements the <see cref="T:ReactiveSockets.IReactiveClient"/> over TCP.
@@ -454,6 +403,43 @@
         <member name="P:ReactiveSockets.ReactiveListenerSettings.Port">
             <summary>
             Port to listen on.
+            </summary>
+        </member>
+        <member name="T:ReactiveSockets.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:ReactiveSockets.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:ReactiveSockets.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:ReactiveSockets.Properties.Resources.TcpClientSocket_DisconnectingNotConnected">
+            <summary>
+              Looks up a localized string similar to Cannot disconnect a disconnected socket..
+            </summary>
+        </member>
+        <member name="T:ReactiveSockets.Properties.Strings">
+            <summary>
+            Provides access to string resources.
+            </summary>
+        </member>
+        <member name="T:ReactiveSockets.Properties.Strings.TcpClientSocket">
+            <summary>
+            Provides access to string resources.
+            </summary>
+        </member>
+        <member name="P:ReactiveSockets.Properties.Strings.TcpClientSocket.DisconnectingNotConnected">
+            <summary>
+            Looks up a localized string similar to: 
+            Cannot disconnect a disconnected socket.
             </summary>
         </member>
     </members>

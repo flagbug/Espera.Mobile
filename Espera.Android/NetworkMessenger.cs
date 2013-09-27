@@ -9,6 +9,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace Espera.Android
     {
         private static readonly Lazy<NetworkMessenger> instance;
         private static readonly int Port;
+        private readonly Subject<Unit> disconnected;
         private readonly SemaphoreSlim gate;
         private ReactiveClient client;
         private IObservable<JObject> messagePipeline;
@@ -37,6 +39,7 @@ namespace Espera.Android
         {
             this.gate = new SemaphoreSlim(1, 1);
             this.messagePipeline = new Subject<JObject>();
+            this.disconnected = new Subject<Unit>();
         }
 
         public static NetworkMessenger Instance
@@ -48,6 +51,8 @@ namespace Espera.Android
         {
             get { return this.client.IsConnected; }
         }
+
+        public IObservable<Unit> Disconnected { get; private set; }
 
         public IObservable<PlaybackState> PlaybackStateChanged { get; private set; }
 
@@ -89,6 +94,11 @@ namespace Espera.Android
 
             this.client = new ReactiveClient(address.ToString(), Port);
 
+            this.Disconnected = Observable.FromEventPattern(h => this.client.Disconnected += h, h => this.client.Disconnected -= h)
+                .Select(_ => Unit.Default)
+                .Merge(this.disconnected)
+                .FirstAsync();
+
             var conn = this.client.Receiver.Buffer(4)
                     .Select(length => BitConverter.ToInt32(length.ToArray(), 0))
                     .Select(length => this.client.Receiver.Take(length).ToEnumerable().ToArray())
@@ -126,7 +136,15 @@ namespace Espera.Android
         {
             if (this.client != null)
             {
-                this.client.Dispose();
+                try
+                {
+                    this.client.Dispose();
+                }
+
+                catch (ObjectDisposedException)
+                {
+                    // Reactivesockets bug
+                }
             }
 
             if (this.messagePipelineConnection != null)
@@ -254,8 +272,16 @@ namespace Espera.Android
             byte[] message = length.Concat(contentBytes).ToArray();
 
             await this.gate.WaitAsync();
-            await client.SendAsync(message);
-            this.gate.Release();
+
+            try
+            {
+                await client.SendAsync(message);
+            }
+
+            finally
+            {
+                this.gate.Release();
+            }
         }
 
         private async Task<JObject> SendRequest(string action, JToken parameters = null)
@@ -272,13 +298,29 @@ namespace Espera.Android
             var message = this.messagePipeline.Where(x => x["type"].ToString() == "response")
                 .FirstAsync(x => x["id"].ToString() == id.ToString())
                 .PublishLast();
-            message.Connect();
 
-            await this.SendMessage(jMessage);
+            using (message.Connect())
+            {
+                try
+                {
+                    await this.SendMessage(jMessage);
+                }
 
-            JObject response = await message;
+                catch (Exception)
+                {
+                    this.disconnected.OnNext(Unit.Default);
 
-            return response;
+                    return new JObject
+                    {
+                        {"status", 503},
+                        {"message", "Connection lost"}
+                    };
+                }
+
+                JObject response = await message;
+
+                return response;
+            }
         }
     }
 }

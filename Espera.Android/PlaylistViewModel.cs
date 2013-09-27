@@ -33,18 +33,16 @@ namespace Espera.Android
                 .Select(x => x.Item1 == 200 ? "Playing song" : "Playback failed");
 
             this.PlayNextSongCommand = this.playlist.Where(x => x != null)
-                .Select(x => x.Changed.Select(y => x))
+                .Select(x => x.Changed.Select(y => x).StartWith(x))
                 .Switch()
                 .Select(x => x.CurrentIndex != null && x.CurrentIndex < x.Songs.Count)
-                .StartWith(false)
                 .ToCommand();
             this.PlayNextSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.PlayNextSong());
 
             this.PlayPreviousSongCommand = this.playlist.Where(x => x != null)
-                .Select(x => x.Changed.Select(y => x))
+                .Select(x => x.Changed.Select(y => x).StartWith(x))
                 .Switch()
                 .Select(x => x.CurrentIndex != null && x.CurrentIndex > 0)
-                .StartWith(false)
                 .ToCommand();
             this.PlayPreviousSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.PlayPreviousSong());
 

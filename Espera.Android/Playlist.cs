@@ -14,10 +14,12 @@ namespace Espera.Android
 
         private int? currentIndex;
 
+        private IReadOnlyList<Song> songs;
+
         public Playlist(string name, IReadOnlyList<Song> songs, int? currentIndex)
         {
             this.Name = name;
-            this.Songs = songs;
+            this.songs = songs;
             this.currentIndex = currentIndex;
 
             this.changed = new Subject<Unit>();
@@ -40,7 +42,15 @@ namespace Espera.Android
 
         public string Name { get; private set; }
 
-        public IReadOnlyList<Song> Songs { get; private set; }
+        public IReadOnlyList<Song> Songs
+        {
+            get { return this.songs; }
+            set
+            {
+                this.songs = value;
+                this.changed.OnNext(Unit.Default);
+            }
+        }
 
         public static Playlist Deserialize(JToken json)
         {

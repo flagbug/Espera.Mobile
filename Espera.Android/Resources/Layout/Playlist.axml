@@ -6,5 +6,29 @@
     <ListView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/playList" />
+        android:id="@+id/playList"
+        android:layout_weight="1" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:id="@+id/previousButton"
+            android:background="@drawable/Previous" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:id="@+id/playPauseButton"
+            android:background="@drawable/Play"
+            android:layout_marginLeft="15dip"
+            android:layout_marginRight="15dip" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:id="@+id/nextButton"
+            android:background="@drawable/Next" />
+    </LinearLayout>
 </LinearLayout>

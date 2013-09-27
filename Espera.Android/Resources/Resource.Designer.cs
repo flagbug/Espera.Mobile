@@ -50,6 +50,18 @@ namespace Espera.Android
 			// aapt resource value: 0x7f020001
 			public const int Icon = 2130837505;
 			
+			// aapt resource value: 0x7f020002
+			public const int Next = 2130837506;
+			
+			// aapt resource value: 0x7f020003
+			public const int Pause = 2130837507;
+			
+			// aapt resource value: 0x7f020004
+			public const int Play = 2130837508;
+			
+			// aapt resource value: 0x7f020005
+			public const int Previous = 2130837509;
+			
 			static Drawable()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
@@ -63,14 +75,14 @@ namespace Espera.Android
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f050005
-			public const int Image = 2131034117;
+			// aapt resource value: 0x7f050008
+			public const int Image = 2131034120;
 			
-			// aapt resource value: 0x7f050006
-			public const int PlaylistItemText1 = 2131034118;
+			// aapt resource value: 0x7f050009
+			public const int PlaylistItemText1 = 2131034121;
 			
-			// aapt resource value: 0x7f050007
-			public const int PlaylistItemText2 = 2131034119;
+			// aapt resource value: 0x7f05000a
+			public const int PlaylistItemText2 = 2131034122;
 			
 			// aapt resource value: 0x7f050000
 			public const int artistList = 2131034112;
@@ -84,11 +96,20 @@ namespace Espera.Android
 			// aapt resource value: 0x7f050003
 			public const int loadCurrentPlaylistButton = 2131034115;
 			
+			// aapt resource value: 0x7f050007
+			public const int nextButton = 2131034119;
+			
 			// aapt resource value: 0x7f050004
 			public const int playList = 2131034116;
 			
-			// aapt resource value: 0x7f050008
-			public const int songsList = 2131034120;
+			// aapt resource value: 0x7f050006
+			public const int playPauseButton = 2131034118;
+			
+			// aapt resource value: 0x7f050005
+			public const int previousButton = 2131034117;
+			
+			// aapt resource value: 0x7f05000b
+			public const int songsList = 2131034123;
 			
 			static Id()
 			{

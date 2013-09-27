@@ -1,11 +1,13 @@
 using ReactiveUI;
 using System;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 
 namespace Espera.Android
 {
     public class PlaylistViewModel : ReactiveObject
     {
+        private readonly ObservableAsPropertyHelper<bool> isPlaying;
         private readonly ObservableAsPropertyHelper<Playlist> playlist;
 
         public PlaylistViewModel()
@@ -15,6 +17,13 @@ namespace Espera.Android
                 .Merge(NetworkMessenger.Instance.PlaylistChanged)
                 .ToProperty(this, x => x.Playlist);
 
+            NetworkMessenger.Instance.PlaylistChanged.Where(_ => this.Playlist != null)
+                .Subscribe(x =>
+                {
+                    this.Playlist.Songs = x.Songs;
+                    this.Playlist.CurrentIndex = x.CurrentIndex;
+                });
+
             NetworkMessenger.Instance.PlaylistIndexChanged.Where(_ => this.Playlist != null)
                 .Subscribe(x => this.Playlist.CurrentIndex = x);
 
@@ -22,6 +31,52 @@ namespace Espera.Android
             this.Message = this.PlayPlaylistSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance
                     .PlayPlaylistSong(this.Playlist.Songs[(int)x].Guid))
                 .Select(x => x.Item1 == 200 ? "Playing song" : "Playback failed");
+
+            this.PlayNextSongCommand = this.playlist.Where(x => x != null)
+                .Select(x => x.Changed.Select(y => x))
+                .Switch()
+                .Select(x => x.CurrentIndex != null && x.CurrentIndex < x.Songs.Count)
+                .StartWith(false)
+                .ToCommand();
+            this.PlayNextSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.PlayNextSong());
+
+            this.PlayPreviousSongCommand = this.playlist.Where(x => x != null)
+                .Select(x => x.Changed.Select(y => x))
+                .Switch()
+                .Select(x => x.CurrentIndex != null && x.CurrentIndex > 0)
+                .StartWith(false)
+                .ToCommand();
+            this.PlayPreviousSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.PlayPreviousSong());
+
+            var playbackState = NetworkMessenger.Instance.PlaybackStateChanged
+                .Merge(NetworkMessenger.Instance.GetPlaybackSate().ToObservable().FirstAsync())
+                .Publish(PlaybackState.None);
+            playbackState.Connect();
+
+            this.isPlaying = playbackState
+                .Select(x => x == PlaybackState.Playing)
+                .ToProperty(this, x => x.IsPlaying);
+
+            this.PlayPauseCommand = playbackState
+                .Select(x => x == PlaybackState.Playing || x == PlaybackState.Paused)
+                .ToCommand();
+            this.PlayPauseCommand.Subscribe(async x =>
+            {
+                if (this.IsPlaying)
+                {
+                    await NetworkMessenger.Instance.PauseSong();
+                }
+
+                else
+                {
+                    await NetworkMessenger.Instance.ContinueSong();
+                }
+            });
+        }
+
+        public bool IsPlaying
+        {
+            get { return this.isPlaying.Value; }
         }
 
         public ReactiveCommand LoadPlaylistCommand { get; private set; }
@@ -33,6 +88,12 @@ namespace Espera.Android
             get { return this.playlist.Value; }
         }
 
+        public ReactiveCommand PlayNextSongCommand { get; private set; }
+
+        public ReactiveCommand PlayPauseCommand { get; private set; }
+
         public ReactiveCommand PlayPlaylistSongCommand { get; private set; }
+
+        public ReactiveCommand PlayPreviousSongCommand { get; private set; }
     }
 }

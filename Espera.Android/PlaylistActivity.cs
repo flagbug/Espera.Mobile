@@ -6,6 +6,7 @@ using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
 using System;
+using System.Reactive.Linq;
 
 namespace Espera.Android
 {
@@ -24,6 +25,21 @@ namespace Espera.Android
             get { return this.FindViewById<ListView>(Resource.Id.playList); }
         }
 
+        private Button PlayNextSongButton
+        {
+            get { return this.FindViewById<Button>(Resource.Id.nextButton); }
+        }
+
+        private Button PlayPauseButton
+        {
+            get { return this.FindViewById<Button>(Resource.Id.playPauseButton); }
+        }
+
+        private Button PlayPreviousSongButton
+        {
+            get { return this.FindViewById<Button>(Resource.Id.previousButton); }
+        }
+
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
@@ -37,6 +53,18 @@ namespace Espera.Android
             this.OneWayBind(this.ViewModel, x => x.Playlist, x => x.PlaylistListView.Adapter,
                 playlist => playlist == null ? null : new PlaylistAdapter(this, playlist));
             this.PlaylistListView.ItemClick += (sender, args) => this.ViewModel.PlayPlaylistSongCommand.Execute(args.Position);
+
+            Observable.FromEventPattern(h => this.PlayNextSongButton.Click += h, h => this.PlayPreviousSongButton.Click -= h)
+                .InvokeCommand(this.ViewModel.PlayNextSongCommand);
+
+            Observable.FromEventPattern(h => this.PlayPreviousSongButton.Click += h, h => this.PlayPreviousSongButton.Click -= h)
+                .InvokeCommand(this.ViewModel.PlayPreviousSongCommand);
+
+            Observable.FromEventPattern(h => this.PlayPauseButton.Click += h, h => this.PlayPauseButton.Click -= h)
+                .InvokeCommand(this.ViewModel.PlayPauseCommand);
+
+            this.ViewModel.WhenAnyValue(x => x.IsPlaying).Select(x => x ? Resource.Drawable.Pause : Resource.Drawable.Play)
+                .Subscribe(x => this.PlayPauseButton.SetBackgroundResource(x));
 
             this.ViewModel.LoadPlaylistCommand.Execute(null);
         }

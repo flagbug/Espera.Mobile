@@ -49,6 +49,8 @@ namespace Espera.Android
             get { return this.client.IsConnected; }
         }
 
+        public IObservable<PlaybackState> PlaybackStateChanged { get; private set; }
+
         public IObservable<Playlist> PlaylistChanged { get; private set; }
 
         public IObservable<int?> PlaylistIndexChanged { get; private set; }
@@ -107,7 +109,17 @@ namespace Espera.Android
             this.PlaylistIndexChanged = pushMessages.Where(x => x["action"].ToString() == "update-current-index")
                 .Select(x => x["content"]["index"].ToObject<int?>());
 
+            this.PlaybackStateChanged = pushMessages.Where(x => x["action"].ToString() == "update-playback-state")
+                .Select(x => x["content"]["state"].ToObject<PlaybackState>());
+
             await this.client.ConnectAsync();
+        }
+
+        public async Task<Tuple<int, string>> ContinueSong()
+        {
+            JObject response = await this.SendRequest("post-continue-song");
+
+            return CreateResponseInfo(response);
         }
 
         public void Dispose()
@@ -132,6 +144,15 @@ namespace Espera.Android
             return Playlist.Deserialize(content);
         }
 
+        public async Task<PlaybackState> GetPlaybackSate()
+        {
+            JObject response = await this.SendRequest("get-playback-state");
+
+            JToken content = response["content"];
+
+            return content["state"].ToObject<PlaybackState>();
+        }
+
         public async Task<IReadOnlyList<Song>> GetSongsAsync()
         {
             JObject response = await this.SendRequest("get-library-content");
@@ -146,6 +167,20 @@ namespace Espera.Android
             return songs;
         }
 
+        public async Task<Tuple<int, string>> PauseSong()
+        {
+            JObject response = await this.SendRequest("post-pause-song");
+
+            return CreateResponseInfo(response);
+        }
+
+        public async Task<Tuple<int, string>> PlayNextSong()
+        {
+            JObject response = await this.SendRequest("post-play-next-song");
+
+            return CreateResponseInfo(response);
+        }
+
         public async Task<Tuple<int, string>> PlayPlaylistSong(Guid guid)
         {
             var parameters = new JObject
@@ -154,6 +189,13 @@ namespace Espera.Android
             };
 
             JObject response = await this.SendRequest("post-play-playlist-song", parameters);
+
+            return CreateResponseInfo(response);
+        }
+
+        public async Task<Tuple<int, string>> PlayPreviousSong()
+        {
+            JObject response = await this.SendRequest("post-play-previous-song");
 
             return CreateResponseInfo(response);
         }

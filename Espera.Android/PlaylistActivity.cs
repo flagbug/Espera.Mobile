@@ -66,6 +66,17 @@ namespace Espera.Android
             this.ViewModel.WhenAnyValue(x => x.IsPlaying).Select(x => x ? Resource.Drawable.Pause : Resource.Drawable.Play)
                 .Subscribe(x => this.PlayPauseButton.SetBackgroundResource(x));
 
+            Func<bool, int> alphaSelector = x => x ? 255 : 100;
+
+            this.ViewModel.PlayPauseCommand.CanExecuteObservable.Select(alphaSelector)
+                .Subscribe(x => this.PlayPauseButton.Background.SetAlpha(x));
+
+            this.ViewModel.PlayPreviousSongCommand.CanExecuteObservable.Select(alphaSelector)
+                .Subscribe(x => this.PlayPreviousSongButton.Background.SetAlpha(x));
+
+            this.ViewModel.PlayNextSongCommand.CanExecuteObservable.Select(alphaSelector)
+                .Subscribe(x => this.PlayNextSongButton.Background.SetAlpha(x));
+
             this.ViewModel.LoadPlaylistCommand.Execute(null);
         }
 

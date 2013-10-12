@@ -4,7 +4,7 @@ using Android.Content;
 namespace Espera.Android
 {
     /// <summary>
-    /// Decorator for the HandleDisconnect exetsnion method
+    /// Decorator for the HandleDisconnect extension method
     /// </summary>
     internal interface IHandleDisconnect
     { }

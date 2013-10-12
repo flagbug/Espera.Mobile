@@ -1,3 +1,4 @@
+using System.Reactive.Linq;
 using Android.App;
 using Android.Content.PM;
 using Android.OS;
@@ -35,7 +36,7 @@ namespace Espera.Android
             this.ViewModel = new SongsViewModel(artist);
 
             this.OneWayBind(this.ViewModel, x => x.Songs, x => x.SongsListView.Adapter, x => new SongsAdapter(this, x));
-            this.SongsListView.ItemClick += (sender, args) => this.ViewModel.PlaySongsCommand.Execute(args.Position);
+            this.SongsListView.Events().ItemClick.Select(x => x.Position).InvokeCommand(this.ViewModel.PlaySongsCommand);
 
             this.SongsListView.ItemLongClick += (sender, args) =>
             {

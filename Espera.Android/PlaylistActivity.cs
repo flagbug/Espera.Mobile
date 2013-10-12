@@ -52,16 +52,11 @@ namespace Espera.Android
 
             this.OneWayBind(this.ViewModel, x => x.Playlist, x => x.PlaylistListView.Adapter,
                 playlist => playlist == null ? null : new PlaylistAdapter(this, playlist));
-            this.PlaylistListView.ItemClick += (sender, args) => this.ViewModel.PlayPlaylistSongCommand.Execute(args.Position);
+            this.PlaylistListView.Events().ItemClick.Select(x => x.Position).InvokeCommand(this.ViewModel.PlayPlaylistSongCommand);
 
-            Observable.FromEventPattern(h => this.PlayNextSongButton.Click += h, h => this.PlayPreviousSongButton.Click -= h)
-                .InvokeCommand(this.ViewModel.PlayNextSongCommand);
-
-            Observable.FromEventPattern(h => this.PlayPreviousSongButton.Click += h, h => this.PlayPreviousSongButton.Click -= h)
-                .InvokeCommand(this.ViewModel.PlayPreviousSongCommand);
-
-            Observable.FromEventPattern(h => this.PlayPauseButton.Click += h, h => this.PlayPauseButton.Click -= h)
-                .InvokeCommand(this.ViewModel.PlayPauseCommand);
+            this.BindCommand(this.ViewModel, x => x.PlayNextSongCommand, x => x.PlayNextSongButton);
+            this.BindCommand(this.ViewModel, x => x.PlayPreviousSongCommand, x => x.PlayPreviousSongButton);
+            this.BindCommand(this.ViewModel, x => x.PlayPauseCommand, x => x.PlayPauseButton);
 
             this.ViewModel.WhenAnyValue(x => x.IsPlaying).Select(x => x ? Resource.Drawable.Pause : Resource.Drawable.Play)
                 .Subscribe(x => this.PlayPauseButton.SetBackgroundResource(x));

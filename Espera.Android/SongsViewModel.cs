@@ -1,4 +1,3 @@
-using Akavache;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -9,21 +8,12 @@ namespace Espera.Android
 {
     public class SongsViewModel : ReactiveObject
     {
-        private readonly string artist;
-
-        private readonly ObservableAsPropertyHelper<IReadOnlyList<Song>> songs;
-
-        public SongsViewModel(string artist)
+        public SongsViewModel(IReadOnlyList<Song> songs)
         {
-            if (artist == null)
-                throw new ArgumentNullException("artist");
+            if (songs == null)
+                throw new ArgumentNullException("songs");
 
-            this.artist = artist;
-
-            this.LoadArtistsCommand = new ReactiveCommand();
-            this.songs = this.LoadArtistsCommand.RegisterAsync(x => BlobCache.InMemory.GetObjectAsync<IReadOnlyList<Song>>("songs"))
-                .Select(x => x.Where(y => y.Artist.Equals(this.artist, StringComparison.OrdinalIgnoreCase)).ToList())
-                .ToProperty(this, x => x.Songs, new List<Song>());
+            this.Songs = songs;
 
             this.PlaySongsCommand = new ReactiveCommand();
             var playSongsMessage = this.PlaySongsCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.PlaySongs(this.Songs.Skip((int)x).Select(y => y.Guid)))
@@ -46,9 +36,6 @@ namespace Espera.Android
 
         public ReactiveCommand PlaySongsCommand { get; private set; }
 
-        public IReadOnlyList<Song> Songs
-        {
-            get { return this.songs.Value; }
-        }
+        public IReadOnlyList<Song> Songs { get; private set; }
     }
 }

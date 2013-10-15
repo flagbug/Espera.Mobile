@@ -1,12 +1,15 @@
-using System.Reactive.Linq;
 using Android.App;
 using Android.Content.PM;
 using Android.OS;
 using Android.Widget;
+using Newtonsoft.Json;
 using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reactive.Linq;
 
 namespace Espera.Android
 {
@@ -32,8 +35,8 @@ namespace Espera.Android
 
             this.SetContentView(Resource.Layout.Songs);
 
-            string artist = this.Intent.GetStringExtra("artist");
-            this.ViewModel = new SongsViewModel(artist);
+            IReadOnlyList<Song> songs = JsonConvert.DeserializeObject<IEnumerable<Song>>(this.Intent.GetStringExtra("songs")).ToList();
+            this.ViewModel = new SongsViewModel(songs);
 
             this.OneWayBind(this.ViewModel, x => x.Songs, x => x.SongsListView.Adapter, x => new SongsAdapter(this, x));
             this.SongsListView.Events().ItemClick.Select(x => x.Position).InvokeCommand(this.ViewModel.PlaySongsCommand);

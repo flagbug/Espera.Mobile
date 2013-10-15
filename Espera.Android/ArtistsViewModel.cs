@@ -1,11 +1,10 @@
-using Akavache;
+using Newtonsoft.Json;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
-using System.Threading.Tasks;
 
 namespace Espera.Android
 {
@@ -13,12 +12,14 @@ namespace Espera.Android
     {
         private readonly ObservableAsPropertyHelper<IReadOnlyList<string>> artists;
         private string selectedArtist;
+        private IReadOnlyList<Song> songs;
 
         public ArtistsViewModel()
         {
             this.LoadCommand = new ReactiveCommand();
-            this.artists = this.LoadCommand.RegisterAsync(x => LoadSongsAsync().ToObservable().Timeout(TimeSpan.FromSeconds(15)))
-               .Select(x => x.GroupBy(s => s.Artist).Select(g => g.Key).Distinct(StringComparer.InvariantCultureIgnoreCase).OrderBy(_ => _).ToList())
+            this.artists = this.LoadCommand.RegisterAsync(x => NetworkMessenger.Instance.GetSongsAsync().ToObservable().Timeout(TimeSpan.FromSeconds(15)))
+               .Do(x => this.songs = x)
+               .Select(GetArtists)
                .ToProperty(this, x => x.Artists, new List<string>());
 
             this.Messages = this.LoadCommand.ThrownExceptions.Select(_ => "Loading artists failed");
@@ -39,13 +40,22 @@ namespace Espera.Android
             set { this.RaiseAndSetIfChanged(ref this.selectedArtist, value); }
         }
 
-        public async Task<IReadOnlyList<Song>> LoadSongsAsync()
+        public string SerializeSongsForSelectedArtist()
         {
-            IReadOnlyList<Song> songs = await NetworkMessenger.Instance.GetSongsAsync();
+            IReadOnlyList<Song> filteredSongs = this.songs
+                .Where(x => x.Artist.Equals(this.SelectedArtist, StringComparison.InvariantCultureIgnoreCase))
+                .ToList();
 
-            await BlobCache.InMemory.InsertObject("songs", songs);
+            return JsonConvert.SerializeObject(filteredSongs, Formatting.None);
+        }
 
-            return songs;
+        private static IReadOnlyList<string> GetArtists(IEnumerable<Song> songs)
+        {
+            return songs.GroupBy(s => s.Artist)
+                .Select(g => g.Key)
+                .Distinct(StringComparer.InvariantCultureIgnoreCase)
+                .OrderBy(_ => _)
+                .ToList();
         }
     }
 }

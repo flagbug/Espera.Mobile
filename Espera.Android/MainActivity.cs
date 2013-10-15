@@ -1,5 +1,4 @@
-﻿using Akavache;
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
 using Android.Net.Wifi;
 using Android.OS;
@@ -84,7 +83,6 @@ namespace Espera.Android
             base.OnDestroy();
 
             NetworkMessenger.Instance.Dispose();
-            BlobCache.Shutdown().Wait();
         }
 
         protected override void OnPause()

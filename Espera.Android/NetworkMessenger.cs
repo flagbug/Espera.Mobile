@@ -1,3 +1,4 @@
+using System.Reactive.Concurrency;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ReactiveSockets;
@@ -272,7 +273,7 @@ namespace Espera.Android
             byte[] message = length.Concat(contentBytes).ToArray();
 
             await this.gate.WaitAsync();
-
+            
             try
             {
                 await client.SendAsync(message);

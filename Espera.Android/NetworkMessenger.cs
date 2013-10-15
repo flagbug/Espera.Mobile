@@ -1,4 +1,3 @@
-using System.Reactive.Concurrency;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ReactiveSockets;
@@ -32,7 +31,7 @@ namespace Espera.Android
 
         static NetworkMessenger()
         {
-            Port = 12345;
+            Port = 49587;
             instance = new Lazy<NetworkMessenger>(() => new NetworkMessenger());
         }
 
@@ -273,7 +272,7 @@ namespace Espera.Android
             byte[] message = length.Concat(contentBytes).ToArray();
 
             await this.gate.WaitAsync();
-            
+
             try
             {
                 await client.SendAsync(message);

@@ -9,7 +9,6 @@ using ReactiveUI.Mobile;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Linq;
 
 namespace Espera.Android
 {
@@ -39,7 +38,7 @@ namespace Espera.Android
             this.ViewModel = new SongsViewModel(songs);
 
             this.OneWayBind(this.ViewModel, x => x.Songs, x => x.SongsListView.Adapter, x => new SongsAdapter(this, x));
-            this.SongsListView.Events().ItemClick.Select(x => x.Position).InvokeCommand(this.ViewModel.PlaySongsCommand);
+            this.SongsListView.ItemClick += (sender, args) => this.ViewModel.PlaySongsCommand.Execute(args.Position);
 
             this.SongsListView.ItemLongClick += (sender, args) =>
             {

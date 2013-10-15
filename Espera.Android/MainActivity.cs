@@ -72,10 +72,10 @@ namespace Espera.Android
             this.ViewModel.ConnectionFailed.Subscribe(x => Toast.MakeText(this, "Connection failed", ToastLength.Long).Show());
 
             this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadArtistsButton.Enabled);
-            this.LoadArtistsButton.Events().Click.Subscribe(x => this.StartActivity(typeof(ArtistsActivity)));
+            this.LoadArtistsButton.Click += (sender, args) => this.StartActivity(typeof(ArtistsActivity));
 
             this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadCurrentPlaylistButton.Enabled);
-            this.LoadCurrentPlaylistButton.Events().Click.Subscribe(x => this.StartActivity(typeof(PlaylistActivity)));
+            this.LoadCurrentPlaylistButton.Click += (sender, args) => this.StartActivity(typeof(PlaylistActivity));
         }
 
         protected override void OnDestroy()

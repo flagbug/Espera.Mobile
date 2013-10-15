@@ -60,9 +60,6 @@
     <Reference Include="ReactiveUI.Android">
       <HintPath>..\ext\ReactiveUI.Android.dll</HintPath>
     </Reference>
-    <Reference Include="ReactiveUI.Events">
-      <HintPath>..\ext\ReactiveUI.Events.dll</HintPath>
-    </Reference>
     <Reference Include="ReactiveUI.Mobile">
       <HintPath>..\ext\ReactiveUI.Mobile.dll</HintPath>
     </Reference>

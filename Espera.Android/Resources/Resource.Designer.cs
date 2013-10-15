@@ -26,8 +26,6 @@ namespace Espera.Android
 		
 		public static void UpdateIdValues()
 		{
-			ReactiveUI.Events.Resource.String.ApplicationName = Espera.Android.Resource.String.ApplicationName;
-			ReactiveUI.Events.Resource.String.Hello = Espera.Android.Resource.String.Hello;
 		}
 		
 		public partial class Attribute

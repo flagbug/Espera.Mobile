@@ -8,18 +8,22 @@ using ReactiveUI.Android;
 using ReactiveUI.Mobile;
 using System;
 using System.Reactive.Linq;
+using Xamarin.ActionbarSherlockBinding;
+using Xamarin.ActionbarSherlockBinding.Views;
 
 namespace Espera.Android
 {
     [Activity(Label = "Espera", MainLauncher = true, Icon = "@drawable/icon",
         ConfigurationChanges = ConfigChanges.Orientation)]
-    public class MainActivity : ReactiveActivity<MainViewModel>
+    public class MainActivity : ReactiveActivity<MainViewModel>, ActionBarSherlock.IOnCreateOptionsMenuListener
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;
+        private readonly ActionBarSherlock sherlock;
 
         public MainActivity()
         {
             this.autoSuspendHelper = new AutoSuspendActivityHelper(this);
+            this.sherlock = ActionBarSherlock.Wrap(this);
         }
 
         private Button ConnectButton
@@ -35,6 +39,18 @@ namespace Espera.Android
         private Button LoadCurrentPlaylistButton
         {
             get { return this.FindViewById<Button>(Resource.Id.loadCurrentPlaylistButton); }
+        }
+
+        public override bool OnCreateOptionsMenu(global::Android.Views.IMenu menu)
+        {
+            return sherlock.DispatchCreateOptionsMenu(menu);
+        }
+
+        public bool OnCreateOptionsMenu(IMenu menu)
+        {
+            menu.Add("Settings");
+
+            return true;
         }
 
         protected override void OnCreate(Bundle bundle)

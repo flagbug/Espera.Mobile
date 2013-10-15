@@ -21,6 +21,9 @@
     <TargetFrameworkVersion>v2.3</TargetFrameworkVersion>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <AndroidStoreUncompressedFileExtensions />
+    <JavaMaximumHeapSize />
+    <JavaOptions />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,7 +52,12 @@
     <BundleAssemblies>False</BundleAssemblies>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ActionBarSherlock, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\XamarinActionBarSherlock.4.4.0.0\lib\MonoAndroid\ActionBarSherlock.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Android" />
+    <Reference Include="Mono.Android.Support.v4" />
     <Reference Include="mscorlib" />
     <Reference Include="ReactiveSockets">
       <HintPath>..\ext\ReactiveSockets.dll</HintPath>
@@ -102,6 +110,7 @@
     <Compile Include="SongsViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <AndroidResource Include="Resources\Layout\Songs.axml">

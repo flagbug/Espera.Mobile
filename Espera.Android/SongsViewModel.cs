@@ -1,7 +1,6 @@
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reactive.Linq;
 
 namespace Espera.Android
@@ -16,7 +15,7 @@ namespace Espera.Android
             this.Songs = songs;
 
             this.PlaySongsCommand = new ReactiveCommand();
-            var playSongsMessage = this.PlaySongsCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.PlaySongs(this.Songs.Skip((int)x).Select(y => y.Guid)))
+            var playSongsMessage = this.PlaySongsCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.PlaySongs(new[] { this.Songs[(int)x].Guid }))
                 .Select(x => x.Item1 == 200 ? "Playing songs" : "Error adding songs");
 
             this.AddToPlaylistCommand = new ReactiveCommand();
@@ -29,8 +28,6 @@ namespace Espera.Android
         }
 
         public ReactiveCommand AddToPlaylistCommand { get; private set; }
-
-        public ReactiveCommand LoadArtistsCommand { get; private set; }
 
         public IObservable<string> Message { get; private set; }
 

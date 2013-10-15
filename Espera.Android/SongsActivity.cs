@@ -34,7 +34,8 @@ namespace Espera.Android
 
             this.SetContentView(Resource.Layout.Songs);
 
-            IReadOnlyList<Song> songs = JsonConvert.DeserializeObject<IEnumerable<Song>>(this.Intent.GetStringExtra("songs")).ToList();
+            string songsJson = this.Intent.GetStringExtra("songs");
+            IReadOnlyList<Song> songs = JsonConvert.DeserializeObject<IEnumerable<Song>>(songsJson).ToList();
             this.ViewModel = new SongsViewModel(songs);
 
             this.OneWayBind(this.ViewModel, x => x.Songs, x => x.SongsListView.Adapter, x => new SongsAdapter(this, x));
@@ -62,8 +63,6 @@ namespace Espera.Android
             this.ViewModel.Message.Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show());
 
             NetworkMessenger.Instance.Disconnected.Subscribe(x => this.HandleDisconnect());
-
-            this.ViewModel.LoadArtistsCommand.Execute(null);
         }
 
         protected override void OnPause()

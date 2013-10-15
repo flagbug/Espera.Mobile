@@ -11,7 +11,6 @@ namespace Espera.Android
     public class ArtistsViewModel : ReactiveObject
     {
         private readonly ObservableAsPropertyHelper<IReadOnlyList<string>> artists;
-        private string selectedArtist;
         private IReadOnlyList<Song> songs;
 
         public ArtistsViewModel()
@@ -34,16 +33,10 @@ namespace Espera.Android
 
         public IObservable<string> Messages { get; private set; }
 
-        public string SelectedArtist
-        {
-            get { return this.selectedArtist; }
-            set { this.RaiseAndSetIfChanged(ref this.selectedArtist, value); }
-        }
-
-        public string SerializeSongsForSelectedArtist()
+        public string SerializeSongsForSelectedArtist(string artist)
         {
             IReadOnlyList<Song> filteredSongs = this.songs
-                .Where(x => x.Artist.Equals(this.SelectedArtist, StringComparison.InvariantCultureIgnoreCase))
+                .Where(x => x.Artist.Equals(artist, StringComparison.InvariantCultureIgnoreCase))
                 .ToList();
 
             return JsonConvert.SerializeObject(filteredSongs, Formatting.None);

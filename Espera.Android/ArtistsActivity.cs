@@ -37,7 +37,7 @@ namespace Espera.Android
             this.ViewModel = new ArtistsViewModel();
 
             this.OneWayBind(this.ViewModel, x => x.Artists, x => x.ArtistListView.Adapter, list => new ArtistsAdapter(this, list));
-            this.ArtistListView.ItemClick += (sender, args) => this.OpenArtist();
+            this.ArtistListView.ItemClick += (sender, args) => this.OpenArtist((string)this.ArtistListView.GetItemAtPosition(args.Position));
 
             this.progressDialog = new ProgressDialog(this);
             this.progressDialog.SetMessage("Loading artists");
@@ -85,10 +85,10 @@ namespace Espera.Android
             this.autoSuspendHelper.OnSaveInstanceState(outState);
         }
 
-        private void OpenArtist()
+        private void OpenArtist(string artist)
         {
             var intent = new Intent(this, typeof(SongsActivity));
-            intent.PutExtra("songs", this.ViewModel.SerializeSongsForSelectedArtist());
+            intent.PutExtra("songs", this.ViewModel.SerializeSongsForSelectedArtist(artist));
 
             this.StartActivity(intent);
         }

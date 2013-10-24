@@ -12,15 +12,20 @@ namespace Espera.Android
     {
         private readonly ObservableAsPropertyHelper<bool> isConnected;
 
-        public MainViewModel()
+        public MainViewModel(IObservable<int> port)
         {
             this.ConnectCommand = new ReactiveCommand();
-            this.isConnected = this.ConnectCommand
-                .RegisterAsync(x => ConnectAsync().ToObservable().Timeout(TimeSpan.FromSeconds(10)))
-                .Select(x => true)
+            this.ConnectCommand.RegisterAsync(x => 
+                ConnectAsync(port.FirstAsync().Wait()).ToObservable().Timeout(TimeSpan.FromSeconds(10)));
+            this.ConnectionFailed = this.ConnectCommand.ThrownExceptions.Select(x => Unit.Default);
+
+            this.isConnected = NetworkMessenger.Instance.IsConnected
                 .ToProperty(this, x => x.IsConnected);
 
-            this.ConnectionFailed = this.ConnectCommand.ThrownExceptions.Select(x => Unit.Default);
+            port.DistinctUntilChanged()
+                .CombineLatestValue(NetworkMessenger.Instance.IsConnected, Tuple.Create)
+                .Where(x => x.Item2)
+                .Subscribe(x => NetworkMessenger.Instance.Disconnect());
         }
 
         public ReactiveCommand ConnectCommand { get; private set; }
@@ -32,11 +37,11 @@ namespace Espera.Android
             get { return this.isConnected.Value; }
         }
 
-        private static async Task ConnectAsync()
+        private static async Task ConnectAsync(int port)
         {
-            IPAddress address = await NetworkMessenger.DiscoverServer();
+            IPAddress address = await NetworkMessenger.DiscoverServer(port);
 
-            await NetworkMessenger.Instance.ConnectAsync(address);
+            await NetworkMessenger.Instance.ConnectAsync(address, port);
         }
     }
 }

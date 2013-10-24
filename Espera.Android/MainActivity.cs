@@ -2,14 +2,17 @@
 using Android.Content.PM;
 using Android.Net.Wifi;
 using Android.OS;
+using Android.Preferences;
 using Android.Widget;
 using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
 using System;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using Xamarin.ActionbarSherlockBinding;
 using Xamarin.ActionbarSherlockBinding.Views;
+using IMenuItem = Android.Views.IMenuItem;
 
 namespace Espera.Android
 {
@@ -18,12 +21,15 @@ namespace Espera.Android
     public class MainActivity : ReactiveActivity<MainViewModel>, ActionBarSherlock.IOnCreateOptionsMenuListener
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;
+        private readonly BehaviorSubject<int> port;
         private readonly ActionBarSherlock sherlock;
 
         public MainActivity()
         {
             this.autoSuspendHelper = new AutoSuspendActivityHelper(this);
             this.sherlock = ActionBarSherlock.Wrap(this);
+
+            this.port = new BehaviorSubject<int>(0);
         }
 
         private Button ConnectButton
@@ -43,12 +49,20 @@ namespace Espera.Android
 
         public override bool OnCreateOptionsMenu(global::Android.Views.IMenu menu)
         {
-            return sherlock.DispatchCreateOptionsMenu(menu);
+            return this.sherlock.DispatchCreateOptionsMenu(menu);
         }
 
         public bool OnCreateOptionsMenu(IMenu menu)
         {
-            menu.Add("Settings");
+            menu.Add("Settings").SetIcon(Resource.Drawable.Settings)
+                .SetShowAsAction(MenuItem.ShowAsActionAlways | MenuItem.ShowAsActionWithText);
+
+            return true;
+        }
+
+        public override bool OnOptionsItemSelected(IMenuItem item)
+        {
+            this.StartActivity(typeof(SettingsActivity));
 
             return true;
         }
@@ -59,6 +73,8 @@ namespace Espera.Android
             this.autoSuspendHelper.OnCreate(bundle);
 
             this.SetContentView(Resource.Layout.Main);
+
+            PreferenceManager.SetDefaultValues(this, Resource.Layout.Settings, false);
 
             if (this.Intent.HasExtra("connectionLost"))
             {
@@ -77,7 +93,7 @@ namespace Espera.Android
                 builder.Show();
             }
 
-            this.ViewModel = new MainViewModel();
+            this.ViewModel = new MainViewModel(this.port);
             this.BindCommand(this.ViewModel, x => x.ConnectCommand, x => x.ConnectButton);
             this.ViewModel.ConnectCommand.IsExecuting
                 .Select(x => x ? "Connecting..." : "Connect")
@@ -109,6 +125,9 @@ namespace Espera.Android
         {
             base.OnResume();
             this.autoSuspendHelper.OnResume();
+
+            string portString = PreferenceManager.GetDefaultSharedPreferences(this).GetString("preference_port", null);
+            this.port.OnNext(Int32.Parse(portString));
         }
 
         protected override void OnSaveInstanceState(Bundle outState)

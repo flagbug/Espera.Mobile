@@ -22,16 +22,16 @@ namespace Espera.Android
     internal class NetworkMessenger : IDisposable
     {
         private static readonly Lazy<NetworkMessenger> instance;
-        private static readonly int Port;
+        private readonly Subject<ReactiveClient> client;
+        private readonly Subject<Unit> connectionEstablished;
         private readonly Subject<Unit> disconnected;
         private readonly SemaphoreSlim gate;
-        private ReactiveClient client;
-        private IObservable<JObject> messagePipeline;
-        private IDisposable messagePipelineConnection;
+        private readonly IObservable<JObject> messagePipeline;
+        private readonly IDisposable messagePipelineConnection;
+        private ReactiveClient currentClient;
 
         static NetworkMessenger()
         {
-            Port = 49587;
             instance = new Lazy<NetworkMessenger>(() => new NetworkMessenger());
         }
 
@@ -40,6 +40,44 @@ namespace Espera.Android
             this.gate = new SemaphoreSlim(1, 1);
             this.messagePipeline = new Subject<JObject>();
             this.disconnected = new Subject<Unit>();
+            this.connectionEstablished = new Subject<Unit>();
+
+            this.client = new Subject<ReactiveClient>();
+
+            this.Disconnected = this.client.Select(x => Observable.FromEventPattern(h => x.Disconnected += h, h => x.Disconnected -= h))
+                .Switch().Select(_ => Unit.Default)
+                .Merge(this.disconnected);
+
+            var isConnected = this.Disconnected.Select(_ => false)
+                .Merge(this.connectionEstablished.Select(_ => true))
+                .DistinctUntilChanged()
+                .Publish(false);
+            isConnected.Connect();
+            this.IsConnected = isConnected;
+
+            var conn = this.client.Select(x => x.Receiver.Buffer(4)
+                    .Select(length => BitConverter.ToInt32(length.ToArray(), 0))
+                    .Select(length => x.Receiver.Take(length).ToEnumerable().ToArray())
+                    .SelectMany(body => DecompressDataAsync(body).ToObservable())
+                    .Select(body => Encoding.UTF8.GetString(body))
+                    .Select(JObject.Parse))
+                .Switch()
+                .SubscribeOn(RxApp.TaskpoolScheduler)
+                .Publish();
+
+            this.messagePipeline = conn;
+            this.messagePipelineConnection = conn.Connect();
+
+            var pushMessages = this.messagePipeline.Where(x => x["type"].ToString() == "push");
+
+            this.PlaylistChanged = pushMessages.Where(x => x["action"].ToString() == "update-current-playlist")
+                .Select(x => Playlist.Deserialize(x["content"]));
+
+            this.PlaylistIndexChanged = pushMessages.Where(x => x["action"].ToString() == "update-current-index")
+                .Select(x => x["content"]["index"].ToObject<int?>());
+
+            this.PlaybackStateChanged = pushMessages.Where(x => x["action"].ToString() == "update-playback-state")
+                .Select(x => x["content"]["state"].ToObject<PlaybackState>());
         }
 
         public static NetworkMessenger Instance
@@ -47,12 +85,9 @@ namespace Espera.Android
             get { return instance.Value; }
         }
 
-        public bool Connected
-        {
-            get { return this.client.IsConnected; }
-        }
-
         public IObservable<Unit> Disconnected { get; private set; }
+
+        public IObservable<bool> IsConnected { get; private set; }
 
         public IObservable<PlaybackState> PlaybackStateChanged { get; private set; }
 
@@ -60,9 +95,9 @@ namespace Espera.Android
 
         public IObservable<int?> PlaylistIndexChanged { get; private set; }
 
-        public static async Task<IPAddress> DiscoverServer()
+        public static async Task<IPAddress> DiscoverServer(int port)
         {
-            var client = new UdpClient(Port);
+            var client = new UdpClient(port);
 
             UdpReceiveResult result;
 
@@ -87,42 +122,23 @@ namespace Espera.Android
             return CreateResponseInfo(response);
         }
 
-        public async Task ConnectAsync(IPAddress address)
+        public async Task ConnectAsync(IPAddress address, int port)
         {
             if (address == null)
                 throw new ArgumentNullException("address");
 
-            this.client = new ReactiveClient(address.ToString(), Port);
+            if (this.currentClient != null)
+            {
+                this.currentClient.Dispose();
+            }
 
-            this.Disconnected = Observable.FromEventPattern(h => this.client.Disconnected += h, h => this.client.Disconnected -= h)
-                .Select(_ => Unit.Default)
-                .Merge(this.disconnected)
-                .FirstAsync();
+            var c = new ReactiveClient(address.ToString(), port);
+            this.currentClient = c;
+            this.client.OnNext(c);
 
-            var conn = this.client.Receiver.Buffer(4)
-                    .Select(length => BitConverter.ToInt32(length.ToArray(), 0))
-                    .Select(length => this.client.Receiver.Take(length).ToEnumerable().ToArray())
-                    .SelectMany(body => DecompressDataAsync(body).ToObservable())
-                    .Select(body => Encoding.UTF8.GetString(body))
-                    .Select(JObject.Parse)
-                    .SubscribeOn(RxApp.TaskpoolScheduler)
-                    .Publish();
+            await c.ConnectAsync();
 
-            this.messagePipeline = conn;
-            this.messagePipelineConnection = conn.Connect();
-
-            var pushMessages = this.messagePipeline.Where(x => x["type"].ToString() == "push");
-
-            this.PlaylistChanged = pushMessages.Where(x => x["action"].ToString() == "update-current-playlist")
-                .Select(x => Playlist.Deserialize(x["content"]));
-
-            this.PlaylistIndexChanged = pushMessages.Where(x => x["action"].ToString() == "update-current-index")
-                .Select(x => x["content"]["index"].ToObject<int?>());
-
-            this.PlaybackStateChanged = pushMessages.Where(x => x["action"].ToString() == "update-playback-state")
-                .Select(x => x["content"]["state"].ToObject<PlaybackState>());
-
-            await this.client.ConnectAsync();
+            this.connectionEstablished.OnNext(Unit.Default);
         }
 
         public async Task<Tuple<int, string>> ContinueSong()
@@ -132,19 +148,16 @@ namespace Espera.Android
             return CreateResponseInfo(response);
         }
 
+        public void Disconnect()
+        {
+            this.currentClient.Disconnect();
+        }
+
         public void Dispose()
         {
-            if (this.client != null)
+            if (this.currentClient != null)
             {
-                try
-                {
-                    this.client.Dispose();
-                }
-
-                catch (ObjectDisposedException)
-                {
-                    // Reactivesockets bug
-                }
+                this.currentClient.Dispose();
             }
 
             if (this.messagePipelineConnection != null)
@@ -275,7 +288,7 @@ namespace Espera.Android
 
             try
             {
-                await client.SendAsync(message);
+                await this.currentClient.SendAsync(message);
             }
 
             finally

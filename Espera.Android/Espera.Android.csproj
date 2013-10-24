@@ -94,6 +94,8 @@
     <Compile Include="ArtistsViewModel.cs" />
     <Compile Include="IHandleDisconnect.cs" />
     <Compile Include="PlaybackState.cs" />
+    <Compile Include="ReactiveHelpers.cs" />
+    <Compile Include="SettingsActivity.cs" />
     <Compile Include="SongSource.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="MainViewModel.cs" />
@@ -125,6 +127,9 @@
     <AndroidResource Include="Resources\Layout\PlaylistListItem.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
+    <AndroidResource Include="Resources\Layout\Settings.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\Layout\Main.axml" />
@@ -142,6 +147,7 @@
     <AndroidResource Include="Resources\Drawable\Play.png" />
     <AndroidResource Include="Resources\Drawable\Previous.png" />
     <AndroidResource Include="Resources\Drawable\Pause.png" />
+    <AndroidResource Include="Resources\Drawable\Settings.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

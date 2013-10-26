@@ -10,6 +10,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{E011B8
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Espera.Android.Tests", "Espera.Android.Tests\Espera.Android.Tests.csproj", "{A4836C66-A13A-4BA7-824D-B81D24991B2B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CFD4C74D-2653-458C-ACC0-A138B1AC0611} = {CFD4C74D-2653-458C-ACC0-A138B1AC0611}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,6 +27,10 @@ Global
 		{CFD4C74D-2653-458C-ACC0-A138B1AC0611}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFD4C74D-2653-458C-ACC0-A138B1AC0611}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CFD4C74D-2653-458C-ACC0-A138B1AC0611}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{A4836C66-A13A-4BA7-824D-B81D24991B2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4836C66-A13A-4BA7-824D-B81D24991B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4836C66-A13A-4BA7-824D-B81D24991B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4836C66-A13A-4BA7-824D-B81D24991B2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

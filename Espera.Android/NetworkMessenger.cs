@@ -19,9 +19,10 @@ using System.Threading.Tasks;
 
 namespace Espera.Android
 {
-    internal class NetworkMessenger : IDisposable
+    public class NetworkMessenger : IDisposable, INetworkMessenger
     {
-        private static readonly Lazy<NetworkMessenger> instance;
+        private static IPAddress fakeIpAddress; // Used for unit tests
+        private static Lazy<INetworkMessenger> instance;
         private readonly Subject<ReactiveClient> client;
         private readonly Subject<Unit> connectionEstablished;
         private readonly Subject<Unit> disconnected;
@@ -32,7 +33,7 @@ namespace Espera.Android
 
         static NetworkMessenger()
         {
-            instance = new Lazy<NetworkMessenger>(() => new NetworkMessenger());
+            instance = new Lazy<INetworkMessenger>(() => new NetworkMessenger());
         }
 
         private NetworkMessenger()
@@ -80,7 +81,7 @@ namespace Espera.Android
                 .Select(x => x["content"]["state"].ToObject<PlaybackState>());
         }
 
-        public static NetworkMessenger Instance
+        public static INetworkMessenger Instance
         {
             get { return instance.Value; }
         }
@@ -97,6 +98,9 @@ namespace Espera.Android
 
         public static async Task<IPAddress> DiscoverServer(int port)
         {
+            if (fakeIpAddress != null)
+                return fakeIpAddress;
+
             var client = new UdpClient(port);
 
             UdpReceiveResult result;
@@ -108,6 +112,20 @@ namespace Espera.Android
             while (Encoding.Unicode.GetString(result.Buffer) != "espera-server-discovery");
 
             return result.RemoteEndPoint.Address;
+        }
+
+        /// <summary>
+        /// Override the messenger instance for unit testing.
+        /// </summary>
+        /// <param name="messenger">The messenger mock.</param>
+        /// <param name="ipAdress">An optional IpAdress to return for the <see cref="DiscoverServer"/> function.</param>
+        public static void Override(INetworkMessenger messenger, IPAddress ipAdress = null)
+        {
+            if (messenger == null)
+                throw new ArgumentNullException("messenger");
+
+            instance = new Lazy<INetworkMessenger>(() => messenger);
+            fakeIpAddress = ipAdress;
         }
 
         public async Task<Tuple<int, string>> AddSongToPlaylist(Guid songGuid)

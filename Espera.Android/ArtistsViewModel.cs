@@ -16,7 +16,8 @@ namespace Espera.Android
         public ArtistsViewModel()
         {
             this.LoadCommand = new ReactiveCommand();
-            this.artists = this.LoadCommand.RegisterAsync(x => NetworkMessenger.Instance.GetSongsAsync().ToObservable().Timeout(TimeSpan.FromSeconds(15)))
+            this.artists = this.LoadCommand.RegisterAsync(x => NetworkMessenger.Instance.GetSongsAsync().ToObservable()
+                    .Timeout(TimeSpan.FromSeconds(15), RxApp.TaskpoolScheduler))
                .Do(x => this.songs = x)
                .Select(GetArtists)
                .ToProperty(this, x => x.Artists, new List<string>());

@@ -15,8 +15,8 @@ namespace Espera.Android
         public MainViewModel(IObservable<int> port)
         {
             this.ConnectCommand = new ReactiveCommand();
-            this.ConnectCommand.RegisterAsync(x => 
-                ConnectAsync(port.FirstAsync().Wait()).ToObservable().Timeout(TimeSpan.FromSeconds(10)));
+            this.ConnectCommand.RegisterAsync(x =>
+                ConnectAsync(port.FirstAsync().Wait()).ToObservable().Timeout(TimeSpan.FromSeconds(10), RxApp.TaskpoolScheduler));
             this.ConnectionFailed = this.ConnectCommand.ThrownExceptions.Select(x => Unit.Default);
 
             this.isConnected = NetworkMessenger.Instance.IsConnected

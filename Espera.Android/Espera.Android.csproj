@@ -93,6 +93,7 @@
     <Compile Include="ArtistsAdapter.cs" />
     <Compile Include="ArtistsViewModel.cs" />
     <Compile Include="IHandleDisconnect.cs" />
+    <Compile Include="INetworkMessenger.cs" />
     <Compile Include="PlaybackState.cs" />
     <Compile Include="ReactiveHelpers.cs" />
     <Compile Include="SettingsActivity.cs" />

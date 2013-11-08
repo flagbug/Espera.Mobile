@@ -28,6 +28,25 @@ namespace Espera.Android
 		{
 		}
 		
+		public partial class Array
+		{
+			
+			// aapt resource value: 0x7f0b0000
+			public const int preference_defaultLibraryAction_entries = 2131427328;
+			
+			// aapt resource value: 0x7f0b0001
+			public const int preference_defaultLibraryAction_values = 2131427329;
+			
+			static Array()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Array()
+			{
+			}
+		}
+		
 		public partial class Attribute
 		{
 			
@@ -1155,11 +1174,8 @@ namespace Espera.Android
 		public partial class String
 		{
 			
-			// aapt resource value: 0x7f09000e
-			public const int ApplicationName = 2131296270;
-			
 			// aapt resource value: 0x7f09000d
-			public const int Hello = 2131296269;
+			public const int ApplicationName = 2131296269;
 			
 			// aapt resource value: 0x7f090000
 			public const int abs__action_bar_home_description = 2131296256;
@@ -1199,6 +1215,9 @@ namespace Espera.Android
 			
 			// aapt resource value: 0x7f090007
 			public const int abs__shareactionprovider_share_with_application = 2131296263;
+			
+			// aapt resource value: 0x7f09000e
+			public const int preference_defaultLibraryAction_default = 2131296270;
 			
 			static String()
 			{

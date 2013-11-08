@@ -1,5 +1,4 @@
 using Android.App;
-using Android.Content;
 using Android.OS;
 using Android.Preferences;
 using Android.Text;
@@ -11,11 +10,6 @@ namespace Espera.Android
     [Activity(Label = "Settings")]
     public class SettingsActivity : PreferenceActivity
     {
-        public void OnSharedPreferenceChanged(ISharedPreferences sharedPreferences, string key)
-        {
-            throw new NotImplementedException();
-        }
-
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);

@@ -8,4 +8,14 @@
             android:title="Port"
             android:defaultValue="49587" />
     </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Library">
+        <ListPreference
+            android:key="preference_libraryDefaultAction"
+            android:title="Default action"
+            android:dialogTitle="Default action"
+            android:entries="@array/preference_defaultLibraryAction_entries"
+            android:entryValues="@array/preference_defaultLibraryAction_values"
+            android:defaultValue="@string/preference_defaultLibraryAction_default" />
+    </PreferenceCategory>
 </PreferenceScreen>

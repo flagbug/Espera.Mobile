@@ -1,6 +1,8 @@
 using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.OS;
+using Android.Preferences;
 using Android.Widget;
 using Newtonsoft.Json;
 using ReactiveUI;
@@ -39,7 +41,22 @@ namespace Espera.Android
             this.ViewModel = new SongsViewModel(songs);
 
             this.OneWayBind(this.ViewModel, x => x.Songs, x => x.SongsListView.Adapter, x => new SongsAdapter(this, x));
-            this.SongsListView.ItemClick += (sender, args) => this.ViewModel.PlaySongsCommand.Execute(args.Position);
+
+            ISharedPreferences preferences = PreferenceManager.GetDefaultSharedPreferences(this);
+            this.SongsListView.ItemClick += (sender, args) =>
+            {
+                string action = preferences.GetString("preference_libraryDefaultAction", null);
+
+                if (action == Resources.GetStringArray(Resource.Array.preference_defaultLibraryAction_values)[0])
+                {
+                    this.ViewModel.PlaySongsCommand.Execute(args.Position);
+                }
+
+                else
+                {
+                    this.ViewModel.AddToPlaylistCommand.Execute(args.Position);
+                }
+            };
 
             this.SongsListView.ItemLongClick += (sender, args) =>
             {

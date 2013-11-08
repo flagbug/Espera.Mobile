@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="Hello">Hello World, Click Me!</string>
-    <string name="ApplicationName">Espera.Android</string>
+  <string name="ApplicationName">Espera.Android</string>
+  <string-array name="preference_defaultLibraryAction_entries">
+    <item>Play all</item>
+    <item>Add to playlist</item>
+  </string-array>
+  <string-array name="preference_defaultLibraryAction_values">
+    <item>PlayAll</item>
+    <item>AddToPlaylist</item>
+  </string-array>
+  <string name="preference_defaultLibraryAction_default">PlayAll</string>
 </resources>

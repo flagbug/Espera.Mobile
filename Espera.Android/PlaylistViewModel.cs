@@ -69,6 +69,12 @@ namespace Espera.Android
                     await NetworkMessenger.Instance.ContinueSong();
                 }
             });
+
+            this.RemoveSongCommand = new ReactiveCommand();
+            this.RemoveSongCommand.RegisterAsyncTask(x =>
+                NetworkMessenger.Instance.RemovePlaylistSong(this.Playlist.Songs[(int)x].Guid))
+                .Where(x => x.Item1 == 200)
+                .InvokeCommand(this.LoadPlaylistCommand); // The server doesn't send an update...no idea why
         }
 
         public bool IsPlaying
@@ -92,5 +98,7 @@ namespace Espera.Android
         public ReactiveCommand PlayPlaylistSongCommand { get; private set; }
 
         public ReactiveCommand PlayPreviousSongCommand { get; private set; }
+
+        public ReactiveCommand RemoveSongCommand { get; private set; }
     }
 }

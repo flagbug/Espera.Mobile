@@ -53,6 +53,24 @@ namespace Espera.Android
             this.OneWayBind(this.ViewModel, x => x.Playlist, x => x.PlaylistListView.Adapter,
                 playlist => playlist == null ? null : new PlaylistAdapter(this, playlist));
             this.PlaylistListView.ItemClick += (sender, args) => this.ViewModel.PlayPlaylistSongCommand.Execute(args.Position);
+            this.PlaylistListView.ItemLongClick += (sender, args) =>
+            {
+                var builder = new AlertDialog.Builder(this);
+                builder.SetItems(new[] { "Play", "Remove" }, (o, eventArgs) =>
+                {
+                    switch (eventArgs.Which)
+                    {
+                        case 0:
+                            this.ViewModel.PlayPlaylistSongCommand.Execute(args.Position);
+                            break;
+
+                        case 1:
+                            this.ViewModel.RemoveSongCommand.Execute(args.Position);
+                            break;
+                    }
+                });
+                builder.Create().Show();
+            };
 
             this.BindCommand(this.ViewModel, x => x.PlayNextSongCommand, x => x.PlayNextSongButton);
             this.BindCommand(this.ViewModel, x => x.PlayPreviousSongCommand, x => x.PlayPreviousSongButton);

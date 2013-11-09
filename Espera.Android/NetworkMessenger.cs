@@ -261,6 +261,18 @@ namespace Espera.Android
             return CreateResponseInfo(response);
         }
 
+        public async Task<Tuple<int, string>> RemovePlaylistSong(Guid guid)
+        {
+            var parameters = new JObject
+            {
+                { "entryGuid", guid.ToString() }
+            };
+
+            JObject response = await this.SendRequest("post-remove-playlist-song", parameters);
+
+            return CreateResponseInfo(response);
+        }
+
         private static async Task<byte[]> CompressDataAsync(byte[] data)
         {
             using (var targetStream = new MemoryStream())

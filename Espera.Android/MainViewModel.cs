@@ -23,8 +23,8 @@ namespace Espera.Android
                 .ToProperty(this, x => x.IsConnected);
 
             port.DistinctUntilChanged()
-                .CombineLatestValue(NetworkMessenger.Instance.IsConnected, Tuple.Create)
-                .Where(x => x.Item2)
+                .CombineLatestValue(NetworkMessenger.Instance.IsConnected, (p, connected) => connected)
+                .Where(x => x)
                 .Subscribe(x => NetworkMessenger.Instance.Disconnect());
         }
 

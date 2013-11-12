@@ -88,7 +88,7 @@ namespace Espera.Android.Tests
             index.OnNext(null);
 
             messenger.Verify(x => x.PlayNextSong(), Times.Once);
-            Assert.Equal(new[] { true, false, true, false }, canExecute);
+            Assert.Equal(new[] { true, false, true, false, true, false }, canExecute);
         }
 
         [Fact]
@@ -174,7 +174,7 @@ namespace Espera.Android.Tests
             index.OnNext(null);
 
             messenger.Verify(x => x.PlayPreviousSong(), Times.Once);
-            Assert.Equal(new[] { true, false, true, false }, canExecute);
+            Assert.Equal(new[] { true, false, true, false, true, false }, canExecute);
         }
 
         private static Mock<INetworkMessenger> CreateDefaultPlaylistMessenger()

@@ -34,7 +34,7 @@ namespace Espera.Android
             this.PlayNextSongCommand = this.playlist.Where(x => x != null)
                 .Select(x => x.Changed.Select(y => x).StartWith(x))
                 .Switch()
-                .Select(x => x.CurrentIndex != null && x.CurrentIndex < x.Songs.Count)
+                .Select(x => x.CurrentIndex != null && x.CurrentIndex < x.Songs.Count - 1)
                 .ToCommand();
             this.PlayNextSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.PlayNextSong());
 

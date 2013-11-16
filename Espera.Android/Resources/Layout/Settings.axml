@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory
-        android:title="Network">
-        <EditTextPreference
-            android:key="preference_port"
-            android:summary="The port of the server"
-            android:title="Port"
-            android:defaultValue="49587" />
-    </PreferenceCategory>
-    <PreferenceCategory
-        android:title="Library">
-        <ListPreference
-            android:key="preference_libraryDefaultAction"
-            android:title="Default action"
-            android:dialogTitle="Default action"
-            android:entries="@array/preference_defaultLibraryAction_entries"
-            android:entryValues="@array/preference_defaultLibraryAction_values"
-            android:defaultValue="@string/preference_defaultLibraryAction_default" />
-    </PreferenceCategory>
+  <PreferenceCategory
+      android:title="Network">
+    <EditTextPreference
+        android:key="preference_port"
+        android:summary="The port of the server"
+        android:title="Port"
+        android:defaultValue="49587" />
+  </PreferenceCategory>
+  <PreferenceCategory
+      android:title="Library">
+    <ListPreference
+        android:key="preference_libraryDefaultAction"
+        android:summary="The action when tapping on a song"
+        android:title="Default action"
+        android:dialogTitle="Default action"
+        android:entries="@array/preference_defaultLibraryAction_entries"
+        android:entryValues="@array/preference_defaultLibraryAction_values"
+        android:defaultValue="@string/preference_defaultLibraryAction_default" />
+  </PreferenceCategory>
 </PreferenceScreen>

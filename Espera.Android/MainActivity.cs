@@ -3,7 +3,6 @@ using Android.Content.PM;
 using Android.Net.Wifi;
 using Android.OS;
 using Android.Preferences;
-using Android.Text;
 using Android.Widget;
 using ReactiveUI;
 using ReactiveUI.Android;
@@ -31,11 +30,6 @@ namespace Espera.Android
             this.sherlock = ActionBarSherlock.Wrap(this);
 
             this.port = new BehaviorSubject<int>(0);
-        }
-
-        private Button ConnectAsAdminButton
-        {
-            get { return this.FindViewById<Button>(Resource.Id.connectAsAdminButton); }
         }
 
         private Button ConnectButton
@@ -102,19 +96,10 @@ namespace Espera.Android
             this.ViewModel = new MainViewModel(this.port);
             this.BindCommand(this.ViewModel, x => x.ConnectCommand, x => x.ConnectButton);
             this.ViewModel.ConnectCommand.IsExecuting
-                .Select(x => x ? "Connecting..." : "Connect As Guest")
+                .Select(x => x ? "Connecting..." : "Connect")
                 .BindTo(this.ConnectButton, x => x.Text);
 
-            this.ConnectAsAdminButton.Click += (sender, args) => this.ShowAdminPasswordPrompt();
-            this.ViewModel.ConnectAsAdminCommand.IsExecuting
-                .Select(x => x ? "Connecting..." : "Connect As Admin")
-                .BindTo(this.ConnectAsAdminButton, x => x.Text);
-            this.ViewModel.ConnectAsAdminCommand.IsExecuting
-                .Select(x => !x)
-                .BindTo(this.ConnectAsAdminButton, x => x.Enabled);
-
             this.ViewModel.ConnectionFailed.Subscribe(x => Toast.MakeText(this, "Connection failed", ToastLength.Long).Show());
-            this.ViewModel.WrongPassword.Subscribe(x => Toast.MakeText(this, "Wrong password", ToastLength.Long).Show());
 
             this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadArtistsButton.Enabled);
             this.LoadArtistsButton.Click += (sender, args) => this.StartActivity(typeof(ArtistsActivity));
@@ -143,36 +128,18 @@ namespace Espera.Android
 
             string portString = PreferenceManager.GetDefaultSharedPreferences(this).GetString("preference_port", null);
             this.port.OnNext(Int32.Parse(portString));
+
+            bool enableAdministratorMode = PreferenceManager.GetDefaultSharedPreferences(this).GetBoolean("preference_enable_administrator_mode", false);
+            this.ViewModel.EnableAdministratorMode = enableAdministratorMode;
+
+            string password = PreferenceManager.GetDefaultSharedPreferences(this).GetString("preference_administrator_password", null);
+            this.ViewModel.Password = password;
         }
 
         protected override void OnSaveInstanceState(Bundle outState)
         {
             base.OnSaveInstanceState(outState);
             this.autoSuspendHelper.OnSaveInstanceState(outState);
-        }
-
-        private void ShowAdminPasswordPrompt()
-        {
-            var builder = new AlertDialog.Builder(this);
-
-            builder.SetTitle("Password");
-
-            var input = new EditText(this)
-            {
-                InputType = InputTypes.MaskClass
-            };
-            builder.SetView(input);
-
-            builder.SetPositiveButton("Ok", (o, eventArgs) =>
-            {
-                this.ViewModel.Password = input.Text;
-
-                this.ViewModel.ConnectAsAdminCommand.Execute(null);
-            });
-
-            builder.SetNegativeButton("Cancel", (o, eventArgs) => { });
-
-            builder.Show();
         }
     }
 }

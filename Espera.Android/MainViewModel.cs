@@ -18,14 +18,7 @@ namespace Espera.Android
             this.ConnectCommand.RegisterAsync(x =>
                 ConnectAsync(port.FirstAsync().Wait()).ToObservable().Timeout(TimeSpan.FromSeconds(10), RxApp.TaskpoolScheduler));
 
-            this.ConnectAsAdminCommand = new ReactiveCommand();
-            this.WrongPassword = this.ConnectAsAdminCommand.RegisterAsync(x =>
-                ConnectAsAdminAsync(port.FirstAsync().Wait(), this.Password).ToObservable().Timeout(TimeSpan.FromSeconds(10), RxApp.TaskpoolScheduler))
-                .Where(x => x.Item1 != 200)
-                .Select(_ => Unit.Default);
-
             this.ConnectionFailed = this.ConnectCommand.ThrownExceptions
-                .Merge(this.ConnectAsAdminCommand.ThrownExceptions)
                 .Select(x => Unit.Default);
 
             this.isConnected = NetworkMessenger.Instance.IsConnected
@@ -37,11 +30,11 @@ namespace Espera.Android
                 .Subscribe(x => NetworkMessenger.Instance.Disconnect());
         }
 
-        public ReactiveCommand ConnectAsAdminCommand { get; private set; }
-
         public ReactiveCommand ConnectCommand { get; private set; }
 
         public IObservable<Unit> ConnectionFailed { get; private set; }
+
+        public bool EnableAdministratorMode { get; set; }
 
         public bool IsConnected
         {
@@ -50,20 +43,21 @@ namespace Espera.Android
 
         public string Password { get; set; }
 
-        public IObservable<Unit> WrongPassword { get; private set; }
-
-        private static async Task<Tuple<int, string>> ConnectAsAdminAsync(int port, string password)
-        {
-            await ConnectAsync(port);
-
-            return await NetworkMessenger.Instance.Authorize(password);
-        }
-
-        private static async Task ConnectAsync(int port)
+        private async Task ConnectAsync(int port)
         {
             IPAddress address = await NetworkMessenger.DiscoverServer(port);
 
             await NetworkMessenger.Instance.ConnectAsync(address, port);
+
+            if (this.EnableAdministratorMode)
+            {
+                Tuple<int, string> response = await NetworkMessenger.Instance.Authorize(this.Password);
+
+                if (response.Item1 != 200)
+                {
+                    throw new Exception("Wrong password");
+                }
+            }
         }
     }
 }

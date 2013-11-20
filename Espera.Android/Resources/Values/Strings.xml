@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="ApplicationName">Espera.Android</string>
-  <string-array name="preference_defaultLibraryAction_entries">
+  <string name="preference_port">preference_port</string>
+  <string name="preference_port_title">Port</string>
+  <string name="preference_port_summary">The port of the server</string>
+  <string name="preference_enable_administrator_mode">preference_enable_administrator_mode</string>
+  <string name="preference_enable_administrator_mode_title">Enable administrator mode</string>
+  <string name="preference_enable_administrator_mode_summary">Gives you more rights than the standard guest mode. Requires the password to be set.</string>
+  <string name="preference_administrator_password">preference_administrator_password</string>
+  <string name="preference_administrator_password_title">Password</string>
+  <string name="preference_default_library_action">preference_default_library_action</string>
+  <string name="preference_administrator_default_library_action_title">Default library action</string>
+  <string name="preference_administrator_default_library_action_summary">The default action when tapping on a song in the library</string>
+  <string-array name="preference_administrator_default_library_action_entries">
     <item>Play all</item>
     <item>Add to playlist</item>
   </string-array>
-  <string-array name="preference_defaultLibraryAction_values">
+  <string-array name="preference_administrator_default_library_action_values">
     <item>PlayAll</item>
     <item>AddToPlaylist</item>
   </string-array>
-  <string name="preference_defaultLibraryAction_default">PlayAll</string>
+  <string name="preference_administrator_default_library_action_default">PlayAll</string>
 </resources>

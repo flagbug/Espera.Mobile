@@ -23,6 +23,7 @@ namespace Espera.Android
     {
         private static IPAddress fakeIpAddress; // Used for unit tests
         private static Lazy<INetworkMessenger> instance;
+        private readonly Subject<AccessPermission> accessPermission;
         private readonly Subject<ReactiveClient> client;
         private readonly Subject<Unit> connectionEstablished;
         private readonly Subject<Unit> disconnected;
@@ -42,6 +43,7 @@ namespace Espera.Android
             this.messagePipeline = new Subject<JObject>();
             this.disconnected = new Subject<Unit>();
             this.connectionEstablished = new Subject<Unit>();
+            this.accessPermission = new Subject<AccessPermission>();
 
             this.client = new Subject<ReactiveClient>();
 
@@ -80,8 +82,13 @@ namespace Espera.Android
             this.PlaybackStateChanged = pushMessages.Where(x => x["action"].ToString() == "update-playback-state")
                 .Select(x => x["content"]["state"].ToObject<PlaybackState>());
 
-            this.AccessPermissionChanged = pushMessages.Where(x => x["action"].ToString() == "update-access-permission")
-                .Select(x => x["content"]["accessPermission"].ToObject<AccessPermission>());
+            var accessPermissionConn = pushMessages.Where(x => x["action"].ToString() == "update-access-permission")
+                .Select(x => x["content"]["accessPermission"].ToObject<AccessPermission>())
+                .Merge(this.accessPermission)
+                .Publish(Android.AccessPermission.Guest);
+            accessPermissionConn.Connect();
+
+            this.AccessPermission = accessPermissionConn;
         }
 
         public static INetworkMessenger Instance
@@ -89,7 +96,7 @@ namespace Espera.Android
             get { return instance.Value; }
         }
 
-        public IObservable<AccessPermission> AccessPermissionChanged { get; private set; }
+        public IObservable<AccessPermission> AccessPermission { get; private set; }
 
         public IObservable<Unit> Disconnected { get; private set; }
 
@@ -154,7 +161,14 @@ namespace Espera.Android
 
             JObject response = await this.SendRequest("post-administrator-password", parameters);
 
-            return CreateResponseInfo(response);
+            var info = CreateResponseInfo(response);
+
+            if (info.Item1 == 200)
+            {
+                this.accessPermission.OnNext(Android.AccessPermission.Admin);
+            }
+
+            return info;
         }
 
         public async Task ConnectAsync(IPAddress address, int port)

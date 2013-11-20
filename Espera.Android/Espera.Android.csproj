@@ -89,6 +89,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccessPermission.cs" />
     <Compile Include="ArtistsActivity.cs" />
     <Compile Include="ArtistsAdapter.cs" />
     <Compile Include="ArtistsViewModel.cs" />

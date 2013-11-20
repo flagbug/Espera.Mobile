@@ -8,7 +8,7 @@ namespace Espera.Android
 {
     public interface INetworkMessenger
     {
-        IObservable<AccessPermission> AccessPermissionChanged { get; }
+        IObservable<AccessPermission> AccessPermission { get; }
 
         IObservable<Unit> Disconnected { get; }
 

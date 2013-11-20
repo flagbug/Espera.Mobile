@@ -45,9 +45,9 @@ namespace Espera.Android
             ISharedPreferences preferences = PreferenceManager.GetDefaultSharedPreferences(this);
             this.SongsListView.ItemClick += (sender, args) =>
             {
-                string action = preferences.GetString("preference_libraryDefaultAction", null);
+                string action = preferences.GetString("preference_default_library_action", null);
 
-                if (action == Resources.GetStringArray(Resource.Array.preference_defaultLibraryAction_values)[0])
+                if (action == Resources.GetStringArray(Resource.Array.preference_administrator_default_library_action_values)[0])
                 {
                     this.ViewModel.PlaySongsCommand.Execute(args.Position);
                 }

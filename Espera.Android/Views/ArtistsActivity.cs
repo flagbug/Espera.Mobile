@@ -1,15 +1,17 @@
+using System;
+using System.Reactive.Linq;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Widget;
+using Espera.Android.Network;
+using Espera.Android.ViewModels;
 using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
-using System;
-using System.Reactive.Linq;
 
-namespace Espera.Android
+namespace Espera.Android.Views
 {
     [Activity(Label = "Artists", ConfigurationChanges = ConfigChanges.Orientation)]
     public class ArtistsActivity : ReactiveActivity<ArtistsViewModel>, IHandleDisconnect

@@ -1,20 +1,22 @@
-﻿using Android.App;
+﻿using System;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using Android.App;
 using Android.Content.PM;
 using Android.Net.Wifi;
 using Android.OS;
 using Android.Preferences;
 using Android.Widget;
+using Espera.Android.Network;
+using Espera.Android.ViewModels;
 using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
-using System;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using Xamarin.ActionbarSherlockBinding;
 using Xamarin.ActionbarSherlockBinding.Views;
 using IMenuItem = Android.Views.IMenuItem;
 
-namespace Espera.Android
+namespace Espera.Android.Views
 {
     [Activity(Label = "Espera", MainLauncher = true, Icon = "@drawable/icon",
         ConfigurationChanges = ConfigChanges.Orientation)]

@@ -1,7 +1,3 @@
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using ReactiveSockets;
-using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,8 +12,12 @@ using System.Reactive.Threading.Tasks;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using ReactiveSockets;
+using ReactiveUI;
 
-namespace Espera.Android
+namespace Espera.Android.Network
 {
     public class NetworkMessenger : IDisposable, INetworkMessenger
     {

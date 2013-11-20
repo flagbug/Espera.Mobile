@@ -1,12 +1,13 @@
-using ReactiveUI;
 using System;
 using System.Net;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
+using Espera.Android.Network;
+using ReactiveUI;
 
-namespace Espera.Android
+namespace Espera.Android.ViewModels
 {
     public class MainViewModel : ReactiveObject
     {

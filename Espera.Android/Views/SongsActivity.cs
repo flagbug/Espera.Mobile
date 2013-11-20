@@ -1,18 +1,20 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Preferences;
 using Android.Widget;
+using Espera.Android.Network;
+using Espera.Android.ViewModels;
 using Newtonsoft.Json;
 using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace Espera.Android
+namespace Espera.Android.Views
 {
     [Activity(Label = "Songs", ConfigurationChanges = ConfigChanges.Orientation)]
     public class SongsActivity : ReactiveActivity<SongsViewModel>, IHandleDisconnect
@@ -77,7 +79,7 @@ namespace Espera.Android
                 builder.Create().Show();
             };
 
-            this.ViewModel.Message.Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show());
+            this.ViewModel.Message.Subscribe(x => Toast.MakeText((Context) this, (string) x, ToastLength.Short).Show());
 
             NetworkMessenger.Instance.Disconnected.Subscribe(x => this.HandleDisconnect());
         }

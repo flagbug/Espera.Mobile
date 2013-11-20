@@ -1,13 +1,13 @@
-using Android.App;
-using Android.Views;
-using Android.Widget;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Android.App;
+using Android.Views;
+using Android.Widget;
 using Object = Java.Lang.Object;
 using String = Java.Lang.String;
 
-namespace Espera.Android
+namespace Espera.Android.Views
 {
     internal class ArtistsAdapter : BaseAdapter<string>, ISectionIndexer
     {

@@ -1,11 +1,11 @@
+using System;
+using System.Reactive.Linq;
 using Android.App;
 using Android.Views;
 using Android.Widget;
 using ReactiveUI;
-using System;
-using System.Reactive.Linq;
 
-namespace Espera.Android
+namespace Espera.Android.Views
 {
     internal class PlaylistAdapter : BaseAdapter<Song>
     {

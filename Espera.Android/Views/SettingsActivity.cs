@@ -1,11 +1,11 @@
+using System;
+using System.Linq;
 using Android.App;
 using Android.OS;
 using Android.Preferences;
 using Android.Text;
-using System;
-using System.Linq;
 
-namespace Espera.Android
+namespace Espera.Android.Views
 {
     [Activity(Label = "Settings")]
     public class SettingsActivity : PreferenceActivity

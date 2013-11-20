@@ -1,10 +1,11 @@
-using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using Espera.Android.Network;
+using ReactiveUI;
 
-namespace Espera.Android
+namespace Espera.Android.ViewModels
 {
     public class SongsViewModel : ReactiveObject
     {

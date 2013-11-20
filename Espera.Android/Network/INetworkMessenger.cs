@@ -4,7 +4,7 @@ using System.Net;
 using System.Reactive;
 using System.Threading.Tasks;
 
-namespace Espera.Android
+namespace Espera.Android.Network
 {
     public interface INetworkMessenger
     {

@@ -90,28 +90,28 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessPermission.cs" />
-    <Compile Include="ArtistsActivity.cs" />
-    <Compile Include="ArtistsAdapter.cs" />
-    <Compile Include="ArtistsViewModel.cs" />
     <Compile Include="IHandleDisconnect.cs" />
-    <Compile Include="INetworkMessenger.cs" />
+    <Compile Include="Network\INetworkMessenger.cs" />
+    <Compile Include="Network\NetworkMessenger.cs" />
     <Compile Include="PlaybackState.cs" />
     <Compile Include="ReactiveHelpers.cs" />
-    <Compile Include="SettingsActivity.cs" />
     <Compile Include="SongSource.cs" />
-    <Compile Include="MainActivity.cs" />
-    <Compile Include="MainViewModel.cs" />
-    <Compile Include="NetworkMessenger.cs" />
     <Compile Include="Playlist.cs" />
-    <Compile Include="PlaylistActivity.cs" />
-    <Compile Include="PlaylistAdapter.cs" />
-    <Compile Include="PlaylistViewModel.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Song.cs" />
-    <Compile Include="SongsActivity.cs" />
-    <Compile Include="SongsAdapter.cs" />
-    <Compile Include="SongsViewModel.cs" />
+    <Compile Include="ViewModels\ArtistsViewModel.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\PlaylistViewModel.cs" />
+    <Compile Include="ViewModels\SongsViewModel.cs" />
+    <Compile Include="Views\ArtistsActivity.cs" />
+    <Compile Include="Views\ArtistsAdapter.cs" />
+    <Compile Include="Views\MainActivity.cs" />
+    <Compile Include="Views\PlaylistActivity.cs" />
+    <Compile Include="Views\PlaylistAdapter.cs" />
+    <Compile Include="Views\SettingsActivity.cs" />
+    <Compile Include="Views\SongsActivity.cs" />
+    <Compile Include="Views\SongsAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -153,6 +153,7 @@
     <AndroidResource Include="Resources\Drawable\Pause.png" />
     <AndroidResource Include="Resources\Drawable\Settings.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,4 +1,6 @@
-﻿using Moq;
+﻿using Espera.Android.Network;
+using Espera.Android.ViewModels;
+using Moq;
 using ReactiveUI;
 using System;
 using System.Linq;

@@ -1,9 +1,9 @@
+using System.Collections.Generic;
 using Android.App;
 using Android.Views;
 using Android.Widget;
-using System.Collections.Generic;
 
-namespace Espera.Android
+namespace Espera.Android.Views
 {
     internal class SongsAdapter : BaseAdapter<Song>
     {

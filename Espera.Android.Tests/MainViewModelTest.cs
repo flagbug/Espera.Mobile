@@ -1,4 +1,6 @@
-﻿using Microsoft.Reactive.Testing;
+﻿using Espera.Android.Network;
+using Espera.Android.ViewModels;
+using Microsoft.Reactive.Testing;
 using Moq;
 using ReactiveUI;
 using ReactiveUI.Testing;

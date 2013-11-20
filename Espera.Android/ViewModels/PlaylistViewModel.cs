@@ -13,6 +13,9 @@ namespace Espera.Android.ViewModels
 
         public PlaylistViewModel()
         {
+            this.CanModify = NetworkMessenger.Instance.AccessPermission
+                .Select(x => x == AccessPermission.Admin);
+
             this.LoadPlaylistCommand = new ReactiveCommand();
             this.playlist = this.LoadPlaylistCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.GetCurrentPlaylist())
                 .ToProperty(this, x => x.Playlist);
@@ -27,7 +30,7 @@ namespace Espera.Android.ViewModels
             NetworkMessenger.Instance.PlaylistIndexChanged.Where(_ => this.Playlist != null)
                 .Subscribe(x => this.Playlist.CurrentIndex = x);
 
-            this.PlayPlaylistSongCommand = new ReactiveCommand();
+            this.PlayPlaylistSongCommand = new ReactiveCommand(this.CanModify);
             this.Message = this.PlayPlaylistSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance
                     .PlayPlaylistSong(this.Playlist.Songs[(int)x].Guid))
                 .Select(x => x.StatusCode == 200 ? "Playing song" : "Playback failed");
@@ -36,6 +39,7 @@ namespace Espera.Android.ViewModels
                 .Select(x => x.Changed.Select(y => x).StartWith(x))
                 .Switch()
                 .Select(x => x.CurrentIndex != null && x.CurrentIndex < x.Songs.Count - 1)
+                .CombineLatest(this.CanModify, (canPlayNext, canModify) => canPlayNext && canModify)
                 .ToCommand();
             this.PlayNextSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.PlayNextSong());
 
@@ -43,6 +47,7 @@ namespace Espera.Android.ViewModels
                 .Select(x => x.Changed.Select(y => x).StartWith(x))
                 .Switch()
                 .Select(x => x.CurrentIndex != null && x.CurrentIndex > 0)
+                .CombineLatest(this.CanModify, (canPlayPrevious, canModify) => canPlayPrevious && canModify)
                 .ToCommand();
             this.PlayPreviousSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.PlayPreviousSong());
 
@@ -57,6 +62,7 @@ namespace Espera.Android.ViewModels
 
             this.PlayPauseCommand = playbackState
                 .Select(x => x == PlaybackState.Playing || x == PlaybackState.Paused)
+                .CombineLatest(this.CanModify, (canPlay, canModify) => canPlay && canModify)
                 .ToCommand();
             this.PlayPauseCommand.Subscribe(async x =>
             {
@@ -71,12 +77,14 @@ namespace Espera.Android.ViewModels
                 }
             });
 
-            this.RemoveSongCommand = new ReactiveCommand();
+            this.RemoveSongCommand = new ReactiveCommand(this.CanModify);
             this.RemoveSongCommand.RegisterAsyncTask(x =>
                 NetworkMessenger.Instance.RemovePlaylistSong(this.Playlist.Songs[(int)x].Guid))
                 .Where(x => x.StatusCode == 200)
                 .InvokeCommand(this.LoadPlaylistCommand); // The server doesn't send an update...no idea why
         }
+
+        public IObservable<bool> CanModify { get; private set; }
 
         public bool IsPlaying
         {

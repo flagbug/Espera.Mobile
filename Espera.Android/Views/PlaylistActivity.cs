@@ -1,14 +1,15 @@
-using System;
-using System.Reactive.Linq;
 using Android.App;
 using Android.Content.PM;
 using Android.OS;
+using Android.Views;
 using Android.Widget;
 using Espera.Android.Network;
 using Espera.Android.ViewModels;
 using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
+using System;
+using System.Reactive.Linq;
 
 namespace Espera.Android.Views
 {
@@ -20,6 +21,11 @@ namespace Espera.Android.Views
         public PlaylistActivity()
         {
             this.autoSuspendHelper = new AutoSuspendActivityHelper(this);
+        }
+
+        private LinearLayout PlaybackControlPanel
+        {
+            get { return this.FindViewById<LinearLayout>(Resource.Id.playbackControlPanel); }
         }
 
         private ListView PlaylistListView
@@ -54,25 +60,40 @@ namespace Espera.Android.Views
 
             this.OneWayBind(this.ViewModel, x => x.Playlist, x => x.PlaylistListView.Adapter,
                 playlist => playlist == null ? null : new PlaylistAdapter(this, playlist));
-            this.PlaylistListView.ItemClick += (sender, args) => this.ViewModel.PlayPlaylistSongCommand.Execute(args.Position);
-            this.PlaylistListView.ItemLongClick += (sender, args) =>
+            this.PlaylistListView.ItemClick += (sender, args) =>
             {
-                var builder = new AlertDialog.Builder(this);
-                builder.SetItems(new[] { "Play", "Remove" }, (o, eventArgs) =>
+                if (this.ViewModel.PlayPlaylistSongCommand.CanExecute(null))
                 {
-                    switch (eventArgs.Which)
-                    {
-                        case 0:
-                            this.ViewModel.PlayPlaylistSongCommand.Execute(args.Position);
-                            break;
-
-                        case 1:
-                            this.ViewModel.RemoveSongCommand.Execute(args.Position);
-                            break;
-                    }
-                });
-                builder.Create().Show();
+                    this.ViewModel.PlayPlaylistSongCommand.Execute(args.Position);
+                }
             };
+            Observable.FromEventPattern<AdapterView.ItemLongClickEventArgs>(
+                h => this.PlaylistListView.ItemLongClick += h,
+                h => this.PlaylistListView.ItemLongClick += h)
+                .Select(x => x.EventArgs.Position)
+                .CombineLatest(this.ViewModel.CanModify, Tuple.Create)
+                .Where(x => x.Item2)
+                .Subscribe(x =>
+                {
+                    var builder = new AlertDialog.Builder(this);
+                    builder.SetItems(new[] { "Play", "Remove" }, (o, eventArgs) =>
+                    {
+                        switch (eventArgs.Which)
+                        {
+                            case 0:
+                                this.ViewModel.PlayPlaylistSongCommand.Execute(x.Item1);
+                                break;
+
+                            case 1:
+                                this.ViewModel.RemoveSongCommand.Execute(x.Item1);
+                                break;
+                        }
+                    });
+                    builder.Create().Show();
+                });
+
+            this.ViewModel.CanModify.Select(x => x ? ViewStates.Visible : ViewStates.Gone)
+                .BindTo(this.PlaybackControlPanel, x => x.Visibility);
 
             this.BindCommand(this.ViewModel, x => x.PlayNextSongCommand, x => x.PlayNextSongButton);
             this.BindCommand(this.ViewModel, x => x.PlayPreviousSongCommand, x => x.PlayPreviousSongButton);

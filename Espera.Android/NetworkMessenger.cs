@@ -79,12 +79,17 @@ namespace Espera.Android
 
             this.PlaybackStateChanged = pushMessages.Where(x => x["action"].ToString() == "update-playback-state")
                 .Select(x => x["content"]["state"].ToObject<PlaybackState>());
+
+            this.AccessPermissionChanged = pushMessages.Where(x => x["action"].ToString() == "update-access-permission")
+                .Select(x => x["content"]["accessPermission"].ToObject<AccessPermission>());
         }
 
         public static INetworkMessenger Instance
         {
             get { return instance.Value; }
         }
+
+        public IObservable<AccessPermission> AccessPermissionChanged { get; private set; }
 
         public IObservable<Unit> Disconnected { get; private set; }
 
@@ -140,6 +145,18 @@ namespace Espera.Android
             return CreateResponseInfo(response);
         }
 
+        public async Task<Tuple<int, string>> Authorize(string password)
+        {
+            var parameters = new JObject
+            {
+                {"password", password}
+            };
+
+            JObject response = await this.SendRequest("post-administrator-password", parameters);
+
+            return CreateResponseInfo(response);
+        }
+
         public async Task ConnectAsync(IPAddress address, int port)
         {
             if (address == null)
@@ -182,6 +199,15 @@ namespace Espera.Android
             {
                 this.messagePipelineConnection.Dispose();
             }
+        }
+
+        public async Task<AccessPermission> GetAccessPermission()
+        {
+            JObject response = await this.SendRequest("get-access-permission");
+
+            JToken content = response["content"];
+
+            return content["accessPermission"].ToObject<AccessPermission>();
         }
 
         public async Task<Playlist> GetCurrentPlaylist()

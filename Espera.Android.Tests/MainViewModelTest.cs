@@ -2,6 +2,7 @@
 using Moq;
 using ReactiveUI;
 using ReactiveUI.Testing;
+using System;
 using System.Net;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -12,6 +13,71 @@ namespace Espera.Android.Tests
 {
     public class MainViewModelTest
     {
+        [Fact]
+        public void ConnectAsAdminCommandSmokeTest()
+        {
+            var messenger = new Mock<INetworkMessenger>();
+            messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>())).Returns(Task.Delay(0)).Verifiable();
+            messenger.SetupGet(x => x.IsConnected).Returns(Observable.Return(false));
+            messenger.Setup(x => x.Authorize(It.IsAny<string>())).Returns(Tuple.Create(200, "Ok").ToTaskResult());
+
+            NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
+
+            var vm = new MainViewModel(Observable.Return(12345))
+            {
+                Password = "Bla"
+            };
+
+            vm.ConnectAsAdminCommand.Execute(null);
+
+            messenger.Verify(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>()), Times.Once);
+            messenger.Verify(x => x.Authorize(It.IsAny<string>()), Times.Once);
+        }
+
+        [Fact]
+        public void ConnectAsAdminCommandTimeoutTriggersConnectionFailed()
+        {
+            var messenger = new Mock<INetworkMessenger>();
+            messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>())).Returns(Task.Delay(1000));
+            messenger.SetupGet(x => x.IsConnected).Returns(Observable.Return(false));
+
+            NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
+
+            var vm = new MainViewModel(Observable.Return(12345));
+
+            var coll = vm.ConnectionFailed.CreateCollection();
+
+            (new TestScheduler()).With(scheduler =>
+            {
+                vm.ConnectAsAdminCommand.Execute(null);
+                scheduler.AdvanceByMs(10000);
+            });
+
+            Assert.Equal(1, coll.Count);
+        }
+
+        [Fact]
+        public void ConnectAsAdminCommandWithWrongPasswordTriggersWrongPasswordObservable()
+        {
+            var messenger = new Mock<INetworkMessenger>();
+            messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>())).Returns(Task.Delay(0)).Verifiable();
+            messenger.SetupGet(x => x.IsConnected).Returns(Observable.Return(false));
+            messenger.Setup(x => x.Authorize(It.IsAny<string>())).Returns(Tuple.Create(401, "Wrong password").ToTaskResult());
+
+            NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
+
+            var vm = new MainViewModel(Observable.Return(12345))
+            {
+                Password = "Bla"
+            };
+
+            var coll = vm.WrongPassword.CreateCollection();
+
+            vm.ConnectAsAdminCommand.Execute(null);
+
+            Assert.Equal(1, coll.Count);
+        }
+
         [Fact]
         public void ConnectCommandSmokeTest()
         {

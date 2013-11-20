@@ -17,7 +17,16 @@ namespace Espera.Android
             this.ConnectCommand = new ReactiveCommand();
             this.ConnectCommand.RegisterAsync(x =>
                 ConnectAsync(port.FirstAsync().Wait()).ToObservable().Timeout(TimeSpan.FromSeconds(10), RxApp.TaskpoolScheduler));
-            this.ConnectionFailed = this.ConnectCommand.ThrownExceptions.Select(x => Unit.Default);
+
+            this.ConnectAsAdminCommand = new ReactiveCommand();
+            this.WrongPassword = this.ConnectAsAdminCommand.RegisterAsync(x =>
+                ConnectAsAdminAsync(port.FirstAsync().Wait(), this.Password).ToObservable().Timeout(TimeSpan.FromSeconds(10), RxApp.TaskpoolScheduler))
+                .Where(x => x.Item1 != 200)
+                .Select(_ => Unit.Default);
+
+            this.ConnectionFailed = this.ConnectCommand.ThrownExceptions
+                .Merge(this.ConnectAsAdminCommand.ThrownExceptions)
+                .Select(x => Unit.Default);
 
             this.isConnected = NetworkMessenger.Instance.IsConnected
                 .ToProperty(this, x => x.IsConnected);
@@ -28,6 +37,8 @@ namespace Espera.Android
                 .Subscribe(x => NetworkMessenger.Instance.Disconnect());
         }
 
+        public ReactiveCommand ConnectAsAdminCommand { get; private set; }
+
         public ReactiveCommand ConnectCommand { get; private set; }
 
         public IObservable<Unit> ConnectionFailed { get; private set; }
@@ -35,6 +46,17 @@ namespace Espera.Android
         public bool IsConnected
         {
             get { return this.isConnected.Value; }
+        }
+
+        public string Password { get; set; }
+
+        public IObservable<Unit> WrongPassword { get; private set; }
+
+        private static async Task<Tuple<int, string>> ConnectAsAdminAsync(int port, string password)
+        {
+            await ConnectAsync(port);
+
+            return await NetworkMessenger.Instance.Authorize(password);
         }
 
         private static async Task ConnectAsync(int port)

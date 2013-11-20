@@ -859,14 +859,14 @@ namespace Espera.Android
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f04003a
-			public const int Image = 2130968634;
-			
 			// aapt resource value: 0x7f04003b
-			public const int PlaylistItemText1 = 2130968635;
+			public const int Image = 2130968635;
 			
 			// aapt resource value: 0x7f04003c
-			public const int PlaylistItemText2 = 2130968636;
+			public const int PlaylistItemText1 = 2130968636;
+			
+			// aapt resource value: 0x7f04003d
+			public const int PlaylistItemText2 = 2130968637;
 			
 			// aapt resource value: 0x7f040020
 			public const int abs__action_bar = 2130968608;
@@ -988,6 +988,9 @@ namespace Espera.Android
 			// aapt resource value: 0x7f040032
 			public const int artistList = 2130968626;
 			
+			// aapt resource value: 0x7f040034
+			public const int connectAsAdminButton = 2130968628;
+			
 			// aapt resource value: 0x7f040033
 			public const int connectButton = 2130968627;
 			
@@ -1003,26 +1006,26 @@ namespace Espera.Android
 			// aapt resource value: 0x7f040002
 			public const int listMode = 2130968578;
 			
-			// aapt resource value: 0x7f040034
-			public const int loadArtistsButton = 2130968628;
-			
 			// aapt resource value: 0x7f040035
-			public const int loadCurrentPlaylistButton = 2130968629;
+			public const int loadArtistsButton = 2130968629;
 			
-			// aapt resource value: 0x7f040039
-			public const int nextButton = 2130968633;
+			// aapt resource value: 0x7f040036
+			public const int loadCurrentPlaylistButton = 2130968630;
+			
+			// aapt resource value: 0x7f04003a
+			public const int nextButton = 2130968634;
 			
 			// aapt resource value: 0x7f040001
 			public const int normal = 2130968577;
 			
-			// aapt resource value: 0x7f040036
-			public const int playList = 2130968630;
+			// aapt resource value: 0x7f040037
+			public const int playList = 2130968631;
+			
+			// aapt resource value: 0x7f040039
+			public const int playPauseButton = 2130968633;
 			
 			// aapt resource value: 0x7f040038
-			public const int playPauseButton = 2130968632;
-			
-			// aapt resource value: 0x7f040037
-			public const int previousButton = 2130968631;
+			public const int previousButton = 2130968632;
 			
 			// aapt resource value: 0x7f040008
 			public const int showCustom = 2130968584;
@@ -1033,8 +1036,8 @@ namespace Espera.Android
 			// aapt resource value: 0x7f040007
 			public const int showTitle = 2130968583;
 			
-			// aapt resource value: 0x7f04003d
-			public const int songsList = 2130968637;
+			// aapt resource value: 0x7f04003e
+			public const int songsList = 2130968638;
 			
 			// aapt resource value: 0x7f040003
 			public const int tabMode = 2130968579;

@@ -8,6 +8,8 @@ namespace Espera.Android
 {
     public interface INetworkMessenger
     {
+        IObservable<AccessPermission> AccessPermissionChanged { get; }
+
         IObservable<Unit> Disconnected { get; }
 
         IObservable<bool> IsConnected { get; }
@@ -20,6 +22,8 @@ namespace Espera.Android
 
         Task<Tuple<int, string>> AddSongToPlaylist(Guid songGuid);
 
+        Task<Tuple<int, string>> Authorize(string password);
+
         Task ConnectAsync(IPAddress address, int port);
 
         Task<Tuple<int, string>> ContinueSong();
@@ -27,6 +31,8 @@ namespace Espera.Android
         void Disconnect();
 
         void Dispose();
+
+        Task<AccessPermission> GetAccessPermission();
 
         Task<Playlist> GetCurrentPlaylist();
 

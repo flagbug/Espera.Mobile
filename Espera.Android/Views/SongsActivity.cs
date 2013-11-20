@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -13,6 +10,9 @@ using Newtonsoft.Json;
 using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Espera.Android.Views
 {
@@ -79,7 +79,7 @@ namespace Espera.Android.Views
                 builder.Create().Show();
             };
 
-            this.ViewModel.Message.Subscribe(x => Toast.MakeText((Context) this, (string) x, ToastLength.Short).Show());
+            this.ViewModel.Message.Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show());
 
             NetworkMessenger.Instance.Disconnected.Subscribe(x => this.HandleDisconnect());
         }

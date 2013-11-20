@@ -1,8 +1,8 @@
+using Espera.Android.Network;
+using ReactiveUI;
 using System;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
-using Espera.Android.Network;
-using ReactiveUI;
 
 namespace Espera.Android.ViewModels
 {
@@ -30,7 +30,7 @@ namespace Espera.Android.ViewModels
             this.PlayPlaylistSongCommand = new ReactiveCommand();
             this.Message = this.PlayPlaylistSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance
                     .PlayPlaylistSong(this.Playlist.Songs[(int)x].Guid))
-                .Select(x => x.Item1 == 200 ? "Playing song" : "Playback failed");
+                .Select(x => x.StatusCode == 200 ? "Playing song" : "Playback failed");
 
             this.PlayNextSongCommand = this.playlist.Where(x => x != null)
                 .Select(x => x.Changed.Select(y => x).StartWith(x))
@@ -74,7 +74,7 @@ namespace Espera.Android.ViewModels
             this.RemoveSongCommand = new ReactiveCommand();
             this.RemoveSongCommand.RegisterAsyncTask(x =>
                 NetworkMessenger.Instance.RemovePlaylistSong(this.Playlist.Songs[(int)x].Guid))
-                .Where(x => x.Item1 == 200)
+                .Where(x => x.StatusCode == 200)
                 .InvokeCommand(this.LoadPlaylistCommand); // The server doesn't send an update...no idea why
         }
 

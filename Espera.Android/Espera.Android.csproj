@@ -93,6 +93,7 @@
     <Compile Include="IHandleDisconnect.cs" />
     <Compile Include="Network\INetworkMessenger.cs" />
     <Compile Include="Network\NetworkMessenger.cs" />
+    <Compile Include="Network\ResponseInfo.cs" />
     <Compile Include="PlaybackState.cs" />
     <Compile Include="ReactiveHelpers.cs" />
     <Compile Include="SongSource.cs" />

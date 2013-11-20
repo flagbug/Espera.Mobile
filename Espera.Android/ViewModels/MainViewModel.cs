@@ -1,11 +1,11 @@
+using Espera.Android.Network;
+using ReactiveUI;
 using System;
 using System.Net;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
-using Espera.Android.Network;
-using ReactiveUI;
 
 namespace Espera.Android.ViewModels
 {
@@ -52,9 +52,9 @@ namespace Espera.Android.ViewModels
 
             if (this.EnableAdministratorMode)
             {
-                Tuple<int, string> response = await NetworkMessenger.Instance.Authorize(this.Password);
+                ResponseInfo response = await NetworkMessenger.Instance.Authorize(this.Password);
 
-                if (response.Item1 != 200)
+                if (response.StatusCode != 200)
                 {
                     throw new Exception("Wrong password");
                 }

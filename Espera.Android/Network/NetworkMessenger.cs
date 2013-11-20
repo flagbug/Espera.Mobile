@@ -1,3 +1,7 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using ReactiveSockets;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,10 +16,6 @@ using System.Reactive.Threading.Tasks;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using ReactiveSockets;
-using ReactiveUI;
 
 namespace Espera.Android.Network
 {
@@ -140,7 +140,7 @@ namespace Espera.Android.Network
             fakeIpAddress = ipAdress;
         }
 
-        public async Task<Tuple<int, string>> AddSongToPlaylist(Guid songGuid)
+        public async Task<ResponseInfo> AddSongToPlaylist(Guid songGuid)
         {
             var parameters = new JObject
             {
@@ -152,7 +152,7 @@ namespace Espera.Android.Network
             return CreateResponseInfo(response);
         }
 
-        public async Task<Tuple<int, string>> Authorize(string password)
+        public async Task<ResponseInfo> Authorize(string password)
         {
             var parameters = new JObject
             {
@@ -163,7 +163,7 @@ namespace Espera.Android.Network
 
             var info = CreateResponseInfo(response);
 
-            if (info.Item1 == 200)
+            if (info.StatusCode == 200)
             {
                 this.accessPermission.OnNext(Android.AccessPermission.Admin);
             }
@@ -190,7 +190,7 @@ namespace Espera.Android.Network
             this.connectionEstablished.OnNext(Unit.Default);
         }
 
-        public async Task<Tuple<int, string>> ContinueSong()
+        public async Task<ResponseInfo> ContinueSong()
         {
             JObject response = await this.SendRequest("post-continue-song");
 
@@ -256,21 +256,21 @@ namespace Espera.Android.Network
             return songs;
         }
 
-        public async Task<Tuple<int, string>> PauseSong()
+        public async Task<ResponseInfo> PauseSong()
         {
             JObject response = await this.SendRequest("post-pause-song");
 
             return CreateResponseInfo(response);
         }
 
-        public async Task<Tuple<int, string>> PlayNextSong()
+        public async Task<ResponseInfo> PlayNextSong()
         {
             JObject response = await this.SendRequest("post-play-next-song");
 
             return CreateResponseInfo(response);
         }
 
-        public async Task<Tuple<int, string>> PlayPlaylistSong(Guid guid)
+        public async Task<ResponseInfo> PlayPlaylistSong(Guid guid)
         {
             var parameters = new JObject
             {
@@ -282,14 +282,14 @@ namespace Espera.Android.Network
             return CreateResponseInfo(response);
         }
 
-        public async Task<Tuple<int, string>> PlayPreviousSong()
+        public async Task<ResponseInfo> PlayPreviousSong()
         {
             JObject response = await this.SendRequest("post-play-previous-song");
 
             return CreateResponseInfo(response);
         }
 
-        public async Task<Tuple<int, string>> PlaySongs(IEnumerable<Guid> guids)
+        public async Task<ResponseInfo> PlaySongs(IEnumerable<Guid> guids)
         {
             var parameters = new JObject
             {
@@ -301,7 +301,7 @@ namespace Espera.Android.Network
             return CreateResponseInfo(response);
         }
 
-        public async Task<Tuple<int, string>> RemovePlaylistSong(Guid guid)
+        public async Task<ResponseInfo> RemovePlaylistSong(Guid guid)
         {
             var parameters = new JObject
             {
@@ -326,9 +326,9 @@ namespace Espera.Android.Network
             }
         }
 
-        private static Tuple<int, string> CreateResponseInfo(JObject response)
+        private static ResponseInfo CreateResponseInfo(JObject response)
         {
-            return Tuple.Create(response["status"].ToObject<int>(), response["message"].ToString());
+            return new ResponseInfo(response["status"].ToObject<int>(), response["message"].ToString());
         }
 
         private static async Task<byte[]> DecompressDataAsync(byte[] buffer)

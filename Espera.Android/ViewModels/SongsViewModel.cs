@@ -1,9 +1,9 @@
+using Espera.Android.Network;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
-using Espera.Android.Network;
-using ReactiveUI;
 
 namespace Espera.Android.ViewModels
 {
@@ -18,11 +18,11 @@ namespace Espera.Android.ViewModels
 
             this.PlaySongsCommand = new ReactiveCommand();
             var playSongsMessage = this.PlaySongsCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.PlaySongs(this.Songs.Skip((int)x).Select(y => y.Guid)))
-                .Select(x => x.Item1 == 200 ? "Playing songs" : "Error adding songs");
+                .Select(x => x.StatusCode == 200 ? "Playing songs" : "Error adding songs");
 
             this.AddToPlaylistCommand = new ReactiveCommand();
             var addToPlaylistMessage = this.AddToPlaylistCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.AddSongToPlaylist(this.Songs[(int)x].Guid))
-                .Select(x => x.Item1 == 200 ? "Song added to playlist" : "Error adding song");
+                .Select(x => x.StatusCode == 200 ? "Song added to playlist" : "Error adding song");
 
             this.Message = playSongsMessage.Merge(addToPlaylistMessage)
                 .Throttle(TimeSpan.FromMilliseconds(200))

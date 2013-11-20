@@ -4,7 +4,6 @@ using Microsoft.Reactive.Testing;
 using Moq;
 using ReactiveUI;
 using ReactiveUI.Testing;
-using System;
 using System.Net;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -59,7 +58,7 @@ namespace Espera.Android.Tests
             var messenger = new Mock<INetworkMessenger>();
             messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>())).Returns(Task.Delay(0)).Verifiable();
             messenger.SetupGet(x => x.IsConnected).Returns(Observable.Return(false));
-            messenger.Setup(x => x.Authorize(It.IsAny<string>())).Returns(Tuple.Create(401, "Wrong password").ToTaskResult());
+            messenger.Setup(x => x.Authorize(It.IsAny<string>())).Returns(new ResponseInfo(401, "Wrong password").ToTaskResult());
 
             NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
 

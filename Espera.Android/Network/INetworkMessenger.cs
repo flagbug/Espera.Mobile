@@ -20,13 +20,13 @@ namespace Espera.Android.Network
 
         IObservable<int?> PlaylistIndexChanged { get; }
 
-        Task<Tuple<int, string>> AddSongToPlaylist(Guid songGuid);
+        Task<ResponseInfo> AddSongToPlaylist(Guid songGuid);
 
-        Task<Tuple<int, string>> Authorize(string password);
+        Task<ResponseInfo> Authorize(string password);
 
         Task ConnectAsync(IPAddress address, int port);
 
-        Task<Tuple<int, string>> ContinueSong();
+        Task<ResponseInfo> ContinueSong();
 
         void Disconnect();
 
@@ -40,16 +40,16 @@ namespace Espera.Android.Network
 
         Task<IReadOnlyList<Song>> GetSongsAsync();
 
-        Task<Tuple<int, string>> PauseSong();
+        Task<ResponseInfo> PauseSong();
 
-        Task<Tuple<int, string>> PlayNextSong();
+        Task<ResponseInfo> PlayNextSong();
 
-        Task<Tuple<int, string>> PlayPlaylistSong(Guid guid);
+        Task<ResponseInfo> PlayPlaylistSong(Guid guid);
 
-        Task<Tuple<int, string>> PlayPreviousSong();
+        Task<ResponseInfo> PlayPreviousSong();
 
-        Task<Tuple<int, string>> PlaySongs(IEnumerable<Guid> guids);
+        Task<ResponseInfo> PlaySongs(IEnumerable<Guid> guids);
 
-        Task<Tuple<int, string>> RemovePlaylistSong(Guid guid);
+        Task<ResponseInfo> RemovePlaylistSong(Guid guid);
     }
 }

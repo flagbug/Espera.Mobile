@@ -23,6 +23,7 @@ namespace Espera.Android.ViewModels
                 .Select(x => Unit.Default);
 
             this.isConnected = NetworkMessenger.Instance.IsConnected
+                .CombineLatest(this.ConnectCommand.IsExecuting, (isConnected, isExecuting) => isConnected && !isExecuting)
                 .ToProperty(this, x => x.IsConnected);
 
             port.DistinctUntilChanged()

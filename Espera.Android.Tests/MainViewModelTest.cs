@@ -4,6 +4,7 @@ using Microsoft.Reactive.Testing;
 using Moq;
 using ReactiveUI;
 using ReactiveUI.Testing;
+using System;
 using System.Net;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -73,6 +74,30 @@ namespace Espera.Android.Tests
             vm.ConnectCommand.Execute(null);
 
             Assert.Equal(1, coll.Count);
+        }
+
+        [Fact]
+        public void IsConnectedIsFalseWhileConnectCommandExecutesWithPassword()
+        {
+            var isConnected = new BehaviorSubject<bool>(false);
+            var messenger = new Mock<INetworkMessenger>();
+            messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>()))
+                .Callback(() => isConnected.OnNext(true))
+                .Returns(Task.Delay(0)).Verifiable();
+            messenger.SetupGet(x => x.IsConnected).Returns(isConnected);
+            messenger.Setup(x => x.Authorize(It.IsAny<string>())).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
+
+            NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
+
+            var vm = new MainViewModel(Observable.Return(12345))
+            {
+                EnableAdministratorMode = true,
+                Password = "Bla"
+            };
+
+            isConnected.FirstAsync(x => x).Subscribe(_ => Assert.False(vm.IsConnected));
+
+            vm.ConnectCommand.Execute(null);
         }
 
         [Fact]

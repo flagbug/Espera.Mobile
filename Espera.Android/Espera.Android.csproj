@@ -92,6 +92,7 @@
     <Compile Include="AccessPermission.cs" />
     <Compile Include="IHandleDisconnect.cs" />
     <Compile Include="Network\INetworkMessenger.cs" />
+    <Compile Include="Network\NetworkHelpers.cs" />
     <Compile Include="Network\NetworkMessenger.cs" />
     <Compile Include="Network\ResponseInfo.cs" />
     <Compile Include="PlaybackState.cs" />

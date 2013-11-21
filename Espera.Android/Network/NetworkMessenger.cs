@@ -4,8 +4,6 @@ using ReactiveSockets;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -61,7 +59,7 @@ namespace Espera.Android.Network
             var conn = this.client.Select(x => x.Receiver.Buffer(4)
                     .Select(length => BitConverter.ToInt32(length.ToArray(), 0))
                     .Select(length => x.Receiver.Take(length).ToEnumerable().ToArray())
-                    .SelectMany(body => DecompressDataAsync(body).ToObservable())
+                    .SelectMany(body => NetworkHelpers.DecompressDataAsync(body).ToObservable())
                     .Select(body => Encoding.UTF8.GetString(body))
                     .Select(JObject.Parse))
                 .Switch()
@@ -161,14 +159,7 @@ namespace Espera.Android.Network
 
             JObject response = await this.SendRequest("post-administrator-password", parameters);
 
-            var info = CreateResponseInfo(response);
-
-            if (info.StatusCode == 200)
-            {
-                this.accessPermission.OnNext(Android.AccessPermission.Admin);
-            }
-
-            return info;
+            return CreateResponseInfo(response);
         }
 
         public async Task ConnectAsync(IPAddress address, int port)
@@ -188,6 +179,12 @@ namespace Espera.Android.Network
             await c.ConnectAsync();
 
             this.connectionEstablished.OnNext(Unit.Default);
+
+            JObject response = await this.SendRequest("get-access-permission");
+
+            var permission = response["content"]["accessPermission"].ToObject<AccessPermission>();
+
+            this.accessPermission.OnNext(permission);
         }
 
         public async Task<ResponseInfo> ContinueSong()
@@ -313,43 +310,15 @@ namespace Espera.Android.Network
             return CreateResponseInfo(response);
         }
 
-        private static async Task<byte[]> CompressDataAsync(byte[] data)
-        {
-            using (var targetStream = new MemoryStream())
-            {
-                using (var stream = new GZipStream(targetStream, CompressionMode.Compress))
-                {
-                    await stream.WriteAsync(data, 0, data.Length);
-                }
-
-                return targetStream.ToArray();
-            }
-        }
-
         private static ResponseInfo CreateResponseInfo(JObject response)
         {
             return new ResponseInfo(response["status"].ToObject<int>(), response["message"].ToString());
         }
 
-        private static async Task<byte[]> DecompressDataAsync(byte[] buffer)
-        {
-            using (var sourceStream = new MemoryStream(buffer))
-            {
-                using (var stream = new GZipStream(sourceStream, CompressionMode.Decompress))
-                {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        await stream.CopyToAsync(memoryStream);
-                        return memoryStream.ToArray();
-                    }
-                }
-            }
-        }
-
         private async Task SendMessage(JObject content)
         {
             byte[] contentBytes = Encoding.UTF8.GetBytes(content.ToString(Formatting.None));
-            contentBytes = await CompressDataAsync(contentBytes);
+            contentBytes = await NetworkHelpers.CompressDataAsync(contentBytes);
             byte[] length = BitConverter.GetBytes(contentBytes.Length); // We have a fixed size of 4 bytes
 
             byte[] message = length.Concat(contentBytes).ToArray();

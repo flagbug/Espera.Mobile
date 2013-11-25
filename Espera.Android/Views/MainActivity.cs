@@ -1,7 +1,4 @@
-﻿using System;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
 using Android.Net.Wifi;
 using Android.OS;
@@ -12,6 +9,9 @@ using Espera.Android.ViewModels;
 using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
+using System;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using Xamarin.ActionbarSherlockBinding;
 using Xamarin.ActionbarSherlockBinding.Views;
 using IMenuItem = Android.Views.IMenuItem;
@@ -86,13 +86,7 @@ namespace Espera.Android.Views
             var wifiManager = (WifiManager)this.GetSystemService(WifiService);
             if (!wifiManager.IsWifiEnabled)
             {
-                var builder = new AlertDialog.Builder(this);
-                builder.SetTitle("Error");
-                builder.SetMessage("You have to enable Wifi.");
-                builder.SetPositiveButton("Enable", (sender, args) => wifiManager.SetWifiEnabled(true));
-                builder.SetNegativeButton("Exit", (sender, args) => this.Finish());
-
-                builder.Show();
+                this.ShowWifiPrompt(wifiManager);
             }
 
             this.ViewModel = new MainViewModel(this.port);
@@ -142,6 +136,17 @@ namespace Espera.Android.Views
         {
             base.OnSaveInstanceState(outState);
             this.autoSuspendHelper.OnSaveInstanceState(outState);
+        }
+
+        private void ShowWifiPrompt(WifiManager wifiManager)
+        {
+            var builder = new AlertDialog.Builder(this);
+            builder.SetTitle("Error");
+            builder.SetMessage("You have to enable Wifi.");
+            builder.SetPositiveButton("Enable", (sender, args) => wifiManager.SetWifiEnabled(true));
+            builder.SetNegativeButton("Exit", (sender, args) => this.Finish());
+
+            builder.Show();
         }
     }
 }

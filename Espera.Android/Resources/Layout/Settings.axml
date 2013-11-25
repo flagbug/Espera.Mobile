@@ -18,7 +18,8 @@
     <EditTextPreference
       android:key="preference_administrator_password"
       android:summary="The administrator password"
-      android:title="Password" />
+      android:title="Password"
+      android:password="true" />
     <ListPreference
         android:key="@string/preference_default_library_action"
         android:summary="@string/preference_administrator_default_library_action_summary"

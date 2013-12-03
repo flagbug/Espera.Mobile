@@ -4,6 +4,7 @@
   <string name="preference_port">preference_port</string>
   <string name="preference_port_title">Port</string>
   <string name="preference_port_summary">The port of the server</string>
+  <string name="preference_port_validation_error">Port must be between 49152 and 65535</string>
   <string name="preference_enable_administrator_mode">preference_enable_administrator_mode</string>
   <string name="preference_enable_administrator_mode_title">Enable administrator mode</string>
   <string name="preference_enable_administrator_mode_summary">Gives you more rights than the standard guest mode. Requires the password to be set.</string>
@@ -16,9 +17,4 @@
     <item>Play all</item>
     <item>Add to playlist</item>
   </string-array>
-  <string-array name="preference_administrator_default_library_action_values">
-    <item>PlayAll</item>
-    <item>AddToPlaylist</item>
-  </string-array>
-  <string name="preference_administrator_default_library_action_default">PlayAll</string>
 </resources>

@@ -34,9 +34,6 @@ namespace Espera.Android
 			// aapt resource value: 0x7f0b0000
 			public const int preference_administrator_default_library_action_entries = 2131427328;
 			
-			// aapt resource value: 0x7f0b0001
-			public const int preference_administrator_default_library_action_values = 2131427329;
-			
 			static Array()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
@@ -1220,31 +1217,28 @@ namespace Espera.Android
 			public const int abs__shareactionprovider_share_with_application = 2131296263;
 			
 			// aapt resource value: 0x7f090019
-			public const int preference_administrator_default_library_action_default = 2131296281;
+			public const int preference_administrator_default_library_action_summary = 2131296281;
 			
 			// aapt resource value: 0x7f090018
-			public const int preference_administrator_default_library_action_summary = 2131296280;
-			
-			// aapt resource value: 0x7f090017
-			public const int preference_administrator_default_library_action_title = 2131296279;
-			
-			// aapt resource value: 0x7f090014
-			public const int preference_administrator_password = 2131296276;
+			public const int preference_administrator_default_library_action_title = 2131296280;
 			
 			// aapt resource value: 0x7f090015
-			public const int preference_administrator_password_title = 2131296277;
+			public const int preference_administrator_password = 2131296277;
 			
 			// aapt resource value: 0x7f090016
-			public const int preference_default_library_action = 2131296278;
+			public const int preference_administrator_password_title = 2131296278;
 			
-			// aapt resource value: 0x7f090011
-			public const int preference_enable_administrator_mode = 2131296273;
-			
-			// aapt resource value: 0x7f090013
-			public const int preference_enable_administrator_mode_summary = 2131296275;
+			// aapt resource value: 0x7f090017
+			public const int preference_default_library_action = 2131296279;
 			
 			// aapt resource value: 0x7f090012
-			public const int preference_enable_administrator_mode_title = 2131296274;
+			public const int preference_enable_administrator_mode = 2131296274;
+			
+			// aapt resource value: 0x7f090014
+			public const int preference_enable_administrator_mode_summary = 2131296276;
+			
+			// aapt resource value: 0x7f090013
+			public const int preference_enable_administrator_mode_title = 2131296275;
 			
 			// aapt resource value: 0x7f09000e
 			public const int preference_port = 2131296270;
@@ -1254,6 +1248,9 @@ namespace Espera.Android
 			
 			// aapt resource value: 0x7f09000f
 			public const int preference_port_title = 2131296271;
+			
+			// aapt resource value: 0x7f090011
+			public const int preference_port_validation_error = 2131296273;
 			
 			static String()
 			{

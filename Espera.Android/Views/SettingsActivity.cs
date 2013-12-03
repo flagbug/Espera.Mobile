@@ -1,25 +1,18 @@
-using System;
-using System.Linq;
 using Android.App;
 using Android.OS;
 using Android.Preferences;
 using Android.Text;
+using Espera.Android.Settings;
+using Lager.Android;
+using ReactiveUI;
+using System;
+using System.Linq;
 
 namespace Espera.Android.Views
 {
     [Activity(Label = "Settings")]
     public class SettingsActivity : PreferenceActivity
     {
-        private Preference DefaultLibraryActionPreference
-        {
-            get { return this.FindPreference(this.GetString(Resource.String.preference_default_library_action)); }
-        }
-
-        private Preference PasswordPreference
-        {
-            get { return this.FindPreference(this.GetString(Resource.String.preference_administrator_password)); }
-        }
-
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
@@ -34,37 +27,28 @@ namespace Espera.Android.Views
 
                 if (!IsValidPort(port))
                 {
-                    portPref.EditText.Error = "Port must be between 49152 and 65535";
+                    portPref.EditText.Error = this.GetString(Resource.String.preference_port_validation_error);
                 }
             };
-            portPref.PreferenceChange += (sender, args) =>
-            {
-                int port = Int32.Parse(args.NewValue.ToString());
-                args.Handled = IsValidPort(port);
-            };
+            portPref.BindToSetting(UserSettings.Instance, x => x.Port, x => x.Text, x => int.Parse(x.ToString()), x => x.ToString(), IsValidPort);
 
-            var adminEnabledPref = this.FindPreference(this.GetString(Resource.String.preference_enable_administrator_mode));
-            adminEnabledPref.PreferenceChange += (sender, args) =>
-            {
-                bool enabled = bool.Parse(args.NewValue.ToString());
-                args.Handled = true;
+            var adminEnabledPref = (CheckBoxPreference)this.FindPreference(this.GetString(Resource.String.preference_enable_administrator_mode));
+            adminEnabledPref.BindToSetting(UserSettings.Instance, x => x.EnableAdministratorMode, x => x.Checked, x => bool.Parse(x.ToString()));
 
-                this.UpdateAdminPreferences(enabled);
-            };
+            var passwordPreference = (EditTextPreference)this.FindPreference(this.GetString(Resource.String.preference_administrator_password));
+            passwordPreference.BindToSetting(UserSettings.Instance, x => x.AdministratorPassword, x => x.Text, x => (string)x);
+            UserSettings.Instance.WhenAnyValue(x => x.EnableAdministratorMode).BindTo(passwordPreference, x => x.Enabled);
 
-            this.UpdateAdminPreferences(PreferenceManager.SharedPreferences
-                .GetBoolean(this.GetString(Resource.String.preference_enable_administrator_mode), false));
+            var defaultLibraryActionPreference = (ListPreference)this.FindPreference(this.GetString(Resource.String.preference_default_library_action));
+            defaultLibraryActionPreference.SetEntryValues(Enum.GetNames(typeof(DefaultLibraryAction)));
+            defaultLibraryActionPreference.BindToSetting(UserSettings.Instance, x => x.DefaultLibraryAction,
+                x => x.Value, x => Enum.Parse(typeof(DefaultLibraryAction), (string)x), x => x.ToString());
+            UserSettings.Instance.WhenAnyValue(x => x.EnableAdministratorMode).BindTo(defaultLibraryActionPreference, x => x.Enabled);
         }
 
         private static bool IsValidPort(int port)
         {
             return port > 49152 && port < 65535;
-        }
-
-        private void UpdateAdminPreferences(bool enabled)
-        {
-            this.PasswordPreference.Enabled = enabled;
-            this.DefaultLibraryActionPreference.Enabled = enabled;
         }
     }
 }

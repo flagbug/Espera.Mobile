@@ -17,6 +17,7 @@ namespace Espera.Android.Views
     public class PlaylistActivity : ReactiveActivity<PlaylistViewModel>, IHandleDisconnect
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;
+        private ProgressDialog progressDialog;
 
         public PlaylistActivity()
         {
@@ -115,6 +116,25 @@ namespace Espera.Android.Views
 
             NetworkMessenger.Instance.Disconnected.FirstAsync()
                 .Subscribe(x => this.HandleDisconnect());
+
+            this.progressDialog = new ProgressDialog(this);
+            this.progressDialog.SetMessage("Loading artists");
+            this.progressDialog.Indeterminate = true;
+            this.progressDialog.SetCancelable(false);
+
+            this.ViewModel.LoadPlaylistCommand.IsExecuting
+                .Subscribe(x =>
+                {
+                    if (x)
+                    {
+                        this.progressDialog.Show();
+                    }
+
+                    else
+                    {
+                        this.progressDialog.Hide();
+                    }
+                });
 
             this.ViewModel.LoadPlaylistCommand.Execute(null);
         }

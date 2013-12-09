@@ -17,10 +17,12 @@ namespace Espera.Android.ViewModels
         {
             this.ConnectCommand = new ReactiveCommand();
             this.ConnectCommand.RegisterAsync(x =>
-                ConnectAsync(port.FirstAsync().Wait()).ToObservable().Timeout(TimeSpan.FromSeconds(10), RxApp.TaskpoolScheduler));
+                ConnectAsync(port.FirstAsync().Wait()).ToObservable()
+                    .Timeout(TimeSpan.FromSeconds(10), RxApp.TaskpoolScheduler)
+                    .Catch<Unit, TimeoutException>(ex => Observable.Throw<Unit>(new Exception("Connection failed"))));
 
             this.ConnectionFailed = this.ConnectCommand.ThrownExceptions
-                .Select(x => Unit.Default);
+                .Select(x => x.Message);
 
             this.isConnected = NetworkMessenger.Instance.IsConnected
                 .CombineLatest(this.ConnectCommand.IsExecuting, (isConnected, isExecuting) => isConnected && !isExecuting)
@@ -34,7 +36,7 @@ namespace Espera.Android.ViewModels
 
         public ReactiveCommand ConnectCommand { get; private set; }
 
-        public IObservable<Unit> ConnectionFailed { get; private set; }
+        public IObservable<string> ConnectionFailed { get; private set; }
 
         public bool EnableAdministratorMode { get; set; }
 
@@ -51,13 +53,22 @@ namespace Espera.Android.ViewModels
 
             await NetworkMessenger.Instance.ConnectAsync(address, port);
 
+            Version version = await NetworkMessenger.Instance.GetServerVersion();
+
+            var minimumVersion = new Version("2.0.0");
+            if (version < minimumVersion)
+            {
+                NetworkMessenger.Instance.Disconnect();
+                throw new Exception(string.Format("Espera version {0} required", minimumVersion.ToString(3)));
+            }
+
             if (this.EnableAdministratorMode)
             {
                 ResponseInfo response = await NetworkMessenger.Instance.Authorize(this.Password);
 
                 if (response.StatusCode != 200)
                 {
-                    throw new Exception("Wrong password");
+                    throw new Exception("Password incorrect");
                 }
             }
         }

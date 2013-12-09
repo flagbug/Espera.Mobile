@@ -1,5 +1,3 @@
-using System;
-using System.Reactive.Linq;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -10,6 +8,8 @@ using Espera.Android.ViewModels;
 using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
+using System;
+using System.Reactive.Linq;
 
 namespace Espera.Android.Views
 {

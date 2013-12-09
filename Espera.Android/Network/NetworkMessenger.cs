@@ -239,6 +239,17 @@ namespace Espera.Android.Network
             return content["state"].ToObject<PlaybackState>();
         }
 
+        public async Task<Version> GetServerVersion()
+        {
+            JObject response = await this.SendRequest("get-server-version");
+
+            JToken content = response["content"];
+
+            var version = new Version(content["version"].ToString());
+
+            return version;
+        }
+
         public async Task<IReadOnlyList<Song>> GetSongsAsync()
         {
             JObject response = await this.SendRequest("get-library-content");

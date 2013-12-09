@@ -95,7 +95,7 @@ namespace Espera.Android.Views
                 .Select(x => x ? "Connecting..." : "Connect")
                 .BindTo(this.ConnectButton, x => x.Text);
 
-            this.ViewModel.ConnectionFailed.Subscribe(x => Toast.MakeText(this, "Connection failed", ToastLength.Long).Show());
+            this.ViewModel.ConnectionFailed.Subscribe(x => Toast.MakeText(this, x, ToastLength.Long).Show());
 
             this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadArtistsButton.Enabled);
             this.LoadArtistsButton.Click += (sender, args) => this.StartActivity(typeof(ArtistsActivity));

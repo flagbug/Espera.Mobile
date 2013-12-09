@@ -38,6 +38,8 @@ namespace Espera.Android.Network
 
         Task<PlaybackState> GetPlaybackSate();
 
+        Task<Version> GetServerVersion();
+
         Task<IReadOnlyList<Song>> GetSongsAsync();
 
         Task<ResponseInfo> PauseSong();

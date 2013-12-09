@@ -18,7 +18,7 @@ namespace Espera.Android.Tests
         [Fact]
         public void ConnectCommandSmokeTest()
         {
-            var messenger = new Mock<INetworkMessenger>();
+            var messenger = CreateDefaultNetworkMessenger();
             messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>())).Returns(Task.Delay(0)).Verifiable();
             messenger.SetupGet(x => x.IsConnected).Returns(Observable.Return(false));
 
@@ -80,7 +80,7 @@ namespace Espera.Android.Tests
         public void IsConnectedIsFalseWhileConnectCommandExecutesWithPassword()
         {
             var isConnected = new BehaviorSubject<bool>(false);
-            var messenger = new Mock<INetworkMessenger>();
+            var messenger = CreateDefaultNetworkMessenger();
             messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>()))
                 .Callback(() => isConnected.OnNext(true))
                 .Returns(Task.Delay(0)).Verifiable();
@@ -98,6 +98,25 @@ namespace Espera.Android.Tests
             isConnected.FirstAsync(x => x).Subscribe(_ => Assert.False(vm.IsConnected));
 
             vm.ConnectCommand.Execute(null);
+        }
+
+        [Fact]
+        public void MinimumServerVersionMustBeMet()
+        {
+            var messenger = new Mock<INetworkMessenger>();
+            messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>())).Returns(Task.Delay(0));
+            messenger.SetupGet(x => x.IsConnected).Returns(Observable.Return(true));
+            messenger.Setup(x => x.GetServerVersion()).Returns(new Version("0.1.0").ToTaskResult());
+
+            NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
+
+            var vm = new MainViewModel(Observable.Return(12345));
+
+            var thrown = vm.ConnectionFailed.CreateCollection();
+
+            vm.ConnectCommand.Execute(null);
+
+            Assert.Equal(1, thrown.Count);
         }
 
         [Fact]
@@ -125,7 +144,7 @@ namespace Espera.Android.Tests
         public void PortChangeWhileDisconnectedDoesntCallDisconnect()
         {
             var messenger = new Mock<INetworkMessenger>();
-            messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>())).Returns(Task.Delay(0)).Verifiable();
+            messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>())).Returns(Task.Delay(0));
             messenger.Setup(x => x.Disconnect()).Verifiable();
             messenger.SetupGet(x => x.IsConnected).Returns(Observable.Return(false));
 
@@ -137,6 +156,17 @@ namespace Espera.Android.Tests
             port.OnNext(123456);
 
             messenger.Verify(x => x.Disconnect(), Times.Never);
+        }
+
+        private static Mock<INetworkMessenger> CreateDefaultNetworkMessenger()
+        {
+            var messenger = new Mock<INetworkMessenger>();
+            messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>())).Returns(Task.Delay(0));
+            messenger.Setup(x => x.Disconnect());
+            messenger.SetupGet(x => x.IsConnected).Returns(Observable.Return(true));
+            messenger.Setup(x => x.GetServerVersion()).Returns(new Version("999.999.999").ToTaskResult());
+
+            return messenger;
         }
     }
 }

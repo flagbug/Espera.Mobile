@@ -46,8 +46,7 @@ namespace Espera.Android.Views
             this.progressDialog.Indeterminate = true;
             this.progressDialog.SetCancelable(false);
 
-            this.ViewModel.LoadCommand.IsExecuting.Skip(1)
-                .ObserveOn(RxApp.MainThreadScheduler)
+            this.ViewModel.LoadCommand.IsExecuting
                 .Subscribe(x =>
                 {
                     if (x)

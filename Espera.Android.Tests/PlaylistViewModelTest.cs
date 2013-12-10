@@ -1,17 +1,43 @@
 ﻿using Espera.Android.Network;
 using Espera.Android.ViewModels;
+using Microsoft.Reactive.Testing;
 using Moq;
 using ReactiveUI;
+using ReactiveUI.Testing;
 using System;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Espera.Android.Tests
 {
     public class PlaylistViewModelTest
     {
+        [Fact]
+        public void LoadPlaylistCommandHasTimeout()
+        {
+            var messenger = CreateDefaultPlaylistMessenger();
+            messenger.Setup(x => x.GetCurrentPlaylist()).Returns(async () =>
+            {
+                await Task.Delay(1000);
+                return null;
+            });
+
+            var vm = new PlaylistViewModel();
+
+            var thrown = vm.LoadPlaylistCommand.ThrownExceptions.CreateCollection();
+
+            (new TestScheduler()).With(scheduler =>
+            {
+                vm.LoadPlaylistCommand.Execute(null);
+                scheduler.AdvanceByMs(15000);
+            });
+
+            Assert.Equal(1, thrown.Count);
+        }
+
         [Fact]
         public void LoadPlaylistCommandSmokeTest()
         {

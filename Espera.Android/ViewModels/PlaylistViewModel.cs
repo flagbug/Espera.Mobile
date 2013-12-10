@@ -17,7 +17,8 @@ namespace Espera.Android.ViewModels
                 .Select(x => x == AccessPermission.Admin);
 
             this.LoadPlaylistCommand = new ReactiveCommand();
-            this.playlist = this.LoadPlaylistCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.GetCurrentPlaylist())
+            this.playlist = this.LoadPlaylistCommand.RegisterAsync(x =>
+                    NetworkMessenger.Instance.GetCurrentPlaylist().ToObservable().Timeout(TimeSpan.FromSeconds(15), RxApp.TaskpoolScheduler))
                 .ToProperty(this, x => x.Playlist);
 
             NetworkMessenger.Instance.PlaylistChanged.Where(_ => this.Playlist != null)
@@ -33,7 +34,8 @@ namespace Espera.Android.ViewModels
             this.PlayPlaylistSongCommand = new ReactiveCommand(this.CanModify);
             this.Message = this.PlayPlaylistSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance
                     .PlayPlaylistSong(this.Playlist.Songs[(int)x].Guid))
-                .Select(x => x.StatusCode == 200 ? "Playing song" : "Playback failed");
+                .Select(x => x.StatusCode == 200 ? "Playing song" : "Playback failed")
+                .Merge(this.LoadPlaylistCommand.ThrownExceptions.Select(_ => "Loading playlist failed"));
 
             this.PlayNextSongCommand = this.playlist.Where(x => x != null)
                 .Select(x => x.Changed.Select(y => x).StartWith(x))

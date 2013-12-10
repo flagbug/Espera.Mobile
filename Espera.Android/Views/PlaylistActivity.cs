@@ -118,7 +118,7 @@ namespace Espera.Android.Views
                 .Subscribe(x => this.HandleDisconnect());
 
             this.progressDialog = new ProgressDialog(this);
-            this.progressDialog.SetMessage("Loading artists");
+            this.progressDialog.SetMessage("Loading playlist");
             this.progressDialog.Indeterminate = true;
             this.progressDialog.SetCancelable(false);
 

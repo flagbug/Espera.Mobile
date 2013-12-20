@@ -10,12 +10,11 @@ namespace Espera.Android.Network
     [Service]
     internal class NetworkService : Service
     {
-        private const int NotificationId = 0;
         private INetworkMessenger keepAlive;
 
         public override IBinder OnBind(Intent intent)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public override void OnCreate()
@@ -31,26 +30,24 @@ namespace Espera.Android.Network
 
         public override void OnDestroy()
         {
-            base.OnDestroy();
-
             keepAlive.Disconnect();
             keepAlive.Dispose();
+
+            base.OnDestroy();
         }
 
         private void NotifyNetworkMessengerConnected()
         {
-            var messenger = (NotificationManager)this.GetSystemService(NotificationService);
             var notification = new Notification(Resource.Drawable.Play, "Espera is connected");
             var pendingIntent = PendingIntent.GetActivity(this, 0, new Intent(this, typeof(MainActivity)), 0);
             notification.SetLatestEventInfo(this, "Espera Network", "Espera is connected", pendingIntent);
 
-            messenger.Notify(NotificationId, notification);
+            this.StartForeground((int)NotificationFlags.ForegroundService, notification);
         }
 
         private void NotifyNetworkMessengerDisconnected()
         {
-            var messenger = (NotificationManager)this.GetSystemService(NotificationService);
-            messenger.Cancel(NotificationId);
+            this.StopForeground(true);
         }
     }
 }

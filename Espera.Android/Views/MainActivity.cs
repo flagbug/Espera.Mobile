@@ -20,7 +20,7 @@ using IMenuItem = Android.Views.IMenuItem;
 namespace Espera.Android.Views
 {
     [Activity(Label = "Espera", MainLauncher = true, Icon = "@drawable/icon",
-        ConfigurationChanges = ConfigChanges.Orientation)]
+        ConfigurationChanges = ConfigChanges.Orientation, LaunchMode = LaunchMode.SingleTop)]
     public class MainActivity : ReactiveActivity<MainViewModel>, ActionBarSherlock.IOnCreateOptionsMenuListener
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;

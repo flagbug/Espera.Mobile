@@ -53,9 +53,9 @@ namespace Espera.Android.ViewModels
 
             await NetworkMessenger.Instance.ConnectAsync(address, port);
 
+#if RELEASE
             Version version = await NetworkMessenger.Instance.GetServerVersion();
 
-#if RELEASE
             var minimumVersion = new Version("2.0.0");
             if (version < minimumVersion)
             {

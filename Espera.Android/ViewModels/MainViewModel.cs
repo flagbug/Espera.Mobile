@@ -1,4 +1,5 @@
 using Espera.Android.Network;
+using Espera.Android.Settings;
 using ReactiveUI;
 using System;
 using System.Net;
@@ -13,11 +14,11 @@ namespace Espera.Android.ViewModels
     {
         private readonly ObservableAsPropertyHelper<bool> isConnected;
 
-        public MainViewModel(IObservable<int> port)
+        public MainViewModel()
         {
             this.ConnectCommand = new ReactiveCommand();
             this.ConnectCommand.RegisterAsync(x =>
-                ConnectAsync(port.FirstAsync().Wait()).ToObservable()
+                ConnectAsync(UserSettings.Instance.Port).ToObservable()
                     .Timeout(TimeSpan.FromSeconds(10), RxApp.TaskpoolScheduler)
                     .Catch<Unit, TimeoutException>(ex => Observable.Throw<Unit>(new Exception("Connection failed"))));
 
@@ -28,7 +29,7 @@ namespace Espera.Android.ViewModels
                 .CombineLatest(this.ConnectCommand.IsExecuting, (isConnected, isExecuting) => isConnected && !isExecuting)
                 .ToProperty(this, x => x.IsConnected);
 
-            port.DistinctUntilChanged()
+            UserSettings.Instance.WhenAnyValue(x => x.Port).DistinctUntilChanged()
                 .CombineLatestValue(NetworkMessenger.Instance.IsConnected, (p, connected) => connected)
                 .Where(x => x)
                 .Subscribe(x => NetworkMessenger.Instance.Disconnect());
@@ -38,14 +39,10 @@ namespace Espera.Android.ViewModels
 
         public IObservable<string> ConnectionFailed { get; private set; }
 
-        public bool EnableAdministratorMode { get; set; }
-
         public bool IsConnected
         {
             get { return this.isConnected.Value; }
         }
-
-        public string Password { get; set; }
 
         private async Task ConnectAsync(int port)
         {
@@ -64,9 +61,9 @@ namespace Espera.Android.ViewModels
             }
 #endif
 
-            if (this.EnableAdministratorMode)
+            if (UserSettings.Instance.EnableAdministratorMode)
             {
-                ResponseInfo response = await NetworkMessenger.Instance.Authorize(this.Password);
+                ResponseInfo response = await NetworkMessenger.Instance.Authorize(UserSettings.Instance.AdministratorPassword);
 
                 if (response.StatusCode != 200)
                 {

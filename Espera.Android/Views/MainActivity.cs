@@ -3,7 +3,6 @@ using Android.Content;
 using Android.Content.PM;
 using Android.Net.Wifi;
 using Android.OS;
-using Android.Preferences;
 using Android.Widget;
 using Espera.Android.Network;
 using Espera.Android.ViewModels;
@@ -12,7 +11,6 @@ using ReactiveUI.Android;
 using ReactiveUI.Mobile;
 using System;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using Xamarin.ActionbarSherlockBinding;
 using Xamarin.ActionbarSherlockBinding.Views;
 using IMenuItem = Android.Views.IMenuItem;
@@ -24,15 +22,12 @@ namespace Espera.Android.Views
     public class MainActivity : ReactiveActivity<MainViewModel>, ActionBarSherlock.IOnCreateOptionsMenuListener
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;
-        private readonly BehaviorSubject<int> port;
         private readonly ActionBarSherlock sherlock;
 
         public MainActivity()
         {
             this.autoSuspendHelper = new AutoSuspendActivityHelper(this);
             this.sherlock = ActionBarSherlock.Wrap(this);
-
-            this.port = new BehaviorSubject<int>(0);
         }
 
         private Button ConnectButton
@@ -88,7 +83,7 @@ namespace Espera.Android.Views
                 this.ShowWifiPrompt(wifiManager);
             }
 
-            this.ViewModel = new MainViewModel(this.port);
+            this.ViewModel = new MainViewModel();
             this.BindCommand(this.ViewModel, x => x.ConnectCommand, x => x.ConnectButton);
             this.ViewModel.ConnectCommand.IsExecuting
                 .Select(x => x ? "Connecting..." : "Connect")
@@ -115,15 +110,6 @@ namespace Espera.Android.Views
         {
             base.OnResume();
             this.autoSuspendHelper.OnResume();
-
-            string portString = PreferenceManager.GetDefaultSharedPreferences(this).GetString("preference_port", null);
-            this.port.OnNext(Int32.Parse(portString));
-
-            bool enableAdministratorMode = PreferenceManager.GetDefaultSharedPreferences(this).GetBoolean("preference_enable_administrator_mode", false);
-            this.ViewModel.EnableAdministratorMode = enableAdministratorMode;
-
-            string password = PreferenceManager.GetDefaultSharedPreferences(this).GetString("preference_administrator_password", null);
-            this.ViewModel.Password = password;
         }
 
         protected override void OnSaveInstanceState(Bundle outState)

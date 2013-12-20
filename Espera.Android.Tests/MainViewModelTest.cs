@@ -1,4 +1,5 @@
 ﻿using Espera.Android.Network;
+using Espera.Android.Settings;
 using Espera.Android.ViewModels;
 using Microsoft.Reactive.Testing;
 using Moq;
@@ -24,7 +25,7 @@ namespace Espera.Android.Tests
 
             NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
 
-            var vm = new MainViewModel(Observable.Return(12345));
+            var vm = new MainViewModel();
 
             vm.ConnectCommand.Execute(null);
 
@@ -40,7 +41,7 @@ namespace Espera.Android.Tests
 
             NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
 
-            var vm = new MainViewModel(Observable.Return(12345));
+            var vm = new MainViewModel();
 
             var coll = vm.ConnectionFailed.CreateCollection();
 
@@ -63,11 +64,10 @@ namespace Espera.Android.Tests
 
             NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
 
-            var vm = new MainViewModel(Observable.Return(12345))
-            {
-                EnableAdministratorMode = true,
-                Password = "Bla"
-            };
+            UserSettings.Instance.EnableAdministratorMode = true;
+            UserSettings.Instance.AdministratorPassword = "Bla";
+
+            var vm = new MainViewModel();
 
             var coll = vm.ConnectionFailed.CreateCollection();
 
@@ -89,11 +89,10 @@ namespace Espera.Android.Tests
 
             NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
 
-            var vm = new MainViewModel(Observable.Return(12345))
-            {
-                EnableAdministratorMode = true,
-                Password = "Bla"
-            };
+            UserSettings.Instance.EnableAdministratorMode = true;
+            UserSettings.Instance.AdministratorPassword = "Bla";
+
+            var vm = new MainViewModel();
 
             isConnected.FirstAsync(x => x).Subscribe(_ => Assert.False(vm.IsConnected));
 
@@ -110,52 +109,13 @@ namespace Espera.Android.Tests
 
             NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
 
-            var vm = new MainViewModel(Observable.Return(12345));
+            var vm = new MainViewModel();
 
             var thrown = vm.ConnectionFailed.CreateCollection();
 
             vm.ConnectCommand.Execute(null);
 
             Assert.Equal(1, thrown.Count);
-        }
-
-        [Fact]
-        public void PortChangeCallsDisconnect()
-        {
-            var messenger = new Mock<INetworkMessenger>();
-            messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>())).Returns(Task.Delay(0)).Verifiable();
-            messenger.Setup(x => x.Disconnect()).Verifiable();
-
-            var isConnected = new BehaviorSubject<bool>(false);
-            messenger.SetupGet(x => x.IsConnected).Returns(isConnected);
-
-            NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
-
-            var port = new BehaviorSubject<int>(12345);
-            var vm = new MainViewModel(port);
-
-            isConnected.OnNext(true);
-            port.OnNext(123456);
-
-            messenger.Verify(x => x.Disconnect(), Times.Once);
-        }
-
-        [Fact]
-        public void PortChangeWhileDisconnectedDoesntCallDisconnect()
-        {
-            var messenger = new Mock<INetworkMessenger>();
-            messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>())).Returns(Task.Delay(0));
-            messenger.Setup(x => x.Disconnect()).Verifiable();
-            messenger.SetupGet(x => x.IsConnected).Returns(Observable.Return(false));
-
-            NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
-
-            var port = new BehaviorSubject<int>(12345);
-            var vm = new MainViewModel(port);
-
-            port.OnNext(123456);
-
-            messenger.Verify(x => x.Disconnect(), Times.Never);
         }
 
         private static Mock<INetworkMessenger> CreateDefaultNetworkMessenger()

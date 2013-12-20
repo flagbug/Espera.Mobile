@@ -28,11 +28,6 @@ namespace Espera.Android.ViewModels
             this.isConnected = NetworkMessenger.Instance.IsConnected
                 .CombineLatest(this.ConnectCommand.IsExecuting, (isConnected, isExecuting) => isConnected && !isExecuting)
                 .ToProperty(this, x => x.IsConnected);
-
-            UserSettings.Instance.WhenAnyValue(x => x.Port).DistinctUntilChanged()
-                .CombineLatestValue(NetworkMessenger.Instance.IsConnected, (p, connected) => connected)
-                .Where(x => x)
-                .Subscribe(x => NetworkMessenger.Instance.Disconnect());
         }
 
         public ReactiveCommand ConnectCommand { get; private set; }

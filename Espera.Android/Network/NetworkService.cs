@@ -1,7 +1,9 @@
 using Android.App;
 using Android.Content;
 using Android.OS;
+using Espera.Android.Settings;
 using Espera.Android.Views;
+using ReactiveUI;
 using System;
 using System.Reactive.Linq;
 
@@ -26,6 +28,11 @@ namespace Espera.Android.Network
                 .Subscribe(x => this.NotifyNetworkMessengerConnected());
 
             this.keepAlive.Disconnected.Subscribe(x => this.NotifyNetworkMessengerDisconnected());
+
+            UserSettings.Instance.WhenAnyValue(x => x.Port).DistinctUntilChanged()
+                .CombineLatestValue(NetworkMessenger.Instance.IsConnected, (p, connected) => connected)
+                .Where(x => x)
+                .Subscribe(x => NetworkMessenger.Instance.Disconnect());
         }
 
         public override void OnDestroy()

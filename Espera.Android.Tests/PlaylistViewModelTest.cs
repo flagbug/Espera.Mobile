@@ -99,7 +99,7 @@ namespace Espera.Android.Tests
 
             var messenger = CreateDefaultPlaylistMessenger();
             messenger.Setup(x => x.GetCurrentPlaylist()).Returns(playlist.ToTaskResult());
-            messenger.Setup(x => x.PlayNextSong()).Returns(new ResponseInfo(200, "Ok").ToTaskResult()).Verifiable();
+            messenger.Setup(x => x.PlayNextSong()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
 
             var index = new Subject<int?>();
             messenger.SetupGet(x => x.PlaylistIndexChanged).Returns(index);
@@ -127,8 +127,8 @@ namespace Espera.Android.Tests
 
             var messenger = CreateDefaultPlaylistMessenger();
             messenger.Setup(x => x.GetCurrentPlaylist()).Returns(playlist.ToTaskResult());
-            messenger.Setup(x => x.ContinueSong()).Returns(new ResponseInfo(200, "Ok").ToTaskResult()).Verifiable();
-            messenger.Setup(x => x.PauseSong()).Returns(new ResponseInfo(200, "Ok").ToTaskResult()).Verifiable();
+            messenger.Setup(x => x.ContinueSong()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
+            messenger.Setup(x => x.PauseSong()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
 
             var playbackState = new Subject<PlaybackState>();
             messenger.SetupGet(x => x.PlaybackStateChanged).Returns(playbackState);
@@ -162,7 +162,7 @@ namespace Espera.Android.Tests
             var messenger = CreateDefaultPlaylistMessenger();
             messenger.Setup(x => x.GetCurrentPlaylist()).Returns(playlist.ToTaskResult());
             messenger.Setup(x => x.PlayPlaylistSong(It.Is<Guid>(y => y == songs[1].Guid)))
-                .Returns(new ResponseInfo(200, "Ok").ToTaskResult()).Verifiable();
+                .Returns(new ResponseInfo(200, "Ok").ToTaskResult());
 
             var vm = new PlaylistViewModel();
 
@@ -185,7 +185,7 @@ namespace Espera.Android.Tests
 
             var messenger = CreateDefaultPlaylistMessenger();
             messenger.Setup(x => x.GetCurrentPlaylist()).Returns(playlist.ToTaskResult());
-            messenger.Setup(x => x.PlayPreviousSong()).Returns(new ResponseInfo(200, "Ok").ToTaskResult()).Verifiable();
+            messenger.Setup(x => x.PlayPreviousSong()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
 
             var index = new Subject<int?>();
             messenger.SetupGet(x => x.PlaylistIndexChanged).Returns(index);

@@ -20,7 +20,6 @@ namespace Espera.Android.Tests
         public void ConnectCommandSmokeTest()
         {
             var messenger = CreateDefaultNetworkMessenger();
-            messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>())).Returns(Task.Delay(0)).Verifiable();
             messenger.SetupGet(x => x.IsConnected).Returns(Observable.Return(false));
 
             NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
@@ -58,7 +57,6 @@ namespace Espera.Android.Tests
         public void ConnectCommandWithWrongPasswordTriggersConnectionFailed()
         {
             var messenger = new Mock<INetworkMessenger>();
-            messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>())).Returns(Task.Delay(0)).Verifiable();
             messenger.SetupGet(x => x.IsConnected).Returns(Observable.Return(false));
             messenger.Setup(x => x.Authorize(It.IsAny<string>())).Returns(new ResponseInfo(401, "Wrong password").ToTaskResult());
 
@@ -103,7 +101,6 @@ namespace Espera.Android.Tests
         public void MinimumServerVersionMustBeMet()
         {
             var messenger = new Mock<INetworkMessenger>();
-            messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>())).Returns(Task.Delay(0));
             messenger.SetupGet(x => x.IsConnected).Returns(Observable.Return(true));
             messenger.Setup(x => x.GetServerVersion()).Returns(new Version("0.1.0").ToTaskResult());
 
@@ -121,8 +118,6 @@ namespace Espera.Android.Tests
         private static Mock<INetworkMessenger> CreateDefaultNetworkMessenger()
         {
             var messenger = new Mock<INetworkMessenger>();
-            messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>())).Returns(Task.Delay(0));
-            messenger.Setup(x => x.Disconnect());
             messenger.SetupGet(x => x.IsConnected).Returns(Observable.Return(true));
             messenger.Setup(x => x.GetServerVersion()).Returns(new Version("999.999.999").ToTaskResult());
 

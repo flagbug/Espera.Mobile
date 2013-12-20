@@ -35,8 +35,7 @@ namespace Espera.Android.Tests
         public void LoadCommandTimeoutTriggersMessages()
         {
             var messenger = new Mock<INetworkMessenger>();
-            messenger.Setup(x => x.GetSongsAsync())
-                .Returns(async () =>
+            messenger.Setup(x => x.GetSongsAsync()).Returns(async () =>
                 {
                     await Task.Delay(1000);
                     return null;

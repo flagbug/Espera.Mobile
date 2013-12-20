@@ -10,9 +10,9 @@ namespace Espera.Android
     internal interface IHandleDisconnect
     { }
 
-    public static class HandleDisconnectExtension
+    internal static class HandleDisconnectExtension
     {
-        public static void HandleDisconnect(this Activity activity)
+        public static void HandleDisconnect<T>(this T activity) where T : Activity, IHandleDisconnect
         {
             var intent = new Intent(activity, typeof(MainActivity));
             intent.SetFlags(ActivityFlags.ClearTop);

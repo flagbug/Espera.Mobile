@@ -109,6 +109,7 @@
     <Compile Include="Network\INetworkMessenger.cs" />
     <Compile Include="Network\NetworkHelpers.cs" />
     <Compile Include="Network\NetworkMessenger.cs" />
+    <Compile Include="Network\NetworkService.cs" />
     <Compile Include="Network\ResponseInfo.cs" />
     <Compile Include="PlaybackState.cs" />
     <Compile Include="ReactiveHelpers.cs" />

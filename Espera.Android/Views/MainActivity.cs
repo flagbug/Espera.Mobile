@@ -1,4 +1,5 @@
 ﻿using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.Net.Wifi;
 using Android.OS;
@@ -102,13 +103,8 @@ namespace Espera.Android.Views
 
             this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadCurrentPlaylistButton.Enabled);
             this.LoadCurrentPlaylistButton.Click += (sender, args) => this.StartActivity(typeof(PlaylistActivity));
-        }
 
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-
-            NetworkMessenger.Instance.Dispose();
+            this.StartService(new Intent(this, typeof(NetworkService)));
         }
 
         protected override void OnPause()

@@ -92,6 +92,7 @@ namespace Espera.Android.Views
                     });
                     builder.Create().Show();
                 });
+            this.PlaylistListView.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty);
 
             this.ViewModel.CanModify.Select(x => x ? ViewStates.Visible : ViewStates.Gone)
                 .BindTo(this.PlaybackControlPanel, x => x.Visibility);

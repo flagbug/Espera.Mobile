@@ -55,6 +55,12 @@ namespace Espera.Android.Network
         private void NotifyNetworkMessengerDisconnected()
         {
             this.StopForeground(true);
+
+            var intent = new Intent(this, typeof(MainActivity));
+            intent.SetFlags(ActivityFlags.ClearTop | ActivityFlags.NewTask);
+            intent.PutExtra("connectionLost", true);
+
+            this.StartActivity(intent);
         }
     }
 }

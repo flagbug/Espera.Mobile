@@ -2,7 +2,6 @@ using Android.App;
 using Android.Content.PM;
 using Android.OS;
 using Android.Widget;
-using Espera.Android.Network;
 using Espera.Android.Settings;
 using Espera.Android.ViewModels;
 using Newtonsoft.Json;
@@ -16,7 +15,7 @@ using System.Linq;
 namespace Espera.Android.Views
 {
     [Activity(Label = "Songs", ConfigurationChanges = ConfigChanges.Orientation)]
-    public class SongsActivity : ReactiveActivity<SongsViewModel>, IHandleDisconnect
+    public class SongsActivity : ReactiveActivity<SongsViewModel>
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;
 
@@ -76,8 +75,6 @@ namespace Espera.Android.Views
             };
 
             this.ViewModel.Message.Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show());
-
-            NetworkMessenger.Instance.Disconnected.Subscribe(x => this.HandleDisconnect());
         }
 
         protected override void OnPause()

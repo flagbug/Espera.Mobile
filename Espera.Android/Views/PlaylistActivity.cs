@@ -3,7 +3,6 @@ using Android.Content.PM;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
-using Espera.Android.Network;
 using Espera.Android.ViewModels;
 using ReactiveUI;
 using ReactiveUI.Android;
@@ -14,7 +13,7 @@ using System.Reactive.Linq;
 namespace Espera.Android.Views
 {
     [Activity(Label = "Current Playlist", ConfigurationChanges = ConfigChanges.Orientation)]
-    public class PlaylistActivity : ReactiveActivity<PlaylistViewModel>, IHandleDisconnect
+    public class PlaylistActivity : ReactiveActivity<PlaylistViewModel>
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;
         private ProgressDialog progressDialog;
@@ -114,9 +113,6 @@ namespace Espera.Android.Views
 
             this.ViewModel.PlayNextSongCommand.CanExecuteObservable.Select(alphaSelector)
                 .Subscribe(x => this.PlayNextSongButton.Background.SetAlpha(x));
-
-            NetworkMessenger.Instance.Disconnected.FirstAsync()
-                .Subscribe(x => this.HandleDisconnect());
 
             this.progressDialog = new ProgressDialog(this);
             this.progressDialog.SetMessage("Loading playlist");

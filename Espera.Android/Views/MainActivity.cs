@@ -72,17 +72,6 @@ namespace Espera.Android.Views
 
             this.SetContentView(Resource.Layout.Main);
 
-            if (this.Intent.HasExtra("connectionLost"))
-            {
-                Toast.MakeText(this, "Connection lost", ToastLength.Long).Show();
-            }
-
-            var wifiManager = (WifiManager)this.GetSystemService(WifiService);
-            if (!wifiManager.IsWifiEnabled)
-            {
-                this.ShowWifiPrompt(wifiManager);
-            }
-
             this.ViewModel = new MainViewModel();
             this.BindCommand(this.ViewModel, x => x.ConnectCommand, x => x.ConnectButton);
             this.ViewModel.ConnectCommand.IsExecuting
@@ -100,6 +89,12 @@ namespace Espera.Android.Views
             this.StartService(new Intent(this, typeof(NetworkService)));
         }
 
+        protected override void OnNewIntent(Intent intent)
+        {
+            base.OnNewIntent(intent);
+            this.Intent = intent;
+        }
+
         protected override void OnPause()
         {
             base.OnPause();
@@ -110,6 +105,17 @@ namespace Espera.Android.Views
         {
             base.OnResume();
             this.autoSuspendHelper.OnResume();
+
+            if (this.Intent.HasExtra("connectionLost"))
+            {
+                Toast.MakeText(this, "Connection lost", ToastLength.Long).Show();
+            }
+
+            var wifiManager = (WifiManager)this.GetSystemService(WifiService);
+            if (!wifiManager.IsWifiEnabled)
+            {
+                this.ShowWifiPrompt(wifiManager);
+            }
         }
 
         protected override void OnSaveInstanceState(Bundle outState)

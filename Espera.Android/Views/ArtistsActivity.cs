@@ -3,18 +3,16 @@ using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Widget;
-using Espera.Android.Network;
 using Espera.Android.ViewModels;
 using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
 using System;
-using System.Reactive.Linq;
 
 namespace Espera.Android.Views
 {
     [Activity(Label = "Artists", ConfigurationChanges = ConfigChanges.Orientation)]
-    public class ArtistsActivity : ReactiveActivity<ArtistsViewModel>, IHandleDisconnect
+    public class ArtistsActivity : ReactiveActivity<ArtistsViewModel>
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;
         private ProgressDialog progressDialog;
@@ -61,9 +59,6 @@ namespace Espera.Android.Views
                 });
 
             this.ViewModel.Messages.Subscribe(x => Toast.MakeText(this, x, ToastLength.Long).Show());
-
-            NetworkMessenger.Instance.Disconnected.FirstAsync()
-                .Subscribe(x => this.HandleDisconnect());
 
             this.ViewModel.LoadCommand.Execute(null);
         }

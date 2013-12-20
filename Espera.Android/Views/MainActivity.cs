@@ -77,8 +77,6 @@ namespace Espera.Android.Views
 
             this.SetContentView(Resource.Layout.Main);
 
-            PreferenceManager.SetDefaultValues(this, Resource.Layout.Settings, false);
-
             if (this.Intent.HasExtra("connectionLost"))
             {
                 Toast.MakeText(this, "Connection lost", ToastLength.Long).Show();

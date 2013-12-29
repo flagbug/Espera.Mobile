@@ -36,11 +36,15 @@ namespace Espera.Android.Network
 
         Task<Playlist> GetCurrentPlaylist();
 
-        Task<PlaybackState> GetPlaybackSate();
+        Task<PlaybackState> GetPlaybackState();
 
         Task<Version> GetServerVersion();
 
         Task<IReadOnlyList<Song>> GetSongsAsync();
+
+        Task<ResponseInfo> MovePlaylistSongDown(Guid guid);
+
+        Task<ResponseInfo> MovePlaylistSongUp(Guid guid);
 
         Task<ResponseInfo> PauseSong();
 
@@ -53,9 +57,5 @@ namespace Espera.Android.Network
         Task<ResponseInfo> PlaySongs(IEnumerable<Guid> guids);
 
         Task<ResponseInfo> RemovePlaylistSong(Guid guid);
-
-        Task<ResponseInfo> MovePlaylistSongUp(Guid guid);
-
-        Task<ResponseInfo> MovePlaylistSongDown(Guid guid);
     }
 }

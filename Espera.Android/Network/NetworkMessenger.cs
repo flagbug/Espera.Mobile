@@ -230,7 +230,7 @@ namespace Espera.Android.Network
             return Playlist.Deserialize(content);
         }
 
-        public async Task<PlaybackState> GetPlaybackSate()
+        public async Task<PlaybackState> GetPlaybackState()
         {
             JObject response = await this.SendRequest("get-playback-state");
 

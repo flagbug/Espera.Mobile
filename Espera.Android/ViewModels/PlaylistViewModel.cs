@@ -54,7 +54,7 @@ namespace Espera.Android.ViewModels
             this.PlayPreviousSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.PlayPreviousSong());
 
             var playbackState = NetworkMessenger.Instance.PlaybackStateChanged
-                .Merge(NetworkMessenger.Instance.GetPlaybackSate().ToObservable().FirstAsync())
+                .Merge(NetworkMessenger.Instance.GetPlaybackState().ToObservable().FirstAsync())
                 .Publish(PlaybackState.None);
             playbackState.Connect();
 

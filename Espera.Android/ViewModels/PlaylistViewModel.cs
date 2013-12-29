@@ -84,6 +84,12 @@ namespace Espera.Android.ViewModels
                 NetworkMessenger.Instance.RemovePlaylistSong(this.Playlist.Songs[(int)x].Guid))
                 .Where(x => x.StatusCode == 200)
                 .InvokeCommand(this.LoadPlaylistCommand); // The server doesn't send an update...no idea why
+
+            this.MoveSongDownCommand = this.CanModify.ToCommand();
+            this.MoveSongDownCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.MovePlaylistSongDown(this.Playlist.Songs[(int)x].Guid));
+
+            this.MoveSongUpCommand = this.CanModify.ToCommand();
+            this.MoveSongUpCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.MovePlaylistSongUp(this.Playlist.Songs[(int)x].Guid));
         }
 
         public IObservable<bool> CanModify { get; private set; }
@@ -96,6 +102,10 @@ namespace Espera.Android.ViewModels
         public ReactiveCommand LoadPlaylistCommand { get; private set; }
 
         public IObservable<string> Message { get; private set; }
+
+        public ReactiveCommand MoveSongDownCommand { get; private set; }
+
+        public ReactiveCommand MoveSongUpCommand { get; private set; }
 
         public Playlist Playlist
         {

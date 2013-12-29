@@ -76,7 +76,7 @@ namespace Espera.Android.Views
                 .Subscribe(x =>
                 {
                     var builder = new AlertDialog.Builder(this);
-                    builder.SetItems(new[] { "Play", "Remove" }, (o, eventArgs) =>
+                    builder.SetItems(new[] { "Play", "Remove", "Move Up", "Move Down" }, (o, eventArgs) =>
                     {
                         switch (eventArgs.Which)
                         {
@@ -86,6 +86,14 @@ namespace Espera.Android.Views
 
                             case 1:
                                 this.ViewModel.RemoveSongCommand.Execute(x.Item1);
+                                break;
+
+                            case 2:
+                                this.ViewModel.MoveSongUpCommand.Execute(x.Item1);
+                                break;
+
+                            case 3:
+                                this.ViewModel.MoveSongDownCommand.Execute(x.Item1);
                                 break;
                         }
                     });

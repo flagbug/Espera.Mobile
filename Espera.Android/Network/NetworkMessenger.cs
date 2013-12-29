@@ -264,6 +264,30 @@ namespace Espera.Android.Network
             return songs;
         }
 
+        public async Task<ResponseInfo> MovePlaylistSongDown(Guid guid)
+        {
+            var parameters = new JObject
+            {
+                { "entryGuid", guid.ToString() }
+            };
+
+            JObject response = await this.SendRequest("move-playlist-song-down", parameters);
+
+            return CreateResponseInfo(response);
+        }
+
+        public async Task<ResponseInfo> MovePlaylistSongUp(Guid guid)
+        {
+            var parameters = new JObject
+            {
+                { "entryGuid", guid.ToString() }
+            };
+
+            JObject response = await this.SendRequest("move-playlist-song-up", parameters);
+
+            return CreateResponseInfo(response);
+        }
+
         public async Task<ResponseInfo> PauseSong()
         {
             JObject response = await this.SendRequest("post-pause-song");
@@ -369,7 +393,7 @@ namespace Espera.Android.Network
                     await this.SendMessage(jMessage);
                 }
 
-                catch (Exception)
+                catch (Exception ex)
                 {
                     this.disconnected.OnNext(Unit.Default);
 

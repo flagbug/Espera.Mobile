@@ -53,5 +53,9 @@ namespace Espera.Android.Network
         Task<ResponseInfo> PlaySongs(IEnumerable<Guid> guids);
 
         Task<ResponseInfo> RemovePlaylistSong(Guid guid);
+
+        Task<ResponseInfo> MovePlaylistSongUp(Guid guid);
+
+        Task<ResponseInfo> MovePlaylistSongDown(Guid guid);
     }
 }

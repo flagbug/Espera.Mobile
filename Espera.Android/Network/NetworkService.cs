@@ -46,7 +46,8 @@ namespace Espera.Android.Network
         private void NotifyNetworkMessengerConnected()
         {
             var notification = new Notification(Resource.Drawable.Play, "Espera is connected");
-            var pendingIntent = PendingIntent.GetActivity(this, 0, new Intent(this, typeof(MainActivity)), 0);
+            var intent = new Intent(this, typeof(MainActivity)).SetAction(Intent.ActionMain).AddCategory(Intent.CategoryLauncher);
+            var pendingIntent = PendingIntent.GetActivity(this, 0, intent, 0);
             notification.SetLatestEventInfo(this, "Espera Network", "Espera is connected", pendingIntent);
 
             this.StartForeground((int)NotificationFlags.ForegroundService, notification);

@@ -5,6 +5,7 @@ using Moq;
 using ReactiveUI;
 using ReactiveUI.Testing;
 using System;
+using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
@@ -67,6 +68,21 @@ namespace Espera.Android.Tests
             Assert.True(vm.Entries[playlist.CurrentIndex.Value].IsPlaying);
             //Assert.Equal(playlist.Name, vm.Name);
             Assert.Equal(playlist.Songs.Count, vm.Entries.Count);
+        }
+
+        [Fact]
+        public void PlayNextSongCommandCanExecuteIsFalseForEmptyPlaylist()
+        {
+            var playlist = new Playlist("Playlist 1", new List<Song>(), 0);
+
+            var messenger = CreateDefaultPlaylistMessenger();
+            messenger.Setup(x => x.GetCurrentPlaylist()).Returns(playlist.ToTaskResult());
+            messenger.Setup(x => x.PlayNextSong()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
+
+            var vm = new PlaylistViewModel();
+            vm.LoadPlaylistCommand.Execute(null);
+
+            Assert.False(vm.PlayNextSongCommand.CanExecute(null));
         }
 
         [Fact]
@@ -153,6 +169,21 @@ namespace Espera.Android.Tests
             messenger.Verify();
             messenger.Verify(x => x.PlayPlaylistSong(It.IsAny<Guid>()), Times.Once);
             Assert.Equal(1, coll.Count);
+        }
+
+        [Fact]
+        public void PlayPreviousSongCommandCanExecuteIsFalseForEmptyPlaylist()
+        {
+            var playlist = new Playlist("Playlist 1", new List<Song>(), 0);
+
+            var messenger = CreateDefaultPlaylistMessenger();
+            messenger.Setup(x => x.GetCurrentPlaylist()).Returns(playlist.ToTaskResult());
+            messenger.Setup(x => x.PlayNextSong()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
+
+            var vm = new PlaylistViewModel();
+            vm.LoadPlaylistCommand.Execute(null);
+
+            Assert.False(vm.PlayPreviousSongCommand.CanExecute(null));
         }
 
         [Fact]

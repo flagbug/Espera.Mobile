@@ -2,55 +2,23 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
 
 namespace Espera.Android
 {
     public class Playlist
     {
-        private readonly Subject<Unit> changed;
-
-        private int? currentIndex;
-
-        private IReadOnlyList<Song> songs;
-
         public Playlist(string name, IReadOnlyList<Song> songs, int? currentIndex)
         {
             this.Name = name;
-            this.songs = songs;
-            this.currentIndex = currentIndex;
-
-            this.changed = new Subject<Unit>();
+            this.Songs = songs;
+            this.CurrentIndex = currentIndex;
         }
 
-        public IObservable<Unit> Changed
-        {
-            get { return this.changed.AsObservable(); }
-        }
-
-        public int? CurrentIndex
-        {
-            get { return this.currentIndex; }
-            set
-            {
-                this.currentIndex = value;
-                this.changed.OnNext(Unit.Default);
-            }
-        }
+        public int? CurrentIndex { get; private set; }
 
         public string Name { get; private set; }
 
-        public IReadOnlyList<Song> Songs
-        {
-            get { return this.songs; }
-            set
-            {
-                this.songs = value;
-                this.changed.OnNext(Unit.Default);
-            }
-        }
+        public IReadOnlyList<Song> Songs { get; private set; }
 
         public static Playlist Deserialize(JToken json)
         {

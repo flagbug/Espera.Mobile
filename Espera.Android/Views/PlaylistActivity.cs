@@ -58,8 +58,7 @@ namespace Espera.Android.Views
             this.ViewModel = new PlaylistViewModel();
             this.ViewModel.Message.Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show());
 
-            this.OneWayBind(this.ViewModel, x => x.Playlist, x => x.PlaylistListView.Adapter,
-                playlist => playlist == null ? null : new PlaylistAdapter(this, playlist));
+            this.PlaylistListView.Adapter = new PlaylistAdapter(this, this.ViewModel.Entries);
             this.PlaylistListView.ItemClick += (sender, args) =>
             {
                 if (this.ViewModel.PlayPlaylistSongCommand.CanExecute(null))
@@ -72,31 +71,43 @@ namespace Espera.Android.Views
                 h => this.PlaylistListView.ItemLongClick += h)
                 .Select(x => x.EventArgs.Position)
                 .CombineLatest(this.ViewModel.CanModify, Tuple.Create)
-                .Where(x => x.Item2)
                 .Subscribe(x =>
                 {
                     var builder = new AlertDialog.Builder(this);
-                    builder.SetItems(new[] { "Play", "Remove", "Move Up", "Move Down" }, (o, eventArgs) =>
+                    if (x.Item2)
                     {
-                        switch (eventArgs.Which)
+                        builder.SetItems(new[] { "Play", "Remove", "Move Up", "Move Down", "Vote" }, (o, eventArgs) =>
                         {
-                            case 0:
-                                this.ViewModel.PlayPlaylistSongCommand.Execute(x.Item1);
-                                break;
+                            switch (eventArgs.Which)
+                            {
+                                case 0:
+                                    this.ViewModel.PlayPlaylistSongCommand.Execute(x.Item1);
+                                    break;
 
-                            case 1:
-                                this.ViewModel.RemoveSongCommand.Execute(x.Item1);
-                                break;
+                                case 1:
+                                    this.ViewModel.RemoveSongCommand.Execute(x.Item1);
+                                    break;
 
-                            case 2:
-                                this.ViewModel.MoveSongUpCommand.Execute(x.Item1);
-                                break;
+                                case 2:
+                                    this.ViewModel.MoveSongUpCommand.Execute(x.Item1);
+                                    break;
 
-                            case 3:
-                                this.ViewModel.MoveSongDownCommand.Execute(x.Item1);
-                                break;
-                        }
-                    });
+                                case 3:
+                                    this.ViewModel.MoveSongDownCommand.Execute(x.Item1);
+                                    break;
+
+                                case 4:
+                                    this.ViewModel.VoteCommand.Execute(x.Item1);
+                                    break;
+                            }
+                        });
+                    }
+
+                    else
+                    {
+                        builder.SetItems(new[] { "Vote" }, (sender, args) => this.ViewModel.VoteCommand.Execute(x.Item1));
+                    }
+
                     builder.Create().Show();
                 });
             this.PlaylistListView.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty);

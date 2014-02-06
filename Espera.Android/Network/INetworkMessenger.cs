@@ -18,8 +18,6 @@ namespace Espera.Android.Network
 
         IObservable<Playlist> PlaylistChanged { get; }
 
-        IObservable<int?> PlaylistIndexChanged { get; }
-
         Task<ResponseInfo> AddSongToPlaylist(Guid songGuid);
 
         Task<ResponseInfo> Authorize(string password);
@@ -57,5 +55,7 @@ namespace Espera.Android.Network
         Task<ResponseInfo> PlaySongs(IEnumerable<Guid> guids);
 
         Task<ResponseInfo> RemovePlaylistSong(Guid guid);
+
+        Task<ResponseInfo> Vote(Guid guid);
     }
 }

@@ -74,9 +74,6 @@ namespace Espera.Android.Network
             this.PlaylistChanged = pushMessages.Where(x => x["action"].ToString() == "update-current-playlist")
                 .Select(x => Playlist.Deserialize(x["content"]));
 
-            this.PlaylistIndexChanged = pushMessages.Where(x => x["action"].ToString() == "update-current-index")
-                .Select(x => x["content"]["index"].ToObject<int?>());
-
             this.PlaybackStateChanged = pushMessages.Where(x => x["action"].ToString() == "update-playback-state")
                 .Select(x => x["content"]["state"].ToObject<PlaybackState>());
 
@@ -103,8 +100,6 @@ namespace Espera.Android.Network
         public IObservable<PlaybackState> PlaybackStateChanged { get; private set; }
 
         public IObservable<Playlist> PlaylistChanged { get; private set; }
-
-        public IObservable<int?> PlaylistIndexChanged { get; private set; }
 
         public static async Task<IPAddress> DiscoverServer(int port)
         {
@@ -341,6 +336,18 @@ namespace Espera.Android.Network
             };
 
             JObject response = await this.SendRequest("post-remove-playlist-song", parameters);
+
+            return CreateResponseInfo(response);
+        }
+
+        public async Task<ResponseInfo> Vote(Guid guid)
+        {
+            var parameters = new JObject
+            {
+                { "entryGuid", guid.ToString() }
+            };
+
+            JObject response = await this.SendRequest("vote-for-song", parameters);
 
             return CreateResponseInfo(response);
         }

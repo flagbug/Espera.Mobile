@@ -5,7 +5,6 @@ using Moq;
 using ReactiveUI;
 using ReactiveUI.Testing;
 using System;
-using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
@@ -51,7 +50,7 @@ namespace Espera.Android.Tests
 
             vm.LoadPlaylistCommand.Execute(null);
 
-            Assert.Equal(playlist, vm.Playlist);
+            Assert.Equal(playlist.Songs.Count, vm.Entries.Count);
         }
 
         [Fact]
@@ -65,30 +64,9 @@ namespace Espera.Android.Tests
 
             var vm = new PlaylistViewModel();
 
-            Assert.Equal(playlist.CurrentIndex, vm.Playlist.CurrentIndex);
-            Assert.Equal(playlist.Name, vm.Playlist.Name);
-            Assert.True(playlist.Songs.SequenceEqual(vm.Playlist.Songs));
-        }
-
-        [Fact]
-        public void PlaylistIndexChangeUpdatesPlaylist()
-        {
-            var songs = Helpers.SetupSongs(2);
-            var playlist = new Playlist("Playlist 1", songs, 0);
-
-            var messenger = CreateDefaultPlaylistMessenger();
-            messenger.Setup(x => x.GetCurrentPlaylist()).Returns(playlist.ToTaskResult);
-
-            var index = new Subject<int?>();
-            messenger.SetupGet(x => x.PlaylistIndexChanged).Returns(index);
-
-            var vm = new PlaylistViewModel();
-
-            vm.LoadPlaylistCommand.Execute(null);
-
-            index.OnNext(1);
-
-            Assert.Equal(1, vm.Playlist.CurrentIndex);
+            Assert.True(vm.Entries[playlist.CurrentIndex.Value].IsPlaying);
+            //Assert.Equal(playlist.Name, vm.Name);
+            Assert.Equal(playlist.Songs.Count, vm.Entries.Count);
         }
 
         [Fact]
@@ -101,8 +79,8 @@ namespace Espera.Android.Tests
             messenger.Setup(x => x.GetCurrentPlaylist()).Returns(playlist.ToTaskResult());
             messenger.Setup(x => x.PlayNextSong()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
 
-            var index = new Subject<int?>();
-            messenger.SetupGet(x => x.PlaylistIndexChanged).Returns(index);
+            var playlists = new Subject<Playlist>();
+            messenger.Setup(x => x.PlaylistChanged).Returns(playlists);
 
             var vm = new PlaylistViewModel();
             vm.LoadPlaylistCommand.Execute(null);
@@ -111,9 +89,9 @@ namespace Espera.Android.Tests
 
             vm.PlayNextSongCommand.Execute(null);
 
-            index.OnNext(1);
-            index.OnNext(0);
-            index.OnNext(null);
+            playlists.OnNext(new Playlist("Playlist 1", songs, 1));
+            playlists.OnNext(new Playlist("Playlist 1", songs, 0));
+            playlists.OnNext(new Playlist("Playlist 1", songs, null));
 
             messenger.Verify(x => x.PlayNextSong(), Times.Once);
             Assert.Equal(new[] { true, false, true, false, true, false }, canExecute);
@@ -187,8 +165,8 @@ namespace Espera.Android.Tests
             messenger.Setup(x => x.GetCurrentPlaylist()).Returns(playlist.ToTaskResult());
             messenger.Setup(x => x.PlayPreviousSong()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
 
-            var index = new Subject<int?>();
-            messenger.SetupGet(x => x.PlaylistIndexChanged).Returns(index);
+            var playlists = new Subject<Playlist>();
+            messenger.SetupGet(x => x.PlaylistChanged).Returns(playlists);
 
             var vm = new PlaylistViewModel();
             vm.LoadPlaylistCommand.Execute(null);
@@ -197,9 +175,9 @@ namespace Espera.Android.Tests
 
             vm.PlayPreviousSongCommand.Execute(null);
 
-            index.OnNext(0);
-            index.OnNext(1);
-            index.OnNext(null);
+            playlists.OnNext(new Playlist("Playlist 1", songs, 0));
+            playlists.OnNext(new Playlist("Playlist 1", songs, 1));
+            playlists.OnNext(new Playlist("Playlist 1", songs, null));
 
             messenger.Verify(x => x.PlayPreviousSong(), Times.Once);
             Assert.Equal(new[] { true, false, true, false, true, false }, canExecute);
@@ -210,7 +188,6 @@ namespace Espera.Android.Tests
             var messenger = new Mock<INetworkMessenger>();
             messenger.SetupGet(x => x.PlaybackStateChanged).Returns(Observable.Never<PlaybackState>());
             messenger.SetupGet(x => x.PlaylistChanged).Returns(Observable.Never<Playlist>());
-            messenger.SetupGet(x => x.PlaylistIndexChanged).Returns(Observable.Never<int?>());
             messenger.SetupGet(x => x.AccessPermission).Returns(Observable.Return(AccessPermission.Admin));
             messenger.Setup(x => x.GetPlaybackState()).Returns(PlaybackState.None.ToTaskResult());
 

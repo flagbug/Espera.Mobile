@@ -37,13 +37,17 @@ namespace Espera.Android.ViewModels
                     this.remainingVotes.OnNext(x.Item1.RemainingVotes);
                 });
 
+            this.VoteCommand = new ReactiveCommand();
+            this.VoteCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.Vote(this.entries[(int)x].Guid));
+
             NetworkMessenger.Instance.RemainingVotesChanged.Subscribe(x => this.remainingVotes.OnNext(x));
 
             this.PlayPlaylistSongCommand = new ReactiveCommand(this.CanModify);
             this.Message = this.PlayPlaylistSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance
                     .PlayPlaylistSong(this.entries[(int)x].Guid))
                 .Select(x => x.StatusCode == 200 ? "Playing song" : "Playback failed")
-                .Merge(this.LoadPlaylistCommand.ThrownExceptions.Select(_ => "Loading playlist failed"));
+                .Merge(this.LoadPlaylistCommand.ThrownExceptions.Select(_ => "Loading playlist failed")
+                .Merge(this.VoteCommand.ThrownExceptions.Select(_ => "Vote failed")));
 
             this.PlayNextSongCommand = this.entries.Changed.Select(_ => this.entries)
                 .Select(x => x.Any(y => y.IsPlaying) && x.FirstOrDefault(y => y.IsPlaying) != x.LastOrDefault())
@@ -93,9 +97,6 @@ namespace Espera.Android.ViewModels
 
             this.MoveSongUpCommand = this.CanModify.ToCommand();
             this.MoveSongUpCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.MovePlaylistSongUp(this.entries[(int)x].Guid));
-
-            this.VoteCommand = new ReactiveCommand();
-            this.VoteCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.Vote(this.entries[(int)x].Guid));
         }
 
         public IObservable<bool> CanModify { get; private set; }

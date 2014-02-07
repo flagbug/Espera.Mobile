@@ -37,5 +37,10 @@ namespace Espera.Android.ViewModels
         {
             get { return this.song.Title; }
         }
+
+        public override int GetHashCode()
+        {
+            return new { Guid }.GetHashCode();
+        }
     }
 }

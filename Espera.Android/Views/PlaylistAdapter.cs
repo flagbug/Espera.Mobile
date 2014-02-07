@@ -4,8 +4,8 @@ using Android.Widget;
 using Espera.Android.ViewModels;
 using ReactiveUI;
 using System;
-using System.Linq;
 using System.Reactive.Linq;
+using Object = Java.Lang.Object;
 
 namespace Espera.Android.Views
 {
@@ -21,8 +21,7 @@ namespace Espera.Android.Views
             this.playlist = playlist;
 
             this.changedSubscription = this.playlist.Changed
-                .Buffer(TimeSpan.FromMilliseconds(100), RxApp.MainThreadScheduler)
-                .Where(x => x.Any())
+                .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(_ => this.NotifyDataSetChanged());
         }
 
@@ -31,9 +30,19 @@ namespace Espera.Android.Views
             get { return this.playlist.Count; }
         }
 
+        public override bool HasStableIds
+        {
+            get { return true; }
+        }
+
         public override PlaylistEntryViewModel this[int position]
         {
             get { return this.playlist[position]; }
+        }
+
+        public override Object GetItem(int position)
+        {
+            return this.playlist[position].GetHashCode();
         }
 
         public override long GetItemId(int position)
@@ -43,6 +52,9 @@ namespace Espera.Android.Views
 
         public override View GetView(int position, View convertView, ViewGroup parent)
         {
+            if (position > this.playlist.Count - 1)
+                return convertView ?? context.LayoutInflater.Inflate(Resource.Layout.PlaylistListItem, null);
+
             View view = convertView ?? context.LayoutInflater.Inflate(Resource.Layout.PlaylistListItem, null);
 
             PlaylistEntryViewModel entry = this.playlist[position];

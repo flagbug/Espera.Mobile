@@ -18,6 +18,8 @@ namespace Espera.Android.Network
 
         IObservable<Playlist> PlaylistChanged { get; }
 
+        IObservable<int> RemainingVotesChanged { get; }
+
         Task<ResponseInfo> AddSongToPlaylist(Guid songGuid);
 
         Task<ResponseInfo> Authorize(string password);

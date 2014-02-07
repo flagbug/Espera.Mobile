@@ -7,16 +7,19 @@ namespace Espera.Android
 {
     public class Playlist
     {
-        public Playlist(string name, IReadOnlyList<Song> songs, int? currentIndex)
+        public Playlist(string name, IReadOnlyList<Song> songs, int? currentIndex, int remainingVotes)
         {
             this.Name = name;
             this.Songs = songs;
             this.CurrentIndex = currentIndex;
+            this.RemainingVotes = remainingVotes;
         }
 
         public int? CurrentIndex { get; private set; }
 
         public string Name { get; private set; }
+
+        public int RemainingVotes { get; private set; }
 
         public IReadOnlyList<Song> Songs { get; private set; }
 
@@ -32,8 +35,9 @@ namespace Espera.Android
                 .ToList();
 
             int? currentIndex = json["current"].ToObject<int?>();
+            int remainingVotes = json["remainingVotes"].ToObject<int>();
 
-            return new Playlist(name, songs, currentIndex);
+            return new Playlist(name, songs, currentIndex, remainingVotes);
         }
     }
 }

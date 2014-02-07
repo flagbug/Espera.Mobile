@@ -8,6 +8,7 @@ using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
 using System;
+using System.Collections.Generic;
 using System.Reactive.Linq;
 
 namespace Espera.Android.Views
@@ -70,45 +71,58 @@ namespace Espera.Android.Views
                 h => this.PlaylistListView.ItemLongClick += h,
                 h => this.PlaylistListView.ItemLongClick += h)
                 .Select(x => x.EventArgs.Position)
-                .CombineLatest(this.ViewModel.CanModify, Tuple.Create)
+                .CombineLatestValue(this.ViewModel.CanModify
+                    .CombineLatest(this.ViewModel.CurrentIndex, this.ViewModel.RemainingVotes, Tuple.Create), (position, tuple) =>
+                    new { Position = position, CanModify = tuple.Item1, CurrentIndex = tuple.Item2, RemainingVotes = tuple.Item3 })
                 .Subscribe(x =>
                 {
-                    var builder = new AlertDialog.Builder(this);
-                    if (x.Item2)
+                    bool canVote = x.CurrentIndex == null || x.Position > x.CurrentIndex && x.RemainingVotes > 0;
+
+                    if (x.CanModify)
                     {
-                        builder.SetItems(new[] { "Play", "Remove", "Move Up", "Move Down", "Vote" }, (o, eventArgs) =>
+                        var builder = new AlertDialog.Builder(this);
+                        var items = new List<string> { "Play", "Remove", "Move Up", "Move Down" };
+
+                        if (canVote)
+                        {
+                            items.Add(string.Format("Vote ({0})", x.RemainingVotes));
+                        }
+
+                        builder.SetItems(items.ToArray(), (o, eventArgs) =>
                         {
                             switch (eventArgs.Which)
                             {
                                 case 0:
-                                    this.ViewModel.PlayPlaylistSongCommand.Execute(x.Item1);
+                                    this.ViewModel.PlayPlaylistSongCommand.Execute(x.Position);
                                     break;
 
                                 case 1:
-                                    this.ViewModel.RemoveSongCommand.Execute(x.Item1);
+                                    this.ViewModel.RemoveSongCommand.Execute(x.Position);
                                     break;
 
                                 case 2:
-                                    this.ViewModel.MoveSongUpCommand.Execute(x.Item1);
+                                    this.ViewModel.MoveSongUpCommand.Execute(x.Position);
                                     break;
 
                                 case 3:
-                                    this.ViewModel.MoveSongDownCommand.Execute(x.Item1);
+                                    this.ViewModel.MoveSongDownCommand.Execute(x.Position);
                                     break;
 
                                 case 4:
-                                    this.ViewModel.VoteCommand.Execute(x.Item1);
+                                    this.ViewModel.VoteCommand.Execute(x.Position);
                                     break;
                             }
                         });
+                        builder.Create().Show();
                     }
 
-                    else
+                    else if (canVote)
                     {
-                        builder.SetItems(new[] { "Vote" }, (sender, args) => this.ViewModel.VoteCommand.Execute(x.Item1));
+                        var builder = new AlertDialog.Builder(this);
+                        builder.SetItems(new[] { string.Format("Vote ({0})", x.RemainingVotes) }, (sender, args) =>
+                            this.ViewModel.VoteCommand.Execute(x.Position));
+                        builder.Create().Show();
                     }
-
-                    builder.Create().Show();
                 });
             this.PlaylistListView.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty);
 

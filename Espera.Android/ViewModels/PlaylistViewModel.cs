@@ -3,33 +3,41 @@ using ReactiveUI;
 using System;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
 
 namespace Espera.Android.ViewModels
 {
     public class PlaylistViewModel : ReactiveObject
     {
+        private readonly BehaviorSubject<int?> currentIndex;
         private readonly ReactiveList<PlaylistEntryViewModel> entries;
         private readonly ObservableAsPropertyHelper<bool> isPlaying;
+        private readonly BehaviorSubject<int> remainingVotes;
 
         public PlaylistViewModel()
         {
             this.entries = new ReactiveList<PlaylistEntryViewModel>();
+            this.currentIndex = new BehaviorSubject<int?>(null);
+            this.remainingVotes = new BehaviorSubject<int>(0);
 
             this.CanModify = NetworkMessenger.Instance.AccessPermission
                 .Select(x => x == AccessPermission.Admin);
 
             this.LoadPlaylistCommand = new ReactiveCommand();
-
             this.LoadPlaylistCommand.RegisterAsync(x =>
                     NetworkMessenger.Instance.GetCurrentPlaylist().ToObservable().Timeout(TimeSpan.FromSeconds(15), RxApp.TaskpoolScheduler))
                 .Merge(NetworkMessenger.Instance.PlaylistChanged)
-                .Select(x => x.Songs.Select((song, i) => new PlaylistEntryViewModel(song, x.CurrentIndex.HasValue && i == x.CurrentIndex)))
+                .Select(x => Tuple.Create(x, x.Songs.Select((song, i) => new PlaylistEntryViewModel(song, x.CurrentIndex.HasValue && i == x.CurrentIndex))))
                 .Subscribe(x =>
                 {
                     this.entries.Clear();
-                    this.entries.AddRange(x);
+                    this.entries.AddRange(x.Item2);
+                    this.currentIndex.OnNext(x.Item1.CurrentIndex);
+                    this.remainingVotes.OnNext(x.Item1.RemainingVotes);
                 });
+
+            NetworkMessenger.Instance.RemainingVotesChanged.Subscribe(x => this.remainingVotes.OnNext(x));
 
             this.PlayPlaylistSongCommand = new ReactiveCommand(this.CanModify);
             this.Message = this.PlayPlaylistSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance
@@ -92,6 +100,11 @@ namespace Espera.Android.ViewModels
 
         public IObservable<bool> CanModify { get; private set; }
 
+        public IObservable<int?> CurrentIndex
+        {
+            get { return this.currentIndex.AsObservable(); }
+        }
+
         public IReadOnlyReactiveList<PlaylistEntryViewModel> Entries
         {
             get { return this.entries; }
@@ -117,6 +130,11 @@ namespace Espera.Android.ViewModels
         public ReactiveCommand PlayPlaylistSongCommand { get; private set; }
 
         public ReactiveCommand PlayPreviousSongCommand { get; private set; }
+
+        public IObservable<int> RemainingVotes
+        {
+            get { return this.remainingVotes.AsObservable(); }
+        }
 
         public ReactiveCommand RemoveSongCommand { get; private set; }
 

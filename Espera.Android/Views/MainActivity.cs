@@ -3,6 +3,7 @@ using Android.Content;
 using Android.Content.PM;
 using Android.Net.Wifi;
 using Android.OS;
+using Android.Views;
 using Android.Widget;
 using Espera.Android.Network;
 using Espera.Android.ViewModels;
@@ -11,23 +12,19 @@ using ReactiveUI.Android;
 using ReactiveUI.Mobile;
 using System;
 using System.Reactive.Linq;
-using Xamarin.ActionbarSherlockBinding;
-using Xamarin.ActionbarSherlockBinding.Views;
 using IMenuItem = Android.Views.IMenuItem;
 
 namespace Espera.Android.Views
 {
     [Activity(Label = "Espera", MainLauncher = true, Icon = "@drawable/icon",
         ConfigurationChanges = ConfigChanges.Orientation, LaunchMode = LaunchMode.SingleTop)]
-    public class MainActivity : ReactiveActivity<MainViewModel>, ActionBarSherlock.IOnCreateOptionsMenuListener
+    public class MainActivity : ReactiveActivity<MainViewModel>
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;
-        private readonly ActionBarSherlock sherlock;
 
         public MainActivity()
         {
             this.autoSuspendHelper = new AutoSuspendActivityHelper(this);
-            this.sherlock = ActionBarSherlock.Wrap(this);
         }
 
         private Button ConnectButton
@@ -45,15 +42,10 @@ namespace Espera.Android.Views
             get { return this.FindViewById<Button>(Resource.Id.loadCurrentPlaylistButton); }
         }
 
-        public override bool OnCreateOptionsMenu(global::Android.Views.IMenu menu)
-        {
-            return this.sherlock.DispatchCreateOptionsMenu(menu);
-        }
-
-        public bool OnCreateOptionsMenu(IMenu menu)
+        public override bool OnCreateOptionsMenu(IMenu menu)
         {
             menu.Add("Settings").SetIcon(Resource.Drawable.Settings)
-                .SetShowAsAction(MenuItem.ShowAsActionAlways | MenuItem.ShowAsActionWithText);
+                .SetShowAsAction(ShowAsAction.Always);
 
             return true;
         }

@@ -154,12 +154,6 @@
             </summary>
             <nuget id="Tracer.Interfaces" />
         </member>
-        <member name="M:ReactiveSockets.Diagnostics.Tracer.#cctor">
-            <summary>
-            Initializes the <see cref="T:ReactiveSockets.Diagnostics.Tracer"/> class by specifying the 
-            diagnostics tracer as the default implementation.
-            </summary>
-        </member>
         <member name="M:ReactiveSockets.Diagnostics.Tracer.Initialize(ReactiveSockets.Diagnostics.ITracerManager)">
             <summary>
             Provides the implementation for managing tracers.

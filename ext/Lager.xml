@@ -4,13 +4,27 @@
         <name>Lager</name>
     </assembly>
     <members>
+        <member name="T:Lager.SettingsStorage">
+            <summary>
+            The base class for every settings storage.
+            Provides methods for saving/retrieving settings.
+            </summary>
+        </member>
         <member name="M:Lager.SettingsStorage.#ctor(System.String,Akavache.IBlobCache)">
             <summary>
             Initializes a new instance of the <see cref="T:Lager.SettingsStorage"/> class.
             </summary>
             <param name="keyPrefix">This value will be used as prefix for all settings keys.
-            It should be reasonably unique, so that it doesn't collide with other keys in Akavache.</param>
+            It should be reasonably unique, so that it doesn't collide with other keys in the same <see cref="T:Akavache.IBlobCache"/>.</param>
             <param name="cache">An <see cref="T:Akavache.IBlobCache"/> implementation where you want your settings to be stored.</param>
+        </member>
+        <member name="M:Lager.SettingsStorage.InitializeAsync">
+            <summary>
+            Loads every setting in this storage into the internal cache, or, if the value doesn't exist in the storage,
+            initializes it with its default value.
+            You dont HAVE to call this method, but it's handy for applications with a high number of settings
+            where you want to load all settings on startup at once into the internal cache and not one-by-one at each request.
+            </summary>
         </member>
         <member name="M:Lager.SettingsStorage.GetOrCreate``1(``0,System.String)">
             <summary>

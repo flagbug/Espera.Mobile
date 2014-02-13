@@ -7,7 +7,7 @@ namespace Espera.Android
 {
     public class Playlist
     {
-        public Playlist(string name, IReadOnlyList<Song> songs, int? currentIndex, int remainingVotes)
+        public Playlist(string name, IReadOnlyList<Song> songs, int? currentIndex, int remainingVotes = 0)
         {
             this.Name = name;
             this.Songs = songs;

@@ -8,6 +8,7 @@ using Lager.Android;
 using ReactiveUI;
 using System;
 using System.Linq;
+using System.Reactive.Linq;
 
 namespace Espera.Android.Views
 {
@@ -22,15 +23,13 @@ namespace Espera.Android.Views
 
             var portPref = (EditTextPreference)this.FindPreference(this.GetString(Resource.String.preference_port));
             portPref.EditText.InputType = InputTypes.ClassNumber;
-            portPref.EditText.Events().TextChanged.Subscribe(x =>
-            {
-                int port = Int32.Parse(new string(x.Text.ToArray()));
-
-                if (!IsValidPort(port))
+            portPref.EditText.Events().TextChanged
+                .Select(x => Int32.Parse(new string(x.Text.ToArray())))
+                .Where(x => !IsValidPort(x))
+                .Subscribe(x =>
                 {
                     portPref.EditText.Error = this.GetString(Resource.String.preference_port_validation_error);
-                }
-            });
+                });
             portPref.BindToSetting(UserSettings.Instance, x => x.Port, x => x.Text, x => int.Parse(x.ToString()), x => x.ToString(), IsValidPort);
 
             var adminEnabledPref = (CheckBoxPreference)this.FindPreference(this.GetString(Resource.String.preference_enable_administrator_mode));

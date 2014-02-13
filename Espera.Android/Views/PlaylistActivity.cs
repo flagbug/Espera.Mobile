@@ -59,14 +59,11 @@ namespace Espera.Android.Views
             this.ViewModel = new PlaylistViewModel();
             this.ViewModel.Message.Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show());
 
-            this.PlaylistListView.Adapter = new PlaylistAdapter(this, this.ViewModel.Entries);
-            this.PlaylistListView.Events().ItemClick.Subscribe(x =>
-            {
-                if (this.ViewModel.PlayPlaylistSongCommand.CanExecute(null))
-                {
-                    this.ViewModel.PlayPlaylistSongCommand.Execute(x.Position);
-                }
-            });
+            var adapter = new ReactiveListAdapter<PlaylistEntryViewModel>(this.ViewModel.Entries,
+                (vm, parent) => new PlaylistEntryView(this, parent));
+            this.PlaylistListView.Adapter = adapter;
+            this.PlaylistListView.Events().ItemClick.Select(x => x.Position)
+                .InvokeCommand(this.ViewModel.PlayPlaylistSongCommand);
 
             this.PlaylistListView.Events().ItemLongClick
                 .Select(x => x.Position)

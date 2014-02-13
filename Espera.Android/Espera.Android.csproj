@@ -157,7 +157,7 @@
     <Compile Include="Views\ArtistsAdapter.cs" />
     <Compile Include="Views\MainActivity.cs" />
     <Compile Include="Views\PlaylistActivity.cs" />
-    <Compile Include="Views\PlaylistAdapter.cs" />
+    <Compile Include="Views\PlaylistEntryView.cs" />
     <Compile Include="Views\SettingsActivity.cs" />
     <Compile Include="Views\SongsActivity.cs" />
     <Compile Include="Views\SongsAdapter.cs" />

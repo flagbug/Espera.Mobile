@@ -98,11 +98,11 @@ namespace Espera.Android
 			// aapt resource value: 0x7f060009
 			public const int Image = 2131099657;
 			
-			// aapt resource value: 0x7f06000a
-			public const int PlaylistItemText1 = 2131099658;
-			
 			// aapt resource value: 0x7f06000b
-			public const int PlaylistItemText2 = 2131099659;
+			public const int PlaylistEntryArtist = 2131099659;
+			
+			// aapt resource value: 0x7f06000a
+			public const int PlaylistEntryTitle = 2131099658;
 			
 			// aapt resource value: 0x7f060000
 			public const int artistList = 2131099648;

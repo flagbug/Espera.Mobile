@@ -11,6 +11,7 @@ using ReactiveUI.Mobile;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 
 namespace Espera.Android.Views
 {
@@ -42,37 +43,39 @@ namespace Espera.Android.Views
 
             this.OneWayBind(this.ViewModel, x => x.Songs, x => x.SongsListView.Adapter, x => new SongsAdapter(this, x));
 
-            this.SongsListView.ItemClick += (sender, args) =>
-            {
-                if (UserSettings.Instance.DefaultLibraryAction == DefaultLibraryAction.PlayAll)
+            this.SongsListView.Events().ItemClick.Select(x => x.Position)
+                .Subscribe(x =>
                 {
-                    this.ViewModel.PlaySongsCommand.Execute(args.Position);
-                }
-
-                else
-                {
-                    this.ViewModel.AddToPlaylistCommand.Execute(args.Position);
-                }
-            };
-
-            this.SongsListView.ItemLongClick += (sender, args) =>
-            {
-                var builder = new AlertDialog.Builder(this);
-                builder.SetItems(new[] { "Play", "Add to playlist" }, (o, eventArgs) =>
-                {
-                    switch (eventArgs.Which)
+                    if (UserSettings.Instance.DefaultLibraryAction == DefaultLibraryAction.PlayAll)
                     {
-                        case 0:
-                            this.ViewModel.PlaySongsCommand.Execute(args.Position);
-                            break;
+                        this.ViewModel.PlaySongsCommand.Execute(x);
+                    }
 
-                        case 1:
-                            this.ViewModel.AddToPlaylistCommand.Execute(args.Position);
-                            break;
+                    else
+                    {
+                        this.ViewModel.AddToPlaylistCommand.Execute(x);
                     }
                 });
-                builder.Create().Show();
-            };
+
+            this.SongsListView.Events().ItemLongClick.Select(x => x.Position)
+                .Subscribe(x =>
+                {
+                    var builder = new AlertDialog.Builder(this);
+                    builder.SetItems(new[] { "Play", "Add to playlist" }, (o, eventArgs) =>
+                    {
+                        switch (eventArgs.Which)
+                        {
+                            case 0:
+                                this.ViewModel.PlaySongsCommand.Execute(x);
+                                break;
+
+                            case 1:
+                                this.ViewModel.AddToPlaylistCommand.Execute(x);
+                                break;
+                        }
+                    });
+                    builder.Create().Show();
+                });
 
             this.ViewModel.Message.Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show());
         }

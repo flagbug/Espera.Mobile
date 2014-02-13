@@ -73,10 +73,10 @@ namespace Espera.Android.Views
             this.ViewModel.ConnectionFailed.Subscribe(x => Toast.MakeText(this, x, ToastLength.Long).Show());
 
             this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadArtistsButton.Enabled);
-            this.LoadArtistsButton.Click += (sender, args) => this.StartActivity(typeof(ArtistsActivity));
+            this.LoadArtistsButton.Events().Click.Subscribe(x => this.StartActivity(typeof(ArtistsActivity)));
 
             this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadCurrentPlaylistButton.Enabled);
-            this.LoadCurrentPlaylistButton.Click += (sender, args) => this.StartActivity(typeof(PlaylistActivity));
+            this.LoadCurrentPlaylistButton.Events().Click.Subscribe(x => this.StartActivity(typeof(PlaylistActivity)));
 
             this.StartService(new Intent(this, typeof(NetworkService)));
         }

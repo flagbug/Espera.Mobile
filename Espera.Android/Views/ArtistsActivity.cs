@@ -37,7 +37,7 @@ namespace Espera.Android.Views
             this.ViewModel = new ArtistsViewModel();
 
             this.OneWayBind(this.ViewModel, x => x.Artists, x => x.ArtistListView.Adapter, list => new ArtistsAdapter(this, list));
-            this.ArtistListView.ItemClick += (sender, args) => this.OpenArtist((string)this.ArtistListView.GetItemAtPosition(args.Position));
+            this.ArtistListView.Events().ItemClick.Subscribe(x => this.OpenArtist((string)this.ArtistListView.GetItemAtPosition(x.Position)));
 
             this.progressDialog = new ProgressDialog(this);
             this.progressDialog.SetMessage("Loading artists");

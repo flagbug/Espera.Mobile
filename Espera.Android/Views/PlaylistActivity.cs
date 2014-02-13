@@ -60,17 +60,16 @@ namespace Espera.Android.Views
             this.ViewModel.Message.Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show());
 
             this.PlaylistListView.Adapter = new PlaylistAdapter(this, this.ViewModel.Entries);
-            this.PlaylistListView.ItemClick += (sender, args) =>
+            this.PlaylistListView.Events().ItemClick.Subscribe(x =>
             {
                 if (this.ViewModel.PlayPlaylistSongCommand.CanExecute(null))
                 {
-                    this.ViewModel.PlayPlaylistSongCommand.Execute(args.Position);
+                    this.ViewModel.PlayPlaylistSongCommand.Execute(x.Position);
                 }
-            };
-            Observable.FromEventPattern<AdapterView.ItemLongClickEventArgs>(
-                h => this.PlaylistListView.ItemLongClick += h,
-                h => this.PlaylistListView.ItemLongClick += h)
-                .Select(x => x.EventArgs.Position)
+            });
+
+            this.PlaylistListView.Events().ItemLongClick
+                .Select(x => x.Position)
                 .CombineLatestValue(this.ViewModel.CanModify
                     .CombineLatest(this.ViewModel.CurrentIndex, this.ViewModel.RemainingVotes, Tuple.Create), (position, tuple) =>
                     new { Position = position, CanModify = tuple.Item1, CurrentIndex = tuple.Item2, RemainingVotes = tuple.Item3 })

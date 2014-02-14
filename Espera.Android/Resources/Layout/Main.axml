@@ -6,15 +6,15 @@
   <Button
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
-      android:id="@+id/connectButton" />
+      android:id="@+id/ConnectButton" />
   <Button
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
-      android:id="@+id/loadArtistsButton"
+      android:id="@+id/LoadArtistsButton"
       android:text="Artists" />
   <Button
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
-      android:id="@+id/loadCurrentPlaylistButton"
+      android:id="@+id/LoadCurrentPlaylistButton"
       android:text="Playlist" />
 </LinearLayout>

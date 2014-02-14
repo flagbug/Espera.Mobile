@@ -95,8 +95,32 @@ namespace Espera.Android
 		public partial class Id
 		{
 			
+			// aapt resource value: 0x7f060000
+			public const int ArtistList = 2131099648;
+			
+			// aapt resource value: 0x7f060001
+			public const int ConnectButton = 2131099649;
+			
 			// aapt resource value: 0x7f060009
 			public const int Image = 2131099657;
+			
+			// aapt resource value: 0x7f060002
+			public const int LoadArtistsButton = 2131099650;
+			
+			// aapt resource value: 0x7f060003
+			public const int LoadCurrentPlaylistButton = 2131099651;
+			
+			// aapt resource value: 0x7f060008
+			public const int NextButton = 2131099656;
+			
+			// aapt resource value: 0x7f060004
+			public const int PlayList = 2131099652;
+			
+			// aapt resource value: 0x7f060007
+			public const int PlayPauseButton = 2131099655;
+			
+			// aapt resource value: 0x7f060005
+			public const int PlaybackControlPanel = 2131099653;
 			
 			// aapt resource value: 0x7f06000b
 			public const int PlaylistEntryArtist = 2131099659;
@@ -104,35 +128,11 @@ namespace Espera.Android
 			// aapt resource value: 0x7f06000a
 			public const int PlaylistEntryTitle = 2131099658;
 			
-			// aapt resource value: 0x7f060000
-			public const int artistList = 2131099648;
-			
-			// aapt resource value: 0x7f060001
-			public const int connectButton = 2131099649;
-			
-			// aapt resource value: 0x7f060002
-			public const int loadArtistsButton = 2131099650;
-			
-			// aapt resource value: 0x7f060003
-			public const int loadCurrentPlaylistButton = 2131099651;
-			
-			// aapt resource value: 0x7f060008
-			public const int nextButton = 2131099656;
-			
-			// aapt resource value: 0x7f060004
-			public const int playList = 2131099652;
-			
-			// aapt resource value: 0x7f060007
-			public const int playPauseButton = 2131099655;
-			
-			// aapt resource value: 0x7f060005
-			public const int playbackControlPanel = 2131099653;
-			
 			// aapt resource value: 0x7f060006
-			public const int previousButton = 2131099654;
+			public const int PreviousButton = 2131099654;
 			
 			// aapt resource value: 0x7f06000c
-			public const int songsList = 2131099660;
+			public const int SongsList = 2131099660;
 			
 			static Id()
 			{

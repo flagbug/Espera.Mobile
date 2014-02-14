@@ -22,10 +22,7 @@ namespace Espera.Android.Views
             this.autoSuspendHelper = new AutoSuspendActivityHelper(this);
         }
 
-        private ListView ArtistListView
-        {
-            get { return this.FindViewById<ListView>(Resource.Id.artistList); }
-        }
+        public ListView ArtistList { get; private set; }
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -33,11 +30,12 @@ namespace Espera.Android.Views
             this.autoSuspendHelper.OnCreate(bundle);
 
             this.SetContentView(Resource.Layout.Artists);
+            this.WireUpControls();
 
             this.ViewModel = new ArtistsViewModel();
 
-            this.OneWayBind(this.ViewModel, x => x.Artists, x => x.ArtistListView.Adapter, list => new ArtistsAdapter(this, list));
-            this.ArtistListView.Events().ItemClick.Subscribe(x => this.OpenArtist((string)this.ArtistListView.GetItemAtPosition(x.Position)));
+            this.OneWayBind(this.ViewModel, x => x.Artists, x => x.ArtistList.Adapter, list => new ArtistsAdapter(this, list));
+            this.ArtistList.Events().ItemClick.Subscribe(x => this.OpenArtist((string)this.ArtistList.GetItemAtPosition(x.Position)));
 
             this.progressDialog = new ProgressDialog(this);
             this.progressDialog.SetMessage("Loading artists");

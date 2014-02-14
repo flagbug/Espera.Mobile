@@ -27,20 +27,11 @@ namespace Espera.Android.Views
             this.autoSuspendHelper = new AutoSuspendActivityHelper(this);
         }
 
-        private Button ConnectButton
-        {
-            get { return this.FindViewById<Button>(Resource.Id.connectButton); }
-        }
+        public Button ConnectButton { get; private set; }
 
-        private Button LoadArtistsButton
-        {
-            get { return this.FindViewById<Button>(Resource.Id.loadArtistsButton); }
-        }
+        public Button LoadArtistsButton { get; private set; }
 
-        private Button LoadCurrentPlaylistButton
-        {
-            get { return this.FindViewById<Button>(Resource.Id.loadCurrentPlaylistButton); }
-        }
+        public Button LoadCurrentPlaylistButton { get; private set; }
 
         public override bool OnCreateOptionsMenu(IMenu menu)
         {
@@ -63,6 +54,7 @@ namespace Espera.Android.Views
             this.autoSuspendHelper.OnCreate(bundle);
 
             this.SetContentView(Resource.Layout.Main);
+            this.WireUpControls();
 
             this.ViewModel = new MainViewModel();
             this.BindCommand(this.ViewModel, x => x.ConnectCommand, x => x.ConnectButton);

@@ -25,10 +25,7 @@ namespace Espera.Android.Views
             this.autoSuspendHelper = new AutoSuspendActivityHelper(this);
         }
 
-        private ListView SongsListView
-        {
-            get { return this.FindViewById<ListView>(Resource.Id.songsList); }
-        }
+        public ListView SongsList { get; private set; }
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -36,14 +33,15 @@ namespace Espera.Android.Views
             this.autoSuspendHelper.OnCreate(bundle);
 
             this.SetContentView(Resource.Layout.Songs);
+            this.WireUpControls();
 
             string songsJson = this.Intent.GetStringExtra("songs");
             IReadOnlyList<Song> songs = JsonConvert.DeserializeObject<IEnumerable<Song>>(songsJson).ToList();
             this.ViewModel = new SongsViewModel(songs);
 
-            this.OneWayBind(this.ViewModel, x => x.Songs, x => x.SongsListView.Adapter, x => new SongsAdapter(this, x));
+            this.OneWayBind(this.ViewModel, x => x.Songs, x => x.SongsList.Adapter, x => new SongsAdapter(this, x));
 
-            this.SongsListView.Events().ItemClick.Select(x => x.Position)
+            this.SongsList.Events().ItemClick.Select(x => x.Position)
                 .Subscribe(x =>
                 {
                     if (UserSettings.Instance.DefaultLibraryAction == DefaultLibraryAction.PlayAll)
@@ -57,7 +55,7 @@ namespace Espera.Android.Views
                     }
                 });
 
-            this.SongsListView.Events().ItemLongClick.Select(x => x.Position)
+            this.SongsList.Events().ItemLongClick.Select(x => x.Position)
                 .Subscribe(x =>
                 {
                     var builder = new AlertDialog.Builder(this);

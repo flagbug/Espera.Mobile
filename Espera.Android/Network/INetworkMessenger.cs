@@ -42,22 +42,22 @@ namespace Espera.Android.Network
 
         Task<IReadOnlyList<Song>> GetSongsAsync();
 
-        Task<ResponseInfo> MovePlaylistSongDown(Guid guid);
+        Task<ResponseInfo> MovePlaylistSongDown(Guid entryGuid);
 
-        Task<ResponseInfo> MovePlaylistSongUp(Guid guid);
+        Task<ResponseInfo> MovePlaylistSongUp(Guid entryGuid);
 
         Task<ResponseInfo> PauseSong();
 
         Task<ResponseInfo> PlayNextSong();
 
-        Task<ResponseInfo> PlayPlaylistSong(Guid guid);
+        Task<ResponseInfo> PlayPlaylistSong(Guid entryGuid);
 
         Task<ResponseInfo> PlayPreviousSong();
 
         Task<ResponseInfo> PlaySongs(IEnumerable<Guid> guids);
 
-        Task<ResponseInfo> RemovePlaylistSong(Guid guid);
+        Task<ResponseInfo> RemovePlaylistSong(Guid entryGuid);
 
-        Task<ResponseInfo> Vote(Guid guid);
+        Task<ResponseInfo> Vote(Guid entryGuid);
     }
 }

@@ -24,30 +24,15 @@ namespace Espera.Android.Views
             this.autoSuspendHelper = new AutoSuspendActivityHelper(this);
         }
 
-        private LinearLayout PlaybackControlPanel
-        {
-            get { return this.FindViewById<LinearLayout>(Resource.Id.playbackControlPanel); }
-        }
+        public Button NextButton { get; private set; }
 
-        private ListView PlaylistListView
-        {
-            get { return this.FindViewById<ListView>(Resource.Id.playList); }
-        }
+        public LinearLayout PlaybackControlPanel { get; private set; }
 
-        private Button PlayNextSongButton
-        {
-            get { return this.FindViewById<Button>(Resource.Id.nextButton); }
-        }
+        public ListView Playlist { get; private set; }
 
-        private Button PlayPauseButton
-        {
-            get { return this.FindViewById<Button>(Resource.Id.playPauseButton); }
-        }
+        public Button PlayPauseButton { get; private set; }
 
-        private Button PlayPreviousSongButton
-        {
-            get { return this.FindViewById<Button>(Resource.Id.previousButton); }
-        }
+        public Button PreviousButton { get; private set; }
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -55,17 +40,18 @@ namespace Espera.Android.Views
             this.autoSuspendHelper.OnCreate(bundle);
 
             this.SetContentView(Resource.Layout.Playlist);
+            this.WireUpControls();
 
             this.ViewModel = new PlaylistViewModel();
             this.ViewModel.Message.Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show());
 
             var adapter = new ReactiveListAdapter<PlaylistEntryViewModel>(this.ViewModel.Entries,
-                (vm, parent) => new PlaylistEntryView(this, parent));
-            this.PlaylistListView.Adapter = adapter;
-            this.PlaylistListView.Events().ItemClick.Select(x => x.Position)
+                (vm, parent) => new PlaylistEntryView(this, vm, parent));
+            this.Playlist.Adapter = adapter;
+            this.Playlist.Events().ItemClick.Select(x => x.Position)
                 .InvokeCommand(this.ViewModel.PlayPlaylistSongCommand);
 
-            this.PlaylistListView.Events().ItemLongClick
+            this.Playlist.Events().ItemLongClick
                 .Select(x => x.Position)
                 .CombineLatestValue(this.ViewModel.CanModify
                     .CombineLatest(this.ViewModel.CurrentIndex, this.ViewModel.RemainingVotes, Tuple.Create), (position, tuple) =>
@@ -120,13 +106,13 @@ namespace Espera.Android.Views
                         builder.Create().Show();
                     }
                 });
-            this.PlaylistListView.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty);
+            this.Playlist.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty);
 
             this.ViewModel.CanModify.Select(x => x ? ViewStates.Visible : ViewStates.Gone)
                 .BindTo(this.PlaybackControlPanel, x => x.Visibility);
 
-            this.BindCommand(this.ViewModel, x => x.PlayNextSongCommand, x => x.PlayNextSongButton);
-            this.BindCommand(this.ViewModel, x => x.PlayPreviousSongCommand, x => x.PlayPreviousSongButton);
+            this.BindCommand(this.ViewModel, x => x.PlayNextSongCommand, x => x.NextButton);
+            this.BindCommand(this.ViewModel, x => x.PlayPreviousSongCommand, x => x.PreviousButton);
             this.BindCommand(this.ViewModel, x => x.PlayPauseCommand, x => x.PlayPauseButton);
 
             this.ViewModel.WhenAnyValue(x => x.IsPlaying).Select(x => x ? Resource.Drawable.Pause : Resource.Drawable.Play)
@@ -138,10 +124,10 @@ namespace Espera.Android.Views
                 .Subscribe(x => this.PlayPauseButton.Background.SetAlpha(x));
 
             this.ViewModel.PlayPreviousSongCommand.CanExecuteObservable.Select(alphaSelector)
-                .Subscribe(x => this.PlayPreviousSongButton.Background.SetAlpha(x));
+                .Subscribe(x => this.PreviousButton.Background.SetAlpha(x));
 
             this.ViewModel.PlayNextSongCommand.CanExecuteObservable.Select(alphaSelector)
-                .Subscribe(x => this.PlayNextSongButton.Background.SetAlpha(x));
+                .Subscribe(x => this.NextButton.Background.SetAlpha(x));
 
             this.progressDialog = new ProgressDialog(this);
             this.progressDialog.SetMessage("Loading playlist");

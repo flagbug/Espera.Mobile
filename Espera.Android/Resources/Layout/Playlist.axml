@@ -6,7 +6,7 @@
   <ListView
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
-      android:id="@+id/playList"
+      android:id="@+id/PlayList"
       android:layout_weight="1" />
   <TextView android:id="@android:id/empty"
       android:layout_width="match_parent"
@@ -14,7 +14,7 @@
       android:text="Playlist is empty"
       android:gravity="center" />
   <LinearLayout
-      android:id="@+id/playbackControlPanel"
+      android:id="@+id/PlaybackControlPanel"
       android:orientation="horizontal"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -22,19 +22,19 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:id="@+id/previousButton"
+        android:id="@+id/PreviousButton"
         android:background="@drawable/Previous" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:id="@+id/playPauseButton"
+        android:id="@+id/PlayPauseButton"
         android:background="@drawable/Play"
         android:layout_marginLeft="15dip"
         android:layout_marginRight="15dip" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:id="@+id/nextButton"
+        android:id="@+id/NextButton"
         android:background="@drawable/Next" />
   </LinearLayout>
 </LinearLayout>

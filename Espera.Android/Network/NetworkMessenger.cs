@@ -141,10 +141,10 @@ namespace Espera.Android.Network
 
         public async Task<ResponseInfo> AddSongToPlaylist(Guid songGuid)
         {
-            var parameters = new JObject
+            var parameters = JObject.FromObject(new
             {
-                { "songGuid", songGuid.ToString() }
-            };
+                songGuid
+            });
 
             JObject response = await this.SendRequest("post-playlist-song", parameters);
 
@@ -153,10 +153,10 @@ namespace Espera.Android.Network
 
         public async Task<ResponseInfo> Authorize(string password)
         {
-            var parameters = new JObject
+            var parameters = JObject.FromObject(new
             {
-                {"password", password}
-            };
+                password
+            });
 
             JObject response = await this.SendRequest("post-administrator-password", parameters);
 
@@ -265,24 +265,24 @@ namespace Espera.Android.Network
             return songs;
         }
 
-        public async Task<ResponseInfo> MovePlaylistSongDown(Guid guid)
+        public async Task<ResponseInfo> MovePlaylistSongDown(Guid entryGuid)
         {
-            var parameters = new JObject
+            var parameters = JObject.FromObject(new
             {
-                { "entryGuid", guid.ToString() }
-            };
+                entryGuid
+            });
 
             JObject response = await this.SendRequest("move-playlist-song-down", parameters);
 
             return CreateResponseInfo(response);
         }
 
-        public async Task<ResponseInfo> MovePlaylistSongUp(Guid guid)
+        public async Task<ResponseInfo> MovePlaylistSongUp(Guid entryGuid)
         {
-            var parameters = new JObject
+            var parameters = JObject.FromObject(new
             {
-                { "entryGuid", guid.ToString() }
-            };
+                entryGuid
+            });
 
             JObject response = await this.SendRequest("move-playlist-song-up", parameters);
 
@@ -303,12 +303,12 @@ namespace Espera.Android.Network
             return CreateResponseInfo(response);
         }
 
-        public async Task<ResponseInfo> PlayPlaylistSong(Guid guid)
+        public async Task<ResponseInfo> PlayPlaylistSong(Guid entryGuid)
         {
-            var parameters = new JObject
+            var parameters = JObject.FromObject(new
             {
-                { "entryGuid", guid.ToString() }
-            };
+                entryGuid
+            });
 
             JObject response = await this.SendRequest("post-play-playlist-song", parameters);
 
@@ -324,34 +324,34 @@ namespace Espera.Android.Network
 
         public async Task<ResponseInfo> PlaySongs(IEnumerable<Guid> guids)
         {
-            var parameters = new JObject
+            var parameters = JObject.FromObject(new
             {
-                {"guids", new JArray(guids.Select(x => x.ToString()).ToArray())}
-            };
+                guids = guids.Select(x => x.ToString())
+            });
 
             JObject response = await this.SendRequest("post-play-instantly", parameters);
 
             return CreateResponseInfo(response);
         }
 
-        public async Task<ResponseInfo> RemovePlaylistSong(Guid guid)
+        public async Task<ResponseInfo> RemovePlaylistSong(Guid entryGuid)
         {
-            var parameters = new JObject
+            var parameters = JObject.FromObject(new
             {
-                { "entryGuid", guid.ToString() }
-            };
+                entryGuid
+            });
 
             JObject response = await this.SendRequest("post-remove-playlist-song", parameters);
 
             return CreateResponseInfo(response);
         }
 
-        public async Task<ResponseInfo> Vote(Guid guid)
+        public async Task<ResponseInfo> Vote(Guid entryGuid)
         {
-            var parameters = new JObject
+            var parameters = JObject.FromObject(new
             {
-                { "entryGuid", guid.ToString() }
-            };
+                entryGuid
+            });
 
             JObject response = await this.SendRequest("vote-for-song", parameters);
 
@@ -388,15 +388,15 @@ namespace Espera.Android.Network
         {
             Guid id = Guid.NewGuid();
 
-            var jMessage = new JObject
+            var jMessage = JObject.FromObject(new
             {
-                { "action", action },
-                { "parameters", parameters },
-                { "id", id.ToString()}
-            };
+                action,
+                parameters,
+                id
+            });
 
-            var message = this.messagePipeline.Where(x => x["type"].ToString() == "response")
-                .FirstAsync(x => x["id"].ToString() == id.ToString())
+            var message = this.messagePipeline
+                .FirstAsync(x => x["type"].ToString() == "response" && x["id"].ToString() == id.ToString())
                 .PublishLast();
 
             using (message.Connect())
@@ -410,11 +410,11 @@ namespace Espera.Android.Network
                 {
                     this.disconnected.OnNext(Unit.Default);
 
-                    return new JObject
+                    return JObject.FromObject(new
                     {
-                        {"status", 503},
-                        {"message", "Connection lost"}
-                    };
+                        status = 503,
+                        message = "Connection lost"
+                    });
                 }
 
                 JObject response = await message;

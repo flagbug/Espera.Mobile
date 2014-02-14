@@ -31,14 +31,19 @@ namespace Espera.Android.ViewModels
                 .Select(x => Tuple.Create(x, x.Songs.Select((song, i) => new PlaylistEntryViewModel(song, x.CurrentIndex.HasValue && i == x.CurrentIndex))))
                 .Subscribe(x =>
                 {
-                    this.entries.Clear();
-                    this.entries.AddRange(x.Item2);
+                    using (this.entries.SuppressChangeNotifications())
+                    {
+                        this.entries.Clear();
+                        this.entries.AddRange(x.Item2);
+                    }
+                    this.entries.Reset();
                     this.currentIndex.OnNext(x.Item1.CurrentIndex);
                     this.remainingVotes.OnNext(x.Item1.RemainingVotes);
                 });
 
             this.VoteCommand = new ReactiveCommand();
-            this.VoteCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.Vote(this.entries[(int)x].Guid));
+            this.VoteCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.Vote(this.entries[(int)x].Guid))
+                .Subscribe();
 
             NetworkMessenger.Instance.RemainingVotesChanged.Subscribe(x => this.remainingVotes.OnNext(x));
 
@@ -53,13 +58,15 @@ namespace Espera.Android.ViewModels
                 .Select(x => x.Any(y => y.IsPlaying) && x.FirstOrDefault(y => y.IsPlaying) != x.LastOrDefault())
                 .CombineLatest(this.CanModify, (canPlayNext, canModify) => canPlayNext && canModify)
                 .ToCommand();
-            this.PlayNextSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.PlayNextSong());
+            this.PlayNextSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.PlayNextSong())
+                .Subscribe();
 
             this.PlayPreviousSongCommand = this.entries.Changed.Select(_ => this.entries)
                 .Select(x => x.Any(y => y.IsPlaying) && x.FirstOrDefault(y => y.IsPlaying) != x.FirstOrDefault())
                 .CombineLatest(this.CanModify, (canPlayPrevious, canModify) => canPlayPrevious && canModify)
                 .ToCommand();
-            this.PlayPreviousSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.PlayPreviousSong());
+            this.PlayPreviousSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.PlayPreviousSong())
+                .Subscribe();
 
             var playbackState = NetworkMessenger.Instance.PlaybackStateChanged
                 .Merge(NetworkMessenger.Instance.GetPlaybackState().ToObservable().FirstAsync())
@@ -93,10 +100,12 @@ namespace Espera.Android.ViewModels
                 .InvokeCommand(this.LoadPlaylistCommand); // The server doesn't send an update...no idea why
 
             this.MoveSongDownCommand = this.CanModify.ToCommand();
-            this.MoveSongDownCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.MovePlaylistSongDown(this.entries[(int)x].Guid));
+            this.MoveSongDownCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.MovePlaylistSongDown(this.entries[(int)x].Guid))
+                .Subscribe();
 
             this.MoveSongUpCommand = this.CanModify.ToCommand();
-            this.MoveSongUpCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.MovePlaylistSongUp(this.entries[(int)x].Guid));
+            this.MoveSongUpCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.MovePlaylistSongUp(this.entries[(int)x].Guid))
+                .Subscribe();
         }
 
         public IObservable<bool> CanModify { get; private set; }

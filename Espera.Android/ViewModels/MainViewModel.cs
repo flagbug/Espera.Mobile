@@ -20,7 +20,8 @@ namespace Espera.Android.ViewModels
             this.ConnectCommand.RegisterAsync(x =>
                 ConnectAsync(UserSettings.Instance.Port).ToObservable()
                     .Timeout(TimeSpan.FromSeconds(10), RxApp.TaskpoolScheduler)
-                    .Catch<Unit, TimeoutException>(ex => Observable.Throw<Unit>(new Exception("Connection failed"))));
+                    .Catch<Unit, TimeoutException>(ex => Observable.Throw<Unit>(new Exception("Connection failed"))))
+                .Subscribe();
 
             this.ConnectionFailed = this.ConnectCommand.ThrownExceptions
                 .Select(x => x.Message);

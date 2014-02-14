@@ -1,7 +1,5 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using ReactiveSockets;
-using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,13 +20,13 @@ namespace Espera.Android.Network
         private static IPAddress fakeIpAddress; // Used for unit tests
         private static Lazy<INetworkMessenger> instance;
         private readonly Subject<AccessPermission> accessPermission;
-        private readonly Subject<ReactiveClient> client;
+        private readonly Subject<TcpClient> client;
         private readonly Subject<Unit> connectionEstablished;
         private readonly Subject<Unit> disconnected;
         private readonly SemaphoreSlim gate;
         private readonly IObservable<JObject> messagePipeline;
         private readonly IDisposable messagePipelineConnection;
-        private ReactiveClient currentClient;
+        private TcpClient currentClient;
 
         static NetworkMessenger()
         {
@@ -43,11 +41,7 @@ namespace Espera.Android.Network
             this.connectionEstablished = new Subject<Unit>();
             this.accessPermission = new Subject<AccessPermission>();
 
-            this.client = new Subject<ReactiveClient>();
-
-            this.Disconnected = this.client.Select(x => Observable.FromEventPattern(h => x.Disconnected += h, h => x.Disconnected -= h))
-                .Switch().Select(_ => Unit.Default)
-                .Merge(this.disconnected);
+            this.client = new Subject<TcpClient>();
 
             var isConnected = this.Disconnected.Select(_ => false)
                 .Merge(this.connectionEstablished.Select(_ => true))
@@ -56,18 +50,13 @@ namespace Espera.Android.Network
             isConnected.Connect();
             this.IsConnected = isConnected;
 
-            var conn = this.client.Select(x => x.Receiver.Buffer(4)
-                    .Select(length => BitConverter.ToInt32(length.ToArray(), 0))
-                    .Select(length => x.Receiver.Take(length).ToEnumerable().ToArray())
-                    .SelectMany(body => NetworkHelpers.DecompressDataAsync(body).ToObservable())
-                    .Select(body => Encoding.UTF8.GetString(body))
-                    .Select(JObject.Parse))
+            this.messagePipeline = this.client.Select(x => Observable.Defer(() => x.ReadNextMessage()
+                    .ToObservable())
+                    .Repeat())
                 .Switch()
-                .SubscribeOn(RxApp.TaskpoolScheduler)
-                .Publish();
-
-            this.messagePipeline = conn;
-            this.messagePipelineConnection = conn.Connect();
+                .TakeWhile(m => m != null)
+                .Do(x => { }, ex => this.disconnected.OnNext(Unit.Default), () => this.disconnected.OnNext(Unit.Default))
+                .Publish().PermaRef();
 
             var pushMessages = this.messagePipeline.Where(x => x["type"].ToString() == "push");
 
@@ -97,7 +86,10 @@ namespace Espera.Android.Network
 
         public IObservable<AccessPermission> AccessPermission { get; private set; }
 
-        public IObservable<Unit> Disconnected { get; private set; }
+        public IObservable<Unit> Disconnected
+        {
+            get { return this.disconnected.AsObservable(); }
+        }
 
         public IObservable<bool> IsConnected { get; private set; }
 
@@ -170,14 +162,14 @@ namespace Espera.Android.Network
 
             if (this.currentClient != null)
             {
-                this.currentClient.Dispose();
+                this.currentClient.Close();
             }
 
-            var c = new ReactiveClient(address.ToString(), port);
+            var c = new TcpClient();
             this.currentClient = c;
-            this.client.OnNext(c);
 
-            await c.ConnectAsync();
+            await c.ConnectAsync(address, port);
+            this.client.OnNext(c);
 
             this.connectionEstablished.OnNext(Unit.Default);
 
@@ -197,14 +189,14 @@ namespace Espera.Android.Network
 
         public void Disconnect()
         {
-            this.currentClient.Disconnect();
+            this.currentClient.Close();
         }
 
         public void Dispose()
         {
             if (this.currentClient != null)
             {
-                this.currentClient.Dispose();
+                this.currentClient.Close();
             }
 
             if (this.messagePipelineConnection != null)
@@ -375,7 +367,7 @@ namespace Espera.Android.Network
 
             try
             {
-                await this.currentClient.SendAsync(message);
+                await this.currentClient.GetStream().WriteAsync(message, 0, message.Length);
             }
 
             finally

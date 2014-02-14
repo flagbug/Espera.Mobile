@@ -1,6 +1,7 @@
 using System;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 
 namespace Espera.Android
 {
@@ -40,6 +41,12 @@ namespace Espera.Android
             with.Add(disposable);
 
             return disposable;
+        }
+
+        public static IObservable<T> PermaRef<T>(this IConnectableObservable<T> observable)
+        {
+            observable.Connect();
+            return observable;
         }
     }
 }

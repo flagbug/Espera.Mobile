@@ -14,7 +14,7 @@ namespace Espera.Android.Settings
         }
 
         private UserSettings()
-            : base("__Settings__", BlobCache.UserAccount)
+            : base("__Settings__", BlobCache.InMemory)
         { }
 
         public static UserSettings Instance

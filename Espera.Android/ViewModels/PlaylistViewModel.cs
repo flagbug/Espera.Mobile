@@ -50,6 +50,7 @@ namespace Espera.Android.ViewModels
             this.PlayPlaylistSongCommand = new ReactiveCommand(this.CanModify);
             this.Message = this.PlayPlaylistSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance
                     .PlayPlaylistSong(this.entries[(int)x].Guid))
+                    .Publish().PermaRef()
                 .Select(x => x.StatusCode == 200 ? "Playing song" : "Playback failed")
                 .Merge(this.LoadPlaylistCommand.ThrownExceptions.Select(_ => "Loading playlist failed")
                 .Merge(this.VoteCommand.ThrownExceptions.Select(_ => "Vote failed")));

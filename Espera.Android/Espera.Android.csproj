@@ -40,7 +40,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;RELEASE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
@@ -131,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessPermission.cs" />
+    <Compile Include="ConnectionInfo.cs" />
     <Compile Include="Network\INetworkMessenger.cs" />
     <Compile Include="Network\NetworkHelpers.cs" />
     <Compile Include="Network\NetworkMessenger.cs" />

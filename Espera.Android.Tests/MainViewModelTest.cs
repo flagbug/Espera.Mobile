@@ -28,14 +28,15 @@ namespace Espera.Android.Tests
 
             vm.ConnectCommand.Execute(null);
 
-            messenger.Verify(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>()), Times.Once);
+            messenger.Verify(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>(), null), Times.Once);
         }
 
         [Fact]
         public void ConnectCommandTimeoutTriggersConnectionFailed()
         {
             var messenger = new Mock<INetworkMessenger>();
-            messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>())).Returns(Task.Delay(1000));
+            messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>(), null))
+                .Returns(Task.Delay(1000).ContinueWith(x => (ConnectionInfo)null));
             messenger.SetupGet(x => x.IsConnected).Returns(Observable.Return(false));
 
             NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
@@ -58,7 +59,9 @@ namespace Espera.Android.Tests
         {
             var messenger = new Mock<INetworkMessenger>();
             messenger.SetupGet(x => x.IsConnected).Returns(Observable.Return(false));
-            messenger.Setup(x => x.Authorize(It.IsAny<string>())).Returns(new ResponseInfo(401, "Wrong password").ToTaskResult());
+            messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>(), null))
+                .Returns(new ConnectionInfo(AccessPermission.Admin, new Version(99, 99),
+                    new ResponseInfo(401, "Wrong password")).ToTaskResult);
 
             NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
 
@@ -79,11 +82,11 @@ namespace Espera.Android.Tests
         {
             var isConnected = new BehaviorSubject<bool>(false);
             var messenger = CreateDefaultNetworkMessenger();
-            messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>()))
+            messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>(), It.IsAny<string>()))
                 .Callback(() => isConnected.OnNext(true))
-                .Returns(Task.Delay(0)).Verifiable();
+                .Returns(new ConnectionInfo(AccessPermission.Admin, new Version(99, 99),
+                    new ResponseInfo(200, "Ok")).ToTaskResult);
             messenger.SetupGet(x => x.IsConnected).Returns(isConnected);
-            messenger.Setup(x => x.Authorize(It.IsAny<string>())).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
 
             NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
 
@@ -102,7 +105,9 @@ namespace Espera.Android.Tests
         {
             var messenger = new Mock<INetworkMessenger>();
             messenger.SetupGet(x => x.IsConnected).Returns(Observable.Return(true));
-            messenger.Setup(x => x.GetServerVersion()).Returns(new Version("0.1.0").ToTaskResult());
+            messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>(), It.IsAny<string>()))
+                .Returns(new ConnectionInfo(AccessPermission.Admin, new Version(0, 1, 0),
+                    new ResponseInfo(200, "Ok")).ToTaskResult);
 
             NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
 
@@ -119,7 +124,6 @@ namespace Espera.Android.Tests
         {
             var messenger = new Mock<INetworkMessenger>();
             messenger.SetupGet(x => x.IsConnected).Returns(Observable.Return(true));
-            messenger.Setup(x => x.GetServerVersion()).Returns(new Version("999.999.999").ToTaskResult());
 
             return messenger;
         }

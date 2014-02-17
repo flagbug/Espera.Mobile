@@ -40,32 +40,27 @@ namespace Espera.Android.ViewModels
             get { return this.isConnected.Value; }
         }
 
-        private async Task ConnectAsync(int port)
+        private static async Task ConnectAsync(int port)
         {
             IPAddress address = await NetworkMessenger.DiscoverServer(port);
 
-            await NetworkMessenger.Instance.ConnectAsync(address, port);
+            string password = UserSettings.Instance.EnableAdministratorMode ? UserSettings.Instance.AdministratorPassword : null;
+
+            ConnectionInfo connectionInfo = await NetworkMessenger.Instance.ConnectAsync(address, port, password);
+
+            if (connectionInfo.ResponseInfo.StatusCode != 200)
+            {
+                throw new Exception("Password incorrect");
+            }
 
 #if RELEASE
-            Version version = await NetworkMessenger.Instance.GetServerVersion();
-
             var minimumVersion = new Version("2.0.0");
-            if (version < minimumVersion)
+            if (connectionInfo.ServerVersion < minimumVersion)
             {
                 NetworkMessenger.Instance.Disconnect();
                 throw new Exception(string.Format("Espera version {0} required", minimumVersion.ToString(3)));
             }
 #endif
-
-            if (UserSettings.Instance.EnableAdministratorMode)
-            {
-                ResponseInfo response = await NetworkMessenger.Instance.Authorize(UserSettings.Instance.AdministratorPassword);
-
-                if (response.StatusCode != 200)
-                {
-                    throw new Exception("Password incorrect");
-                }
-            }
         }
     }
 }

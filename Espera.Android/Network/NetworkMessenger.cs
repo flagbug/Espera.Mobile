@@ -50,13 +50,15 @@ namespace Espera.Android.Network
             isConnected.Connect();
             this.IsConnected = isConnected;
 
-            this.messagePipeline = this.client.Select(x => Observable.Defer(() => x.ReadNextMessage()
+            var pipeline = this.client.Select(x => Observable.Defer(() => x.ReadNextMessage()
                     .ToObservable())
                     .Repeat())
                 .Switch()
                 .TakeWhile(m => m != null)
                 .Do(x => { }, ex => this.disconnected.OnNext(Unit.Default), () => this.disconnected.OnNext(Unit.Default))
-                .Publish().PermaRef();
+                .Publish();
+            this.messagePipeline = pipeline;
+            this.messagePipelineConnection = pipeline.Connect();
 
             var pushMessages = this.messagePipeline.Where(x => x["type"].ToString() == "push");
 
@@ -143,19 +145,13 @@ namespace Espera.Android.Network
             return CreateResponseInfo(response);
         }
 
-        public async Task<ResponseInfo> Authorize(string password)
-        {
-            var parameters = JObject.FromObject(new
-            {
-                password
-            });
-
-            JObject response = await this.SendRequest("post-administrator-password", parameters);
-
-            return CreateResponseInfo(response);
-        }
-
-        public async Task ConnectAsync(IPAddress address, int port)
+        /// <summary>
+        /// Connects to the server with an optional password that requests administrator rights.
+        /// </summary>
+        /// <param name="address">The server's IP address.</param>
+        /// <param name="port">The server's port.</param>
+        /// <param name="password">The optional administrator password. <c>null</c>, if guest rights are requested.</param>
+        public async Task<ConnectionInfo> ConnectAsync(IPAddress address, int port, string password)
         {
             if (address == null)
                 throw new ArgumentNullException("address");
@@ -171,13 +167,26 @@ namespace Espera.Android.Network
             await c.ConnectAsync(address, port);
             this.client.OnNext(c);
 
-            this.connectionEstablished.OnNext(Unit.Default);
+            var parameters = JObject.FromObject(new
+            {
+                password
+            });
 
-            JObject response = await this.SendRequest("get-access-permission");
+            JObject response = await this.SendRequest("get-connection-info", parameters);
 
+            ResponseInfo responseInfo = CreateResponseInfo(response);
             var permission = response["content"]["accessPermission"].ToObject<AccessPermission>();
+            var serverVersion = response["content"]["serverVersion"].ToObject<Version>();
 
-            this.accessPermission.OnNext(permission);
+            var connectionInfo = new ConnectionInfo(permission, serverVersion, responseInfo);
+
+            if (responseInfo.StatusCode == 200)
+            {
+                this.connectionEstablished.OnNext(Unit.Default);
+                this.accessPermission.OnNext(permission);
+            }
+
+            return connectionInfo;
         }
 
         public async Task<ResponseInfo> ContinueSong()
@@ -230,17 +239,6 @@ namespace Espera.Android.Network
             JToken content = response["content"];
 
             return content["state"].ToObject<PlaybackState>();
-        }
-
-        public async Task<Version> GetServerVersion()
-        {
-            JObject response = await this.SendRequest("get-server-version");
-
-            JToken content = response["content"];
-
-            var version = new Version(content["version"].ToString());
-
-            return version;
         }
 
         public async Task<IReadOnlyList<Song>> GetSongsAsync()

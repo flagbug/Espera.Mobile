@@ -107,8 +107,14 @@ namespace Espera.Android.ViewModels
                 .Subscribe();
         }
 
+        /// <summary>
+        /// Returns whether the playlist can be modified by the users. Always true for administrators.
+        /// </summary>
         public IObservable<bool> CanModify { get; private set; }
 
+        /// <summary>
+        /// The index of the currently playing song. Null, if no song is playing.
+        /// </summary>
         public IObservable<int?> CurrentIndex
         {
             get { return this.currentIndex.AsObservable(); }

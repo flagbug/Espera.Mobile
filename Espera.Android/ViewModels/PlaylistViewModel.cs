@@ -95,10 +95,8 @@ namespace Espera.Android.ViewModels
             });
 
             this.RemoveSongCommand = new ReactiveCommand(this.CanModify);
-            this.RemoveSongCommand.RegisterAsyncTask(x =>
-                NetworkMessenger.Instance.RemovePlaylistSong(this.entries[(int)x].Guid))
-                .Where(x => x.StatusCode == 200)
-                .InvokeCommand(this.LoadPlaylistCommand); // The server doesn't send an update...no idea why
+            this.RemoveSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.RemovePlaylistSong(this.entries[(int)x].Guid))
+                .Subscribe();
 
             this.MoveSongDownCommand = this.CanModify.ToCommand();
             this.MoveSongDownCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.MovePlaylistSongDown(this.entries[(int)x].Guid))

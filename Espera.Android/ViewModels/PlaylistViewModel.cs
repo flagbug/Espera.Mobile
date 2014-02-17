@@ -36,7 +36,7 @@ namespace Espera.Android.ViewModels
                         this.entries.Clear();
                         this.entries.AddRange(x.Item2);
                     }
-                    this.entries.Reset();
+
                     this.currentIndex.OnNext(x.Item1.CurrentIndex);
                     this.remainingVotes.OnNext(x.Item1.RemainingVotes);
                 });

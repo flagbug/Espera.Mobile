@@ -1,44 +1,26 @@
-using System.Collections.Generic;
 using Android.App;
 using Android.Views;
 using Android.Widget;
+using ReactiveUI;
+using ReactiveUI.Android;
 
 namespace Espera.Android.Views
 {
-    internal class SongsAdapter : BaseAdapter<Song>
+    internal class SongsAdapter : ReactiveListAdapter<Song>
     {
-        private readonly Activity context;
-        private readonly IReadOnlyList<Song> songs;
+        public SongsAdapter(Activity context, IReadOnlyReactiveList<Song> songs)
+            : base(songs, (song, parent) => CreateView(context), MapModel)
+        { }
 
-        public SongsAdapter(Activity context, IReadOnlyList<Song> songs)
+        private static View CreateView(Activity ctx)
         {
-            this.context = context;
-            this.songs = songs;
+            return ctx.LayoutInflater.Inflate(global::Android.Resource.Layout.SimpleListItem2, null);
         }
 
-        public override int Count
+        private static void MapModel(Song song, View view)
         {
-            get { return songs.Count; }
-        }
-
-        public override Song this[int position]
-        {
-            get { return songs[position]; }
-        }
-
-        public override long GetItemId(int position)
-        {
-            return position;
-        }
-
-        public override View GetView(int position, View convertView, ViewGroup parent)
-        {
-            View view = convertView ?? context.LayoutInflater.Inflate(global::Android.Resource.Layout.SimpleListItem2, null);
-
-            view.FindViewById<TextView>(global::Android.Resource.Id.Text1).Text = songs[position].Title;
-            view.FindViewById<TextView>(global::Android.Resource.Id.Text2).Text = songs[position].Album;
-
-            return view;
+            view.FindViewById<TextView>(global::Android.Resource.Id.Text1).Text = song.Title;
+            view.FindViewById<TextView>(global::Android.Resource.Id.Text2).Text = song.Album;
         }
     }
 }

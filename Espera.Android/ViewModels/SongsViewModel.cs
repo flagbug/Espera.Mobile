@@ -1,7 +1,6 @@
 using Espera.Android.Network;
 using ReactiveUI;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 
@@ -9,7 +8,7 @@ namespace Espera.Android.ViewModels
 {
     public class SongsViewModel : ReactiveObject
     {
-        public SongsViewModel(IReadOnlyList<Song> songs)
+        public SongsViewModel(IReadOnlyReactiveList<Song> songs)
         {
             if (songs == null)
                 throw new ArgumentNullException("songs");
@@ -17,12 +16,16 @@ namespace Espera.Android.ViewModels
             this.Songs = songs;
 
             this.PlaySongsCommand = new ReactiveCommand();
-            var playSongsMessage = this.PlaySongsCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.PlaySongs(this.Songs.Skip((int)x).Select(y => y.Guid)))
-                .Select(x => x.StatusCode == 200 ? "Playing songs" : "Error adding songs");
+            var playSongsMessage = this.PlaySongsCommand.RegisterAsyncTask(x =>
+                    NetworkMessenger.Instance.PlaySongs(this.Songs.Skip((int)x).Select(y => y.Guid)))
+                .Select(x => x.StatusCode == 200 ? "Playing songs" : "Error adding songs")
+                .Publish().PermaRef();
 
             this.AddToPlaylistCommand = new ReactiveCommand();
-            var addToPlaylistMessage = this.AddToPlaylistCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.AddSongToPlaylist(this.Songs[(int)x].Guid))
-                .Select(x => x.StatusCode == 200 ? "Song added to playlist" : "Error adding song");
+            var addToPlaylistMessage = this.AddToPlaylistCommand.RegisterAsyncTask(x =>
+                    NetworkMessenger.Instance.AddSongToPlaylist(this.Songs[(int)x].Guid))
+                .Select(x => x.StatusCode == 200 ? "Song added to playlist" : "Error adding song")
+                .Publish().PermaRef();
 
             this.Message = playSongsMessage.Merge(addToPlaylistMessage)
                 .Throttle(TimeSpan.FromMilliseconds(200))
@@ -35,6 +38,6 @@ namespace Espera.Android.ViewModels
 
         public ReactiveCommand PlaySongsCommand { get; private set; }
 
-        public IReadOnlyList<Song> Songs { get; private set; }
+        public IReadOnlyReactiveList<Song> Songs { get; private set; }
     }
 }

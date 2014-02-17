@@ -37,10 +37,9 @@ namespace Espera.Android.Views
 
             string songsJson = this.Intent.GetStringExtra("songs");
             IReadOnlyList<Song> songs = JsonConvert.DeserializeObject<IEnumerable<Song>>(songsJson).ToList();
-            this.ViewModel = new SongsViewModel(songs);
+            this.ViewModel = new SongsViewModel(new ReactiveList<Song>(songs));
 
-            this.OneWayBind(this.ViewModel, x => x.Songs, x => x.SongsList.Adapter, x => new SongsAdapter(this, x));
-
+            this.SongsList.Adapter = new SongsAdapter(this, this.ViewModel.Songs);
             this.SongsList.Events().ItemClick.Select(x => x.Position)
                 .Subscribe(x =>
                 {

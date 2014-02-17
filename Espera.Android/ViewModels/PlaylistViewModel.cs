@@ -29,6 +29,7 @@ namespace Espera.Android.ViewModels
                     NetworkMessenger.Instance.GetCurrentPlaylist().ToObservable().Timeout(TimeSpan.FromSeconds(15), RxApp.TaskpoolScheduler))
                 .Merge(NetworkMessenger.Instance.PlaylistChanged)
                 .Select(x => Tuple.Create(x, x.Songs.Select((song, i) => new PlaylistEntryViewModel(song, x.CurrentIndex.HasValue && i == x.CurrentIndex))))
+                .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(x =>
                 {
                     using (this.entries.SuppressChangeNotifications())

@@ -57,9 +57,16 @@ namespace Espera.Android.Views
             this.WireUpControls();
 
             this.ViewModel = new MainViewModel();
-            this.BindCommand(this.ViewModel, x => x.ConnectCommand, x => x.ConnectButton);
+
+            var connectOrDisconnectCommand = this.ViewModel.WhenAnyValue(x => x.IsConnected)
+                .Select(x => x ? this.ViewModel.DisconnectCommand : this.ViewModel.ConnectCommand);
+            this.ConnectButton.Events().Click.CombineLatestValue(connectOrDisconnectCommand, (args, command) => command)
+                .Where(x => x.CanExecute(null))
+                .Subscribe(x => x.Execute(null));
+            connectOrDisconnectCommand.SelectMany(x => x.CanExecuteObservable).BindTo(this.ConnectButton, x => x.Enabled);
             this.ViewModel.ConnectCommand.IsExecuting
-                .Select(x => x ? "Connecting..." : "Connect")
+                .CombineLatest(this.ViewModel.WhenAnyValue(x => x.IsConnected), (connecting, connected) =>
+                    connected ? "Disconnect" : connecting ? "Connecting..." : "Connect")
                 .BindTo(this.ConnectButton, x => x.Text);
 
             this.ViewModel.ConnectionFailed.Subscribe(x => Toast.MakeText(this, x, ToastLength.Long).Show());

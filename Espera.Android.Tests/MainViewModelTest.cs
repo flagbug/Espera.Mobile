@@ -19,14 +19,20 @@ namespace Espera.Android.Tests
         [Fact]
         public void ConnectCommandSmokeTest()
         {
+            var isConnected = new BehaviorSubject<bool>(false);
             var messenger = CreateDefaultNetworkMessenger();
-            messenger.SetupGet(x => x.IsConnected).Returns(Observable.Return(false));
+            messenger.SetupGet(x => x.IsConnected).Returns(isConnected);
 
             NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
 
             var vm = new MainViewModel();
 
+            Assert.True(vm.ConnectCommand.CanExecute(null));
+
             vm.ConnectCommand.Execute(null);
+            isConnected.OnNext(true);
+
+            Assert.False(vm.ConnectCommand.CanExecute(null));
 
             messenger.Verify(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>(), null), Times.Once);
         }
@@ -75,6 +81,27 @@ namespace Espera.Android.Tests
             vm.ConnectCommand.Execute(null);
 
             Assert.Equal(1, coll.Count);
+        }
+
+        [Fact]
+        public void DisconnectCommandSmokeTest()
+        {
+            var isConnected = new BehaviorSubject<bool>(true);
+            var messenger = CreateDefaultNetworkMessenger();
+            messenger.SetupGet(x => x.IsConnected).Returns(isConnected);
+
+            NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
+
+            var vm = new MainViewModel();
+
+            Assert.True(vm.DisconnectCommand.CanExecute(true));
+
+            vm.DisconnectCommand.Execute(null);
+            isConnected.OnNext(false);
+
+            Assert.False(vm.DisconnectCommand.CanExecute(null));
+
+            messenger.Verify(x => x.Disconnect(), Times.Once);
         }
 
         [Fact]

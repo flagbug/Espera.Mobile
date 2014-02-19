@@ -52,10 +52,11 @@ namespace Espera.Android.Network
 
             var pipeline = this.client.Select(x => Observable.Defer(() => x.ReadNextMessage()
                     .ToObservable())
-                    .Repeat())
+                    .Repeat()
+                    .TakeWhile(m => m != null)
+                    .Finally(() => this.disconnected.OnNext(Unit.Default))
+                    .Catch(Observable.Never<JObject>()))
                 .Switch()
-                .TakeWhile(m => m != null)
-                .Do(x => { }, ex => this.disconnected.OnNext(Unit.Default), () => this.disconnected.OnNext(Unit.Default))
                 .Publish();
             this.messagePipeline = pipeline;
             this.messagePipelineConnection = pipeline.Connect();
@@ -199,6 +200,7 @@ namespace Espera.Android.Network
         public void Disconnect()
         {
             this.currentClient.Close();
+            this.currentClient = null;
         }
 
         public void Dispose()

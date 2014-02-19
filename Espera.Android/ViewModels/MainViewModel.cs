@@ -16,24 +16,28 @@ namespace Espera.Android.ViewModels
 
         public MainViewModel()
         {
-            this.ConnectCommand = new ReactiveCommand();
+            this.isConnected = NetworkMessenger.Instance.IsConnected
+                .ToProperty(this, x => x.IsConnected);
+
+            this.ConnectCommand = this.WhenAnyValue(x => x.IsConnected, x => !x).ToCommand();
             this.ConnectCommand.RegisterAsync(x =>
                 ConnectAsync(UserSettings.Instance.Port).ToObservable()
                     .Timeout(TimeSpan.FromSeconds(10), RxApp.TaskpoolScheduler)
                     .Catch<Unit, TimeoutException>(ex => Observable.Throw<Unit>(new Exception("Connection failed"))))
                 .Subscribe();
 
+            this.DisconnectCommand = this.WhenAnyValue(x => x.IsConnected).ToCommand();
+            this.DisconnectCommand.Subscribe(x => NetworkMessenger.Instance.Disconnect());
+
             this.ConnectionFailed = this.ConnectCommand.ThrownExceptions
                 .Select(x => x.Message);
-
-            this.isConnected = NetworkMessenger.Instance.IsConnected
-                .CombineLatest(this.ConnectCommand.IsExecuting, (isConnected, isExecuting) => isConnected && !isExecuting)
-                .ToProperty(this, x => x.IsConnected);
         }
 
         public ReactiveCommand ConnectCommand { get; private set; }
 
         public IObservable<string> ConnectionFailed { get; private set; }
+
+        public ReactiveCommand DisconnectCommand { get; private set; }
 
         public bool IsConnected
         {

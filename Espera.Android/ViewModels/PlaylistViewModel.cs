@@ -27,7 +27,7 @@ namespace Espera.Android.ViewModels
             this.LoadPlaylistCommand = new ReactiveCommand();
             this.LoadPlaylistCommand.RegisterAsync(x =>
                     NetworkMessenger.Instance.GetCurrentPlaylist().ToObservable().Timeout(TimeSpan.FromSeconds(15), RxApp.TaskpoolScheduler))
-                .Merge(NetworkMessenger.Instance.PlaylistChanged.ObserveOn(RxApp.MainThreadScheduler))
+                .Merge(NetworkMessenger.Instance.PlaylistChanged)
                 .Select(x => Tuple.Create(x, x.Songs.Select((song, i) => new PlaylistEntryViewModel(song, x.CurrentIndex.HasValue && i == x.CurrentIndex))))
                 .Subscribe(x =>
                 {

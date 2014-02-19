@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,7 +59,9 @@ namespace Espera.Android.Network
                     .Catch(Observable.Never<JObject>()))
                 .Switch()
                 .Publish();
-            this.messagePipeline = pipeline;
+            // Serialize all incoming messages to the main thread scheduler,
+            // as we process them on the UI anyway
+            this.messagePipeline = pipeline.ObserveOn(RxApp.MainThreadScheduler);
             this.messagePipelineConnection = pipeline.Connect();
 
             var pushMessages = this.messagePipeline.Where(x => x["type"].ToString() == "push");

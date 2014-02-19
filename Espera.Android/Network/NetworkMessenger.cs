@@ -70,7 +70,7 @@ namespace Espera.Android.Network
 
             this.RemainingVotesChanged = pushMessages
                 .Where(x => x["action"].ToString() == "update-remaining-votes")
-                .Select(x => x["content"]["votes"].ToObject<int>());
+                .Select(x => x["content"]["remainingVotes"].ToObject<int>());
 
             var accessPermissionConn = pushMessages.Where(x => x["action"].ToString() == "update-access-permission")
                 .Select(x => x["content"]["accessPermission"].ToObject<AccessPermission>())

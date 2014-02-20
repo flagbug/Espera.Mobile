@@ -58,7 +58,7 @@ namespace Espera.Android.Views
                     new { Position = position, CanModify = tuple.Item1, CurrentIndex = tuple.Item2, RemainingVotes = tuple.Item3 })
                 .Subscribe(x =>
                 {
-                    bool canVote = x.CurrentIndex == null || x.Position > x.CurrentIndex && x.RemainingVotes > 0;
+                    bool canVote = (x.CurrentIndex == null || x.Position > x.CurrentIndex) && x.RemainingVotes.HasValue && x.RemainingVotes > 0;
 
                     if (x.CanModify)
                     {

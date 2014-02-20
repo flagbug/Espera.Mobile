@@ -13,13 +13,13 @@ namespace Espera.Android.ViewModels
         private readonly BehaviorSubject<int?> currentIndex;
         private readonly ReactiveList<PlaylistEntryViewModel> entries;
         private readonly ObservableAsPropertyHelper<bool> isPlaying;
-        private readonly BehaviorSubject<int> remainingVotes;
+        private readonly BehaviorSubject<int?> remainingVotes;
 
         public PlaylistViewModel()
         {
             this.entries = new ReactiveList<PlaylistEntryViewModel>();
             this.currentIndex = new BehaviorSubject<int?>(null);
-            this.remainingVotes = new BehaviorSubject<int>(0);
+            this.remainingVotes = new BehaviorSubject<int?>(null);
 
             this.CanModify = NetworkMessenger.Instance.AccessPermission
                 .Select(x => x == AccessPermission.Admin);
@@ -146,7 +146,7 @@ namespace Espera.Android.ViewModels
 
         public ReactiveCommand PlayPreviousSongCommand { get; private set; }
 
-        public IObservable<int> RemainingVotes
+        public IObservable<int?> RemainingVotes
         {
             get { return this.remainingVotes.AsObservable(); }
         }

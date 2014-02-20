@@ -20,38 +20,38 @@ namespace Espera.Android.Network
 
         IObservable<int> RemainingVotesChanged { get; }
 
-        Task<ResponseInfo> AddSongToPlaylist(Guid songGuid);
+        Task<ResponseInfo> AddSongToPlaylistAsync(Guid songGuid);
 
         Task<ConnectionInfo> ConnectAsync(IPAddress address, int port, string password);
 
-        Task<ResponseInfo> ContinueSong();
+        Task<ResponseInfo> ContinueSongAsync();
 
         void Disconnect();
 
         void Dispose();
 
-        Task<Playlist> GetCurrentPlaylist();
+        Task<Playlist> GetCurrentPlaylistAsync();
 
-        Task<PlaybackState> GetPlaybackState();
+        Task<PlaybackState> GetPlaybackStateAsync();
 
         Task<IReadOnlyList<Song>> GetSongsAsync();
 
-        Task<ResponseInfo> MovePlaylistSongDown(Guid entryGuid);
+        Task<ResponseInfo> MovePlaylistSongDownAsync(Guid entryGuid);
 
-        Task<ResponseInfo> MovePlaylistSongUp(Guid entryGuid);
+        Task<ResponseInfo> MovePlaylistSongUpAsync(Guid entryGuid);
 
-        Task<ResponseInfo> PauseSong();
+        Task<ResponseInfo> PauseSongAsync();
 
-        Task<ResponseInfo> PlayNextSong();
+        Task<ResponseInfo> PlayNextSongAsync();
 
-        Task<ResponseInfo> PlayPlaylistSong(Guid entryGuid);
+        Task<ResponseInfo> PlayPlaylistSongAsync(Guid entryGuid);
 
-        Task<ResponseInfo> PlayPreviousSong();
+        Task<ResponseInfo> PlayPreviousSongAsync();
 
-        Task<ResponseInfo> PlaySongs(IEnumerable<Guid> guids);
+        Task<ResponseInfo> PlaySongsAsync(IEnumerable<Guid> guids);
 
-        Task<ResponseInfo> RemovePlaylistSong(Guid entryGuid);
+        Task<ResponseInfo> RemovePlaylistSongAsync(Guid entryGuid);
 
-        Task<ResponseInfo> Vote(Guid entryGuid);
+        Task<ResponseInfo> VoteAsync(Guid entryGuid);
     }
 }

@@ -42,7 +42,7 @@ namespace Espera.Android.Network
         /// Reads the next message for the Espera protocol from the TCP client.
         /// </summary>
         /// <returns>The uncompressed, deserialized message in JSON, or null, if the underlying client has closed the connection.</returns>
-        public static async Task<JObject> ReadNextMessage(this TcpClient client)
+        public static async Task<JObject> ReadNextMessageAsync(this TcpClient client)
         {
             byte[] messageLength = await client.ReadAsync(4);
 

@@ -51,7 +51,7 @@ namespace Espera.Android.Network
             isConnected.Connect();
             this.IsConnected = isConnected;
 
-            var pipeline = this.client.Select(x => Observable.Defer(() => x.ReadNextMessage()
+            var pipeline = this.client.Select(x => Observable.Defer(() => x.ReadNextMessageAsync()
                     .ToObservable())
                     .Repeat()
                     .TakeWhile(m => m != null)
@@ -137,7 +137,7 @@ namespace Espera.Android.Network
             fakeIpAddress = ipAdress;
         }
 
-        public async Task<ResponseInfo> AddSongToPlaylist(Guid songGuid)
+        public async Task<ResponseInfo> AddSongToPlaylistAsync(Guid songGuid)
         {
             var parameters = JObject.FromObject(new
             {
@@ -193,7 +193,7 @@ namespace Espera.Android.Network
             return connectionInfo;
         }
 
-        public async Task<ResponseInfo> ContinueSong()
+        public async Task<ResponseInfo> ContinueSongAsync()
         {
             JObject response = await this.SendRequest("post-continue-song");
 
@@ -228,7 +228,7 @@ namespace Espera.Android.Network
             return content["accessPermission"].ToObject<AccessPermission>();
         }
 
-        public async Task<Playlist> GetCurrentPlaylist()
+        public async Task<Playlist> GetCurrentPlaylistAsync()
         {
             JObject response = await this.SendRequest("get-current-playlist");
 
@@ -237,7 +237,7 @@ namespace Espera.Android.Network
             return Playlist.Deserialize(content);
         }
 
-        public async Task<PlaybackState> GetPlaybackState()
+        public async Task<PlaybackState> GetPlaybackStateAsync()
         {
             JObject response = await this.SendRequest("get-playback-state");
 
@@ -260,7 +260,7 @@ namespace Espera.Android.Network
             return songs;
         }
 
-        public async Task<ResponseInfo> MovePlaylistSongDown(Guid entryGuid)
+        public async Task<ResponseInfo> MovePlaylistSongDownAsync(Guid entryGuid)
         {
             var parameters = JObject.FromObject(new
             {
@@ -272,7 +272,7 @@ namespace Espera.Android.Network
             return CreateResponseInfo(response);
         }
 
-        public async Task<ResponseInfo> MovePlaylistSongUp(Guid entryGuid)
+        public async Task<ResponseInfo> MovePlaylistSongUpAsync(Guid entryGuid)
         {
             var parameters = JObject.FromObject(new
             {
@@ -284,21 +284,21 @@ namespace Espera.Android.Network
             return CreateResponseInfo(response);
         }
 
-        public async Task<ResponseInfo> PauseSong()
+        public async Task<ResponseInfo> PauseSongAsync()
         {
             JObject response = await this.SendRequest("post-pause-song");
 
             return CreateResponseInfo(response);
         }
 
-        public async Task<ResponseInfo> PlayNextSong()
+        public async Task<ResponseInfo> PlayNextSongAsync()
         {
             JObject response = await this.SendRequest("post-play-next-song");
 
             return CreateResponseInfo(response);
         }
 
-        public async Task<ResponseInfo> PlayPlaylistSong(Guid entryGuid)
+        public async Task<ResponseInfo> PlayPlaylistSongAsync(Guid entryGuid)
         {
             var parameters = JObject.FromObject(new
             {
@@ -310,14 +310,14 @@ namespace Espera.Android.Network
             return CreateResponseInfo(response);
         }
 
-        public async Task<ResponseInfo> PlayPreviousSong()
+        public async Task<ResponseInfo> PlayPreviousSongAsync()
         {
             JObject response = await this.SendRequest("post-play-previous-song");
 
             return CreateResponseInfo(response);
         }
 
-        public async Task<ResponseInfo> PlaySongs(IEnumerable<Guid> guids)
+        public async Task<ResponseInfo> PlaySongsAsync(IEnumerable<Guid> guids)
         {
             var parameters = JObject.FromObject(new
             {
@@ -329,7 +329,7 @@ namespace Espera.Android.Network
             return CreateResponseInfo(response);
         }
 
-        public async Task<ResponseInfo> RemovePlaylistSong(Guid entryGuid)
+        public async Task<ResponseInfo> RemovePlaylistSongAsync(Guid entryGuid)
         {
             var parameters = JObject.FromObject(new
             {
@@ -341,7 +341,7 @@ namespace Espera.Android.Network
             return CreateResponseInfo(response);
         }
 
-        public async Task<ResponseInfo> Vote(Guid entryGuid)
+        public async Task<ResponseInfo> VoteAsync(Guid entryGuid)
         {
             var parameters = JObject.FromObject(new
             {

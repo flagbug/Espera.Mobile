@@ -19,7 +19,7 @@ namespace Espera.Android.Tests
         public void LoadPlaylistCommandHasTimeout()
         {
             var messenger = CreateDefaultPlaylistMessenger();
-            messenger.Setup(x => x.GetCurrentPlaylist()).Returns(async () =>
+            messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(async () =>
             {
                 await Task.Delay(1000);
                 return null;
@@ -45,7 +45,7 @@ namespace Espera.Android.Tests
             var playlist = new Playlist("Playlist 1", songs, 1);
 
             var messenger = CreateDefaultPlaylistMessenger();
-            messenger.Setup(x => x.GetCurrentPlaylist()).Returns(playlist.ToTaskResult);
+            messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(playlist.ToTaskResult);
 
             var vm = new PlaylistViewModel();
 
@@ -76,8 +76,8 @@ namespace Espera.Android.Tests
             var playlist = new Playlist("Playlist 1", new List<Song>(), 0);
 
             var messenger = CreateDefaultPlaylistMessenger();
-            messenger.Setup(x => x.GetCurrentPlaylist()).Returns(playlist.ToTaskResult());
-            messenger.Setup(x => x.PlayNextSong()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
+            messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(playlist.ToTaskResult());
+            messenger.Setup(x => x.PlayNextSongAsync()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
 
             var vm = new PlaylistViewModel();
             vm.LoadPlaylistCommand.Execute(null);
@@ -92,8 +92,8 @@ namespace Espera.Android.Tests
             var playlist = new Playlist("Playlist 1", songs, 0);
 
             var messenger = CreateDefaultPlaylistMessenger();
-            messenger.Setup(x => x.GetCurrentPlaylist()).Returns(playlist.ToTaskResult());
-            messenger.Setup(x => x.PlayNextSong()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
+            messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(playlist.ToTaskResult());
+            messenger.Setup(x => x.PlayNextSongAsync()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
 
             var playlists = new Subject<Playlist>();
             messenger.Setup(x => x.PlaylistChanged).Returns(playlists);
@@ -109,7 +109,7 @@ namespace Espera.Android.Tests
             playlists.OnNext(new Playlist("Playlist 1", songs, 0));
             playlists.OnNext(new Playlist("Playlist 1", songs, null));
 
-            messenger.Verify(x => x.PlayNextSong(), Times.Once);
+            messenger.Verify(x => x.PlayNextSongAsync(), Times.Once);
             Assert.Equal(new[] { true, false, true, false, true, false }, canExecute);
         }
 
@@ -120,9 +120,9 @@ namespace Espera.Android.Tests
             var playlist = new Playlist("Playlist 1", songs, 0);
 
             var messenger = CreateDefaultPlaylistMessenger();
-            messenger.Setup(x => x.GetCurrentPlaylist()).Returns(playlist.ToTaskResult());
-            messenger.Setup(x => x.ContinueSong()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
-            messenger.Setup(x => x.PauseSong()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
+            messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(playlist.ToTaskResult());
+            messenger.Setup(x => x.ContinueSongAsync()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
+            messenger.Setup(x => x.PauseSongAsync()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
 
             var playbackState = new Subject<PlaybackState>();
             messenger.SetupGet(x => x.PlaybackStateChanged).Returns(playbackState);
@@ -135,12 +135,12 @@ namespace Espera.Android.Tests
             playbackState.OnNext(PlaybackState.Paused);
 
             vm.PlayPauseCommand.Execute(null);
-            messenger.Verify(x => x.ContinueSong(), Times.Once);
+            messenger.Verify(x => x.ContinueSongAsync(), Times.Once);
 
             playbackState.OnNext(PlaybackState.Playing);
 
             vm.PlayPauseCommand.Execute(null);
-            messenger.Verify(x => x.PauseSong(), Times.Once);
+            messenger.Verify(x => x.PauseSongAsync(), Times.Once);
 
             playbackState.OnNext(PlaybackState.Paused);
 
@@ -154,8 +154,8 @@ namespace Espera.Android.Tests
             var playlist = new Playlist("Playlist 1", songs, 0);
 
             var messenger = CreateDefaultPlaylistMessenger();
-            messenger.Setup(x => x.GetCurrentPlaylist()).Returns(playlist.ToTaskResult());
-            messenger.Setup(x => x.PlayPlaylistSong(It.Is<Guid>(y => y == songs[1].Guid)))
+            messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(playlist.ToTaskResult());
+            messenger.Setup(x => x.PlayPlaylistSongAsync(It.Is<Guid>(y => y == songs[1].Guid)))
                 .Returns(new ResponseInfo(200, "Ok").ToTaskResult());
 
             var vm = new PlaylistViewModel();
@@ -167,7 +167,7 @@ namespace Espera.Android.Tests
             vm.PlayPlaylistSongCommand.Execute(1);
 
             messenger.Verify();
-            messenger.Verify(x => x.PlayPlaylistSong(It.IsAny<Guid>()), Times.Once);
+            messenger.Verify(x => x.PlayPlaylistSongAsync(It.IsAny<Guid>()), Times.Once);
             Assert.Equal(1, coll.Count);
         }
 
@@ -177,8 +177,8 @@ namespace Espera.Android.Tests
             var playlist = new Playlist("Playlist 1", new List<Song>(), 0);
 
             var messenger = CreateDefaultPlaylistMessenger();
-            messenger.Setup(x => x.GetCurrentPlaylist()).Returns(playlist.ToTaskResult());
-            messenger.Setup(x => x.PlayNextSong()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
+            messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(playlist.ToTaskResult());
+            messenger.Setup(x => x.PlayNextSongAsync()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
 
             var vm = new PlaylistViewModel();
             vm.LoadPlaylistCommand.Execute(null);
@@ -193,8 +193,8 @@ namespace Espera.Android.Tests
             var playlist = new Playlist("Playlist 1", songs, 1);
 
             var messenger = CreateDefaultPlaylistMessenger();
-            messenger.Setup(x => x.GetCurrentPlaylist()).Returns(playlist.ToTaskResult());
-            messenger.Setup(x => x.PlayPreviousSong()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
+            messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(playlist.ToTaskResult());
+            messenger.Setup(x => x.PlayPreviousSongAsync()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
 
             var playlists = new Subject<Playlist>();
             messenger.SetupGet(x => x.PlaylistChanged).Returns(playlists);
@@ -210,7 +210,7 @@ namespace Espera.Android.Tests
             playlists.OnNext(new Playlist("Playlist 1", songs, 1));
             playlists.OnNext(new Playlist("Playlist 1", songs, null));
 
-            messenger.Verify(x => x.PlayPreviousSong(), Times.Once);
+            messenger.Verify(x => x.PlayPreviousSongAsync(), Times.Once);
             Assert.Equal(new[] { true, false, true, false, true, false }, canExecute);
         }
 
@@ -220,7 +220,7 @@ namespace Espera.Android.Tests
             messenger.SetupGet(x => x.PlaybackStateChanged).Returns(Observable.Never<PlaybackState>());
             messenger.SetupGet(x => x.PlaylistChanged).Returns(Observable.Never<Playlist>());
             messenger.SetupGet(x => x.AccessPermission).Returns(Observable.Return(AccessPermission.Admin));
-            messenger.Setup(x => x.GetPlaybackState()).Returns(PlaybackState.None.ToTaskResult());
+            messenger.Setup(x => x.GetPlaybackStateAsync()).Returns(PlaybackState.None.ToTaskResult());
 
             NetworkMessenger.Override(messenger.Object);
 

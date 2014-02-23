@@ -5,8 +5,10 @@ using Android.Net.Wifi;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
+using Espera.Android.Analytics;
 using Espera.Android.Network;
 using Espera.Android.ViewModels;
+using Google.Analytics.Tracking;
 using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
@@ -107,12 +109,38 @@ namespace Espera.Android.Views
             {
                 this.ShowWifiPrompt(wifiManager);
             }
+
+            else
+            {
+                WifiInfo info = wifiManager.ConnectionInfo;
+
+                if (info != null)
+                {
+                    var analytics = new AndroidAnalytics(this.ApplicationContext);
+                    int wifiSpeed = info.LinkSpeed;
+                    analytics.RecordWifiSpeed(wifiSpeed);
+                }
+            }
         }
 
         protected override void OnSaveInstanceState(Bundle outState)
         {
             base.OnSaveInstanceState(outState);
             this.autoSuspendHelper.OnSaveInstanceState(outState);
+        }
+
+        protected override void OnStart()
+        {
+            base.OnStart();
+
+            EasyTracker.GetInstance(this).ActivityStart(this);
+        }
+
+        protected override void OnStop()
+        {
+            base.OnStop();
+
+            EasyTracker.GetInstance(this).ActivityStop(this);
         }
 
         private void ShowWifiPrompt(WifiManager wifiManager)

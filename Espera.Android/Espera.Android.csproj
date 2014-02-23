@@ -65,6 +65,10 @@
     <Reference Include="Akavache.Sqlite3">
       <HintPath>..\ext\Akavache.Sqlite3.dll</HintPath>
     </Reference>
+    <Reference Include="GoogleAnalytics.Android, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Components\googleanalytics-3.0.3\lib\android\GoogleAnalytics.Android.dll</HintPath>
+    </Reference>
     <Reference Include="Lager">
       <HintPath>..\ext\Lager.dll</HintPath>
     </Reference>
@@ -131,6 +135,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessPermission.cs" />
+    <Compile Include="Analytics\AndroidAnalytics.cs" />
+    <Compile Include="Analytics\IAnalytics.cs" />
     <Compile Include="ConnectionInfo.cs" />
     <Compile Include="Network\INetworkMessenger.cs" />
     <Compile Include="Network\NetworkHelpers.cs" />
@@ -199,8 +205,15 @@
     <AndroidResource Include="Resources\Drawable\Previous.png" />
     <AndroidResource Include="Resources\Drawable\Pause.png" />
     <AndroidResource Include="Resources\Drawable\Settings.png" />
+    <AndroidResource Include="Resources\Values\analytics.xml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <XamarinComponentReference Include="googleanalytics">
+      <Visible>False</Visible>
+      <Version>3.0.3</Version>
+      <InstallationInProgress>True</InstallationInProgress>
+    </XamarinComponentReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,6 +1,7 @@
 using Android.App;
 using Android.Content;
 using Android.OS;
+using Espera.Android.Analytics;
 using Espera.Android.Settings;
 using Espera.Android.Views;
 using ReactiveUI;
@@ -22,6 +23,8 @@ namespace Espera.Android.Network
         public override void OnCreate()
         {
             base.OnCreate();
+
+            NetworkMessenger.Instance.RegisterAnalytics(new AndroidAnalytics(this.ApplicationContext));
 
             this.keepAlive = NetworkMessenger.Instance;
             this.keepAlive.IsConnected.Where(x => x)

@@ -4,6 +4,7 @@ using Android.OS;
 using Android.Widget;
 using Espera.Android.Settings;
 using Espera.Android.ViewModels;
+using Google.Analytics.Tracking;
 using Newtonsoft.Json;
 using ReactiveUI;
 using ReactiveUI.Android;
@@ -93,6 +94,20 @@ namespace Espera.Android.Views
         {
             base.OnSaveInstanceState(outState);
             this.autoSuspendHelper.OnSaveInstanceState(outState);
+        }
+
+        protected override void OnStart()
+        {
+            base.OnStart();
+
+            EasyTracker.GetInstance(this).ActivityStart(this);
+        }
+
+        protected override void OnStop()
+        {
+            base.OnStop();
+
+            EasyTracker.GetInstance(this).ActivityStop(this);
         }
     }
 }

@@ -199,8 +199,15 @@
     <AndroidResource Include="Resources\Drawable\Previous.png" />
     <AndroidResource Include="Resources\Drawable\Pause.png" />
     <AndroidResource Include="Resources\Drawable\Settings.png" />
+    <AndroidResource Include="Resources\Values\analytics.xml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <XamarinComponentReference Include="googleanalytics">
+      <Visible>False</Visible>
+      <Version>3.0.3</Version>
+      <InstallationInProgress>True</InstallationInProgress>
+    </XamarinComponentReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

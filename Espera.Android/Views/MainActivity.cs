@@ -5,8 +5,8 @@ using Android.Net.Wifi;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
-using Espera.Android.Network;
 using Espera.Android.ViewModels;
+using Google.Analytics.Tracking;
 using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
@@ -76,8 +76,6 @@ namespace Espera.Android.Views
 
             this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadCurrentPlaylistButton.Enabled);
             this.LoadCurrentPlaylistButton.Events().Click.Subscribe(x => this.StartActivity(typeof(PlaylistActivity)));
-
-            this.StartService(new Intent(this, typeof(NetworkService)));
         }
 
         protected override void OnNewIntent(Intent intent)
@@ -113,6 +111,20 @@ namespace Espera.Android.Views
         {
             base.OnSaveInstanceState(outState);
             this.autoSuspendHelper.OnSaveInstanceState(outState);
+        }
+
+        protected override void OnStart()
+        {
+            base.OnStart();
+
+            EasyTracker.GetInstance(this).ActivityStart(this);
+        }
+
+        protected override void OnStop()
+        {
+            base.OnStop();
+
+            EasyTracker.GetInstance(this).ActivityStop(this);
         }
 
         private void ShowWifiPrompt(WifiManager wifiManager)

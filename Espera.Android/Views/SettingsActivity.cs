@@ -4,6 +4,7 @@ using Android.Preferences;
 using Android.Text;
 using Android.Widget;
 using Espera.Android.Settings;
+using Google.Analytics.Tracking;
 using Lager.Android;
 using ReactiveUI;
 using System;
@@ -44,6 +45,20 @@ namespace Espera.Android.Views
             defaultLibraryActionPreference.BindToSetting(UserSettings.Instance, x => x.DefaultLibraryAction,
                 x => x.Value, x => Enum.Parse(typeof(DefaultLibraryAction), (string)x), x => x.ToString());
             UserSettings.Instance.WhenAnyValue(x => x.EnableAdministratorMode).BindTo(defaultLibraryActionPreference, x => x.Enabled);
+        }
+
+        protected override void OnStart()
+        {
+            base.OnStart();
+
+            EasyTracker.GetInstance(this).ActivityStart(this);
+        }
+
+        protected override void OnStop()
+        {
+            base.OnStop();
+
+            EasyTracker.GetInstance(this).ActivityStop(this);
         }
 
         private static bool IsValidPort(int port)

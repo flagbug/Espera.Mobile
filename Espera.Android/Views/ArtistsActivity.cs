@@ -4,6 +4,7 @@ using Android.Content.PM;
 using Android.OS;
 using Android.Widget;
 using Espera.Android.ViewModels;
+using Google.Analytics.Tracking;
 using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
@@ -77,6 +78,20 @@ namespace Espera.Android.Views
         {
             base.OnSaveInstanceState(outState);
             this.autoSuspendHelper.OnSaveInstanceState(outState);
+        }
+
+        protected override void OnStart()
+        {
+            base.OnStart();
+
+            EasyTracker.GetInstance(this).ActivityStart(this);
+        }
+
+        protected override void OnStop()
+        {
+            base.OnStop();
+
+            EasyTracker.GetInstance(this).ActivityStop(this);
         }
 
         private void OpenArtist(string artist)

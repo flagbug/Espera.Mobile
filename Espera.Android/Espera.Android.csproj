@@ -135,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessPermission.cs" />
+    <Compile Include="Analytics\AnalyticsMixin.cs" />
     <Compile Include="Analytics\AndroidAnalytics.cs" />
     <Compile Include="Analytics\IAnalytics.cs" />
     <Compile Include="ConnectionInfo.cs" />

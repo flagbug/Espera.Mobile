@@ -1,8 +1,10 @@
+using Espera.Android.Analytics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -27,6 +29,7 @@ namespace Espera.Android.Network
         private readonly SemaphoreSlim gate;
         private readonly IObservable<JObject> messagePipeline;
         private readonly IDisposable messagePipelineConnection;
+        private IAnalytics analytics;
         private TcpClient currentClient;
 
         static NetworkMessenger()
@@ -329,6 +332,18 @@ namespace Espera.Android.Network
             return CreateResponseInfo(response);
         }
 
+        /// <summary>
+        /// Registers an analytics provider ton measure network timings
+        /// </summary>
+        /// <param name="analytics"></param>
+        public void RegisterAnalytics(IAnalytics analytics)
+        {
+            if (analytics == null)
+                throw new ArgumentNullException("analytics");
+
+            this.analytics = analytics;
+        }
+
         public async Task<ResponseInfo> RemovePlaylistSongAsync(Guid entryGuid)
         {
             var parameters = JObject.FromObject(new
@@ -396,13 +411,29 @@ namespace Espera.Android.Network
 
             using (message.Connect())
             {
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
+
                 try
                 {
                     await this.SendMessage(jMessage);
+
+                    JObject response = await message;
+
+                    stopwatch.Stop();
+
+                    if (analytics != null)
+                    {
+                        this.analytics.RecordNetworkTiming(action, stopwatch.ElapsedMilliseconds);
+                    }
+
+                    return response;
                 }
 
                 catch (Exception ex)
                 {
+                    stopwatch.Stop();
+
                     this.disconnected.OnNext(Unit.Default);
 
                     return JObject.FromObject(new
@@ -411,10 +442,6 @@ namespace Espera.Android.Network
                         message = "Connection lost"
                     });
                 }
-
-                JObject response = await message;
-
-                return response;
             }
         }
     }

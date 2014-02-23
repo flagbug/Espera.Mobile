@@ -1,3 +1,4 @@
+using Espera.Android.Analytics;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -49,6 +50,8 @@ namespace Espera.Android.Network
         Task<ResponseInfo> PlayPreviousSongAsync();
 
         Task<ResponseInfo> PlaySongsAsync(IEnumerable<Guid> guids);
+
+        void RegisterAnalytics(IAnalytics analytics);
 
         Task<ResponseInfo> RemovePlaylistSongAsync(Guid entryGuid);
 

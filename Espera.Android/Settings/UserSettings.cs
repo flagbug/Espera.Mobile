@@ -45,5 +45,11 @@ namespace Espera.Android.Settings
             get { return this.GetOrCreate(49587); }
             set { this.SetOrCreate(value); }
         }
+
+        public string UniqueIdentifier
+        {
+            get { return this.GetOrCreate((string)null); }
+            set { this.SetOrCreate(value); }
+        }
     }
 }

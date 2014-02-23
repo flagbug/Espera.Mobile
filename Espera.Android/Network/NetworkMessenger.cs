@@ -154,8 +154,9 @@ namespace Espera.Android.Network
         /// </summary>
         /// <param name="address">The server's IP address.</param>
         /// <param name="port">The server's port.</param>
+        /// <param name="deviceId">A, to this device unique identifier.</param>
         /// <param name="password">The optional administrator password. <c>null</c>, if guest rights are requested.</param>
-        public async Task<ConnectionInfo> ConnectAsync(IPAddress address, int port, string password)
+        public async Task<ConnectionInfo> ConnectAsync(IPAddress address, int port, Guid deviceId, string password)
         {
             if (address == null)
                 throw new ArgumentNullException("address");
@@ -173,6 +174,7 @@ namespace Espera.Android.Network
 
             var parameters = JObject.FromObject(new
             {
+                deviceId,
                 password
             });
 

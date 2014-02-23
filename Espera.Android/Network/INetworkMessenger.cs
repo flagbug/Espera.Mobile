@@ -23,7 +23,7 @@ namespace Espera.Android.Network
 
         Task<ResponseInfo> AddSongToPlaylistAsync(Guid songGuid);
 
-        Task<ConnectionInfo> ConnectAsync(IPAddress address, int port, string password);
+        Task<ConnectionInfo> ConnectAsync(IPAddress address, int port, Guid deviceId, string password);
 
         Task<ResponseInfo> ContinueSongAsync();
 

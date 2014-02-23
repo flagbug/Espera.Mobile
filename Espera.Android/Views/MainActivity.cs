@@ -5,6 +5,7 @@ using Android.Net.Wifi;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
+using Espera.Android.Analytics;
 using Espera.Android.Network;
 using Espera.Android.ViewModels;
 using Google.Analytics.Tracking;
@@ -107,6 +108,18 @@ namespace Espera.Android.Views
             if (!wifiManager.IsWifiEnabled)
             {
                 this.ShowWifiPrompt(wifiManager);
+            }
+
+            else
+            {
+                WifiInfo info = wifiManager.ConnectionInfo;
+
+                if (info != null)
+                {
+                    var analytics = new AndroidAnalytics(this.ApplicationContext);
+                    int wifiSpeed = info.LinkSpeed;
+                    analytics.RecordWifiSpeed(wifiSpeed);
+                }
             }
         }
 

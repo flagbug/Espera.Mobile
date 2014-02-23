@@ -16,6 +16,11 @@ namespace Espera.Android.Analytics
             this.tracker = EasyTracker.GetInstance(context);
         }
 
+        public void RecordCustomMetric(string metric, string value)
+        {
+            this.tracker.Set(metric, value);
+        }
+
         public void RecordTiming(string category, long milliseconds, string name)
         {
             var dic = MapBuilder.CreateTiming(category, new Java.Lang.Long(milliseconds), name, null).Build();

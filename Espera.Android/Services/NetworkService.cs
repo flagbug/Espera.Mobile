@@ -2,13 +2,14 @@ using Android.App;
 using Android.Content;
 using Android.OS;
 using Espera.Android.Analytics;
+using Espera.Android.Network;
 using Espera.Android.Settings;
 using Espera.Android.Views;
 using ReactiveUI;
 using System;
 using System.Reactive.Linq;
 
-namespace Espera.Android.Network
+namespace Espera.Android.Services
 {
     [Service]
     internal class NetworkService : Service

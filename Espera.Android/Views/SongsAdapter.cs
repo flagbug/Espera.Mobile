@@ -1,6 +1,7 @@
 using Android.App;
 using Android.Views;
 using Android.Widget;
+using Espera.Mobile.Core;
 using ReactiveUI;
 using ReactiveUI.Android;
 

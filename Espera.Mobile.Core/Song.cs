@@ -1,6 +1,6 @@
 using System;
 
-namespace Espera.Android
+namespace Espera.Mobile.Core
 {
     public class Song
     {

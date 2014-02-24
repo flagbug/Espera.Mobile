@@ -1,4 +1,4 @@
-using Espera.Android.Network;
+using Espera.Mobile.Core.Network;
 using ReactiveUI;
 using System;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
 
-namespace Espera.Android.ViewModels
+namespace Espera.Mobile.Core.ViewModels
 {
     public class PlaylistViewModel : ReactiveObject
     {

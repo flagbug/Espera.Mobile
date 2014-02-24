@@ -6,7 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Espera.Android.Network
+namespace Espera.Mobile.Core.Network
 {
     public static class NetworkHelpers
     {

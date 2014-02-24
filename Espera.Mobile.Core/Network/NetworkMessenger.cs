@@ -1,4 +1,4 @@
-using Espera.Android.Analytics;
+using Espera.Mobile.Core.Analytics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
@@ -16,7 +16,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Espera.Android.Network
+namespace Espera.Mobile.Core.Network
 {
     public class NetworkMessenger : IDisposable, INetworkMessenger
     {
@@ -82,7 +82,7 @@ namespace Espera.Android.Network
             var accessPermissionConn = pushMessages.Where(x => x["action"].ToString() == "update-access-permission")
                 .Select(x => x["content"]["accessPermission"].ToObject<AccessPermission>())
                 .Merge(this.accessPermission)
-                .Publish(Android.AccessPermission.Guest);
+                .Publish(Core.AccessPermission.Guest);
             accessPermissionConn.Connect();
 
             this.AccessPermission = accessPermissionConn;

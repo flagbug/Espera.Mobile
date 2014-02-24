@@ -1,4 +1,4 @@
-namespace Espera.Android.Settings
+namespace Espera.Mobile.Core.Settings
 {
     public enum DefaultLibraryAction
     {

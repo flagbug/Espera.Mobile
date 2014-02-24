@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Espera.Android
+namespace Espera.Mobile.Core
 {
     public class Playlist
     {

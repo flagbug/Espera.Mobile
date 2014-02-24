@@ -2,7 +2,7 @@ using Akavache;
 using Lager;
 using System;
 
-namespace Espera.Android.Settings
+namespace Espera.Mobile.Core.Settings
 {
     public class UserSettings : SettingsStorage
     {

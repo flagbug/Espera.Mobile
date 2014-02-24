@@ -1,4 +1,5 @@
 using Android.Content;
+using Espera.Mobile.Core.Analytics;
 using Google.Analytics.Tracking;
 using System;
 

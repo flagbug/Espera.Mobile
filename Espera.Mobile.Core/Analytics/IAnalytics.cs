@@ -1,4 +1,4 @@
-namespace Espera.Android.Analytics
+namespace Espera.Mobile.Core.Analytics
 {
     public interface IAnalytics
     {

@@ -1,7 +1,7 @@
 using Android.Content;
 using Android.Views;
 using Android.Widget;
-using Espera.Android.ViewModels;
+using Espera.Mobile.Core.ViewModels;
 using ReactiveUI;
 using ReactiveUI.Android;
 

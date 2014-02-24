@@ -3,7 +3,7 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
-namespace Espera.Android
+namespace Espera.Mobile.Core
 {
     public static class ReactiveHelpers
     {

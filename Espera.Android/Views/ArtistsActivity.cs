@@ -3,7 +3,7 @@ using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Widget;
-using Espera.Android.ViewModels;
+using Espera.Mobile.Core.ViewModels;
 using Google.Analytics.Tracking;
 using ReactiveUI;
 using ReactiveUI.Android;

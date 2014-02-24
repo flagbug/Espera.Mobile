@@ -76,7 +76,7 @@
     <Compile Include="AccessPermission.cs" />
     <Compile Include="Analytics\AnalyticsMixin.cs" />
     <Compile Include="Analytics\IAnalytics.cs" />
-    <Compile Include="ConnectionInfo.cs" />
+    <Compile Include="Network\ConnectionInfo.cs" />
     <Compile Include="Network\INetworkMessenger.cs" />
     <Compile Include="Network\NetworkHelpers.cs" />
     <Compile Include="Network\NetworkMessenger.cs" />

@@ -1,5 +1,5 @@
-using Espera.Android.Network;
-using Espera.Android.Settings;
+using Espera.Mobile.Core.Network;
+using Espera.Mobile.Core.Settings;
 using ReactiveUI;
 using System;
 using System.Net;
@@ -8,7 +8,7 @@ using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 
-namespace Espera.Android.ViewModels
+namespace Espera.Mobile.Core.ViewModels
 {
     public class MainViewModel : ReactiveObject
     {

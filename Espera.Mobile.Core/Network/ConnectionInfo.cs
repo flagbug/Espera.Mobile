@@ -1,7 +1,6 @@
-using Espera.Android.Network;
 using System;
 
-namespace Espera.Android
+namespace Espera.Mobile.Core.Network
 {
     public class ConnectionInfo
     {

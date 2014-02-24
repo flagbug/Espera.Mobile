@@ -1,4 +1,4 @@
-namespace Espera.Android.Network
+namespace Espera.Mobile.Core.Network
 {
     public class ResponseInfo
     {

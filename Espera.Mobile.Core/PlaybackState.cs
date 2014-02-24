@@ -1,4 +1,4 @@
-namespace Espera.Android
+namespace Espera.Mobile.Core
 {
     public enum PlaybackState
     {

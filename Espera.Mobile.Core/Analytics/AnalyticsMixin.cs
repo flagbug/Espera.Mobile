@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace Espera.Android.Analytics
+namespace Espera.Mobile.Core.Analytics
 {
     public static class AnalyticsMixin
     {

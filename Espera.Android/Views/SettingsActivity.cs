@@ -3,7 +3,7 @@ using Android.OS;
 using Android.Preferences;
 using Android.Text;
 using Android.Widget;
-using Espera.Android.Settings;
+using Espera.Mobile.Core.Settings;
 using Google.Analytics.Tracking;
 using Lager.Android;
 using ReactiveUI;

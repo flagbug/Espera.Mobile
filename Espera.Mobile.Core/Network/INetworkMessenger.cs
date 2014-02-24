@@ -1,11 +1,11 @@
-using Espera.Android.Analytics;
+using Espera.Mobile.Core.Analytics;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Reactive;
 using System.Threading.Tasks;
 
-namespace Espera.Android.Network
+namespace Espera.Mobile.Core.Network
 {
     public interface INetworkMessenger
     {

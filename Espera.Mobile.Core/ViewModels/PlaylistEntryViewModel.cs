@@ -1,7 +1,7 @@
 ﻿using ReactiveUI;
 using System;
 
-namespace Espera.Android.ViewModels
+namespace Espera.Mobile.Core.ViewModels
 {
     public class PlaylistEntryViewModel : ReactiveObject
     {

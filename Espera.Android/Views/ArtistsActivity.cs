@@ -9,6 +9,7 @@ using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
 using System;
+using System.Reactive.Linq;
 
 namespace Espera.Android.Views
 {
@@ -44,6 +45,7 @@ namespace Espera.Android.Views
             this.progressDialog.SetCancelable(false);
 
             this.ViewModel.LoadCommand.IsExecuting
+                .Skip(1)
                 .Subscribe(x =>
                 {
                     if (x)
@@ -53,7 +55,7 @@ namespace Espera.Android.Views
 
                     else
                     {
-                        this.progressDialog.Hide();
+                        this.progressDialog.Dismiss();
                     }
                 });
 

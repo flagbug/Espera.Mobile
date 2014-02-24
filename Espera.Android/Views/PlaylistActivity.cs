@@ -136,6 +136,7 @@ namespace Espera.Android.Views
             this.progressDialog.SetCancelable(false);
 
             this.ViewModel.LoadPlaylistCommand.IsExecuting
+                .Skip(1)
                 .Subscribe(x =>
                 {
                     if (x)
@@ -145,7 +146,7 @@ namespace Espera.Android.Views
 
                     else
                     {
-                        this.progressDialog.Hide();
+                        this.progressDialog.Dismiss();
                     }
                 });
 

@@ -6,7 +6,7 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 using Espera.Android.Analytics;
-using Espera.Android.Network;
+using Espera.Android.Services;
 using Espera.Android.ViewModels;
 using Google.Analytics.Tracking;
 using ReactiveUI;

@@ -1,4 +1,3 @@
-using Google.Analytics.Tracking;
 using System.Globalization;
 
 namespace Espera.Android.Analytics
@@ -12,7 +11,7 @@ namespace Espera.Android.Analytics
 
         public static void RecordWifiSpeed(this IAnalytics analytics, int speed)
         {
-            analytics.RecordCustomMetric(Fields.CustomMetric(1), speed.ToString(CultureInfo.InvariantCulture));
+            analytics.RecordCustomMetric(1, speed.ToString(CultureInfo.InvariantCulture));
         }
     }
 }

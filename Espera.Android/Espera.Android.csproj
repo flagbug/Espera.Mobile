@@ -82,7 +82,7 @@
     <Reference Include="Mono.Android" />
     <Reference Include="mscorlib" />
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\ext\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\portable-net40+sl5+wp80+win8+monotouch+monoandroid\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Punchclock">
       <HintPath>..\ext\Punchclock.dll</HintPath>
@@ -134,30 +134,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccessPermission.cs" />
-    <Compile Include="Analytics\AnalyticsMixin.cs" />
     <Compile Include="Analytics\AndroidAnalytics.cs" />
-    <Compile Include="Analytics\IAnalytics.cs" />
-    <Compile Include="ConnectionInfo.cs" />
-    <Compile Include="Network\INetworkMessenger.cs" />
-    <Compile Include="Network\NetworkHelpers.cs" />
-    <Compile Include="Network\NetworkMessenger.cs" />
-    <Compile Include="Network\NetworkService.cs" />
-    <Compile Include="Network\ResponseInfo.cs" />
-    <Compile Include="PlaybackState.cs" />
-    <Compile Include="ReactiveHelpers.cs" />
-    <Compile Include="Settings\DefaultLibraryAction.cs" />
-    <Compile Include="SongSource.cs" />
-    <Compile Include="Playlist.cs" />
+    <Compile Include="Services\NetworkService.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Song.cs" />
-    <Compile Include="Settings\UserSettings.cs" />
-    <Compile Include="ViewModels\ArtistsViewModel.cs" />
-    <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\PlaylistEntryViewModel.cs" />
-    <Compile Include="ViewModels\PlaylistViewModel.cs" />
-    <Compile Include="ViewModels\SongsViewModel.cs" />
     <Compile Include="Views\ArtistsActivity.cs" />
     <Compile Include="Views\ArtistsAdapter.cs" />
     <Compile Include="Views\MainActivity.cs" />
@@ -169,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <AndroidResource Include="Resources\Layout\Songs.axml">
@@ -214,6 +195,12 @@
       <Version>3.0.3</Version>
       <InstallationInProgress>True</InstallationInProgress>
     </XamarinComponentReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Espera.Mobile.Core\Espera.Mobile.Core.csproj">
+      <Project>{a66f5a81-780d-4b29-9a62-b8b37d2c8976}</Project>
+      <Name>Espera.Mobile.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

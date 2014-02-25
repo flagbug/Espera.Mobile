@@ -1,5 +1,6 @@
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
+using Espera.Network;
 using ReactiveUI;
 using System;
 using System.Net;
@@ -52,7 +53,7 @@ namespace Espera.Mobile.Core.ViewModels
 
             ConnectionInfo connectionInfo = await NetworkMessenger.Instance.ConnectAsync(address, port, new Guid(UserSettings.Instance.UniqueIdentifier), password);
 
-            if (connectionInfo.ResponseInfo.StatusCode != 200)
+            if (connectionInfo.ResponseInfo.Status == ResponseStatus.WrongPassword)
             {
                 throw new Exception("Password incorrect");
             }

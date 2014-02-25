@@ -1,4 +1,5 @@
 using Espera.Mobile.Core.Analytics;
+using Espera.Network;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
@@ -22,12 +23,12 @@ namespace Espera.Mobile.Core.Network
     {
         private static IPAddress fakeIpAddress; // Used for unit tests
         private static Lazy<INetworkMessenger> instance;
-        private readonly Subject<AccessPermission> accessPermission;
+        private readonly Subject<NetworkAccessPermission> accessPermission;
         private readonly Subject<TcpClient> client;
         private readonly Subject<Unit> connectionEstablished;
         private readonly Subject<Unit> disconnected;
         private readonly SemaphoreSlim gate;
-        private readonly IObservable<JObject> messagePipeline;
+        private readonly IObservable<NetworkMessage> messagePipeline;
         private readonly IDisposable messagePipelineConnection;
         private IAnalytics analytics;
         private TcpClient currentClient;
@@ -40,10 +41,10 @@ namespace Espera.Mobile.Core.Network
         private NetworkMessenger()
         {
             this.gate = new SemaphoreSlim(1, 1);
-            this.messagePipeline = new Subject<JObject>();
+            this.messagePipeline = new Subject<NetworkMessage>();
             this.disconnected = new Subject<Unit>();
             this.connectionEstablished = new Subject<Unit>();
-            this.accessPermission = new Subject<AccessPermission>();
+            this.accessPermission = new Subject<NetworkAccessPermission>();
 
             this.client = new Subject<TcpClient>();
 
@@ -59,30 +60,30 @@ namespace Espera.Mobile.Core.Network
                     .Repeat()
                     .TakeWhile(m => m != null)
                     .Finally(() => this.disconnected.OnNext(Unit.Default))
-                    .Catch(Observable.Never<JObject>()))
+                    .Catch(Observable.Never<NetworkMessage>()))
                 .Switch()
                 .Publish();
-            // Serialize all incoming messages to the main thread scheduler,
-            // as we process them on the UI anyway
+            // Serialize all incoming messages to the main thread scheduler, as we process them on
+            // the UI anyway
             this.messagePipeline = pipeline.ObserveOn(RxApp.MainThreadScheduler);
             this.messagePipelineConnection = pipeline.Connect();
 
-            var pushMessages = this.messagePipeline.Where(x => x["type"].ToString() == "push");
+            var pushMessages = this.messagePipeline.Where(x => x.MessageType == NetworkMessageType.Push)
+                .Select(x => x.Payload.ToObject<PushInfo>());
 
-            this.PlaylistChanged = pushMessages.Where(x => x["action"].ToString() == "update-current-playlist")
-                .Select(x => Playlist.Deserialize(x["content"]));
+            this.PlaylistChanged = pushMessages.Where(x => x.PushAction == "update-current-playlist")
+                .Select(x => x.Content.ToObject<NetworkPlaylist>());
 
-            this.PlaybackStateChanged = pushMessages.Where(x => x["action"].ToString() == "update-playback-state")
-                .Select(x => x["content"]["state"].ToObject<PlaybackState>());
+            this.PlaybackStateChanged = pushMessages.Where(x => x.PushAction == "update-playback-state")
+                .Select(x => x.Content.ToObject<NetworkPlaybackState>());
 
-            this.RemainingVotesChanged = pushMessages
-                .Where(x => x["action"].ToString() == "update-remaining-votes")
-                .Select(x => x["content"]["remainingVotes"].ToObject<int?>());
+            this.RemainingVotesChanged = pushMessages.Where(x => x.PushAction == "update-remaining-votes")
+                .Select(x => x.Content["remainingVotes"].ToObject<int?>());
 
-            var accessPermissionConn = pushMessages.Where(x => x["action"].ToString() == "update-access-permission")
-                .Select(x => x["content"]["accessPermission"].ToObject<AccessPermission>())
+            var accessPermissionConn = pushMessages.Where(x => x.PushAction == "update-access-permission")
+                .Select(x => x.Content.ToObject<NetworkAccessPermission>())
                 .Merge(this.accessPermission)
-                .Publish(Core.AccessPermission.Guest);
+                .Publish(NetworkAccessPermission.Guest);
             accessPermissionConn.Connect();
 
             this.AccessPermission = accessPermissionConn;
@@ -93,7 +94,7 @@ namespace Espera.Mobile.Core.Network
             get { return instance.Value; }
         }
 
-        public IObservable<AccessPermission> AccessPermission { get; private set; }
+        public IObservable<NetworkAccessPermission> AccessPermission { get; private set; }
 
         public IObservable<Unit> Disconnected
         {
@@ -102,9 +103,9 @@ namespace Espera.Mobile.Core.Network
 
         public IObservable<bool> IsConnected { get; private set; }
 
-        public IObservable<PlaybackState> PlaybackStateChanged { get; private set; }
+        public IObservable<NetworkPlaybackState> PlaybackStateChanged { get; private set; }
 
-        public IObservable<Playlist> PlaylistChanged { get; private set; }
+        public IObservable<NetworkPlaylist> PlaylistChanged { get; private set; }
 
         public IObservable<int?> RemainingVotesChanged { get; private set; }
 
@@ -130,7 +131,9 @@ namespace Espera.Mobile.Core.Network
         /// Override the messenger instance for unit testing.
         /// </summary>
         /// <param name="messenger">The messenger mock.</param>
-        /// <param name="ipAdress">An optional IpAdress to return for the <see cref="DiscoverServer"/> function.</param>
+        /// <param name="ipAdress">
+        /// An optional IpAdress to return for the <see cref="DiscoverServer" /> function.
+        /// </param>
         public static void Override(INetworkMessenger messenger, IPAddress ipAdress = null)
         {
             if (messenger == null)
@@ -147,9 +150,9 @@ namespace Espera.Mobile.Core.Network
                 songGuid
             });
 
-            JObject response = await this.SendRequest("post-playlist-song", parameters);
+            ResponseInfo response = await this.SendRequest("post-playlist-song", parameters);
 
-            return CreateResponseInfo(response);
+            return response;
         }
 
         /// <summary>
@@ -158,7 +161,9 @@ namespace Espera.Mobile.Core.Network
         /// <param name="address">The server's IP address.</param>
         /// <param name="port">The server's port.</param>
         /// <param name="deviceId">A, to this device unique identifier.</param>
-        /// <param name="password">The optional administrator password. <c>null</c>, if guest rights are requested.</param>
+        /// <param name="password">
+        /// The optional administrator password. <c>null</c>, if guest rights are requested.
+        /// </param>
         public async Task<ConnectionInfo> ConnectAsync(IPAddress address, int port, Guid deviceId, string password)
         {
             if (address == null)
@@ -181,15 +186,14 @@ namespace Espera.Mobile.Core.Network
                 password
             });
 
-            JObject response = await this.SendRequest("get-connection-info", parameters);
+            ResponseInfo response = await this.SendRequest("get-connection-info", parameters);
 
-            ResponseInfo responseInfo = CreateResponseInfo(response);
-            var permission = response["content"]["accessPermission"].ToObject<AccessPermission>();
-            var serverVersion = response["content"]["serverVersion"].ToObject<Version>();
+            var permission = response.Content["accessPermission"].ToObject<NetworkAccessPermission>();
+            var serverVersion = response.Content["serverVersion"].ToObject<Version>();
 
-            var connectionInfo = new ConnectionInfo(permission, serverVersion, responseInfo);
+            var connectionInfo = new ConnectionInfo(permission, serverVersion, response);
 
-            if (responseInfo.StatusCode == 200)
+            if (response.Status == ResponseStatus.Success)
             {
                 this.connectionEstablished.OnNext(Unit.Default);
                 this.accessPermission.OnNext(permission);
@@ -200,9 +204,9 @@ namespace Espera.Mobile.Core.Network
 
         public async Task<ResponseInfo> ContinueSongAsync()
         {
-            JObject response = await this.SendRequest("post-continue-song");
+            ResponseInfo response = await this.SendRequest("post-continue-song");
 
-            return CreateResponseInfo(response);
+            return response;
         }
 
         public void Disconnect()
@@ -224,45 +228,32 @@ namespace Espera.Mobile.Core.Network
             }
         }
 
-        public async Task<AccessPermission> GetAccessPermission()
+        public async Task<NetworkAccessPermission> GetAccessPermission()
         {
-            JObject response = await this.SendRequest("get-access-permission");
+            ResponseInfo response = await this.SendRequest("get-access-permission");
 
-            JToken content = response["content"];
-
-            return content["accessPermission"].ToObject<AccessPermission>();
+            return response.Content.ToObject<NetworkAccessPermission>();
         }
 
-        public async Task<Playlist> GetCurrentPlaylistAsync()
+        public async Task<NetworkPlaylist> GetCurrentPlaylistAsync()
         {
-            JObject response = await this.SendRequest("get-current-playlist");
+            ResponseInfo response = await this.SendRequest("get-current-playlist");
 
-            JToken content = response["content"];
-
-            return Playlist.Deserialize(content);
+            return response.Content.ToObject<NetworkPlaylist>();
         }
 
-        public async Task<PlaybackState> GetPlaybackStateAsync()
+        public async Task<NetworkPlaybackState> GetPlaybackStateAsync()
         {
-            JObject response = await this.SendRequest("get-playback-state");
+            ResponseInfo response = await this.SendRequest("get-playback-state");
 
-            JToken content = response["content"];
-
-            return content["state"].ToObject<PlaybackState>();
+            return response.Content.ToObject<NetworkPlaybackState>();
         }
 
-        public async Task<IReadOnlyList<Song>> GetSongsAsync()
+        public async Task<IReadOnlyList<NetworkSong>> GetSongsAsync()
         {
-            JObject response = await this.SendRequest("get-library-content");
+            ResponseInfo response = await this.SendRequest("get-library-content");
 
-            List<Song> songs = response["content"]["songs"]
-                .Select(s =>
-                    new Song(s["artist"].ToString(), s["title"].ToString(), s["genre"].ToString(),
-                        s["album"].ToString(), TimeSpan.FromSeconds(s["duration"].ToObject<double>()),
-                        Guid.Parse(s["guid"].ToString()), SongSource.Local))
-                .ToList();
-
-            return songs;
+            return response.Content.ToObject<IEnumerable<NetworkSong>>().ToList();
         }
 
         public async Task<ResponseInfo> MovePlaylistSongDownAsync(Guid entryGuid)
@@ -272,9 +263,9 @@ namespace Espera.Mobile.Core.Network
                 entryGuid
             });
 
-            JObject response = await this.SendRequest("move-playlist-song-down", parameters);
+            ResponseInfo response = await this.SendRequest("move-playlist-song-down", parameters);
 
-            return CreateResponseInfo(response);
+            return response;
         }
 
         public async Task<ResponseInfo> MovePlaylistSongUpAsync(Guid entryGuid)
@@ -284,23 +275,23 @@ namespace Espera.Mobile.Core.Network
                 entryGuid
             });
 
-            JObject response = await this.SendRequest("move-playlist-song-up", parameters);
+            ResponseInfo response = await this.SendRequest("move-playlist-song-up", parameters);
 
-            return CreateResponseInfo(response);
+            return response;
         }
 
         public async Task<ResponseInfo> PauseSongAsync()
         {
-            JObject response = await this.SendRequest("post-pause-song");
+            ResponseInfo response = await this.SendRequest("post-pause-song");
 
-            return CreateResponseInfo(response);
+            return response;
         }
 
         public async Task<ResponseInfo> PlayNextSongAsync()
         {
-            JObject response = await this.SendRequest("post-play-next-song");
+            ResponseInfo response = await this.SendRequest("post-play-next-song");
 
-            return CreateResponseInfo(response);
+            return response;
         }
 
         public async Task<ResponseInfo> PlayPlaylistSongAsync(Guid entryGuid)
@@ -310,16 +301,16 @@ namespace Espera.Mobile.Core.Network
                 entryGuid
             });
 
-            JObject response = await this.SendRequest("post-play-playlist-song", parameters);
+            ResponseInfo response = await this.SendRequest("post-play-playlist-song", parameters);
 
-            return CreateResponseInfo(response);
+            return response;
         }
 
         public async Task<ResponseInfo> PlayPreviousSongAsync()
         {
-            JObject response = await this.SendRequest("post-play-previous-song");
+            ResponseInfo response = await this.SendRequest("post-play-previous-song");
 
-            return CreateResponseInfo(response);
+            return response;
         }
 
         public async Task<ResponseInfo> PlaySongsAsync(IEnumerable<Guid> guids)
@@ -329,9 +320,9 @@ namespace Espera.Mobile.Core.Network
                 guids = guids.Select(x => x.ToString())
             });
 
-            JObject response = await this.SendRequest("post-play-instantly", parameters);
+            ResponseInfo response = await this.SendRequest("post-play-instantly", parameters);
 
-            return CreateResponseInfo(response);
+            return response;
         }
 
         /// <summary>
@@ -353,9 +344,9 @@ namespace Espera.Mobile.Core.Network
                 entryGuid
             });
 
-            JObject response = await this.SendRequest("post-remove-playlist-song", parameters);
+            ResponseInfo response = await this.SendRequest("post-remove-playlist-song", parameters);
 
-            return CreateResponseInfo(response);
+            return response;
         }
 
         public async Task<ResponseInfo> VoteAsync(Guid entryGuid)
@@ -365,29 +356,20 @@ namespace Espera.Mobile.Core.Network
                 entryGuid
             });
 
-            JObject response = await this.SendRequest("vote-for-song", parameters);
+            ResponseInfo response = await this.SendRequest("vote-for-song", parameters);
 
-            return CreateResponseInfo(response);
+            return response;
         }
 
-        private static ResponseInfo CreateResponseInfo(JObject response)
+        private async Task SendMessage(NetworkMessage message)
         {
-            return new ResponseInfo(response["status"].ToObject<int>(), response["message"].ToString());
-        }
-
-        private async Task SendMessage(JObject content)
-        {
-            byte[] contentBytes = Encoding.UTF8.GetBytes(content.ToString(Formatting.None));
-            contentBytes = await NetworkHelpers.CompressDataAsync(contentBytes);
-            byte[] length = BitConverter.GetBytes(contentBytes.Length); // We have a fixed size of 4 bytes
-
-            byte[] message = length.Concat(contentBytes).ToArray();
+            byte[] packedMessage = await NetworkHelpers.PackMessageAsync(message);
 
             await this.gate.WaitAsync();
 
             try
             {
-                await this.currentClient.GetStream().WriteAsync(message, 0, message.Length);
+                await this.currentClient.GetStream().WriteAsync(packedMessage, 0, packedMessage.Length);
             }
 
             finally
@@ -396,31 +378,39 @@ namespace Espera.Mobile.Core.Network
             }
         }
 
-        private async Task<JObject> SendRequest(string action, JToken parameters = null)
+        private async Task<ResponseInfo> SendRequest(string action, JObject parameters = null)
         {
             Guid id = Guid.NewGuid();
 
-            var jMessage = JObject.FromObject(new
+            var requestInfo = new RequestInfo
             {
-                action,
-                parameters,
-                id
-            });
+                RequestAction = action,
+                Parameters = parameters,
+                RequestId = id
+            };
 
-            var message = this.messagePipeline
-                .FirstAsync(x => x["type"].ToString() == "response" && x["id"].ToString() == id.ToString())
+            var message = new NetworkMessage
+            {
+                MessageType = NetworkMessageType.Request,
+                Payload = new JObject(requestInfo)
+            };
+
+            var responseMessage = this.messagePipeline
+                .Where(x => x.MessageType == NetworkMessageType.Response)
+                .Select(x => x.Payload.ToObject<ResponseInfo>())
+                .FirstAsync(x => x.RequestId == id)
                 .PublishLast();
 
-            using (message.Connect())
+            using (responseMessage.Connect())
             {
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
 
                 try
                 {
-                    await this.SendMessage(jMessage);
+                    await this.SendMessage(message);
 
-                    JObject response = await message;
+                    ResponseInfo response = await responseMessage;
 
                     stopwatch.Stop();
 
@@ -438,11 +428,12 @@ namespace Espera.Mobile.Core.Network
 
                     this.disconnected.OnNext(Unit.Default);
 
-                    return JObject.FromObject(new
+                    return new ResponseInfo
                     {
-                        status = 503,
-                        message = "Connection lost"
-                    });
+                        Status = ResponseStatus.Fatal,
+                        Message = "Connection lost",
+                        RequestId = id
+                    };
                 }
             }
         }

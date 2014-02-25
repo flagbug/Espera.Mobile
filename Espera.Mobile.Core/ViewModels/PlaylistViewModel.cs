@@ -1,4 +1,5 @@
 using Espera.Mobile.Core.Network;
+using Espera.Network;
 using ReactiveUI;
 using System;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace Espera.Mobile.Core.ViewModels
             this.remainingVotes = new BehaviorSubject<int?>(null);
 
             this.CanModify = NetworkMessenger.Instance.AccessPermission
-                .Select(x => x == AccessPermission.Admin);
+                .Select(x => x == NetworkAccessPermission.Admin);
 
             this.LoadPlaylistCommand = new ReactiveCommand();
             this.LoadPlaylistCommand.RegisterAsync(x =>
@@ -53,7 +54,7 @@ namespace Espera.Mobile.Core.ViewModels
             this.Message = this.PlayPlaylistSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance
                     .PlayPlaylistSongAsync(this.entries[(int)x].Guid))
                     .Publish().PermaRef()
-                .Select(x => x.StatusCode == 200 ? "Playing song" : "Playback failed")
+                .Select(x => x.Status == ResponseStatus.Success ? "Playing song" : "Playback failed")
                 .Merge(this.LoadPlaylistCommand.ThrownExceptions.Select(_ => "Loading playlist failed")
                 .Merge(this.VoteCommand.ThrownExceptions.Select(_ => "Vote failed")));
 
@@ -73,14 +74,14 @@ namespace Espera.Mobile.Core.ViewModels
 
             var playbackState = NetworkMessenger.Instance.PlaybackStateChanged
                 .Merge(NetworkMessenger.Instance.GetPlaybackStateAsync().ToObservable().FirstAsync())
-                .Publish(PlaybackState.None);
+                .Publish(NetworkPlaybackState.None);
             playbackState.Connect();
 
-            this.isPlaying = playbackState.Select(x => x == PlaybackState.Playing)
+            this.isPlaying = playbackState.Select(x => x == NetworkPlaybackState.Playing)
                 .ToProperty(this, x => x.IsPlaying);
 
             this.PlayPauseCommand = playbackState
-                .Select(x => x == PlaybackState.Playing || x == PlaybackState.Paused)
+                .Select(x => x == NetworkPlaybackState.Playing || x == NetworkPlaybackState.Paused)
                 .CombineLatest(this.CanModify, (canPlay, canModify) => canPlay && canModify)
                 .ToCommand();
             this.PlayPauseCommand.RegisterAsyncTask(x =>

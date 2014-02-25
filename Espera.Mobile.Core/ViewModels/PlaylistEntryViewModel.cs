@@ -1,14 +1,15 @@
-﻿using ReactiveUI;
+﻿using Espera.Network;
+using ReactiveUI;
 using System;
 
 namespace Espera.Mobile.Core.ViewModels
 {
     public class PlaylistEntryViewModel : ReactiveObject
     {
-        private readonly Song song;
+        private readonly NetworkSong song;
         private bool isPlayling;
 
-        public PlaylistEntryViewModel(Song song, bool isPlaying = false)
+        public PlaylistEntryViewModel(NetworkSong song, bool isPlaying = false)
         {
             if (song == null)
                 throw new ArgumentNullException("song");
@@ -19,7 +20,7 @@ namespace Espera.Mobile.Core.ViewModels
 
         public string Artist
         {
-            get { return song.Source == SongSource.Local ? song.Artist : "YouTube"; }
+            get { return song.Source == NetworkSongSource.Local ? song.Artist : "YouTube"; }
         }
 
         public Guid Guid

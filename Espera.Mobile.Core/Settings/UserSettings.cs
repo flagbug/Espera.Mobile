@@ -48,7 +48,7 @@ namespace Espera.Mobile.Core.Settings
 
         public string UniqueIdentifier
         {
-            get { return this.GetOrCreate((string)null); }
+            get { return this.GetOrCreate(Guid.NewGuid().ToString()); }
             set { this.SetOrCreate(value); }
         }
     }

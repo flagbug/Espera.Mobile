@@ -50,11 +50,6 @@ namespace Espera.Mobile.Core.ViewModels
 
             string password = UserSettings.Instance.EnableAdministratorMode ? UserSettings.Instance.AdministratorPassword : null;
 
-            if (UserSettings.Instance.UniqueIdentifier == null)
-            {
-                UserSettings.Instance.UniqueIdentifier = Guid.NewGuid().ToString();
-            }
-
             ConnectionInfo connectionInfo = await NetworkMessenger.Instance.ConnectAsync(address, port, new Guid(UserSettings.Instance.UniqueIdentifier), password);
 
             if (connectionInfo.ResponseInfo.StatusCode != 200)

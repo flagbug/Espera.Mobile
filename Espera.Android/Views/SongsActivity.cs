@@ -17,7 +17,7 @@ using System.Reactive.Linq;
 
 namespace Espera.Android.Views
 {
-    [Activity(Label = "Songs", ConfigurationChanges = ConfigChanges.Orientation)]
+    [Activity(ConfigurationChanges = ConfigChanges.Orientation)]
     public class SongsActivity : ReactiveActivity<SongsViewModel>
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;
@@ -38,8 +38,11 @@ namespace Espera.Android.Views
             this.WireUpControls();
 
             string songsJson = this.Intent.GetStringExtra("songs");
-            IReadOnlyList<Song> songs = JsonConvert.DeserializeObject<IEnumerable<Song>>(songsJson).ToList();
-            this.ViewModel = new SongsViewModel(new ReactiveList<Song>(songs));
+            var deserialized = JsonConvert.DeserializeObject<IEnumerable<Song>>(songsJson);
+            var songs = new ReactiveList<Song>(deserialized);
+
+            this.Title = songs.First().Artist;
+            this.ViewModel = new SongsViewModel(songs);
 
             this.SongsList.Adapter = new SongsAdapter(this, this.ViewModel.Songs);
             this.SongsList.Events().ItemClick.Select(x => x.Position)

@@ -83,18 +83,15 @@ namespace Espera.Mobile.Core.ViewModels
                 .Select(x => x == PlaybackState.Playing || x == PlaybackState.Paused)
                 .CombineLatest(this.CanModify, (canPlay, canModify) => canPlay && canModify)
                 .ToCommand();
-            this.PlayPauseCommand.Subscribe(async x =>
+            this.PlayPauseCommand.RegisterAsyncTask(x =>
             {
                 if (this.IsPlaying)
                 {
-                    await NetworkMessenger.Instance.PauseSongAsync();
+                    return NetworkMessenger.Instance.PauseSongAsync();
                 }
 
-                else
-                {
-                    await NetworkMessenger.Instance.ContinueSongAsync();
-                }
-            });
+                return NetworkMessenger.Instance.ContinueSongAsync();
+            }).Subscribe();
 
             this.RemoveSongCommand = new ReactiveCommand(this.CanModify);
             this.RemoveSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.RemovePlaylistSongAsync(this.entries[(int)x].Guid))

@@ -60,7 +60,10 @@ namespace Espera.Android.Views
                     new { Position = position, CanModify = tuple.Item1, CurrentIndex = tuple.Item2, RemainingVotes = tuple.Item3 })
                 .Subscribe(x =>
                 {
-                    bool canVote = (x.CurrentIndex == null || x.Position > x.CurrentIndex) && x.RemainingVotes.HasValue && x.RemainingVotes > 0;
+                    bool canVote = (x.CurrentIndex == null || x.Position > x.CurrentIndex) && x.RemainingVotes.HasValue;
+                    bool hasVotesLeft = x.RemainingVotes.HasValue && x.RemainingVotes > 0;
+                    string voteString = hasVotesLeft ?
+                        string.Format("Vote ({0})", x.RemainingVotes) : "No votes left";
 
                     if (x.CanModify)
                     {
@@ -69,7 +72,7 @@ namespace Espera.Android.Views
 
                         if (canVote)
                         {
-                            items.Add(string.Format("Vote ({0})", x.RemainingVotes));
+                            items.Add(voteString);
                         }
 
                         builder.SetItems(items.ToArray(), (o, eventArgs) =>
@@ -93,7 +96,10 @@ namespace Espera.Android.Views
                                     break;
 
                                 case 4:
-                                    this.ViewModel.VoteCommand.Execute(x.Position);
+                                    if (hasVotesLeft)
+                                    {
+                                        this.ViewModel.VoteCommand.Execute(x.Position);
+                                    }
                                     break;
                             }
                         });
@@ -103,8 +109,13 @@ namespace Espera.Android.Views
                     else if (canVote)
                     {
                         var builder = new AlertDialog.Builder(this);
-                        builder.SetItems(new[] { string.Format("Vote ({0})", x.RemainingVotes) }, (sender, args) =>
-                            this.ViewModel.VoteCommand.Execute(x.Position));
+                        builder.SetItems(new[] { voteString }, (sender, args) =>
+                        {
+                            if (hasVotesLeft)
+                            {
+                                this.ViewModel.VoteCommand.Execute(x.Position);
+                            }
+                        });
                         builder.Create().Show();
                     }
                 });

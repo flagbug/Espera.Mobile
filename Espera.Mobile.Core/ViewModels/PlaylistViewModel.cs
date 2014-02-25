@@ -41,7 +41,9 @@ namespace Espera.Mobile.Core.ViewModels
                     this.remainingVotes.OnNext(x.Item1.RemainingVotes);
                 });
 
-            this.VoteCommand = new ReactiveCommand();
+            this.VoteCommand = this.CurrentIndex.CombineLatest(this.RemainingVotes, (currentIndex, remainingVotes) =>
+                    currentIndex.HasValue && remainingVotes.HasValue && remainingVotes > 0)
+                .ToCommand();
             this.VoteCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.VoteAsync(this.entries[(int)x].Guid))
                 .Subscribe();
 

@@ -1,4 +1,5 @@
 using Espera.Mobile.Core.Analytics;
+using Espera.Network;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -9,21 +10,21 @@ namespace Espera.Mobile.Core.Network
 {
     public interface INetworkMessenger
     {
-        IObservable<AccessPermission> AccessPermission { get; }
+        IObservable<NetworkAccessPermission> AccessPermission { get; }
 
         IObservable<Unit> Disconnected { get; }
 
         IObservable<bool> IsConnected { get; }
 
-        IObservable<PlaybackState> PlaybackStateChanged { get; }
+        IObservable<NetworkPlaybackState> PlaybackStateChanged { get; }
 
-        IObservable<Playlist> PlaylistChanged { get; }
+        IObservable<NetworkPlaylist> PlaylistChanged { get; }
 
         IObservable<int?> RemainingVotesChanged { get; }
 
         Task<ResponseInfo> AddSongToPlaylistAsync(Guid songGuid);
 
-        Task<ConnectionInfo> ConnectAsync(IPAddress address, int port, Guid deviceId, string password);
+        Task<Tuple<ResponseStatus, ConnectionInfo>> ConnectAsync(IPAddress address, int port, Guid deviceId, string password);
 
         Task<ResponseInfo> ContinueSongAsync();
 
@@ -31,11 +32,11 @@ namespace Espera.Mobile.Core.Network
 
         void Dispose();
 
-        Task<Playlist> GetCurrentPlaylistAsync();
+        Task<NetworkPlaylist> GetCurrentPlaylistAsync();
 
-        Task<PlaybackState> GetPlaybackStateAsync();
+        Task<NetworkPlaybackState> GetPlaybackStateAsync();
 
-        Task<IReadOnlyList<Song>> GetSongsAsync();
+        Task<IReadOnlyList<NetworkSong>> GetSongsAsync();
 
         Task<ResponseInfo> MovePlaylistSongDownAsync(Guid entryGuid);
 

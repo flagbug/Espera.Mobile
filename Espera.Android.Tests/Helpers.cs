@@ -1,4 +1,4 @@
-﻿using Espera.Mobile.Core;
+﻿using Espera.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +8,23 @@ namespace Espera.Android.Tests
 {
     public static class Helpers
     {
-        public static IReadOnlyList<Song> SetupSongs(int count)
+        public static NetworkSong SetupSong()
         {
-            return Enumerable.Range(0, count).Select(x =>
-                    new Song(String.Empty, String.Empty, String.Empty, String.Empty, TimeSpan.Zero, Guid.NewGuid(), SongSource.Local))
+            return new NetworkSong
+            {
+                Album = String.Empty,
+                Artist = String.Empty,
+                Duration = TimeSpan.Zero,
+                Genre = String.Empty,
+                Guid = new Guid(),
+                Source = NetworkSongSource.Local,
+                Title = String.Empty
+            };
+        }
+
+        public static IReadOnlyList<NetworkSong> SetupSongs(int count)
+        {
+            return Enumerable.Range(0, count).Select(x => SetupSong())
                 .ToList();
         }
 

@@ -1,11 +1,10 @@
-﻿using Espera.Mobile.Core;
-using Espera.Mobile.Core.Network;
+﻿using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.ViewModels;
+using Espera.Network;
 using Microsoft.Reactive.Testing;
 using Moq;
 using ReactiveUI;
 using ReactiveUI.Testing;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -57,14 +56,17 @@ namespace Espera.Android.Tests
             Assert.Equal(1, coll.Count);
         }
 
-        private static IEnumerable<Song> SetupSongsWithArtist(params string[] artists)
+        private static IEnumerable<NetworkSong> SetupSongsWithArtist(params string[] artists)
         {
             return artists.Select(SetupSongWithArtist);
         }
 
-        private static Song SetupSongWithArtist(string artist)
+        private static NetworkSong SetupSongWithArtist(string artist)
         {
-            return new Song(artist, String.Empty, String.Empty, String.Empty, TimeSpan.Zero, Guid.NewGuid(), SongSource.Local);
+            NetworkSong song = Helpers.SetupSong();
+            song.Artist = artist;
+
+            return song;
         }
     }
 }

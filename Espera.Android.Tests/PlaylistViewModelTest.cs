@@ -1,6 +1,6 @@
-﻿using Espera.Mobile.Core;
-using Espera.Mobile.Core.Network;
+﻿using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.ViewModels;
+using Espera.Network;
 using Microsoft.Reactive.Testing;
 using Moq;
 using ReactiveUI;
@@ -43,7 +43,12 @@ namespace Espera.Android.Tests
         public void LoadPlaylistCommandSmokeTest()
         {
             var songs = Helpers.SetupSongs(2);
-            var playlist = new Playlist("Playlist 1", songs, 1);
+            var playlist = new NetworkPlaylist
+            {
+                Name = "A",
+                Songs = songs,
+                CurrentIndex = 1
+            };
 
             var messenger = CreateDefaultPlaylistMessenger();
             messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(playlist.ToTaskResult);
@@ -59,7 +64,12 @@ namespace Espera.Android.Tests
         public void PlaylistChangeUpdatesPlaylist()
         {
             var songs = Helpers.SetupSongs(2);
-            var playlist = new Playlist("Playlist 1", songs, 1);
+            var playlist = new NetworkPlaylist
+            {
+                Name = "A",
+                Songs = songs,
+                CurrentIndex = 1
+            };
 
             var messenger = CreateDefaultPlaylistMessenger();
             messenger.SetupGet(x => x.PlaylistChanged).Returns(Observable.Return(playlist));
@@ -74,11 +84,16 @@ namespace Espera.Android.Tests
         [Fact]
         public void PlayNextSongCommandCanExecuteIsFalseForEmptyPlaylist()
         {
-            var playlist = new Playlist("Playlist 1", new List<Song>(), 0);
+            var playlist = new NetworkPlaylist
+            {
+                Name = "A",
+                Songs = new List<NetworkSong>(),
+                CurrentIndex = 0
+            };
 
             var messenger = CreateDefaultPlaylistMessenger();
             messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(playlist.ToTaskResult());
-            messenger.Setup(x => x.PlayNextSongAsync()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
+            messenger.Setup(x => x.PlayNextSongAsync()).Returns(new ResponseInfo { Status = ResponseStatus.Success }.ToTaskResult());
 
             var vm = new PlaylistViewModel();
             vm.LoadPlaylistCommand.Execute(null);
@@ -90,13 +105,18 @@ namespace Espera.Android.Tests
         public void PlayNextSongCommandSmokeTest()
         {
             var songs = Helpers.SetupSongs(2);
-            var playlist = new Playlist("Playlist 1", songs, 0);
+            var playlist = new NetworkPlaylist
+            {
+                Name = "A",
+                Songs = songs,
+                CurrentIndex = 0
+            };
 
             var messenger = CreateDefaultPlaylistMessenger();
             messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(playlist.ToTaskResult());
-            messenger.Setup(x => x.PlayNextSongAsync()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
+            messenger.Setup(x => x.PlayNextSongAsync()).Returns(new ResponseInfo { Status = ResponseStatus.Success }.ToTaskResult());
 
-            var playlists = new Subject<Playlist>();
+            var playlists = new Subject<NetworkPlaylist>();
             messenger.Setup(x => x.PlaylistChanged).Returns(playlists);
 
             var vm = new PlaylistViewModel();
@@ -106,9 +126,23 @@ namespace Espera.Android.Tests
 
             vm.PlayNextSongCommand.Execute(null);
 
-            playlists.OnNext(new Playlist("Playlist 1", songs, 1));
-            playlists.OnNext(new Playlist("Playlist 1", songs, 0));
-            playlists.OnNext(new Playlist("Playlist 1", songs, null));
+            playlists.OnNext(new NetworkPlaylist
+            {
+                Name = "A",
+                Songs = songs,
+                CurrentIndex = 1
+            });
+            playlists.OnNext(new NetworkPlaylist
+            {
+                Name = "A",
+                Songs = songs,
+                CurrentIndex = 0
+            });
+            playlists.OnNext(new NetworkPlaylist
+            {
+                Name = "A",
+                Songs = songs,
+            });
 
             messenger.Verify(x => x.PlayNextSongAsync(), Times.Once);
             Assert.Equal(new[] { true, false, true, false, true, false }, canExecute);
@@ -118,14 +152,19 @@ namespace Espera.Android.Tests
         public void PlayPauseCommandSmokeTest()
         {
             var songs = Helpers.SetupSongs(2);
-            var playlist = new Playlist("Playlist 1", songs, 0);
+            var playlist = new NetworkPlaylist
+            {
+                Name = "A",
+                Songs = songs,
+                CurrentIndex = 0
+            };
 
             var messenger = CreateDefaultPlaylistMessenger();
             messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(playlist.ToTaskResult());
-            messenger.Setup(x => x.ContinueSongAsync()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
-            messenger.Setup(x => x.PauseSongAsync()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
+            messenger.Setup(x => x.ContinueSongAsync()).Returns(new ResponseInfo { Status = ResponseStatus.Success }.ToTaskResult());
+            messenger.Setup(x => x.PauseSongAsync()).Returns(new ResponseInfo { Status = ResponseStatus.Success }.ToTaskResult());
 
-            var playbackState = new Subject<PlaybackState>();
+            var playbackState = new Subject<NetworkPlaybackState>();
             messenger.SetupGet(x => x.PlaybackStateChanged).Returns(playbackState);
 
             var vm = new PlaylistViewModel();
@@ -133,17 +172,17 @@ namespace Espera.Android.Tests
 
             var canExecute = vm.PlayPauseCommand.CanExecuteObservable.CreateCollection();
 
-            playbackState.OnNext(PlaybackState.Paused);
+            playbackState.OnNext(NetworkPlaybackState.Paused);
 
             vm.PlayPauseCommand.Execute(null);
             messenger.Verify(x => x.ContinueSongAsync(), Times.Once);
 
-            playbackState.OnNext(PlaybackState.Playing);
+            playbackState.OnNext(NetworkPlaybackState.Playing);
 
             vm.PlayPauseCommand.Execute(null);
             messenger.Verify(x => x.PauseSongAsync(), Times.Once);
 
-            playbackState.OnNext(PlaybackState.Paused);
+            playbackState.OnNext(NetworkPlaybackState.Paused);
 
             Assert.Equal(new[] { false, true, false, true, false, true }, canExecute);
         }
@@ -152,12 +191,17 @@ namespace Espera.Android.Tests
         public void PlayPlaylistSongCommandSmokeTest()
         {
             var songs = Helpers.SetupSongs(2);
-            var playlist = new Playlist("Playlist 1", songs, 0);
+            var playlist = new NetworkPlaylist
+            {
+                Name = "A",
+                Songs = songs,
+                CurrentIndex = 0
+            };
 
             var messenger = CreateDefaultPlaylistMessenger();
             messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(playlist.ToTaskResult());
             messenger.Setup(x => x.PlayPlaylistSongAsync(It.Is<Guid>(y => y == songs[1].Guid)))
-                .Returns(new ResponseInfo(200, "Ok").ToTaskResult());
+                .Returns(new ResponseInfo { Status = ResponseStatus.Success }.ToTaskResult());
 
             var vm = new PlaylistViewModel();
 
@@ -175,11 +219,16 @@ namespace Espera.Android.Tests
         [Fact]
         public void PlayPreviousSongCommandCanExecuteIsFalseForEmptyPlaylist()
         {
-            var playlist = new Playlist("Playlist 1", new List<Song>(), 0);
+            var playlist = new NetworkPlaylist
+            {
+                Name = "A",
+                Songs = new List<NetworkSong>(),
+                CurrentIndex = 0
+            };
 
             var messenger = CreateDefaultPlaylistMessenger();
             messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(playlist.ToTaskResult());
-            messenger.Setup(x => x.PlayNextSongAsync()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
+            messenger.Setup(x => x.PlayNextSongAsync()).Returns(new ResponseInfo { Status = ResponseStatus.Success }.ToTaskResult());
 
             var vm = new PlaylistViewModel();
             vm.LoadPlaylistCommand.Execute(null);
@@ -191,13 +240,18 @@ namespace Espera.Android.Tests
         public void PlayPreviousSongCommandSmokeTest()
         {
             var songs = Helpers.SetupSongs(2);
-            var playlist = new Playlist("Playlist 1", songs, 1);
+            var playlist = new NetworkPlaylist
+            {
+                Name = "A",
+                Songs = songs,
+                CurrentIndex = 1
+            };
 
             var messenger = CreateDefaultPlaylistMessenger();
             messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(playlist.ToTaskResult());
-            messenger.Setup(x => x.PlayPreviousSongAsync()).Returns(new ResponseInfo(200, "Ok").ToTaskResult());
+            messenger.Setup(x => x.PlayPreviousSongAsync()).Returns(new ResponseInfo { Status = ResponseStatus.Success }.ToTaskResult());
 
-            var playlists = new Subject<Playlist>();
+            var playlists = new Subject<NetworkPlaylist>();
             messenger.SetupGet(x => x.PlaylistChanged).Returns(playlists);
 
             var vm = new PlaylistViewModel();
@@ -207,9 +261,23 @@ namespace Espera.Android.Tests
 
             vm.PlayPreviousSongCommand.Execute(null);
 
-            playlists.OnNext(new Playlist("Playlist 1", songs, 0));
-            playlists.OnNext(new Playlist("Playlist 1", songs, 1));
-            playlists.OnNext(new Playlist("Playlist 1", songs, null));
+            playlists.OnNext(new NetworkPlaylist
+            {
+                Name = "A",
+                Songs = songs,
+                CurrentIndex = 0
+            });
+            playlists.OnNext(new NetworkPlaylist
+            {
+                Name = "A",
+                Songs = songs,
+                CurrentIndex = 1
+            });
+            playlists.OnNext(new NetworkPlaylist
+            {
+                Name = "A",
+                Songs = songs,
+            });
 
             messenger.Verify(x => x.PlayPreviousSongAsync(), Times.Once);
             Assert.Equal(new[] { true, false, true, false, true, false }, canExecute);
@@ -218,10 +286,10 @@ namespace Espera.Android.Tests
         private static Mock<INetworkMessenger> CreateDefaultPlaylistMessenger()
         {
             var messenger = new Mock<INetworkMessenger>();
-            messenger.SetupGet(x => x.PlaybackStateChanged).Returns(Observable.Never<PlaybackState>());
-            messenger.SetupGet(x => x.PlaylistChanged).Returns(Observable.Never<Playlist>());
-            messenger.SetupGet(x => x.AccessPermission).Returns(Observable.Return(AccessPermission.Admin));
-            messenger.Setup(x => x.GetPlaybackStateAsync()).Returns(PlaybackState.None.ToTaskResult());
+            messenger.SetupGet(x => x.PlaybackStateChanged).Returns(Observable.Never<NetworkPlaybackState>());
+            messenger.SetupGet(x => x.PlaylistChanged).Returns(Observable.Never<NetworkPlaylist>());
+            messenger.SetupGet(x => x.AccessPermission).Returns(Observable.Return(NetworkAccessPermission.Admin));
+            messenger.Setup(x => x.GetPlaybackStateAsync()).Returns(NetworkPlaybackState.None.ToTaskResult());
 
             NetworkMessenger.Override(messenger.Object);
 

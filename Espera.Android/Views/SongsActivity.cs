@@ -2,9 +2,9 @@ using Android.App;
 using Android.Content.PM;
 using Android.OS;
 using Android.Widget;
-using Espera.Mobile.Core;
 using Espera.Mobile.Core.Settings;
 using Espera.Mobile.Core.ViewModels;
+using Espera.Network;
 using Google.Analytics.Tracking;
 using Newtonsoft.Json;
 using ReactiveUI;
@@ -38,8 +38,8 @@ namespace Espera.Android.Views
             this.WireUpControls();
 
             string songsJson = this.Intent.GetStringExtra("songs");
-            var deserialized = JsonConvert.DeserializeObject<IEnumerable<Song>>(songsJson);
-            var songs = new ReactiveList<Song>(deserialized);
+            var deserialized = JsonConvert.DeserializeObject<IEnumerable<NetworkSong>>(songsJson);
+            var songs = new ReactiveList<NetworkSong>(deserialized);
 
             this.Title = songs.First().Artist;
             this.ViewModel = new SongsViewModel(songs);

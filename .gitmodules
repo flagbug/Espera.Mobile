@@ -1,0 +1,3 @@
+[submodule "Espera.Network"]
+	path = Espera.Network
+	url = git@github.com:flagbug/Espera.Network.git

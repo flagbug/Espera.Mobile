@@ -1,5 +1,6 @@
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
+using Espera.Network;
 using ReactiveUI;
 using System;
 using System.Net;
@@ -50,16 +51,17 @@ namespace Espera.Mobile.Core.ViewModels
 
             string password = UserSettings.Instance.EnableAdministratorMode ? UserSettings.Instance.AdministratorPassword : null;
 
-            ConnectionInfo connectionInfo = await NetworkMessenger.Instance.ConnectAsync(address, port, new Guid(UserSettings.Instance.UniqueIdentifier), password);
+            Tuple<ResponseStatus, ConnectionInfo> response = await NetworkMessenger.Instance
+                .ConnectAsync(address, port, new Guid(UserSettings.Instance.UniqueIdentifier), password);
 
-            if (connectionInfo.ResponseInfo.StatusCode != 200)
+            if (response.Item1 == ResponseStatus.WrongPassword)
             {
                 throw new Exception("Password incorrect");
             }
 
 #if !DEBUG
             var minimumVersion = new Version("2.0.0");
-            if (connectionInfo.ServerVersion < minimumVersion)
+            if (response.Item2.ServerVersion < minimumVersion)
             {
                 NetworkMessenger.Instance.Disconnect();
                 throw new Exception(string.Format("Espera version {0} required", minimumVersion.ToString(3)));

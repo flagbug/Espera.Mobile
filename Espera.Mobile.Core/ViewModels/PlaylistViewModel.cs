@@ -14,6 +14,7 @@ namespace Espera.Mobile.Core.ViewModels
         private readonly BehaviorSubject<int?> currentIndex;
         private readonly ReactiveList<PlaylistEntryViewModel> entries;
         private readonly ObservableAsPropertyHelper<bool> isPlaying;
+        private readonly BehaviorSubject<NetworkPlaybackState> playbackState;
         private readonly BehaviorSubject<int?> remainingVotes;
 
         public PlaylistViewModel()
@@ -21,6 +22,7 @@ namespace Espera.Mobile.Core.ViewModels
             this.entries = new ReactiveList<PlaylistEntryViewModel>();
             this.currentIndex = new BehaviorSubject<int?>(null);
             this.remainingVotes = new BehaviorSubject<int?>(null);
+            this.playbackState = new BehaviorSubject<NetworkPlaybackState>(NetworkPlaybackState.None);
 
             this.CanModify = NetworkMessenger.Instance.AccessPermission
                 .Select(x => x == NetworkAccessPermission.Admin);
@@ -40,6 +42,7 @@ namespace Espera.Mobile.Core.ViewModels
 
                     this.currentIndex.OnNext(x.Item1.CurrentIndex);
                     this.remainingVotes.OnNext(x.Item1.RemainingVotes);
+                    this.playbackState.OnNext(x.Item1.PlaybackState);
                 });
 
             this.VoteCommand = this.CurrentIndex.CombineLatest(this.RemainingVotes, (currentIndex, remainingVotes) =>
@@ -49,6 +52,7 @@ namespace Espera.Mobile.Core.ViewModels
                 .Subscribe();
 
             NetworkMessenger.Instance.RemainingVotesChanged.Subscribe(x => this.remainingVotes.OnNext(x));
+            NetworkMessenger.Instance.PlaybackStateChanged.Subscribe(x => this.playbackState.OnNext(x));
 
             this.PlayPlaylistSongCommand = new ReactiveCommand(this.CanModify);
             this.Message = this.PlayPlaylistSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance
@@ -71,11 +75,6 @@ namespace Espera.Mobile.Core.ViewModels
                 .ToCommand();
             this.PlayPreviousSongCommand.RegisterAsyncTask(x => NetworkMessenger.Instance.PlayPreviousSongAsync())
                 .Subscribe();
-
-            var playbackState = NetworkMessenger.Instance.PlaybackStateChanged
-                .Merge(NetworkMessenger.Instance.GetPlaybackStateAsync().ToObservable().FirstAsync())
-                .Publish(NetworkPlaybackState.None);
-            playbackState.Connect();
 
             this.isPlaying = playbackState.Select(x => x == NetworkPlaybackState.Playing)
                 .ToProperty(this, x => x.IsPlaying);

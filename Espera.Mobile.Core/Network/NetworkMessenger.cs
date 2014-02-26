@@ -1,6 +1,5 @@
 using Espera.Mobile.Core.Analytics;
 using Espera.Network;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
 using System;
@@ -75,13 +74,13 @@ namespace Espera.Mobile.Core.Network
                 .Select(x => x.Content.ToObject<NetworkPlaylist>());
 
             this.PlaybackStateChanged = pushMessages.Where(x => x.PushAction == "update-playback-state")
-                .Select(x => x.Content.ToObject<NetworkPlaybackState>());
+                .Select(x => x.Content["state"].ToObject<NetworkPlaybackState>());
 
             this.RemainingVotesChanged = pushMessages.Where(x => x.PushAction == "update-remaining-votes")
                 .Select(x => x.Content["remainingVotes"].ToObject<int?>());
 
             var accessPermissionConn = pushMessages.Where(x => x.PushAction == "update-access-permission")
-                .Select(x => x.Content.ToObject<NetworkAccessPermission>())
+                .Select(x => x.Content["accessPermission"].ToObject<NetworkAccessPermission>())
                 .Merge(this.accessPermission)
                 .Publish(NetworkAccessPermission.Guest);
             accessPermissionConn.Connect();
@@ -164,7 +163,7 @@ namespace Espera.Mobile.Core.Network
         /// <param name="password">
         /// The optional administrator password. <c>null</c>, if guest rights are requested.
         /// </param>
-        public async Task<ConnectionInfo> ConnectAsync(IPAddress address, int port, Guid deviceId, string password)
+        public async Task<Tuple<ResponseStatus, ConnectionInfo>> ConnectAsync(IPAddress address, int port, Guid deviceId, string password)
         {
             if (address == null)
                 throw new ArgumentNullException("address");
@@ -188,18 +187,15 @@ namespace Espera.Mobile.Core.Network
 
             ResponseInfo response = await this.SendRequest("get-connection-info", parameters);
 
-            var permission = response.Content["accessPermission"].ToObject<NetworkAccessPermission>();
-            var serverVersion = response.Content["serverVersion"].ToObject<Version>();
-
-            var connectionInfo = new ConnectionInfo(permission, serverVersion, response);
+            var connectionInfo = response.Content.ToObject<ConnectionInfo>();
 
             if (response.Status == ResponseStatus.Success)
             {
                 this.connectionEstablished.OnNext(Unit.Default);
-                this.accessPermission.OnNext(permission);
+                this.accessPermission.OnNext(connectionInfo.AccessPermission);
             }
 
-            return connectionInfo;
+            return Tuple.Create(response.Status, connectionInfo);
         }
 
         public async Task<ResponseInfo> ContinueSongAsync()
@@ -232,7 +228,7 @@ namespace Espera.Mobile.Core.Network
         {
             ResponseInfo response = await this.SendRequest("get-access-permission");
 
-            return response.Content.ToObject<NetworkAccessPermission>();
+            return response.Content["accessPermission"].ToObject<NetworkAccessPermission>();
         }
 
         public async Task<NetworkPlaylist> GetCurrentPlaylistAsync()
@@ -246,14 +242,14 @@ namespace Espera.Mobile.Core.Network
         {
             ResponseInfo response = await this.SendRequest("get-playback-state");
 
-            return response.Content.ToObject<NetworkPlaybackState>();
+            return response.Content["state"].ToObject<NetworkPlaybackState>();
         }
 
         public async Task<IReadOnlyList<NetworkSong>> GetSongsAsync()
         {
             ResponseInfo response = await this.SendRequest("get-library-content");
 
-            return response.Content.ToObject<IEnumerable<NetworkSong>>().ToList();
+            return response.Content["songs"].ToObject<IEnumerable<NetworkSong>>().ToList();
         }
 
         public async Task<ResponseInfo> MovePlaylistSongDownAsync(Guid entryGuid)
@@ -392,7 +388,7 @@ namespace Espera.Mobile.Core.Network
             var message = new NetworkMessage
             {
                 MessageType = NetworkMessageType.Request,
-                Payload = new JObject(requestInfo)
+                Payload = JObject.FromObject(requestInfo)
             };
 
             var responseMessage = this.messagePipeline

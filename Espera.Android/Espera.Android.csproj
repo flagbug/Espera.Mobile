@@ -145,7 +145,7 @@
     <Compile Include="Views\PlaylistActivity.cs" />
     <Compile Include="Views\PlaylistEntryView.cs" />
     <Compile Include="Views\SettingsActivity.cs" />
-    <Compile Include="Views\SongsActivity.cs" />
+    <Compile Include="Views\RemoteSongsActivity.cs" />
     <Compile Include="Views\SongsAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -153,7 +153,7 @@
     <None Include="packages.config" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
-    <AndroidResource Include="Resources\Layout\Songs.axml">
+    <AndroidResource Include="Resources\Layout\RemoteSongs.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\Layout\Artists.axml">

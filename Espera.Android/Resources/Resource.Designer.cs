@@ -182,10 +182,10 @@ namespace Espera.Android
 			public const int PlaylistListItem = 2130903043;
 			
 			// aapt resource value: 0x7f030004
-			public const int Settings = 2130903044;
+			public const int RemoteSongs = 2130903044;
 			
 			// aapt resource value: 0x7f030005
-			public const int Songs = 2130903045;
+			public const int Settings = 2130903045;
 			
 			static Layout()
 			{

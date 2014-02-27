@@ -100,7 +100,7 @@ namespace Espera.Android.Views
 
         private void OpenArtist(string artist)
         {
-            var intent = new Intent(this, typeof(SongsActivity));
+            var intent = new Intent(this, typeof(RemoteSongsActivity));
             intent.PutExtra("songs", this.ViewModel.SerializeSongsForSelectedArtist(artist));
 
             this.StartActivity(intent);

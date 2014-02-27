@@ -7,9 +7,9 @@ using System.Reactive.Linq;
 
 namespace Espera.Mobile.Core.ViewModels
 {
-    public class SongsViewModel : ReactiveObject
+    public class RemoteSongsViewModel : ReactiveObject
     {
-        public SongsViewModel(IReadOnlyReactiveList<NetworkSong> songs)
+        public RemoteSongsViewModel(IReadOnlyReactiveList<NetworkSong> songs)
         {
             if (songs == null)
                 throw new ArgumentNullException("songs");

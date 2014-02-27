@@ -33,7 +33,7 @@ namespace Espera.Android.Views
                 });
             portPref.BindToSetting(UserSettings.Instance, x => x.Port, x => x.Text, x => int.Parse(x.ToString()), x => x.ToString(), IsValidPort);
 
-            var adminEnabledPref = (CheckBoxPreference)this.FindPreference(this.GetString(Resource.String.preference_enable_administrator_mode));
+            var adminEnabledPref = (SwitchPreference)this.FindPreference(this.GetString(Resource.String.preference_administrator_mode));
             adminEnabledPref.BindToSetting(UserSettings.Instance, x => x.EnableAdministratorMode, x => x.Checked, x => bool.Parse(x.ToString()));
 
             var passwordPreference = (EditTextPreference)this.FindPreference(this.GetString(Resource.String.preference_administrator_password));

@@ -5,9 +5,9 @@
   <string name="preference_port_title">Port</string>
   <string name="preference_port_summary">The port of the server</string>
   <string name="preference_port_validation_error">Port must be between 49152 and 65535</string>
-  <string name="preference_enable_administrator_mode">preference_enable_administrator_mode</string>
-  <string name="preference_enable_administrator_mode_title">Enable administrator mode</string>
-  <string name="preference_enable_administrator_mode_summary">Gives you more rights than the standard guest mode. Requires the password to be set.</string>
+  <string name="preference_administrator_mode">preference_administrator_mode</string>
+  <string name="preference_administrator_mode_title">Administrator mode</string>
+  <string name="preference_administrator_mode_summary">Gives you more rights than the standard guest mode. Requires the password to be set.</string>
   <string name="preference_administrator_password">preference_administrator_password</string>
   <string name="preference_administrator_password_title">Password</string>
   <string name="preference_default_library_action">preference_default_library_action</string>

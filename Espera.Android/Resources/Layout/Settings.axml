@@ -10,10 +10,10 @@
   </PreferenceCategory>
   <PreferenceCategory
       android:title="Administrator">
-    <CheckBoxPreference
-      android:key="@string/preference_enable_administrator_mode"
-      android:title="@string/preference_enable_administrator_mode_title"
-      android:summary="@string/preference_enable_administrator_mode_summary"
+    <SwitchPreference
+      android:key="@string/preference_administrator_mode"
+      android:title="@string/preference_administrator_mode_title"
+      android:summary="@string/preference_administrator_mode_summary"
       android:defaultValue="false" />
     <EditTextPreference
       android:key="preference_administrator_password"

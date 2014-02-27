@@ -37,6 +37,8 @@ namespace Espera.Android.Views
 
         public Button LoadCurrentPlaylistButton { get; private set; }
 
+        public Button LocalSongsButton { get; private set; }
+
         public override bool OnCreateOptionsMenu(IMenu menu)
         {
             menu.Add("Settings").SetIcon(Resource.Drawable.Settings)

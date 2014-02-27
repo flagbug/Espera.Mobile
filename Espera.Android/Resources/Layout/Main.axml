@@ -17,4 +17,9 @@
       android:layout_height="wrap_content"
       android:id="@+id/LoadCurrentPlaylistButton"
       android:text="Playlist" />
+  <Button
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:id="@+id/LocalSongsButton"
+      android:text="Songs on this devices" />
 </LinearLayout>

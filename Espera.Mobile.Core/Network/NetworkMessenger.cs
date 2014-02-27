@@ -31,6 +31,8 @@ namespace Espera.Mobile.Core.Network
         private readonly IDisposable messagePipelineConnection;
         private IAnalytics analytics;
         private TcpClient currentClient;
+        private TcpClient currentFileTransferClient;
+        private SemaphoreSlim fileTransferGate;
 
         static NetworkMessenger()
         {
@@ -40,6 +42,7 @@ namespace Espera.Mobile.Core.Network
         private NetworkMessenger()
         {
             this.gate = new SemaphoreSlim(1, 1);
+            this.fileTransferGate = new SemaphoreSlim(1, 1);
             this.messagePipeline = new Subject<NetworkMessage>();
             this.disconnected = new Subject<Unit>();
             this.connectionEstablished = new Subject<Unit>();
@@ -173,10 +176,18 @@ namespace Espera.Mobile.Core.Network
                 this.currentClient.Close();
             }
 
+            if (this.currentFileTransferClient != null)
+            {
+                this.currentFileTransferClient.Close();
+            }
+
             var c = new TcpClient();
+            var f = new TcpClient();
             this.currentClient = c;
+            this.currentFileTransferClient = f;
 
             await c.ConnectAsync(address, port);
+            await f.ConnectAsync(address, port + 1);
             this.client.OnNext(c);
 
             var parameters = JObject.FromObject(new
@@ -321,6 +332,24 @@ namespace Espera.Mobile.Core.Network
             return response;
         }
 
+        public async Task<FileTransferStatus> QueueRemoteSong(byte[] songData)
+        {
+            Guid transferId = Guid.NewGuid();
+            var info = new FileTransferInfo { TransferId = transferId };
+
+            ResponseInfo response = await this.SendRequest("queue-remote-song");
+
+            var message = new FileTransferMessage { Data = songData, TransferId = transferId };
+
+            byte[] packed = await NetworkHelpers.PackFileTransferMessageAsync(message);
+
+            IObservable<int> progress = this.TransferFileAsync(songData).Publish().PermaRef();
+
+            var status = new FileTransferStatus(progress);
+
+            return status;
+        }
+
         /// <summary>
         /// Registers an analytics provider ton measure network timings
         /// </summary>
@@ -432,6 +461,17 @@ namespace Espera.Mobile.Core.Network
                     };
                 }
             }
+        }
+
+        private IObservable<int> TransferFileAsync(byte[] data)
+        {
+            const int bufferSize = 16 * 1024;
+            int written = 0;
+            return data.ToObservable().Buffer(bufferSize).SelectMany((x, i) =>
+                this.currentFileTransferClient.GetStream()
+                    .WriteAsync(x.ToArray(), written, bufferSize).ToObservable()
+                    .Do(_ => written += i))
+                .Select(_ => 100 / data.Length * written);
         }
     }
 }

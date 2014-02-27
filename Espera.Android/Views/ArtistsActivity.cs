@@ -2,6 +2,7 @@ using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
+using Android.Provider;
 using Android.Widget;
 using Espera.Mobile.Core.ViewModels;
 using Google.Analytics.Tracking;
@@ -34,7 +35,8 @@ namespace Espera.Android.Views
             this.SetContentView(Resource.Layout.Artists);
             this.WireUpControls();
 
-            this.ViewModel = new ArtistsViewModel();
+            this.ViewModel = new ArtistsViewModel(new AndroidSongFetcher(x =>
+                this.ManagedQuery(MediaStore.Audio.Media.ExternalContentUri, x, MediaStore.Audio.Media.InterfaceConsts.IsMusic + " != 0", null, null)));
 
             this.OneWayBind(this.ViewModel, x => x.Artists, x => x.ArtistList.Adapter, list => new ArtistsAdapter(this, list));
             this.ArtistList.Events().ItemClick.Subscribe(x => this.OpenArtist((string)this.ArtistList.GetItemAtPosition(x.Position)));

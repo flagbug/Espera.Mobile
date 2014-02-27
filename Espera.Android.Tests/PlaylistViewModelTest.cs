@@ -87,7 +87,7 @@ namespace Espera.Android.Tests
             var playlist = new NetworkPlaylist
             {
                 Name = "A",
-                Songs = new List<NetworkSong>(),
+                Songs = new List<NetworkSong>().AsReadOnly(),
                 CurrentIndex = 0
             };
 
@@ -222,7 +222,7 @@ namespace Espera.Android.Tests
             var playlist = new NetworkPlaylist
             {
                 Name = "A",
-                Songs = new List<NetworkSong>(),
+                Songs = new List<NetworkSong>().AsReadOnly(),
                 CurrentIndex = 0
             };
 

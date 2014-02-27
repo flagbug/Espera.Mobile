@@ -1,6 +1,7 @@
 ﻿using Espera.Network;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,10 +23,10 @@ namespace Espera.Android.Tests
             };
         }
 
-        public static IReadOnlyList<NetworkSong> SetupSongs(int count)
+        public static ReadOnlyCollection<NetworkSong> SetupSongs(int count)
         {
             return Enumerable.Range(0, count).Select(x => SetupSong())
-                .ToList();
+                .ToList().AsReadOnly();
         }
 
         public static IReadOnlyList<T> ToReadOnlyList<T>(this IEnumerable<T> list)

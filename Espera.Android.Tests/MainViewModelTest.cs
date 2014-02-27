@@ -43,7 +43,7 @@ namespace Espera.Android.Tests
         {
             var messenger = new Mock<INetworkMessenger>();
             messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>(), It.IsAny<Guid>(), null))
-                .Returns(Task.Delay(1000).ContinueWith(x => (ConnectionInfo)null));
+                .Returns(Task.Delay(1000).ContinueWith(x => Tuple.Create(ResponseStatus.Fatal, (ConnectionInfo)null)));
             messenger.SetupGet(x => x.IsConnected).Returns(Observable.Return(false));
 
             NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
@@ -67,8 +67,8 @@ namespace Espera.Android.Tests
             var messenger = new Mock<INetworkMessenger>();
             messenger.SetupGet(x => x.IsConnected).Returns(Observable.Return(false));
             messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>(), It.IsAny<Guid>(), null))
-                .Returns(new ConnectionInfo(NetworkAccessPermission.Admin, new Version(99, 99),
-                    new ResponseInfo { Status = ResponseStatus.WrongPassword }).ToTaskResult);
+                .Returns(Tuple.Create(ResponseStatus.WrongPassword,
+                    new ConnectionInfo { AccessPermission = NetworkAccessPermission.Admin, ServerVersion = new Version(99, 99) }).ToTaskResult);
 
             NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
 
@@ -112,8 +112,8 @@ namespace Espera.Android.Tests
             var messenger = CreateDefaultNetworkMessenger();
             messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>(), It.IsAny<Guid>(), It.IsAny<string>()))
                 .Callback(() => isConnected.OnNext(true))
-                .Returns(new ConnectionInfo(NetworkAccessPermission.Admin, new Version(99, 99),
-                    new ResponseInfo { Status = ResponseStatus.Success }).ToTaskResult);
+                .Returns(Tuple.Create(ResponseStatus.Success,
+                    new ConnectionInfo { AccessPermission = NetworkAccessPermission.Admin, ServerVersion = new Version(99, 99) }).ToTaskResult);
             messenger.SetupGet(x => x.IsConnected).Returns(isConnected);
 
             NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
@@ -134,8 +134,8 @@ namespace Espera.Android.Tests
             var messenger = new Mock<INetworkMessenger>();
             messenger.SetupGet(x => x.IsConnected).Returns(Observable.Return(true));
             messenger.Setup(x => x.ConnectAsync(It.IsAny<IPAddress>(), It.IsAny<int>(), It.IsAny<Guid>(), It.IsAny<string>()))
-                .Returns(new ConnectionInfo(NetworkAccessPermission.Admin, new Version(0, 1, 0),
-                    new ResponseInfo { Status = ResponseStatus.Success }).ToTaskResult);
+                .Returns(Tuple.Create(ResponseStatus.Success,
+                    new ConnectionInfo { AccessPermission = NetworkAccessPermission.Admin, ServerVersion = new Version(0, 1, 0) }).ToTaskResult);
 
             NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
 

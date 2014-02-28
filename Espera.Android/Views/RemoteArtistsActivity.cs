@@ -15,7 +15,7 @@ namespace Espera.Android.Views
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;
 
-        protected RemoteArtistsActivity()
+        public RemoteArtistsActivity()
         {
             this.autoSuspendHelper = new AutoSuspendActivityHelper(this);
         }
@@ -23,6 +23,12 @@ namespace Espera.Android.Views
         protected override ArtistsViewModel<RemoteSong> ConstructViewModel()
         {
             return new ArtistsViewModel<RemoteSong>(new RemoteSongFetcher());
+        }
+
+        protected override void OnCreate(Bundle bundle)
+        {
+            base.OnCreate(bundle);
+            this.autoSuspendHelper.OnCreate(bundle);
         }
 
         protected override void OnPause()

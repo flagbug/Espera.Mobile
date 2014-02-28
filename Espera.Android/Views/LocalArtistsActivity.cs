@@ -15,7 +15,7 @@ namespace Espera.Android.Views
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;
 
-        protected LocalArtistsActivity()
+        public LocalArtistsActivity()
         {
             this.autoSuspendHelper = new AutoSuspendActivityHelper(this);
         }
@@ -24,6 +24,12 @@ namespace Espera.Android.Views
         {
             return new ArtistsViewModel<LocalSong>(new AndroidSongFetcher(x =>
                 this.ManagedQuery(MediaStore.Audio.Media.ExternalContentUri, x, MediaStore.Audio.Media.InterfaceConsts.IsMusic + " != 0", null, null)));
+        }
+
+        protected override void OnCreate(Bundle bundle)
+        {
+            base.OnCreate(bundle);
+            this.autoSuspendHelper.OnCreate(bundle);
         }
 
         protected override void OnPause()

@@ -342,12 +342,7 @@ namespace Espera.Mobile.Core.Network
 
             var message = new FileTransferMessage { Data = songData, TransferId = transferId };
 
-            byte[] packed;
-
-            using (MeasureHelper.Measure())
-            {
-                packed = await NetworkHelpers.PackFileTransferMessageAsync(message);
-            }
+            byte[] packed = await NetworkHelpers.PackFileTransferMessageAsync(message);
 
             IObservable<int> progress = this.TransferFileAsync(packed)
                 .SubscribeOn(RxApp.TaskpoolScheduler).Publish(0).PermaRef();
@@ -472,16 +467,13 @@ namespace Espera.Mobile.Core.Network
 
         private IObservable<int> TransferFileAsync(byte[] data)
         {
-            int bufferSize = data.Length / 33;
+            int bufferSize = data.Length / 100;
             int written = 0;
             Stream stream = this.currentFileTransferClient.GetStream();
 
             return data.ToObservable().Buffer(bufferSize).SelectMany(x =>
-            {
-                return stream.WriteAsync(x.ToArray(), 0, x.Count).ToObservable()
-                    .Do(_ => written += x.Count);
-            })
-
+                    stream.WriteAsync(x.ToArray(), 0, x.Count).ToObservable()
+                .Do(_ => written += x.Count))
             .Select(_ => (int)(100 * ((double)written / data.Length)))
             .DistinctUntilChanged();
         }

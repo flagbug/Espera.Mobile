@@ -39,8 +39,6 @@ namespace Espera.Mobile.Core.ViewModels
 
             FileTransferStatus status = await NetworkMessenger.Instance.QueueRemoteSong(data);
 
-            data = null;
-
             song.IsTransfering = true;
 
             status.TransferProgress.Subscribe(x =>

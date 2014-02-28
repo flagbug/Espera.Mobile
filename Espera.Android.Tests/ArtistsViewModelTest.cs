@@ -51,17 +51,17 @@ namespace Espera.Android.Tests
             Assert.Equal(1, coll.Count);
         }
 
-        private static IEnumerable<NetworkSong> SetupSongsWithArtist(params string[] artists)
+        private static IEnumerable<Song> SetupSongsWithArtist(params string[] artists)
         {
             return artists.Select(SetupSongWithArtist);
         }
 
-        private static NetworkSong SetupSongWithArtist(string artist)
+        private static Song SetupSongWithArtist(string artist)
         {
             NetworkSong song = Helpers.SetupSong();
             song.Artist = artist;
 
-            return song;
+            return new LocalSong(song.Title, song.Artist, song.Album, "0");
         }
     }
 }

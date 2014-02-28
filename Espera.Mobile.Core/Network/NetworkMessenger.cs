@@ -249,7 +249,11 @@ namespace Espera.Mobile.Core.Network
         {
             ResponseInfo response = await this.SendRequest("get-library-content");
 
-            return response.Content["songs"].ToObject<IEnumerable<NetworkSong>>().ToList();
+            // This can take about a second, if there are many songs, so deserialize the songs on a
+            // background thread
+            var songs = await Task.Run(() => response.Content["songs"].ToObject<List<NetworkSong>>());
+
+            return songs;
         }
 
         public async Task<ResponseInfo> MovePlaylistSongDownAsync(Guid entryGuid)

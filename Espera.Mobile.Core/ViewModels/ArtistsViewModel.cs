@@ -1,5 +1,5 @@
 using Espera.Mobile.Core.SongFetchers;
-using Espera.Network;
+using Espera.Mobile.Core.Songs;
 using Newtonsoft.Json;
 using ReactiveUI;
 using System;
@@ -9,12 +9,12 @@ using System.Reactive.Linq;
 
 namespace Espera.Mobile.Core.ViewModels
 {
-    public class ArtistsViewModel : ReactiveObject
+    public class ArtistsViewModel<T> : ReactiveObject where T : Song
     {
         private readonly ObservableAsPropertyHelper<IReadOnlyList<string>> artists;
-        private IReadOnlyList<NetworkSong> songs;
+        private IReadOnlyList<T> songs;
 
-        public ArtistsViewModel(ISongFetcher songFetcher)
+        public ArtistsViewModel(ISongFetcher<T> songFetcher)
         {
             if (songFetcher == null)
                 throw new ArgumentNullException("songFetcher");
@@ -39,14 +39,14 @@ namespace Espera.Mobile.Core.ViewModels
 
         public string SerializeSongsForSelectedArtist(string artist)
         {
-            IReadOnlyList<NetworkSong> filteredSongs = this.songs
+            IReadOnlyList<T> filteredSongs = this.songs
                 .Where(x => x.Artist.Equals(artist, StringComparison.InvariantCultureIgnoreCase))
                 .ToList();
 
             return JsonConvert.SerializeObject(filteredSongs, Formatting.None);
         }
 
-        private static IReadOnlyList<string> GetArtists(IEnumerable<NetworkSong> songs)
+        private static IReadOnlyList<string> GetArtists(IEnumerable<T> songs)
         {
             return songs.GroupBy(s => s.Artist)
                 .Select(g => g.Key)

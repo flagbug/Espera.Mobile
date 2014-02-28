@@ -1,13 +1,14 @@
-﻿using Espera.Mobile.Core.Network;
+﻿using Espera.Mobile.Core.SongFetchers;
 using Espera.Mobile.Core.ViewModels;
 using Espera.Network;
 using Microsoft.Reactive.Testing;
 using Moq;
 using ReactiveUI;
 using ReactiveUI.Testing;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Reactive.Linq;
 using Xunit;
 
 namespace Espera.Android.Tests
@@ -19,12 +20,10 @@ namespace Espera.Android.Tests
         {
             var songs = SetupSongsWithArtist("B", "b", "C", "A").ToReadOnlyList();
 
-            var messenger = new Mock<INetworkMessenger>();
-            messenger.Setup(x => x.GetSongsAsync()).Returns(songs.ToTaskResult());
+            var songFetcher = new Mock<ISongFetcher>();
+            songFetcher.Setup(x => x.GetSongsAsync()).Returns(Observable.Return(songs));
 
-            NetworkMessenger.Override(messenger.Object);
-
-            var vm = new ArtistsViewModel();
+            var vm = new ArtistsViewModel(songFetcher.Object);
 
             vm.LoadCommand.Execute(null);
 
@@ -34,16 +33,11 @@ namespace Espera.Android.Tests
         [Fact]
         public void LoadCommandTimeoutTriggersMessages()
         {
-            var messenger = new Mock<INetworkMessenger>();
-            messenger.Setup(x => x.GetSongsAsync()).Returns(async () =>
-                {
-                    await Task.Delay(1000);
-                    return null;
-                });
+            var songFetcher = new Mock<ISongFetcher>();
+            songFetcher.Setup(x => x.GetSongsAsync()).Returns(Observable.Never<IReadOnlyList<NetworkSong>>()
+                .Timeout(TimeSpan.FromSeconds(10)));
 
-            NetworkMessenger.Override(messenger.Object);
-
-            var vm = new ArtistsViewModel();
+            var vm = new ArtistsViewModel(songFetcher.Object);
 
             var coll = vm.Messages.CreateCollection();
 

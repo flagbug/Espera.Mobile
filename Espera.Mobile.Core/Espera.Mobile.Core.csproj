@@ -75,6 +75,7 @@
   <ItemGroup>
     <Compile Include="Analytics\AnalyticsMixin.cs" />
     <Compile Include="Analytics\IAnalytics.cs" />
+    <Compile Include="Songs\LocalSong.cs" />
     <Compile Include="SongFetchers\ISongFetcher.cs" />
     <Compile Include="Network\FileTransferStatus.cs" />
     <Compile Include="Network\INetworkMessenger.cs" />
@@ -84,7 +85,10 @@
     <Compile Include="Settings\DefaultLibraryAction.cs" />
     <Compile Include="Settings\UserSettings.cs" />
     <Compile Include="SongFetchers\RemoteSongFetcher.cs" />
+    <Compile Include="Songs\RemoteSong.cs" />
+    <Compile Include="Songs\Song.cs" />
     <Compile Include="ViewModels\ArtistsViewModel.cs" />
+    <Compile Include="ViewModels\LocalSongsViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\PlaylistEntryViewModel.cs" />
     <Compile Include="ViewModels\PlaylistViewModel.cs" />

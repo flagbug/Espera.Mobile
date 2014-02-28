@@ -1,13 +1,13 @@
 using Android.Database;
 using Android.Provider;
 using Espera.Mobile.Core.SongFetchers;
-using Espera.Network;
+using Espera.Mobile.Core.Songs;
 using System;
 using System.Collections.Generic;
 
 namespace Espera.Android
 {
-    public class AndroidSongFetcher : ISongFetcher
+    public class AndroidSongFetcher : ISongFetcher<LocalSong>
     {
         private readonly Func<string[], ICursor> query;
 
@@ -16,33 +16,25 @@ namespace Espera.Android
             this.query = query;
         }
 
-        public IObservable<IReadOnlyList<NetworkSong>> GetSongsAsync()
+        public IObservable<IReadOnlyList<LocalSong>> GetSongsAsync()
         {
             string[] projection = {
-                MediaStore.Audio.Media.InterfaceConsts.Id,
-                MediaStore.Audio.Media.InterfaceConsts.Album,
+                MediaStore.Audio.Media.InterfaceConsts.Title,
                 MediaStore.Audio.Media.InterfaceConsts.Artist,
-                MediaStore.Audio.Media.InterfaceConsts.Duration,
-                MediaStore.Audio.Media.InterfaceConsts.Title
+                MediaStore.Audio.Media.InterfaceConsts.Album,
+                MediaStore.Audio.Media.InterfaceConsts.Id,
             };
 
-            ICursor cursor = query(projection);
+            var list = new List<LocalSong>();
 
-            var list = new List<NetworkSong>();
-
-            while (cursor.MoveToNext())
+            using (ICursor cursor = query(projection))
             {
-                var song = new NetworkSong
+                while (cursor.MoveToNext())
                 {
-                    Album = cursor.GetString(1),
-                    Artist = cursor.GetString(2),
-                    Duration = TimeSpan.FromMilliseconds(Int32.Parse(cursor.GetString(3))),
-                    Genre = string.Empty,
-                    Source = NetworkSongSource.Local,
-                    Title = cursor.GetString(4)
-                };
+                    var song = new LocalSong(cursor.GetString(0), cursor.GetString(1), cursor.GetString(2), cursor.GetString(3));
 
-                list.Add(song);
+                    list.Add(song);
+                }
             }
 
             return System.Reactive.Linq.Observable.Return(list);

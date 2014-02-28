@@ -343,7 +343,7 @@ namespace Espera.Mobile.Core.Network
 
             byte[] packed = await NetworkHelpers.PackFileTransferMessageAsync(message);
 
-            IObservable<int> progress = this.TransferFileAsync(songData).Publish().PermaRef();
+            IObservable<int> progress = this.TransferFileAsync(packed).Publish().PermaRef();
 
             var status = new FileTransferStatus(progress);
 

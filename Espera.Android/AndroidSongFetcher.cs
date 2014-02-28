@@ -22,7 +22,7 @@ namespace Espera.Android
                 MediaStore.Audio.Media.InterfaceConsts.Title,
                 MediaStore.Audio.Media.InterfaceConsts.Artist,
                 MediaStore.Audio.Media.InterfaceConsts.Album,
-                MediaStore.Audio.Media.InterfaceConsts.Id,
+                MediaStore.Audio.Media.InterfaceConsts.Data
             };
 
             var list = new List<LocalSong>();

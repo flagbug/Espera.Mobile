@@ -2,12 +2,12 @@
 {
     public class LocalSong : Song
     {
-        public LocalSong(string title, string artist, string album, string id)
+        public LocalSong(string title, string artist, string album, string path)
             : base(title, artist, album)
         {
-            this.Id = id;
+            this.Path = path;
         }
 
-        public string Id { get; private set; }
+        public string Path { get; private set; }
     }
 }

@@ -1,4 +1,5 @@
 using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Provider;
@@ -6,7 +7,6 @@ using Espera.Mobile.Core.Songs;
 using Espera.Mobile.Core.ViewModels;
 using Google.Analytics.Tracking;
 using ReactiveUI.Mobile;
-using System;
 
 namespace Espera.Android.Views
 {
@@ -66,7 +66,10 @@ namespace Espera.Android.Views
 
         protected override void OpenArtist(string artist)
         {
-            throw new NotImplementedException();
+            var intent = new Intent(this, typeof(LocalSongsActivity));
+            intent.PutExtra("songs", this.ViewModel.SerializeSongsForSelectedArtist(artist));
+
+            this.StartActivity(intent);
         }
     }
 }

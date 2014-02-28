@@ -75,6 +75,7 @@
   <ItemGroup>
     <Compile Include="Analytics\AnalyticsMixin.cs" />
     <Compile Include="Analytics\IAnalytics.cs" />
+    <Compile Include="MeasureHelper.cs" />
     <Compile Include="Songs\LocalSong.cs" />
     <Compile Include="SongFetchers\ISongFetcher.cs" />
     <Compile Include="Network\FileTransferStatus.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Songs\Song.cs" />
     <Compile Include="ViewModels\ArtistsViewModel.cs" />
     <Compile Include="ViewModels\LocalSongsViewModel.cs" />
+    <Compile Include="ViewModels\LocalSongViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\PlaylistEntryViewModel.cs" />
     <Compile Include="ViewModels\PlaylistViewModel.cs" />

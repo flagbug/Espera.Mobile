@@ -2,9 +2,8 @@ using Android.App;
 using Android.Content.PM;
 using Android.OS;
 using Android.Widget;
-using Espera.Mobile.Core.Settings;
+using Espera.Mobile.Core.Songs;
 using Espera.Mobile.Core.ViewModels;
-using Espera.Network;
 using Google.Analytics.Tracking;
 using Newtonsoft.Json;
 using ReactiveUI;
@@ -18,11 +17,11 @@ using System.Reactive.Linq;
 namespace Espera.Android.Views
 {
     [Activity(ConfigurationChanges = ConfigChanges.Orientation)]
-    public class RemoteSongsActivity : ReactiveActivity<RemoteSongsViewModel>
+    public class LocalSongsActivity : ReactiveActivity<LocalSongsViewModel>
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;
 
-        public RemoteSongsActivity()
+        public LocalSongsActivity()
         {
             this.autoSuspendHelper = new AutoSuspendActivityHelper(this);
         }
@@ -34,31 +33,23 @@ namespace Espera.Android.Views
             base.OnCreate(bundle);
             this.autoSuspendHelper.OnCreate(bundle);
 
-            this.SetContentView(Resource.Layout.RemoteSongs);
+            this.SetContentView(Resource.Layout.LocalSongs);
             this.WireUpControls();
 
             string songsJson = this.Intent.GetStringExtra("songs");
-            var deserialized = JsonConvert.DeserializeObject<IEnumerable<NetworkSong>>(songsJson);
-            var songs = new ReactiveList<NetworkSong>(deserialized);
+            var deserialized = JsonConvert.DeserializeObject<IEnumerable<LocalSong>>(songsJson);
+            var songs = new ReactiveList<LocalSong>(deserialized);
 
             this.Title = songs.First().Artist;
-            this.ViewModel = new RemoteSongsViewModel(songs);
+            this.ViewModel = new LocalSongsViewModel(songs);
 
-            this.SongsList.Adapter = new RemoteSongsAdapter(this, this.ViewModel.Songs);
+            var adapter = new ReactiveListAdapter<LocalSongViewModel>(this.ViewModel.Songs,
+                (vm, parent) => new LocalSongView(this, vm, parent));
+            this.SongsList.Adapter = adapter;
+
             this.SongsList.Events().ItemClick.Select(x => x.Position)
-                .Subscribe(x =>
-                {
-                    if (UserSettings.Instance.DefaultLibraryAction == DefaultLibraryAction.PlayAll)
-                    {
-                        this.ViewModel.PlaySongsCommand.Execute(x);
-                    }
-
-                    else
-                    {
-                        this.ViewModel.AddToPlaylistCommand.Execute(x);
-                    }
-                });
-
+                .Subscribe(x => this.ViewModel.AddToPlaylistCommand.Execute(x));
+            /*
             this.SongsList.Events().ItemLongClick.Select(x => x.Position)
                 .Subscribe(x =>
                 {
@@ -77,7 +68,7 @@ namespace Espera.Android.Views
                         }
                     });
                     builder.Create().Show();
-                });
+                });*/
 
             this.ViewModel.Message.Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show());
         }

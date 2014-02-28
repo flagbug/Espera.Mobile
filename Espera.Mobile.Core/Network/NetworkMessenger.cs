@@ -5,6 +5,7 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -337,13 +338,19 @@ namespace Espera.Mobile.Core.Network
             Guid transferId = Guid.NewGuid();
             var info = new FileTransferInfo { TransferId = transferId };
 
-            ResponseInfo response = await this.SendRequest("queue-remote-song");
+            ResponseInfo response = await this.SendRequest("queue-remote-song", JObject.FromObject(info));
 
             var message = new FileTransferMessage { Data = songData, TransferId = transferId };
 
-            byte[] packed = await NetworkHelpers.PackFileTransferMessageAsync(message);
+            byte[] packed;
 
-            IObservable<int> progress = this.TransferFileAsync(packed).Publish().PermaRef();
+            using (MeasureHelper.Measure())
+            {
+                packed = await NetworkHelpers.PackFileTransferMessageAsync(message);
+            }
+
+            IObservable<int> progress = this.TransferFileAsync(packed)
+                .SubscribeOn(RxApp.TaskpoolScheduler).Publish(0).PermaRef();
 
             var status = new FileTransferStatus(progress);
 
@@ -465,13 +472,18 @@ namespace Espera.Mobile.Core.Network
 
         private IObservable<int> TransferFileAsync(byte[] data)
         {
-            const int bufferSize = 16 * 1024;
+            int bufferSize = data.Length / 33;
             int written = 0;
-            return data.ToObservable().Buffer(bufferSize).SelectMany((x, i) =>
-                this.currentFileTransferClient.GetStream()
-                    .WriteAsync(x.ToArray(), written, bufferSize).ToObservable()
-                    .Do(_ => written += i))
-                .Select(_ => 100 / data.Length * written);
+            Stream stream = this.currentFileTransferClient.GetStream();
+
+            return data.ToObservable().Buffer(bufferSize).SelectMany(x =>
+            {
+                return stream.WriteAsync(x.ToArray(), 0, x.Count).ToObservable()
+                    .Do(_ => written += x.Count);
+            })
+
+            .Select(_ => (int)(100 * ((double)written / data.Length)))
+            .DistinctUntilChanged();
         }
     }
 }

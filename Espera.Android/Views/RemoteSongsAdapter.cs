@@ -7,9 +7,9 @@ using ReactiveUI.Android;
 
 namespace Espera.Android.Views
 {
-    internal class SongsAdapter : ReactiveListAdapter<NetworkSong>
+    internal class RemoteSongsAdapter : ReactiveListAdapter<NetworkSong>
     {
-        public SongsAdapter(Activity context, IReadOnlyReactiveList<NetworkSong> songs)
+        public RemoteSongsAdapter(Activity context, IReadOnlyReactiveList<NetworkSong> songs)
             : base(songs, (song, parent) => CreateView(context), MapModel)
         { }
 

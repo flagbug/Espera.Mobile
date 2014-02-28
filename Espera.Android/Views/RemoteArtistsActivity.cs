@@ -10,7 +10,7 @@ using ReactiveUI.Mobile;
 
 namespace Espera.Android.Views
 {
-    [Activity(Label = "Artists", ConfigurationChanges = ConfigChanges.Orientation)]
+    [Activity(Label = "Remote Artists", ConfigurationChanges = ConfigChanges.Orientation)]
     public class RemoteArtistsActivity : ArtistsActivity<RemoteSong>
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;

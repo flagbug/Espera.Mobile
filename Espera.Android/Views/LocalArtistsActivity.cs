@@ -10,7 +10,7 @@ using System;
 
 namespace Espera.Android.Views
 {
-    [Activity(Label = "Artists", ConfigurationChanges = ConfigChanges.Orientation)]
+    [Activity(Label = "Local Artists", ConfigurationChanges = ConfigChanges.Orientation)]
     public class LocalArtistsActivity : ArtistsActivity<LocalSong>
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;

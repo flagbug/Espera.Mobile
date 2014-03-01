@@ -16,6 +16,8 @@ namespace Espera.Android.Views
             this.OneWayBind(this.ViewModel, vm => vm.Title, v => v.LocalSongTitle.Text);
             this.OneWayBind(this.ViewModel, vm => vm.Album, v => v.LocalSongAlbum.Text);
             this.OneWayBind(this.ViewModel, vm => vm.TransferProgress, v => v.LocalSongTransferProgress.Progress);
+            this.OneWayBind(this.ViewModel, vm => vm.IsTransfering, v => v.LocalSongTransferProgress.Visibility,
+                x => x ? ViewStates.Visible : ViewStates.Gone);
         }
 
         public TextView LocalSongAlbum { get; private set; }

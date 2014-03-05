@@ -471,11 +471,15 @@ namespace Espera.Mobile.Core.Network
             int written = 0;
             Stream stream = this.currentFileTransferClient.GetStream();
 
-            return data.ToObservable().Buffer(bufferSize).SelectMany(x =>
-                    stream.WriteAsync(x.ToArray(), 0, x.Count).ToObservable()
-                .Do(_ => written += x.Count))
-            .Select(_ => (int)(100 * ((double)written / data.Length)))
-            .DistinctUntilChanged();
+            byte[] length = BitConverter.GetBytes(data.Length); // We have a fixed size of 4 bytes
+
+            return stream.WriteAsync(length, 0, length.Length).ToObservable()
+                .SelectMany(data.ToObservable().Buffer(bufferSize).SelectMany(x =>
+                        stream.WriteAsync(x.ToArray(), 0, x.Count)
+                    .ToObservable()
+                    .Do(_ => written += x.Count))
+                    .Select(_ => (int)(100 * ((double)written / data.Length)))
+                    .DistinctUntilChanged());
         }
     }
 }

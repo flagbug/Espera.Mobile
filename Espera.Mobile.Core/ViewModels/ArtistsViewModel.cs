@@ -1,11 +1,11 @@
-using Espera.Mobile.Core.SongFetchers;
-using Espera.Mobile.Core.Songs;
-using Newtonsoft.Json;
-using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using Espera.Mobile.Core.SongFetchers;
+using Espera.Mobile.Core.Songs;
+using Newtonsoft.Json;
+using ReactiveUI;
 
 namespace Espera.Mobile.Core.ViewModels
 {
@@ -19,8 +19,8 @@ namespace Espera.Mobile.Core.ViewModels
             if (songFetcher == null)
                 throw new ArgumentNullException("songFetcher");
 
-            this.LoadCommand = new ReactiveCommand();
-            this.artists = this.LoadCommand.RegisterAsync(x => songFetcher.GetSongsAsync())
+            this.LoadCommand = ReactiveCommand.Create(_ => songFetcher.GetSongsAsync());
+            this.artists = this.LoadCommand
                .Do(x => this.songs = x)
                .Select(GetArtists)
                .ToProperty(this, x => x.Artists, new List<string>());
@@ -33,7 +33,7 @@ namespace Espera.Mobile.Core.ViewModels
             get { return this.artists.Value; }
         }
 
-        public ReactiveCommand LoadCommand { get; private set; }
+        public ReactiveCommand<IReadOnlyList<T>> LoadCommand { get; private set; }
 
         public IObservable<string> Messages { get; private set; }
 

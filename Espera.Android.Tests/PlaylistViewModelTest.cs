@@ -290,6 +290,7 @@ namespace Espera.Android.Tests
             messenger.SetupGet(x => x.PlaylistChanged).Returns(Observable.Never<NetworkPlaylist>());
             messenger.SetupGet(x => x.AccessPermission).Returns(Observable.Return(NetworkAccessPermission.Admin));
             messenger.Setup(x => x.GetPlaybackStateAsync()).Returns(NetworkPlaybackState.None.ToTaskResult());
+            messenger.Setup(x => x.RemainingVotesChanged).Returns(Observable.Never<int?>());
 
             NetworkMessenger.Override(messenger.Object);
 

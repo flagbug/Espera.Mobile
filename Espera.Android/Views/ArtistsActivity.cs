@@ -1,17 +1,20 @@
+using System;
+using System.Reactive.Linq;
 using Android.App;
 using Android.OS;
 using Android.Widget;
 using Espera.Mobile.Core.Songs;
 using Espera.Mobile.Core.ViewModels;
+using Google.Analytics.Tracking;
 using ReactiveUI;
 using ReactiveUI.Android;
-using System;
-using System.Reactive.Linq;
+using ReactiveUI.Mobile;
 
 namespace Espera.Android.Views
 {
     public abstract class ArtistsActivity<T> : ReactiveActivity<ArtistsViewModel<T>> where T : Song
     {
+        private readonly AutoSuspendActivityHelper autoSuspendHelper;
         private ProgressDialog progressDialog;
 
         public ListView ArtistList { get; private set; }
@@ -44,7 +47,7 @@ namespace Espera.Android.Views
                         this.progressDialog.Show();
                     }
 
-                    else
+                    else if (this.progressDialog.IsShowing)
                     {
                         this.progressDialog.Dismiss();
                     }
@@ -53,6 +56,48 @@ namespace Espera.Android.Views
             this.ViewModel.Messages.Subscribe(x => Toast.MakeText(this, x, ToastLength.Long).Show());
 
             this.ViewModel.LoadCommand.Execute(null);
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            if (this.progressDialog != null && this.progressDialog.IsShowing)
+            {
+                this.progressDialog.Dismiss();
+            }
+        }
+
+        protected override void OnPause()
+        {
+            base.OnPause();
+            this.autoSuspendHelper.OnPause();
+        }
+
+        protected override void OnResume()
+        {
+            base.OnResume();
+            this.autoSuspendHelper.OnResume();
+        }
+
+        protected override void OnSaveInstanceState(Bundle outState)
+        {
+            base.OnSaveInstanceState(outState);
+            this.autoSuspendHelper.OnSaveInstanceState(outState);
+        }
+
+        protected override void OnStart()
+        {
+            base.OnStart();
+
+            EasyTracker.GetInstance(this).ActivityStart(this);
+        }
+
+        protected override void OnStop()
+        {
+            base.OnStop();
+
+            EasyTracker.GetInstance(this).ActivityStop(this);
         }
 
         protected abstract void OpenArtist(string artist);

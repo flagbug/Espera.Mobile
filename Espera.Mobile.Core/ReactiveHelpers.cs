@@ -9,7 +9,7 @@ namespace Espera.Mobile.Core
     {
         /// <summary>
         /// Takes the left observable and combines it with the latest value of the right observable.
-        /// This method is like <see cref="Observable.CombineLatest{TSource1,TSource2,TResult}"/>,
+        /// This method is like <see cref="Observable.CombineLatest{TSource1,TSource2,TResult}" />,
         /// except it propagates only when the value of the left observable sequence changes.
         /// </summary>
         public static IObservable<TResult> CombineLatestValue<TLeft, TRight, TResult>(this IObservable<TLeft> left, IObservable<TRight> right, Func<TLeft, TRight, TResult> resultSelector)
@@ -36,7 +36,7 @@ namespace Espera.Mobile.Core
             });
         }
 
-        public static IDisposable DisposeWith(this IDisposable disposable, CompositeDisposable with)
+        public static T DisposeWith<T>(this T disposable, CompositeDisposable with) where T : IDisposable
         {
             with.Add(disposable);
 

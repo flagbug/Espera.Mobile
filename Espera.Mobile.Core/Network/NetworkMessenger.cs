@@ -399,42 +399,39 @@ namespace Espera.Mobile.Core.Network
                 .Where(x => x.MessageType == NetworkMessageType.Response)
                 .Select(x => x.Payload.ToObject<ResponseInfo>())
                 .FirstAsync(x => x.RequestId == id)
-                .PublishLast();
+                .ToTask();
 
-            using (responseMessage.Connect())
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            try
             {
-                var stopwatch = new Stopwatch();
-                stopwatch.Start();
+                await this.SendMessage(message);
 
-                try
+                ResponseInfo response = await responseMessage;
+
+                stopwatch.Stop();
+
+                if (analytics != null)
                 {
-                    await this.SendMessage(message);
-
-                    ResponseInfo response = await responseMessage;
-
-                    stopwatch.Stop();
-
-                    if (analytics != null)
-                    {
-                        this.analytics.RecordNetworkTiming(action, stopwatch.ElapsedMilliseconds);
-                    }
-
-                    return response;
+                    this.analytics.RecordNetworkTiming(action, stopwatch.ElapsedMilliseconds);
                 }
 
-                catch (Exception ex)
+                return response;
+            }
+
+            catch (Exception ex)
+            {
+                stopwatch.Stop();
+
+                this.disconnected.OnNext(Unit.Default);
+
+                return new ResponseInfo
                 {
-                    stopwatch.Stop();
-
-                    this.disconnected.OnNext(Unit.Default);
-
-                    return new ResponseInfo
-                    {
-                        Status = ResponseStatus.Fatal,
-                        Message = "Connection lost",
-                        RequestId = id
-                    };
-                }
+                    Status = ResponseStatus.Fatal,
+                    Message = "Connection lost",
+                    RequestId = id
+                };
             }
         }
     }

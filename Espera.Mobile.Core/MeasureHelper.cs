@@ -9,8 +9,7 @@ namespace Espera.Mobile.Core
     {
         public static IDisposable Measure([CallerMemberName] string caller = null)
         {
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
+            var stopWatch = Stopwatch.StartNew();
 
             return Disposable.Create(() =>
             {

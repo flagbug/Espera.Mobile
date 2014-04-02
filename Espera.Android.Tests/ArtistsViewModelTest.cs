@@ -7,6 +7,7 @@ using ReactiveUI;
 using ReactiveUI.Testing;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -15,7 +16,7 @@ namespace Espera.Android.Tests
     public class ArtistsViewModelTest
     {
         [Fact]
-        public void LoadCommandSmokeTest()
+        public async Task LoadCommandSmokeTest()
         {
             var songs = SetupSongsWithArtist("B", "b", "C", "A").ToReadOnlyList();
 
@@ -26,7 +27,7 @@ namespace Espera.Android.Tests
 
             var vm = new ArtistsViewModel();
 
-            vm.LoadCommand.Execute(null);
+            await vm.LoadCommand.ExecuteAsync();
 
             Assert.True(new[] { "A", "B", "C" }.SequenceEqual(vm.Artists));
         }

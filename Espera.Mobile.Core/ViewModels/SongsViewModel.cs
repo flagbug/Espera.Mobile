@@ -16,28 +16,24 @@ namespace Espera.Mobile.Core.ViewModels
 
             this.Songs = songs;
 
-            this.PlaySongsCommand = new ReactiveCommand();
-            var playSongsMessage = this.PlaySongsCommand.RegisterAsyncTask(x =>
-                    NetworkMessenger.Instance.PlaySongsAsync(this.Songs.Skip((int)x).Select(y => y.Guid)))
-                .Select(x => x.Status == ResponseStatus.Success ? "Playing songs" : "Error adding songs")
-                .Publish().PermaRef();
+            this.PlaySongsCommand = ReactiveCommand.CreateAsync(x => NetworkMessenger.Instance.PlaySongsAsync(this.Songs.Skip((int)x).Select(y => y.Guid)));
+            var playSongsMessage = this.PlaySongsCommand
+                .Select(x => x.Status == ResponseStatus.Success ? "Playing songs" : "Error adding songs");
 
-            this.AddToPlaylistCommand = new ReactiveCommand();
-            var addToPlaylistMessage = this.AddToPlaylistCommand.RegisterAsyncTask(x =>
-                    NetworkMessenger.Instance.AddSongToPlaylistAsync(this.Songs[(int)x].Guid))
-                .Select(x => x.Status == ResponseStatus.Success ? "Song added to playlist" : "Error adding song")
-                .Publish().PermaRef();
+            this.AddToPlaylistCommand = ReactiveCommand.CreateAsync(x => NetworkMessenger.Instance.AddSongToPlaylistAsync(this.Songs[(int)x].Guid));
+            var addToPlaylistMessage = this.AddToPlaylistCommand
+                .Select(x => x.Status == ResponseStatus.Success ? "Song added to playlist" : "Error adding song");
 
             this.Message = playSongsMessage.Merge(addToPlaylistMessage)
                 .Throttle(TimeSpan.FromMilliseconds(200))
                 .ObserveOn(RxApp.MainThreadScheduler);
         }
 
-        public ReactiveCommand AddToPlaylistCommand { get; private set; }
+        public ReactiveCommand<ResponseInfo> AddToPlaylistCommand { get; private set; }
 
         public IObservable<string> Message { get; private set; }
 
-        public ReactiveCommand PlaySongsCommand { get; private set; }
+        public ReactiveCommand<ResponseInfo> PlaySongsCommand { get; private set; }
 
         public IReadOnlyReactiveList<NetworkSong> Songs { get; private set; }
     }

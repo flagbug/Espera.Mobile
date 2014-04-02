@@ -17,11 +17,11 @@ namespace Espera.Mobile.Core.ViewModels
 
         public ArtistsViewModel()
         {
-            this.LoadCommand = new ReactiveCommand();
-            this.artists = this.LoadCommand.RegisterAsync(x => NetworkMessenger.Instance.GetSongsAsync().ToObservable()
-                    .Timeout(TimeSpan.FromSeconds(15), RxApp.TaskpoolScheduler))
+            this.LoadCommand = ReactiveCommand.Create(_ => GetSongsAsync());
+            this.artists = this.LoadCommand
                .Do(x => this.songs = x)
                .Select(GetArtists)
+               .Publish().PermaRef() // ToProperty defers the subscription, so do it manually
                .ToProperty(this, x => x.Artists, new List<string>());
 
             this.Messages = this.LoadCommand.ThrownExceptions.Select(_ => "Loading artists failed");
@@ -32,7 +32,13 @@ namespace Espera.Mobile.Core.ViewModels
             get { return this.artists.Value; }
         }
 
-        public ReactiveCommand LoadCommand { get; private set; }
+        private static IObservable<IReadOnlyList<NetworkSong>> GetSongsAsync()
+        {
+            return NetworkMessenger.Instance.GetSongsAsync().ToObservable()
+                .Timeout(TimeSpan.FromSeconds(15), RxApp.TaskpoolScheduler);
+        }
+
+        public ReactiveCommand<IReadOnlyList<NetworkSong>> LoadCommand { get; private set; }
 
         public IObservable<string> Messages { get; private set; }
 

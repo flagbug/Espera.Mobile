@@ -20,25 +20,23 @@ namespace Espera.Mobile.Core.ViewModels
             this.isConnected = NetworkMessenger.Instance.IsConnected
                 .ToProperty(this, x => x.IsConnected);
 
-            this.ConnectCommand = this.WhenAnyValue(x => x.IsConnected, x => !x).ToCommand();
-            this.ConnectCommand.RegisterAsync(x =>
-                ConnectAsync(UserSettings.Instance.Port).ToObservable()
+            var canConnect = this.WhenAnyValue(x => x.IsConnected, x => !x);
+            this.ConnectCommand = ReactiveCommand.Create(canConnect, _ => ConnectAsync(UserSettings.Instance.Port).ToObservable()
                     .Timeout(TimeSpan.FromSeconds(10), RxApp.TaskpoolScheduler)
-                    .Catch<Unit, TimeoutException>(ex => Observable.Throw<Unit>(new Exception("Connection failed"))))
-                .Subscribe();
+                    .Catch<Unit, TimeoutException>(ex => Observable.Throw<Unit>(new Exception("Connection failed"))));
 
-            this.DisconnectCommand = this.WhenAnyValue(x => x.IsConnected).ToCommand();
+            this.DisconnectCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.IsConnected));
             this.DisconnectCommand.Subscribe(x => NetworkMessenger.Instance.Disconnect());
 
             this.ConnectionFailed = this.ConnectCommand.ThrownExceptions
                 .Select(x => x.Message);
         }
 
-        public ReactiveCommand ConnectCommand { get; private set; }
+        public ReactiveCommand<Unit> ConnectCommand { get; private set; }
 
         public IObservable<string> ConnectionFailed { get; private set; }
 
-        public ReactiveCommand DisconnectCommand { get; private set; }
+        public ReactiveCommand<object> DisconnectCommand { get; private set; }
 
         public bool IsConnected
         {

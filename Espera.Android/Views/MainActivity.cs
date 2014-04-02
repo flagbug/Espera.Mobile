@@ -63,7 +63,7 @@ namespace Espera.Android.Views
             this.ViewModel = new MainViewModel();
 
             var connectOrDisconnectCommand = this.ViewModel.WhenAnyValue(x => x.IsConnected)
-                .Select(x => x ? this.ViewModel.DisconnectCommand : this.ViewModel.ConnectCommand);
+                .Select(x => x ? (IReactiveCommand)this.ViewModel.DisconnectCommand : this.ViewModel.ConnectCommand);
             this.ConnectButton.Events().Click.CombineLatestValue(connectOrDisconnectCommand, (args, command) => command)
                 .Where(x => x.CanExecute(null))
                 .Subscribe(x => x.Execute(null));
@@ -112,7 +112,6 @@ namespace Espera.Android.Views
             {
                 this.ShowWifiPrompt(wifiManager);
             }
-
             else
             {
                 WifiInfo info = wifiManager.ConnectionInfo;

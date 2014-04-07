@@ -14,7 +14,6 @@ namespace Espera.Android.Views
 {
     public abstract class ArtistsActivity<T> : ReactiveActivity<ArtistsViewModel<T>> where T : Song
     {
-        private readonly AutoSuspendActivityHelper autoSuspendHelper;
         private ProgressDialog progressDialog;
 
         public ListView ArtistList { get; private set; }
@@ -66,38 +65,6 @@ namespace Espera.Android.Views
             {
                 this.progressDialog.Dismiss();
             }
-        }
-
-        protected override void OnPause()
-        {
-            base.OnPause();
-            this.autoSuspendHelper.OnPause();
-        }
-
-        protected override void OnResume()
-        {
-            base.OnResume();
-            this.autoSuspendHelper.OnResume();
-        }
-
-        protected override void OnSaveInstanceState(Bundle outState)
-        {
-            base.OnSaveInstanceState(outState);
-            this.autoSuspendHelper.OnSaveInstanceState(outState);
-        }
-
-        protected override void OnStart()
-        {
-            base.OnStart();
-
-            EasyTracker.GetInstance(this).ActivityStart(this);
-        }
-
-        protected override void OnStop()
-        {
-            base.OnStop();
-
-            EasyTracker.GetInstance(this).ActivityStop(this);
         }
 
         protected abstract void OpenArtist(string artist);

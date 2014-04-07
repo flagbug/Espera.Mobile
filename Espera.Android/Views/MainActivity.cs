@@ -32,8 +32,6 @@ namespace Espera.Android.Views
 
             this.WhenActivated(d =>
             {
-                this.ViewModel = new MainViewModel();
-
                 var connectOrDisconnectCommand = this.ViewModel.WhenAnyValue(x => x.IsConnected)
                     .Select(x => x ? (IReactiveCommand)this.ViewModel.DisconnectCommand : this.ViewModel.ConnectCommand);
 
@@ -88,6 +86,8 @@ namespace Espera.Android.Views
 
             this.SetContentView(Resource.Layout.Main);
             this.WireUpControls();
+
+            this.ViewModel = new MainViewModel();
 
             this.StartService(new Intent(this, typeof(NetworkService)));
         }

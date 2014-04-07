@@ -1,3 +1,5 @@
+using System;
+using System.Reactive.Linq;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -8,8 +10,6 @@ using Google.Analytics.Tracking;
 using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
-using System;
-using System.Reactive.Linq;
 
 namespace Espera.Android.Views
 {
@@ -25,8 +25,6 @@ namespace Espera.Android.Views
 
             this.WhenActivated(d =>
             {
-                this.ViewModel = new ArtistsViewModel();
-
                 this.OneWayBind(this.ViewModel, x => x.Artists, x => x.ArtistList.Adapter, list => new ArtistsAdapter(this, list));
                 this.ArtistList.Events().ItemClick.Subscribe(x => this.OpenArtist((string)this.ArtistList.GetItemAtPosition(x.Position)));
 
@@ -65,6 +63,8 @@ namespace Espera.Android.Views
 
             this.SetContentView(Resource.Layout.Artists);
             this.WireUpControls();
+
+            this.ViewModel = new ArtistsViewModel();
         }
 
         protected override void OnPause()

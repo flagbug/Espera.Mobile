@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Reactive.Linq;
 using Android.App;
 using Android.Content.PM;
 using Android.OS;
@@ -9,9 +12,6 @@ using Google.Analytics.Tracking;
 using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
-using System;
-using System.Collections.Generic;
-using System.Reactive.Linq;
 
 namespace Espera.Android.Views
 {
@@ -27,7 +27,6 @@ namespace Espera.Android.Views
 
             this.WhenActivated(d =>
             {
-                this.ViewModel = new PlaylistViewModel();
                 this.ViewModel.Message.Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show());
 
                 var adapter = new ReactiveListAdapter<PlaylistEntryViewModel>(this.ViewModel.Entries,
@@ -62,28 +61,28 @@ namespace Espera.Android.Views
                             {
                                 switch (eventArgs.Which)
                                 {
-                                    case 0:
-                                        this.ViewModel.PlayPlaylistSongCommand.Execute(x.Position);
-                                        break;
+                                case 0:
+                                    this.ViewModel.PlayPlaylistSongCommand.Execute(x.Position);
+                                    break;
 
-                                    case 1:
-                                        this.ViewModel.RemoveSongCommand.Execute(x.Position);
-                                        break;
+                                case 1:
+                                    this.ViewModel.RemoveSongCommand.Execute(x.Position);
+                                    break;
 
-                                    case 2:
-                                        this.ViewModel.MoveSongUpCommand.Execute(x.Position);
-                                        break;
+                                case 2:
+                                    this.ViewModel.MoveSongUpCommand.Execute(x.Position);
+                                    break;
 
-                                    case 3:
-                                        this.ViewModel.MoveSongDownCommand.Execute(x.Position);
-                                        break;
+                                case 3:
+                                    this.ViewModel.MoveSongDownCommand.Execute(x.Position);
+                                    break;
 
-                                    case 4:
-                                        if (hasVotesLeft)
-                                        {
-                                            this.ViewModel.VoteCommand.Execute(x.Position);
-                                        }
-                                        break;
+                                case 4:
+                                    if (hasVotesLeft)
+                                    {
+                                        this.ViewModel.VoteCommand.Execute(x.Position);
+                                    }
+                                    break;
                                 }
                             });
                             builder.Create().Show();
@@ -166,6 +165,8 @@ namespace Espera.Android.Views
 
             this.SetContentView(Resource.Layout.Playlist);
             this.WireUpControls();
+
+            this.ViewModel = new PlaylistViewModel();
         }
 
         protected override void OnPause()

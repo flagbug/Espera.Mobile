@@ -28,7 +28,6 @@ namespace Espera.Mobile.Core.ViewModels
                 this.currentIndex = new BehaviorSubject<int?>(null);
                 this.remainingVotes = new BehaviorSubject<int?>(null);
                 this.playbackState = new BehaviorSubject<NetworkPlaybackState>(NetworkPlaybackState.None);
-
                 var disposable = new CompositeDisposable();
 
                 var canModifyConn = NetworkMessenger.Instance.AccessPermission

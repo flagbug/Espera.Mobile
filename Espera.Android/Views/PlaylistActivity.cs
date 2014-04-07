@@ -12,6 +12,7 @@ using Google.Analytics.Tracking;
 using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
+using System.Reactive.Disposables;
 
 namespace Espera.Android.Views
 {
@@ -25,15 +26,20 @@ namespace Espera.Android.Views
         {
             this.autoSuspendHelper = new AutoSuspendActivityHelper(this);
 
-            this.WhenActivated(d =>
+            this.WhenActivated(() =>
             {
-                this.ViewModel.Message.Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show());
+				var disposable = new CompositeDisposable();
+					
+                this.ViewModel.Message.Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show())
+					.DisposeWith(disposable);
 
                 var adapter = new ReactiveListAdapter<PlaylistEntryViewModel>(this.ViewModel.Entries,
-                    (vm, parent) => new PlaylistEntryView(this, vm, parent));
+                		(vm, parent) => new PlaylistEntryView(this, vm, parent))
+					.DisposeWith(disposable);
                 this.Playlist.Adapter = adapter;
                 this.Playlist.Events().ItemClick.Select(x => x.Position)
-                    .InvokeCommand(this.ViewModel.PlayPlaylistSongCommand);
+                    .InvokeCommand(this.ViewModel.PlayPlaylistSongCommand)
+					.DisposeWith(disposable);
 
                 this.Playlist.Events().ItemLongClick
                     .Select(x => x.Position)
@@ -100,29 +106,37 @@ namespace Espera.Android.Views
                             });
                             builder.Create().Show();
                         }
-                    });
+                    }).DisposeWith(disposable);
                 this.Playlist.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty);
 
                 this.ViewModel.CanModify.Select(x => x ? ViewStates.Visible : ViewStates.Gone)
-                    .BindTo(this.PlaybackControlPanel, x => x.Visibility);
+                    .BindTo(this.PlaybackControlPanel, x => x.Visibility)
+					.DisposeWith(disposable);
 
-                this.BindCommand(this.ViewModel, x => x.PlayNextSongCommand, x => x.NextButton);
-                this.BindCommand(this.ViewModel, x => x.PlayPreviousSongCommand, x => x.PreviousButton);
-                this.BindCommand(this.ViewModel, x => x.PlayPauseCommand, x => x.PlayPauseButton);
+                this.BindCommand(this.ViewModel, x => x.PlayNextSongCommand, x => x.NextButton)
+					.DisposeWith(disposable);
+                this.BindCommand(this.ViewModel, x => x.PlayPreviousSongCommand, x => x.PreviousButton)
+					.DisposeWith(disposable);
+                this.BindCommand(this.ViewModel, x => x.PlayPauseCommand, x => x.PlayPauseButton)
+					.DisposeWith(disposable);
 
                 this.ViewModel.WhenAnyValue(x => x.IsPlaying).Select(x => x ? Resource.Drawable.Pause : Resource.Drawable.Play)
-                    .Subscribe(x => this.PlayPauseButton.SetBackgroundResource(x));
+                    .Subscribe(x => this.PlayPauseButton.SetBackgroundResource(x))
+					.DisposeWith(disposable);
 
                 Func<bool, int> alphaSelector = x => x ? 255 : 100;
 
                 this.ViewModel.PlayPauseCommand.CanExecuteObservable.Select(alphaSelector)
-                    .Subscribe(x => this.PlayPauseButton.Background.SetAlpha(x));
+                    .Subscribe(x => this.PlayPauseButton.Background.SetAlpha(x))
+					.DisposeWith(disposable);
 
                 this.ViewModel.PlayPreviousSongCommand.CanExecuteObservable.Select(alphaSelector)
-                    .Subscribe(x => this.PreviousButton.Background.SetAlpha(x));
+                    .Subscribe(x => this.PreviousButton.Background.SetAlpha(x))
+					.DisposeWith(disposable);
 
                 this.ViewModel.PlayNextSongCommand.CanExecuteObservable.Select(alphaSelector)
-                    .Subscribe(x => this.NextButton.Background.SetAlpha(x));
+                    .Subscribe(x => this.NextButton.Background.SetAlpha(x))
+					.DisposeWith(disposable);
 
                 this.progressDialog = new ProgressDialog(this);
                 this.progressDialog.SetMessage("Loading playlist");
@@ -142,9 +156,11 @@ namespace Espera.Android.Views
                         {
                             this.progressDialog.Dismiss();
                         }
-                    });
+                    }).DisposeWith(disposable);
 
                 this.ViewModel.LoadPlaylistCommand.Execute(null);
+					
+				return disposable;
             });
         }
 

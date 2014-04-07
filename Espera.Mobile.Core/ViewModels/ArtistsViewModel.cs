@@ -1,12 +1,13 @@
-using Espera.Mobile.Core.Network;
-using Espera.Network;
-using Newtonsoft.Json;
-using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
+using Akavache;
+using Espera.Mobile.Core.Network;
+using Espera.Network;
+using Newtonsoft.Json;
+using ReactiveUI;
 
 namespace Espera.Mobile.Core.ViewModels
 {
@@ -60,10 +61,10 @@ namespace Espera.Mobile.Core.ViewModels
                 .ToList();
         }
 
-        private static IObservable<IReadOnlyList<NetworkSong>> GetSongsAsync()
+        private IObservable<IReadOnlyList<NetworkSong>> GetSongsAsync()
         {
-            return NetworkMessenger.Instance.GetSongsAsync().ToObservable()
-                .Timeout(TimeSpan.FromSeconds(15), RxApp.TaskpoolScheduler);
+			return songs == null ? NetworkMessenger.Instance.GetSongsAsync().ToObservable()
+				.Timeout(TimeSpan.FromSeconds(15), RxApp.TaskpoolScheduler) : Observable.Return(this.songs);
         }
     }
 }

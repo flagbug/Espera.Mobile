@@ -17,41 +17,10 @@ namespace Espera.Android.Views
     public class ArtistsActivity : ReactiveActivity<ArtistsViewModel>
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;
-        private ProgressDialog progressDialog;
 
         public ArtistsActivity()
         {
             this.autoSuspendHelper = new AutoSuspendActivityHelper(this);
-
-            this.WhenActivated(d =>
-            {
-                this.OneWayBind(this.ViewModel, x => x.Artists, x => x.ArtistList.Adapter, list => new ArtistsAdapter(this, list));
-                this.ArtistList.Events().ItemClick.Subscribe(x => this.OpenArtist((string)this.ArtistList.GetItemAtPosition(x.Position)));
-
-                this.progressDialog = new ProgressDialog(this);
-                this.progressDialog.SetMessage("Loading artists");
-                this.progressDialog.Indeterminate = true;
-                this.progressDialog.SetCancelable(false);
-
-                this.ViewModel.LoadCommand.IsExecuting
-                    .Skip(1)
-                    .Subscribe(x =>
-                    {
-                        if (x)
-                        {
-                            this.progressDialog.Show();
-                        }
-
-                        else
-                        {
-                            this.progressDialog.Dismiss();
-                        }
-                    });
-
-                this.ViewModel.Messages.Subscribe(x => Toast.MakeText(this, x, ToastLength.Long).Show());
-
-                this.ViewModel.LoadCommand.Execute(null);
-            });
         }
 
         public ListView ArtistList { get; private set; }
@@ -65,6 +34,33 @@ namespace Espera.Android.Views
             this.WireUpControls();
 
             this.ViewModel = new ArtistsViewModel();
+			
+            this.OneWayBind(this.ViewModel, x => x.Artists, x => x.ArtistList.Adapter, list => new ArtistsAdapter(this, list));
+            this.ArtistList.Events().ItemClick.Subscribe(x => this.OpenArtist((string)this.ArtistList.GetItemAtPosition(x.Position)));
+
+            var progressDialog = new ProgressDialog(this);
+            progressDialog.SetMessage("Loading artists");
+            progressDialog.Indeterminate = true;
+            progressDialog.SetCancelable(false);
+				
+            this.ViewModel.LoadCommand.IsExecuting
+                .Skip(1)
+                .Subscribe(x =>
+                {
+                    if (x)
+                    {
+                        progressDialog.Show();
+                    }
+
+                    else
+                    {
+                        progressDialog.Dismiss();
+                    }
+                });
+
+            this.ViewModel.Messages.Subscribe(x => Toast.MakeText(this, x, ToastLength.Long).Show());
+
+            this.ViewModel.LoadCommand.Execute(null);
         }
 
         protected override void OnPause()

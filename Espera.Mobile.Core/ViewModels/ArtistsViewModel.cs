@@ -11,28 +11,21 @@ using ReactiveUI;
 
 namespace Espera.Mobile.Core.ViewModels
 {
-    public class ArtistsViewModel : ReactiveObject, ISupportsActivation
+    public class ArtistsViewModel : ReactiveObject
     {
         private ObservableAsPropertyHelper<IReadOnlyList<string>> artists;
         private IReadOnlyList<NetworkSong> songs;
 
         public ArtistsViewModel()
         {
-            this.Activator = new ViewModelActivator();
+            this.LoadCommand = ReactiveCommand.Create(_ => GetSongsAsync());
+            this.artists = this.LoadCommand
+               .Do(x => this.songs = x)
+               .Select(GetArtists)
+               .ToProperty(this, x => x.Artists, new List<string>());
 
-            this.WhenActivated(d =>
-            {
-                this.LoadCommand = ReactiveCommand.Create(_ => GetSongsAsync());
-                this.artists = this.LoadCommand
-                   .Do(x => this.songs = x)
-                   .Select(GetArtists)
-                   .ToProperty(this, x => x.Artists, new List<string>());
-
-                this.Messages = this.LoadCommand.ThrownExceptions.Select(_ => "Loading artists failed");
-            });
+            this.Messages = this.LoadCommand.ThrownExceptions.Select(_ => "Loading artists failed");
         }
-
-        public ViewModelActivator Activator { get; private set; }
 
         public IReadOnlyList<string> Artists
         {

@@ -17,6 +17,7 @@ namespace Espera.Android.Views
     public class ArtistsActivity : ReactiveActivity<ArtistsViewModel>
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;
+		private ProgressDialog progressDialog;
 
         public ArtistsActivity()
         {
@@ -38,10 +39,10 @@ namespace Espera.Android.Views
             this.OneWayBind(this.ViewModel, x => x.Artists, x => x.ArtistList.Adapter, list => new ArtistsAdapter(this, list));
             this.ArtistList.Events().ItemClick.Subscribe(x => this.OpenArtist((string)this.ArtistList.GetItemAtPosition(x.Position)));
 
-            var progressDialog = new ProgressDialog(this);
-            progressDialog.SetMessage("Loading artists");
-            progressDialog.Indeterminate = true;
-            progressDialog.SetCancelable(false);
+			this.progressDialog = new ProgressDialog(this);
+            this.progressDialog.SetMessage("Loading artists");
+            this.progressDialog.Indeterminate = true;
+            this.progressDialog.SetCancelable(false);
 				
             this.ViewModel.LoadCommand.IsExecuting
                 .Skip(1)
@@ -49,12 +50,12 @@ namespace Espera.Android.Views
                 {
                     if (x)
                     {
-                        progressDialog.Show();
+                        this.progressDialog.Show();
                     }
 
-                    else
+					else if(this.progressDialog.IsShowing)
                     {
-                        progressDialog.Dismiss();
+                        this.progressDialog.Dismiss();
                     }
                 });
 
@@ -80,6 +81,16 @@ namespace Espera.Android.Views
             base.OnSaveInstanceState(outState);
             this.autoSuspendHelper.OnSaveInstanceState(outState);
         }
+		
+		protected override void OnDestroy ()
+		{
+			base.OnDestroy ();
+			
+			if(this.progressDialog != null && this.progressDialog.IsShowing)
+			{
+				this.progressDialog.Dismiss();
+			}
+		}
 
         protected override void OnStart()
         {

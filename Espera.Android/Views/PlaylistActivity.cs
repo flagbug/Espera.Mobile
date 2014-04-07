@@ -152,7 +152,7 @@ namespace Espera.Android.Views
                             this.progressDialog.Show();
                         }
 
-                        else
+						else if(this.progressDialog.IsShowing)
                         {
                             this.progressDialog.Dismiss();
                         }
@@ -216,5 +216,15 @@ namespace Espera.Android.Views
 
             EasyTracker.GetInstance(this).ActivityStop(this);
         }
+		
+		protected override void OnDestroy ()
+		{
+			base.OnDestroy ();
+			
+			if(this.progressDialog != null && this.progressDialog.IsShowing)
+			{
+				this.progressDialog.Dismiss();
+			}
+		}
     }
 }

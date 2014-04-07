@@ -10,32 +10,32 @@ using System.Reactive.Threading.Tasks;
 
 namespace Espera.Mobile.Core.ViewModels
 {
-    public class ArtistsViewModel : ReactiveObject
+    public class ArtistsViewModel : ReactiveObject, ISupportsActivation
     {
-        private readonly ObservableAsPropertyHelper<IReadOnlyList<string>> artists;
+        private ObservableAsPropertyHelper<IReadOnlyList<string>> artists;
         private IReadOnlyList<NetworkSong> songs;
 
         public ArtistsViewModel()
         {
-            this.LoadCommand = ReactiveCommand.Create(_ => GetSongsAsync());
-            this.artists = this.LoadCommand
-               .Do(x => this.songs = x)
-               .Select(GetArtists)
-               .Publish().PermaRef() // ToProperty defers the subscription, so do it manually
-               .ToProperty(this, x => x.Artists, new List<string>());
+            this.Activator = new ViewModelActivator();
 
-            this.Messages = this.LoadCommand.ThrownExceptions.Select(_ => "Loading artists failed");
+            this.WhenActivated(d =>
+            {
+                this.LoadCommand = ReactiveCommand.Create(_ => GetSongsAsync());
+                this.artists = this.LoadCommand
+                   .Do(x => this.songs = x)
+                   .Select(GetArtists)
+                   .ToProperty(this, x => x.Artists, new List<string>());
+
+                this.Messages = this.LoadCommand.ThrownExceptions.Select(_ => "Loading artists failed");
+            });
         }
+
+        public ViewModelActivator Activator { get; private set; }
 
         public IReadOnlyList<string> Artists
         {
             get { return this.artists.Value; }
-        }
-
-        private static IObservable<IReadOnlyList<NetworkSong>> GetSongsAsync()
-        {
-            return NetworkMessenger.Instance.GetSongsAsync().ToObservable()
-                .Timeout(TimeSpan.FromSeconds(15), RxApp.TaskpoolScheduler);
         }
 
         public ReactiveCommand<IReadOnlyList<NetworkSong>> LoadCommand { get; private set; }
@@ -58,6 +58,12 @@ namespace Espera.Mobile.Core.ViewModels
                 .Distinct(StringComparer.InvariantCultureIgnoreCase)
                 .OrderBy(_ => _)
                 .ToList();
+        }
+
+        private static IObservable<IReadOnlyList<NetworkSong>> GetSongsAsync()
+        {
+            return NetworkMessenger.Instance.GetSongsAsync().ToObservable()
+                .Timeout(TimeSpan.FromSeconds(15), RxApp.TaskpoolScheduler);
         }
     }
 }

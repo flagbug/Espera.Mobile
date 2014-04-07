@@ -1,36 +1,49 @@
+using System;
+using System.Net;
+using System.Reactive;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
+using System.Threading.Tasks;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
 using Espera.Network;
 using ReactiveUI;
-using System;
-using System.Net;
-using System.Reactive;
-using System.Reactive.Linq;
-using System.Reactive.Threading.Tasks;
-using System.Threading.Tasks;
 
 namespace Espera.Mobile.Core.ViewModels
 {
-    public class MainViewModel : ReactiveObject
+    public class MainViewModel : ReactiveObject, ISupportsActivation
     {
-        private readonly ObservableAsPropertyHelper<bool> isConnected;
+        private ObservableAsPropertyHelper<bool> isConnected;
 
         public MainViewModel()
         {
-            this.isConnected = NetworkMessenger.Instance.IsConnected
-                .ToProperty(this, x => x.IsConnected);
+            this.Activator = new ViewModelActivator();
 
-            var canConnect = this.WhenAnyValue(x => x.IsConnected, x => !x);
-            this.ConnectCommand = ReactiveCommand.Create(canConnect, _ => ConnectAsync(UserSettings.Instance.Port).ToObservable()
+            this.WhenActivated(() =>
+            {
+                var disposable = new CompositeDisposable();
+
+                this.isConnected = NetworkMessenger.Instance.IsConnected
+                    .ToProperty(this, x => x.IsConnected)
+                    .DisposeWith(disposable);
+
+                var canConnect = this.WhenAnyValue(x => x.IsConnected, x => !x);
+                this.ConnectCommand = ReactiveCommand.Create(canConnect, _ => ConnectAsync(UserSettings.Instance.Port).ToObservable()
                     .Timeout(TimeSpan.FromSeconds(10), RxApp.TaskpoolScheduler)
                     .Catch<Unit, TimeoutException>(ex => Observable.Throw<Unit>(new Exception("Connection failed"))));
 
-            this.DisconnectCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.IsConnected));
-            this.DisconnectCommand.Subscribe(x => NetworkMessenger.Instance.Disconnect());
+                this.DisconnectCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.IsConnected));
+                this.DisconnectCommand.Subscribe(x => NetworkMessenger.Instance.Disconnect());
 
-            this.ConnectionFailed = this.ConnectCommand.ThrownExceptions
-                .Select(x => x.Message);
+                this.ConnectionFailed = this.ConnectCommand.ThrownExceptions
+                    .Select(x => x.Message);
+
+                return disposable;
+            });
         }
+
+        public ViewModelActivator Activator { get; private set; }
 
         public ReactiveCommand<Unit> ConnectCommand { get; private set; }
 

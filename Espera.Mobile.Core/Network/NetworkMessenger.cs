@@ -468,7 +468,7 @@ namespace Espera.Mobile.Core.Network
 
         private IObservable<int> TransferFileAsync(byte[] data)
         {
-            int bufferSize = data.Length / 4;
+            const int bufferSize = 32 * 1024;
             int written = 0;
             Stream stream = this.currentFileTransferClient.GetStream();
 

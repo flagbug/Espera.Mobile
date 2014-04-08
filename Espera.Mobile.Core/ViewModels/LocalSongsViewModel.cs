@@ -40,11 +40,12 @@ namespace Espera.Mobile.Core.ViewModels
 
             song.IsTransfering = true;
 
-            status.TransferProgress.Subscribe(x =>
-            {
-                song.TransferProgress = x;
-            },
-            () => song.IsTransfering = false);
+            status.TransferProgress.ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(x =>
+                {
+                    song.TransferProgress = x;
+                },
+                () => song.IsTransfering = false);
         }
     }
 }

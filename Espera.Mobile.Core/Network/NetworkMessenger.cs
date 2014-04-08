@@ -1,7 +1,3 @@
-using Espera.Mobile.Core.Analytics;
-using Espera.Network;
-using Newtonsoft.Json.Linq;
-using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,6 +12,10 @@ using System.Reactive.Threading.Tasks;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Espera.Mobile.Core.Analytics;
+using Espera.Network;
+using Newtonsoft.Json.Linq;
+using ReactiveUI;
 
 namespace Espera.Mobile.Core.Network
 {
@@ -54,6 +54,7 @@ namespace Espera.Mobile.Core.Network
             var isConnected = this.Disconnected.Select(_ => false)
                 .Merge(this.connectionEstablished.Select(_ => true))
                 .DistinctUntilChanged()
+                .ObserveOn(RxApp.MainThreadScheduler)
                 .Publish(false);
             isConnected.Connect();
             this.IsConnected = isConnected;
@@ -348,8 +349,7 @@ namespace Espera.Mobile.Core.Network
 
             byte[] packed = await NetworkHelpers.PackFileTransferMessageAsync(message);
 
-            IObservable<int> progress = this.TransferFileAsync(packed)
-                .SubscribeOn(RxApp.TaskpoolScheduler).Publish(0).PermaRef();
+            IObservable<int> progress = this.TransferFileAsync(packed).Publish(0).PermaRef();
 
             var status = new FileTransferStatus(progress);
 
@@ -468,19 +468,31 @@ namespace Espera.Mobile.Core.Network
 
         private IObservable<int> TransferFileAsync(byte[] data)
         {
-            int bufferSize = data.Length / 100;
+            int bufferSize = data.Length / 4;
             int written = 0;
             Stream stream = this.currentFileTransferClient.GetStream();
 
             byte[] length = BitConverter.GetBytes(data.Length); // We have a fixed size of 4 bytes
 
-            return stream.WriteAsync(length, 0, length.Length).ToObservable()
-                .SelectMany(data.ToObservable().Buffer(bufferSize).SelectMany(x =>
-                        stream.WriteAsync(x.ToArray(), 0, x.Count)
-                    .ToObservable()
-                    .Do(_ => written += x.Count))
-                    .Select(_ => (int)(100 * ((double)written / data.Length)))
-                    .DistinctUntilChanged());
+            var progress = new BehaviorSubject<int>(0);
+
+            Task.Run(() =>
+            {
+                stream.Write(length, 0, length.Length);
+
+                do
+                {
+                    stream.Write(data, written, data.Length - written < bufferSize ? data.Length - written : bufferSize);
+                    written += bufferSize;
+
+                    progress.OnNext((int)(100 * ((double)written / data.Length)));
+                }
+                while (written < data.Length);
+
+                progress.OnCompleted();
+            });
+
+            return progress.DistinctUntilChanged();
         }
     }
 }

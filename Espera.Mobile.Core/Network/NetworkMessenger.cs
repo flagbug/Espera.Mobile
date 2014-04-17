@@ -1,7 +1,3 @@
-using Espera.Mobile.Core.Analytics;
-using Espera.Network;
-using Newtonsoft.Json.Linq;
-using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,6 +11,10 @@ using System.Reactive.Threading.Tasks;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Espera.Mobile.Core.Analytics;
+using Espera.Network;
+using Newtonsoft.Json.Linq;
+using ReactiveUI;
 
 namespace Espera.Mobile.Core.Network
 {
@@ -113,17 +113,18 @@ namespace Espera.Mobile.Core.Network
             if (fakeIpAddress != null)
                 return fakeIpAddress;
 
-            var client = new UdpClient(port);
-
-            UdpReceiveResult result;
-
-            do
+            using (var client = new UdpClient(port))
             {
-                result = await client.ReceiveAsync();
-            }
-            while (Encoding.Unicode.GetString(result.Buffer) != "espera-server-discovery");
+                UdpReceiveResult result;
 
-            return result.RemoteEndPoint.Address;
+                do
+                {
+                    result = await client.ReceiveAsync();
+                }
+                while (Encoding.Unicode.GetString(result.Buffer) != "espera-server-discovery");
+
+                return result.RemoteEndPoint.Address;
+            }
         }
 
         /// <summary>

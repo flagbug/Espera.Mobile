@@ -43,7 +43,6 @@ build/
 *.vssscc
 .builds
 *.pidb
-*.log
 *.scc
 
 # Visual C++ cache files
@@ -151,3 +150,4 @@ $RECYCLE.BIN/
 .DS_Store
 /packages
 /ext/18
+/Espera.Android.userprefs

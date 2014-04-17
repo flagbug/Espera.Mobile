@@ -59,7 +59,7 @@ namespace Espera.Mobile.Core.Network
             isConnected.Connect();
             this.IsConnected = isConnected;
 
-            var pipeline = this.client.Select(x => Observable.Defer(() => x.ReadNextMessageAsync()
+            var pipeline = this.client.Select(x => Observable.Defer(() => x.GetStream().ReadNextMessageAsync()
                     .ToObservable())
                     .Repeat()
                     .TakeWhile(m => m != null)
@@ -118,17 +118,18 @@ namespace Espera.Mobile.Core.Network
             if (fakeIpAddress != null)
                 return fakeIpAddress;
 
-            var client = new UdpClient(port);
-
-            UdpReceiveResult result;
-
-            do
+            using (var client = new UdpClient(new IPEndPoint(IPAddress.Any, port)))
             {
-                result = await client.ReceiveAsync();
-            }
-            while (Encoding.Unicode.GetString(result.Buffer) != "espera-server-discovery");
+                UdpReceiveResult result;
 
-            return result.RemoteEndPoint.Address;
+                do
+                {
+                    result = await client.ReceiveAsync();
+                }
+                while (Encoding.Unicode.GetString(result.Buffer) != "espera-server-discovery");
+
+                return result.RemoteEndPoint.Address;
+            }
         }
 
         /// <summary>

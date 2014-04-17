@@ -481,14 +481,19 @@ namespace Espera.Mobile.Core.Network
             {
                 stream.Write(length, 0, length.Length);
 
-                do
+                using (var dataStream = new MemoryStream(data))
                 {
-                    stream.Write(data, written, data.Length - written < bufferSize ? data.Length - written : bufferSize);
-                    written += bufferSize;
+                    var buffer = new byte[bufferSize];
+                    int count;
 
-                    progress.OnNext((int)(100 * ((double)written / data.Length)));
+                    while ((count = dataStream.Read(buffer, 0, bufferSize)) > 0)
+                    {
+                        stream.Write(buffer, 0, count);
+                        written += count;
+
+                        progress.OnNext((int)(100 * ((double)written / data.Length)));
+                    }
                 }
-                while (written < data.Length);
 
                 progress.OnCompleted();
             });

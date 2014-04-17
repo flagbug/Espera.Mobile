@@ -113,7 +113,7 @@ namespace Espera.Mobile.Core.Network
             if (fakeIpAddress != null)
                 return fakeIpAddress;
 
-            using (var client = new UdpClient(port))
+            using (var client = new UdpClient(new IPEndPoint(IPAddress.Any, port)))
             {
                 UdpReceiveResult result;
 

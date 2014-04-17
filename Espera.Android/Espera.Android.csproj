@@ -221,10 +221,6 @@
       <Project>{A66F5A81-780D-4B29-9A62-B8B37D2C8976}</Project>
       <Name>Espera.Mobile.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Espera.Network\Espera.Network\Espera.Network.csproj">
-      <Project>{4CBD2B72-34E1-4D9C-8348-3B90BF25D4C5}</Project>
-      <Name>Espera.Network</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

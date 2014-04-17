@@ -23,7 +23,7 @@ namespace Espera.Android.Views
         protected override ArtistsViewModel<LocalSong> ConstructViewModel()
         {
             return new ArtistsViewModel<LocalSong>(new AndroidSongFetcher(x =>
-				this.ManagedQuery(MediaStore.Audio.Media.ExternalContentUri, x, MediaStore.Audio.Media.InterfaceConsts.IsMusic + " != 0", null, null)));
+                this.ContentResolver.Query(MediaStore.Audio.Media.ExternalContentUri, x, MediaStore.Audio.Media.InterfaceConsts.IsMusic + " != 0", null, null)));
         }
 
         protected override void OnCreate(Bundle bundle)

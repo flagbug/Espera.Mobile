@@ -54,7 +54,7 @@ namespace Espera.Mobile.Core.Network
             isConnected.Connect();
             this.IsConnected = isConnected;
 
-            var pipeline = this.client.Select(x => Observable.Defer(() => x.ReadNextMessageAsync()
+            var pipeline = this.client.Select(x => Observable.Defer(() => x.GetStream().ReadNextMessageAsync()
                     .ToObservable())
                     .Repeat()
                     .TakeWhile(m => m != null)

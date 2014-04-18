@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Threading.Tasks;
+using System.Reactive.Threading.Tasks;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.ViewModels;
 using Espera.Network;
 using Microsoft.Reactive.Testing;
-using Moq;
+using NSubstitute;
 using ReactiveUI;
 using ReactiveUI.Testing;
 using Xunit;
@@ -20,11 +19,7 @@ namespace Espera.Android.Tests
         public void LoadPlaylistCommandHasTimeout()
         {
             var messenger = CreateDefaultPlaylistMessenger();
-            messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(async () =>
-            {
-                await Task.Delay(1000);
-                return null;
-            });
+            messenger.GetCurrentPlaylistAsync().Returns(Observable.Never<NetworkPlaylist>().ToTask());
 
             var vm = new PlaylistViewModel();
             vm.Activator.Activate();
@@ -52,7 +47,7 @@ namespace Espera.Android.Tests
             };
 
             var messenger = CreateDefaultPlaylistMessenger();
-            messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(playlist.ToTaskResult);
+            messenger.GetCurrentPlaylistAsync().Returns(playlist.ToTaskResult());
 
             var vm = new PlaylistViewModel();
             vm.Activator.Activate();
@@ -74,7 +69,7 @@ namespace Espera.Android.Tests
             };
 
             var messenger = CreateDefaultPlaylistMessenger();
-            messenger.SetupGet(x => x.PlaylistChanged).Returns(Observable.Return(playlist));
+            messenger.PlaylistChanged.Returns(Observable.Return(playlist));
 
             var vm = new PlaylistViewModel();
             vm.Activator.Activate();
@@ -95,8 +90,8 @@ namespace Espera.Android.Tests
             };
 
             var messenger = CreateDefaultPlaylistMessenger();
-            messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(playlist.ToTaskResult());
-            messenger.Setup(x => x.PlayNextSongAsync()).Returns(new ResponseInfo { Status = ResponseStatus.Success }.ToTaskResult());
+            messenger.GetCurrentPlaylistAsync().Returns(playlist.ToTaskResult());
+            messenger.PlayNextSongAsync().Returns(new ResponseInfo { Status = ResponseStatus.Success }.ToTaskResult());
 
             var vm = new PlaylistViewModel();
             vm.Activator.Activate();
@@ -118,11 +113,11 @@ namespace Espera.Android.Tests
             };
 
             var messenger = CreateDefaultPlaylistMessenger();
-            messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(playlist.ToTaskResult());
-            messenger.Setup(x => x.PlayNextSongAsync()).Returns(new ResponseInfo { Status = ResponseStatus.Success }.ToTaskResult());
+            messenger.GetCurrentPlaylistAsync().Returns(playlist.ToTaskResult());
+            messenger.PlayNextSongAsync().Returns(new ResponseInfo { Status = ResponseStatus.Success }.ToTaskResult());
 
             var playlists = new Subject<NetworkPlaylist>();
-            messenger.Setup(x => x.PlaylistChanged).Returns(playlists);
+            messenger.PlaylistChanged.Returns(playlists);
 
             var vm = new PlaylistViewModel();
             vm.Activator.Activate();
@@ -151,7 +146,7 @@ namespace Espera.Android.Tests
                 Songs = songs,
             });
 
-            messenger.Verify(x => x.PlayNextSongAsync(), Times.Once);
+            messenger.Received(1).PlayNextSongAsync();
             Assert.Equal(new[] { true, false, true, false, true, false }, canExecute);
         }
 
@@ -167,12 +162,12 @@ namespace Espera.Android.Tests
             };
 
             var messenger = CreateDefaultPlaylistMessenger();
-            messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(playlist.ToTaskResult());
-            messenger.Setup(x => x.ContinueSongAsync()).Returns(new ResponseInfo { Status = ResponseStatus.Success }.ToTaskResult());
-            messenger.Setup(x => x.PauseSongAsync()).Returns(new ResponseInfo { Status = ResponseStatus.Success }.ToTaskResult());
+            messenger.GetCurrentPlaylistAsync().Returns(playlist.ToTaskResult());
+            messenger.ContinueSongAsync().Returns(new ResponseInfo { Status = ResponseStatus.Success }.ToTaskResult());
+            messenger.PauseSongAsync().Returns(new ResponseInfo { Status = ResponseStatus.Success }.ToTaskResult());
 
             var playbackState = new Subject<NetworkPlaybackState>();
-            messenger.SetupGet(x => x.PlaybackStateChanged).Returns(playbackState);
+            messenger.PlaybackStateChanged.Returns(playbackState);
 
             var vm = new PlaylistViewModel();
             vm.Activator.Activate();
@@ -184,12 +179,12 @@ namespace Espera.Android.Tests
             playbackState.OnNext(NetworkPlaybackState.Paused);
 
             vm.PlayPauseCommand.Execute(null);
-            messenger.Verify(x => x.ContinueSongAsync(), Times.Once);
+            messenger.Received(1).ContinueSongAsync();
 
             playbackState.OnNext(NetworkPlaybackState.Playing);
 
             vm.PlayPauseCommand.Execute(null);
-            messenger.Verify(x => x.PauseSongAsync(), Times.Once);
+            messenger.Received(1).PauseSongAsync();
 
             playbackState.OnNext(NetworkPlaybackState.Paused);
 
@@ -208,8 +203,8 @@ namespace Espera.Android.Tests
             };
 
             var messenger = CreateDefaultPlaylistMessenger();
-            messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(playlist.ToTaskResult());
-            messenger.Setup(x => x.PlayPlaylistSongAsync(It.Is<Guid>(y => y == songs[1].Guid)))
+            messenger.GetCurrentPlaylistAsync().Returns(playlist.ToTaskResult());
+            messenger.PlayPlaylistSongAsync(songs[1].Guid)
                 .Returns(new ResponseInfo { Status = ResponseStatus.Success }.ToTaskResult());
 
             var vm = new PlaylistViewModel();
@@ -220,8 +215,7 @@ namespace Espera.Android.Tests
 
             vm.PlayPlaylistSongCommand.Execute(1);
 
-            messenger.Verify();
-            messenger.Verify(x => x.PlayPlaylistSongAsync(It.IsAny<Guid>()), Times.Once);
+            messenger.Received(1).PlayPlaylistSongAsync(songs[1].Guid);
             Assert.Equal(1, coll.Count);
         }
 
@@ -236,8 +230,8 @@ namespace Espera.Android.Tests
             };
 
             var messenger = CreateDefaultPlaylistMessenger();
-            messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(playlist.ToTaskResult());
-            messenger.Setup(x => x.PlayNextSongAsync()).Returns(new ResponseInfo { Status = ResponseStatus.Success }.ToTaskResult());
+            messenger.GetCurrentPlaylistAsync().Returns(playlist.ToTaskResult());
+            messenger.PlayNextSongAsync().Returns(new ResponseInfo { Status = ResponseStatus.Success }.ToTaskResult());
 
             var vm = new PlaylistViewModel();
             vm.Activator.Activate();
@@ -259,11 +253,11 @@ namespace Espera.Android.Tests
             };
 
             var messenger = CreateDefaultPlaylistMessenger();
-            messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(playlist.ToTaskResult());
-            messenger.Setup(x => x.PlayPreviousSongAsync()).Returns(new ResponseInfo { Status = ResponseStatus.Success }.ToTaskResult());
+            messenger.GetCurrentPlaylistAsync().Returns(playlist.ToTaskResult());
+            messenger.PlayPreviousSongAsync().Returns(new ResponseInfo { Status = ResponseStatus.Success }.ToTaskResult());
 
             var playlists = new Subject<NetworkPlaylist>();
-            messenger.SetupGet(x => x.PlaylistChanged).Returns(playlists);
+            messenger.PlaylistChanged.Returns(playlists);
 
             var vm = new PlaylistViewModel();
             vm.Activator.Activate();
@@ -292,20 +286,20 @@ namespace Espera.Android.Tests
                 Songs = songs,
             });
 
-            messenger.Verify(x => x.PlayPreviousSongAsync(), Times.Once);
+            messenger.Received(1).PlayPreviousSongAsync();
             Assert.Equal(new[] { true, false, true, false, true, false }, canExecute);
         }
 
-        private static Mock<INetworkMessenger> CreateDefaultPlaylistMessenger()
+        private static INetworkMessenger CreateDefaultPlaylistMessenger()
         {
-            var messenger = new Mock<INetworkMessenger>();
-            messenger.SetupGet(x => x.PlaybackStateChanged).Returns(Observable.Never<NetworkPlaybackState>());
-            messenger.SetupGet(x => x.PlaylistChanged).Returns(Observable.Never<NetworkPlaylist>());
-            messenger.SetupGet(x => x.AccessPermission).Returns(Observable.Return(NetworkAccessPermission.Admin));
-            messenger.Setup(x => x.GetPlaybackStateAsync()).Returns(NetworkPlaybackState.None.ToTaskResult());
-            messenger.Setup(x => x.RemainingVotesChanged).Returns(Observable.Never<int?>());
+            var messenger = Substitute.For<INetworkMessenger>();
+            messenger.PlaybackStateChanged.Returns(Observable.Never<NetworkPlaybackState>());
+            messenger.PlaylistChanged.Returns(Observable.Never<NetworkPlaylist>());
+            messenger.AccessPermission.Returns(Observable.Return(NetworkAccessPermission.Admin));
+            messenger.GetPlaybackStateAsync().Returns(NetworkPlaybackState.None.ToTaskResult());
+            messenger.RemainingVotesChanged.Returns(Observable.Never<int?>());
 
-            NetworkMessenger.Override(messenger.Object);
+            NetworkMessenger.Override(messenger);
 
             return messenger;
         }

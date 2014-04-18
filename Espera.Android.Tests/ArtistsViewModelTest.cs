@@ -8,7 +8,7 @@ using Espera.Mobile.Core.Songs;
 using Espera.Mobile.Core.ViewModels;
 using Espera.Network;
 using Microsoft.Reactive.Testing;
-using Moq;
+using NSubstitute;
 using ReactiveUI;
 using ReactiveUI.Testing;
 using Xunit;
@@ -22,10 +22,10 @@ namespace Espera.Android.Tests
         {
             var songs = SetupSongsWithArtist("B", "b", "C", "A").ToReadOnlyList();
 
-            var songFetcher = new Mock<ISongFetcher<Song>>();
-            songFetcher.Setup(x => x.GetSongsAsync()).Returns(Observable.Return(songs));
+            var songFetcher = Substitute.For<ISongFetcher<Song>>();
+            songFetcher.GetSongsAsync().Returns(Observable.Return(songs));
 
-            var vm = new ArtistsViewModel<Song>(songFetcher.Object);
+            var vm = new ArtistsViewModel<Song>(songFetcher);
 
             await vm.LoadCommand.ExecuteAsync();
 
@@ -35,11 +35,11 @@ namespace Espera.Android.Tests
         [Fact]
         public void LoadCommandTimeoutTriggersMessages()
         {
-            var songFetcher = new Mock<ISongFetcher<Song>>();
-            songFetcher.Setup(x => x.GetSongsAsync()).Returns(Observable.Never<IReadOnlyList<Song>>()
+            var songFetcher = Substitute.For<ISongFetcher<Song>>();
+            songFetcher.GetSongsAsync().Returns(Observable.Never<IReadOnlyList<Song>>()
                 .Timeout(TimeSpan.FromSeconds(10)));
 
-            var vm = new ArtistsViewModel<Song>(songFetcher.Object);
+            var vm = new ArtistsViewModel<Song>(songFetcher);
 
             var coll = vm.Messages.CreateCollection();
 

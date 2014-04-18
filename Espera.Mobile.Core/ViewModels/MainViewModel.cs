@@ -29,7 +29,7 @@ namespace Espera.Mobile.Core.ViewModels
                     .DisposeWith(disposable);
 
                 var canConnect = this.WhenAnyValue(x => x.IsConnected, x => !x);
-                this.ConnectCommand = ReactiveCommand.Create(canConnect, _ => ConnectAsync(UserSettings.Instance.Port).ToObservable()
+                this.ConnectCommand = ReactiveCommand.Create(canConnect, _ => ConnectAsync(this.LocalAddress, UserSettings.Instance.Port).ToObservable()
                     .Timeout(TimeSpan.FromSeconds(10), RxApp.TaskpoolScheduler)
                     .Catch<Unit, TimeoutException>(ex => Observable.Throw<Unit>(new Exception("Connection failed"))));
 
@@ -56,9 +56,14 @@ namespace Espera.Mobile.Core.ViewModels
             get { return this.isConnected.Value; }
         }
 
-        private static async Task ConnectAsync(int port)
+        /// <summary>
+        /// The Wifi IP address of this device.
+        /// </summary>
+        public IPAddress LocalAddress { get; set; }
+
+        private static async Task ConnectAsync(IPAddress localAddress, int port)
         {
-            IPAddress address = await NetworkMessenger.DiscoverServer(port);
+            IPAddress address = await NetworkMessenger.DiscoverServerAsync(localAddress, port);
 
             string password = UserSettings.Instance.EnableAdministratorMode ? UserSettings.Instance.AdministratorPassword : null;
 

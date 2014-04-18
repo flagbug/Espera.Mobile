@@ -108,23 +108,16 @@ namespace Espera.Mobile.Core.Network
 
         public IObservable<int?> RemainingVotesChanged { get; private set; }
 
-        public static async Task<IPAddress> DiscoverServer(int port)
+        public static Task<IPAddress> DiscoverServerAsync(IPAddress localAddress, int port)
         {
             if (fakeIpAddress != null)
-                return fakeIpAddress;
+                return Task.FromResult(fakeIpAddress);
 
-            using (var client = new UdpClient(new IPEndPoint(IPAddress.Any, port)))
-            {
-                UdpReceiveResult result;
-
-                do
-                {
-                    result = await client.ReceiveAsync();
-                }
-                while (Encoding.Unicode.GetString(result.Buffer) != "espera-server-discovery");
-
-                return result.RemoteEndPoint.Address;
-            }
+            return Observable.Using(() => new UdpClient(new IPEndPoint(localAddress, port)), x => Observable.FromAsync(x.ReceiveAsync))
+                .Repeat()
+                .FirstAsync(x => Encoding.Unicode.GetString(x.Buffer) == "espera-server-discovery")
+                .Select(x => x.RemoteEndPoint.Address)
+                .ToTask();
         }
 
         /// <summary>
@@ -132,7 +125,8 @@ namespace Espera.Mobile.Core.Network
         /// </summary>
         /// <param name="messenger">The messenger mock.</param>
         /// <param name="ipAdress">
-        /// An optional IpAdress to return for the <see cref="DiscoverServer" /> function.
+        /// An optional <see cref="IPAddress" /> to return for the <see cref="DiscoverServerAsync"
+        /// /> function.
         /// </param>
         public static void Override(INetworkMessenger messenger, IPAddress ipAdress = null)
         {

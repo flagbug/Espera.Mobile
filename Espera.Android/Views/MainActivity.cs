@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Android.App;
 using Android.Content;
@@ -17,7 +19,6 @@ using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
 using IMenuItem = Android.Views.IMenuItem;
-using System.Reactive.Disposables;
 
 namespace Espera.Android.Views
 {
@@ -33,41 +34,41 @@ namespace Espera.Android.Views
 
             this.WhenActivated(() =>
             {
-				var disposable = new CompositeDisposable();
-					
+                var disposable = new CompositeDisposable();
+
                 var connectOrDisconnectCommand = this.ViewModel.WhenAnyValue(x => x.IsConnected)
                     .Select(x => x ? (IReactiveCommand)this.ViewModel.DisconnectCommand : this.ViewModel.ConnectCommand);
 
                 this.ConnectButton.Events().Click.CombineLatestValue(connectOrDisconnectCommand, (args, command) => command)
                     .Where(x => x.CanExecute(null))
                     .Subscribe(x => x.Execute(null))
-					.DisposeWith(disposable);
+                    .DisposeWith(disposable);
 
                 connectOrDisconnectCommand.SelectMany(x => x.CanExecuteObservable)
                     .BindTo(this.ConnectButton, x => x.Enabled)
-					.DisposeWith(disposable);
+                    .DisposeWith(disposable);
 
                 this.ViewModel.ConnectCommand.IsExecuting
                     .CombineLatest(this.ViewModel.WhenAnyValue(x => x.IsConnected), (connecting, connected) =>
                         connected ? "Disconnect" : connecting ? "Connecting..." : "Connect")
                     .BindTo(this.ConnectButton, x => x.Text)
-					.DisposeWith(disposable);
+                    .DisposeWith(disposable);
 
                 this.ViewModel.ConnectionFailed
                     .Subscribe(x => Toast.MakeText(this, x, ToastLength.Long).Show())
-					.DisposeWith(disposable);
+                    .DisposeWith(disposable);
 
                 this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadArtistsButton.Enabled)
-					.DisposeWith(disposable);
+                    .DisposeWith(disposable);
                 this.LoadArtistsButton.Events().Click.Subscribe(x => this.StartActivity(typeof(ArtistsActivity)))
-					.DisposeWith(disposable);
+                    .DisposeWith(disposable);
 
                 this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadCurrentPlaylistButton.Enabled)
-					.DisposeWith(disposable);
+                    .DisposeWith(disposable);
                 this.LoadCurrentPlaylistButton.Events().Click.Subscribe(x => this.StartActivity(typeof(PlaylistActivity)))
-					.DisposeWith(disposable);
-					
-				return disposable;
+                    .DisposeWith(disposable);
+
+                return disposable;
             });
         }
 
@@ -129,20 +130,21 @@ namespace Espera.Android.Views
             }
 
             var wifiManager = (WifiManager)this.GetSystemService(WifiService);
+
             if (!wifiManager.IsWifiEnabled)
             {
                 this.ShowWifiPrompt(wifiManager);
             }
+
             else
             {
                 WifiInfo info = wifiManager.ConnectionInfo;
 
-                if (info != null)
-                {
-                    var analytics = new AndroidAnalytics(this.ApplicationContext);
-                    int wifiSpeed = info.LinkSpeed;
-                    analytics.RecordWifiSpeed(wifiSpeed);
-                }
+                var analytics = new AndroidAnalytics(this.ApplicationContext);
+                int wifiSpeed = info.LinkSpeed;
+                analytics.RecordWifiSpeed(wifiSpeed);
+
+                this.ViewModel.LocalAddress = new IPAddress(info.IpAddress);
             }
         }
 

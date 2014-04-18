@@ -1,14 +1,14 @@
-﻿using Espera.Mobile.Core.Network;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
+using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.ViewModels;
 using Espera.Network;
 using Microsoft.Reactive.Testing;
 using Moq;
 using ReactiveUI;
 using ReactiveUI.Testing;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Espera.Android.Tests

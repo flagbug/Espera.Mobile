@@ -1,4 +1,9 @@
-﻿using Espera.Mobile.Core.Network;
+﻿using System;
+using System.Net;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Threading.Tasks;
+using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
 using Espera.Mobile.Core.ViewModels;
 using Espera.Network;
@@ -6,11 +11,6 @@ using Microsoft.Reactive.Testing;
 using Moq;
 using ReactiveUI;
 using ReactiveUI.Testing;
-using System;
-using System.Net;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Espera.Android.Tests
@@ -27,6 +27,7 @@ namespace Espera.Android.Tests
             NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
 
             var vm = new MainViewModel();
+            vm.Activator.Activate();
 
             Assert.True(vm.ConnectCommand.CanExecute(null));
 
@@ -49,6 +50,7 @@ namespace Espera.Android.Tests
             NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
 
             var vm = new MainViewModel();
+            vm.Activator.Activate();
 
             var coll = vm.ConnectionFailed.CreateCollection();
 
@@ -76,6 +78,7 @@ namespace Espera.Android.Tests
             UserSettings.Instance.AdministratorPassword = "Bla";
 
             var vm = new MainViewModel();
+            vm.Activator.Activate();
 
             var coll = vm.ConnectionFailed.CreateCollection();
 
@@ -94,6 +97,7 @@ namespace Espera.Android.Tests
             NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
 
             var vm = new MainViewModel();
+            vm.Activator.Activate();
 
             Assert.True(vm.DisconnectCommand.CanExecute(true));
 
@@ -122,6 +126,7 @@ namespace Espera.Android.Tests
             UserSettings.Instance.AdministratorPassword = "Bla";
 
             var vm = new MainViewModel();
+            vm.Activator.Activate();
 
             isConnected.FirstAsync(x => x).Subscribe(_ => Assert.False(vm.IsConnected));
 
@@ -140,6 +145,7 @@ namespace Espera.Android.Tests
             NetworkMessenger.Override(messenger.Object, IPAddress.Parse("192.168.1.1"));
 
             var vm = new MainViewModel();
+            vm.Activator.Activate();
 
             var thrown = vm.ConnectionFailed.CreateCollection();
 

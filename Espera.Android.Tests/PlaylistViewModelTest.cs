@@ -1,15 +1,15 @@
-﻿using Espera.Mobile.Core.Network;
+﻿using System;
+using System.Collections.Generic;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Threading.Tasks;
+using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.ViewModels;
 using Espera.Network;
 using Microsoft.Reactive.Testing;
 using Moq;
 using ReactiveUI;
 using ReactiveUI.Testing;
-using System;
-using System.Collections.Generic;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Espera.Android.Tests
@@ -27,6 +27,7 @@ namespace Espera.Android.Tests
             });
 
             var vm = new PlaylistViewModel();
+            vm.Activator.Activate();
 
             var thrown = vm.LoadPlaylistCommand.ThrownExceptions.CreateCollection();
 
@@ -54,6 +55,7 @@ namespace Espera.Android.Tests
             messenger.Setup(x => x.GetCurrentPlaylistAsync()).Returns(playlist.ToTaskResult);
 
             var vm = new PlaylistViewModel();
+            vm.Activator.Activate();
 
             vm.LoadPlaylistCommand.Execute(null);
 
@@ -75,6 +77,7 @@ namespace Espera.Android.Tests
             messenger.SetupGet(x => x.PlaylistChanged).Returns(Observable.Return(playlist));
 
             var vm = new PlaylistViewModel();
+            vm.Activator.Activate();
 
             Assert.True(vm.Entries[playlist.CurrentIndex.Value].IsPlaying);
             //Assert.Equal(playlist.Name, vm.Name);
@@ -96,6 +99,8 @@ namespace Espera.Android.Tests
             messenger.Setup(x => x.PlayNextSongAsync()).Returns(new ResponseInfo { Status = ResponseStatus.Success }.ToTaskResult());
 
             var vm = new PlaylistViewModel();
+            vm.Activator.Activate();
+
             vm.LoadPlaylistCommand.Execute(null);
 
             Assert.False(vm.PlayNextSongCommand.CanExecute(null));
@@ -120,6 +125,8 @@ namespace Espera.Android.Tests
             messenger.Setup(x => x.PlaylistChanged).Returns(playlists);
 
             var vm = new PlaylistViewModel();
+            vm.Activator.Activate();
+
             vm.LoadPlaylistCommand.Execute(null);
 
             var canExecute = vm.PlayNextSongCommand.CanExecuteObservable.CreateCollection();
@@ -168,6 +175,8 @@ namespace Espera.Android.Tests
             messenger.SetupGet(x => x.PlaybackStateChanged).Returns(playbackState);
 
             var vm = new PlaylistViewModel();
+            vm.Activator.Activate();
+
             vm.LoadPlaylistCommand.Execute(null);
 
             var canExecute = vm.PlayPauseCommand.CanExecuteObservable.CreateCollection();
@@ -204,7 +213,7 @@ namespace Espera.Android.Tests
                 .Returns(new ResponseInfo { Status = ResponseStatus.Success }.ToTaskResult());
 
             var vm = new PlaylistViewModel();
-
+            vm.Activator.Activate();
             var coll = vm.Message.CreateCollection();
 
             vm.LoadPlaylistCommand.Execute(null);
@@ -231,6 +240,8 @@ namespace Espera.Android.Tests
             messenger.Setup(x => x.PlayNextSongAsync()).Returns(new ResponseInfo { Status = ResponseStatus.Success }.ToTaskResult());
 
             var vm = new PlaylistViewModel();
+            vm.Activator.Activate();
+
             vm.LoadPlaylistCommand.Execute(null);
 
             Assert.False(vm.PlayPreviousSongCommand.CanExecute(null));
@@ -255,6 +266,8 @@ namespace Espera.Android.Tests
             messenger.SetupGet(x => x.PlaylistChanged).Returns(playlists);
 
             var vm = new PlaylistViewModel();
+            vm.Activator.Activate();
+
             vm.LoadPlaylistCommand.Execute(null);
 
             var canExecute = vm.PlayPreviousSongCommand.CanExecuteObservable.CreateCollection();

@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Espera.Mobile.Core.Network;
+using Espera.Mobile.Core.SongFetchers;
+using Espera.Mobile.Core.Songs;
 using Espera.Mobile.Core.ViewModels;
 using Espera.Network;
 using Microsoft.Reactive.Testing;
@@ -20,12 +22,10 @@ namespace Espera.Android.Tests
         {
             var songs = SetupSongsWithArtist("B", "b", "C", "A").ToReadOnlyList();
 
-            var messenger = new Mock<INetworkMessenger>();
-            messenger.Setup(x => x.GetSongsAsync()).Returns(songs.ToTaskResult());
+            var songFetcher = new Mock<ISongFetcher<Song>>();
+            songFetcher.Setup(x => x.GetSongsAsync()).Returns(Observable.Return(songs));
 
-            NetworkMessenger.Override(messenger.Object);
-
-            var vm = new ArtistsViewModel();
+            var vm = new ArtistsViewModel<Song>(songFetcher.Object);
 
             await vm.LoadCommand.ExecuteAsync();
 
@@ -35,16 +35,11 @@ namespace Espera.Android.Tests
         [Fact]
         public void LoadCommandTimeoutTriggersMessages()
         {
-            var messenger = new Mock<INetworkMessenger>();
-            messenger.Setup(x => x.GetSongsAsync()).Returns(async () =>
-                {
-                    await Task.Delay(1000);
-                    return null;
-                });
+            var songFetcher = new Mock<ISongFetcher<Song>>();
+            songFetcher.Setup(x => x.GetSongsAsync()).Returns(Observable.Never<IReadOnlyList<Song>>()
+                .Timeout(TimeSpan.FromSeconds(10)));
 
-            NetworkMessenger.Override(messenger.Object);
-
-            var vm = new ArtistsViewModel();
+            var vm = new ArtistsViewModel<Song>(songFetcher.Object);
 
             var coll = vm.Messages.CreateCollection();
 
@@ -57,17 +52,17 @@ namespace Espera.Android.Tests
             Assert.Equal(1, coll.Count);
         }
 
-        private static IEnumerable<NetworkSong> SetupSongsWithArtist(params string[] artists)
+        private static IEnumerable<Song> SetupSongsWithArtist(params string[] artists)
         {
             return artists.Select(SetupSongWithArtist);
         }
 
-        private static NetworkSong SetupSongWithArtist(string artist)
+        private static Song SetupSongWithArtist(string artist)
         {
             NetworkSong song = Helpers.SetupSong();
             song.Artist = artist;
 
-            return song;
+            return new LocalSong(song.Title, song.Artist, song.Album, "0");
         }
     }
 }

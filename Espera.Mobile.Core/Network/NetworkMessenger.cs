@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -31,6 +32,8 @@ namespace Espera.Mobile.Core.Network
         private readonly IDisposable messagePipelineConnection;
         private IAnalytics analytics;
         private TcpClient currentClient;
+        private TcpClient currentFileTransferClient;
+        private SemaphoreSlim fileTransferGate;
 
         static NetworkMessenger()
         {
@@ -40,6 +43,7 @@ namespace Espera.Mobile.Core.Network
         private NetworkMessenger()
         {
             this.gate = new SemaphoreSlim(1, 1);
+            this.fileTransferGate = new SemaphoreSlim(1, 1);
             this.messagePipeline = new Subject<NetworkMessage>();
             this.disconnected = new Subject<Unit>();
             this.connectionEstablished = new Subject<Unit>();
@@ -50,6 +54,7 @@ namespace Espera.Mobile.Core.Network
             var isConnected = this.Disconnected.Select(_ => false)
                 .Merge(this.connectionEstablished.Select(_ => true))
                 .DistinctUntilChanged()
+                .ObserveOn(RxApp.MainThreadScheduler)
                 .Publish(false);
             isConnected.Connect();
             this.IsConnected = isConnected;
@@ -171,10 +176,18 @@ namespace Espera.Mobile.Core.Network
                 this.currentClient.Close();
             }
 
+            if (this.currentFileTransferClient != null)
+            {
+                this.currentFileTransferClient.Close();
+            }
+
             var c = new TcpClient();
+            var f = new TcpClient();
             this.currentClient = c;
+            this.currentFileTransferClient = f;
 
             await c.ConnectAsync(address, port);
+            await f.ConnectAsync(address, port + 1);
             this.client.OnNext(c);
 
             var parameters = JObject.FromObject(new
@@ -323,6 +336,24 @@ namespace Espera.Mobile.Core.Network
             return response;
         }
 
+        public async Task<FileTransferStatus> QueueRemoteSong(byte[] songData)
+        {
+            Guid transferId = Guid.NewGuid();
+            var info = new FileTransferInfo { TransferId = transferId };
+
+            ResponseInfo response = await this.SendRequest("queue-remote-song", JObject.FromObject(info));
+
+            var message = new FileTransferMessage { Data = songData, TransferId = transferId };
+
+            byte[] packed = await NetworkHelpers.PackFileTransferMessageAsync(message);
+
+            IObservable<int> progress = this.TransferFileAsync(packed).Publish(0).PermaRef();
+
+            var status = new FileTransferStatus(progress);
+
+            return status;
+        }
+
         /// <summary>
         /// Registers an analytics provider ton measure network timings
         /// </summary>
@@ -431,6 +462,40 @@ namespace Espera.Mobile.Core.Network
                     RequestId = id
                 };
             }
+        }
+
+        private IObservable<int> TransferFileAsync(byte[] data)
+        {
+            const int bufferSize = 32 * 1024;
+            int written = 0;
+            Stream stream = this.currentFileTransferClient.GetStream();
+
+            byte[] length = BitConverter.GetBytes(data.Length); // We have a fixed size of 4 bytes
+
+            var progress = new BehaviorSubject<int>(0);
+
+            Task.Run(() =>
+            {
+                stream.Write(length, 0, length.Length);
+
+                using (var dataStream = new MemoryStream(data))
+                {
+                    var buffer = new byte[bufferSize];
+                    int count;
+
+                    while ((count = dataStream.Read(buffer, 0, bufferSize)) > 0)
+                    {
+                        stream.Write(buffer, 0, count);
+                        written += count;
+
+                        progress.OnNext((int)(100 * ((double)written / data.Length)));
+                    }
+                }
+
+                progress.OnCompleted();
+            });
+
+            return progress.DistinctUntilChanged();
         }
     }
 }

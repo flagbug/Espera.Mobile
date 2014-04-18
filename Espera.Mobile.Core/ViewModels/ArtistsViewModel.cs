@@ -2,23 +2,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Reactive.Threading.Tasks;
-using Akavache;
-using Espera.Mobile.Core.Network;
-using Espera.Network;
+using Espera.Mobile.Core.SongFetchers;
+using Espera.Mobile.Core.Songs;
 using Newtonsoft.Json;
 using ReactiveUI;
 
 namespace Espera.Mobile.Core.ViewModels
 {
-    public class ArtistsViewModel : ReactiveObject
+    public class ArtistsViewModel<T> : ReactiveObject where T : Song
     {
-        private ObservableAsPropertyHelper<IReadOnlyList<string>> artists;
-        private IReadOnlyList<NetworkSong> songs;
+        private readonly ObservableAsPropertyHelper<IReadOnlyList<string>> artists;
+        private IReadOnlyList<T> songs;
 
-        public ArtistsViewModel()
+        public ArtistsViewModel(ISongFetcher<T> songFetcher)
         {
-            this.LoadCommand = ReactiveCommand.Create(_ => GetSongsAsync());
+            if (songFetcher == null)
+                throw new ArgumentNullException("songFetcher");
+
+            this.LoadCommand = ReactiveCommand.Create(_ => songFetcher.GetSongsAsync());
             this.artists = this.LoadCommand
                .Do(x => this.songs = x)
                .Select(GetArtists)
@@ -32,32 +33,26 @@ namespace Espera.Mobile.Core.ViewModels
             get { return this.artists.Value; }
         }
 
-        public ReactiveCommand<IReadOnlyList<NetworkSong>> LoadCommand { get; private set; }
+        public ReactiveCommand<IReadOnlyList<T>> LoadCommand { get; private set; }
 
         public IObservable<string> Messages { get; private set; }
 
         public string SerializeSongsForSelectedArtist(string artist)
         {
-            IReadOnlyList<NetworkSong> filteredSongs = this.songs
+            IReadOnlyList<T> filteredSongs = this.songs
                 .Where(x => x.Artist.Equals(artist, StringComparison.InvariantCultureIgnoreCase))
                 .ToList();
 
             return JsonConvert.SerializeObject(filteredSongs, Formatting.None);
         }
 
-        private static IReadOnlyList<string> GetArtists(IEnumerable<NetworkSong> songs)
+        private static IReadOnlyList<string> GetArtists(IEnumerable<T> songs)
         {
             return songs.GroupBy(s => s.Artist)
                 .Select(g => g.Key)
                 .Distinct(StringComparer.InvariantCultureIgnoreCase)
                 .OrderBy(_ => _)
                 .ToList();
-        }
-
-        private IObservable<IReadOnlyList<NetworkSong>> GetSongsAsync()
-        {
-			return songs == null ? NetworkMessenger.Instance.GetSongsAsync().ToObservable()
-				.Timeout(TimeSpan.FromSeconds(15), RxApp.TaskpoolScheduler) : Observable.Return(this.songs);
         }
     }
 }

@@ -52,6 +52,8 @@ namespace Espera.Mobile.Core.Network
 
         Task<ResponseInfo> PlaySongsAsync(IEnumerable<Guid> guids);
 
+        Task<FileTransferStatus> QueueRemoteSong(byte[] data);
+
         void RegisterAnalytics(IAnalytics analytics);
 
         Task<ResponseInfo> RemovePlaylistSongAsync(Guid entryGuid);

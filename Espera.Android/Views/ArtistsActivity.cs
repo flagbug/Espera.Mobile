@@ -1,10 +1,9 @@
 using System;
 using System.Reactive.Linq;
 using Android.App;
-using Android.Content;
-using Android.Content.PM;
 using Android.OS;
 using Android.Widget;
+using Espera.Mobile.Core.Songs;
 using Espera.Mobile.Core.ViewModels;
 using Google.Analytics.Tracking;
 using ReactiveUI;
@@ -13,37 +12,31 @@ using ReactiveUI.Mobile;
 
 namespace Espera.Android.Views
 {
-    [Activity(Label = "Artists", ConfigurationChanges = ConfigChanges.Orientation)]
-    public class ArtistsActivity : ReactiveActivity<ArtistsViewModel>
+    public abstract class ArtistsActivity<T> : ReactiveActivity<ArtistsViewModel<T>> where T : Song
     {
-        private readonly AutoSuspendActivityHelper autoSuspendHelper;
-		private ProgressDialog progressDialog;
-
-        public ArtistsActivity()
-        {
-            this.autoSuspendHelper = new AutoSuspendActivityHelper(this);
-        }
+        private ProgressDialog progressDialog;
 
         public ListView ArtistList { get; private set; }
+
+        protected abstract ArtistsViewModel<T> ConstructViewModel();
 
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-            this.autoSuspendHelper.OnCreate(bundle);
 
             this.SetContentView(Resource.Layout.Artists);
             this.WireUpControls();
 
-            this.ViewModel = new ArtistsViewModel();
-			
+            this.ViewModel = this.ConstructViewModel();
+
             this.OneWayBind(this.ViewModel, x => x.Artists, x => x.ArtistList.Adapter, list => new ArtistsAdapter(this, list));
             this.ArtistList.Events().ItemClick.Subscribe(x => this.OpenArtist((string)this.ArtistList.GetItemAtPosition(x.Position)));
 
-			this.progressDialog = new ProgressDialog(this);
+            this.progressDialog = new ProgressDialog(this);
             this.progressDialog.SetMessage("Loading artists");
             this.progressDialog.Indeterminate = true;
             this.progressDialog.SetCancelable(false);
-				
+
             this.ViewModel.LoadCommand.IsExecuting
                 .Skip(1)
                 .Subscribe(x =>
@@ -53,7 +46,7 @@ namespace Espera.Android.Views
                         this.progressDialog.Show();
                     }
 
-					else if(this.progressDialog.IsShowing)
+                    else if (this.progressDialog.IsShowing)
                     {
                         this.progressDialog.Dismiss();
                     }
@@ -64,54 +57,16 @@ namespace Espera.Android.Views
             this.ViewModel.LoadCommand.Execute(null);
         }
 
-        protected override void OnPause()
+        protected override void OnDestroy()
         {
-            base.OnPause();
-            this.autoSuspendHelper.OnPause();
+            base.OnDestroy();
+
+            if (this.progressDialog != null && this.progressDialog.IsShowing)
+            {
+                this.progressDialog.Dismiss();
+            }
         }
 
-        protected override void OnResume()
-        {
-            base.OnResume();
-            this.autoSuspendHelper.OnResume();
-        }
-
-        protected override void OnSaveInstanceState(Bundle outState)
-        {
-            base.OnSaveInstanceState(outState);
-            this.autoSuspendHelper.OnSaveInstanceState(outState);
-        }
-		
-		protected override void OnDestroy ()
-		{
-			base.OnDestroy ();
-			
-			if(this.progressDialog != null && this.progressDialog.IsShowing)
-			{
-				this.progressDialog.Dismiss();
-			}
-		}
-
-        protected override void OnStart()
-        {
-            base.OnStart();
-
-            EasyTracker.GetInstance(this).ActivityStart(this);
-        }
-
-        protected override void OnStop()
-        {
-            base.OnStop();
-
-            EasyTracker.GetInstance(this).ActivityStop(this);
-        }
-
-        private void OpenArtist(string artist)
-        {
-            var intent = new Intent(this, typeof(SongsActivity));
-            intent.PutExtra("songs", this.ViewModel.SerializeSongsForSelectedArtist(artist));
-
-            this.StartActivity(intent);
-        }
+        protected abstract void OpenArtist(string artist);
     }
 }

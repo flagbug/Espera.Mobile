@@ -60,13 +60,17 @@ namespace Espera.Android.Views
 
                 this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadArtistsButton.Enabled)
                     .DisposeWith(disposable);
-                this.LoadArtistsButton.Events().Click.Subscribe(x => this.StartActivity(typeof(ArtistsActivity)))
+                this.LoadArtistsButton.Events().Click.Subscribe(x => this.StartActivity(typeof(RemoteArtistsActivity)))
                     .DisposeWith(disposable);
 
                 this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadCurrentPlaylistButton.Enabled)
                     .DisposeWith(disposable);
                 this.LoadCurrentPlaylistButton.Events().Click.Subscribe(x => this.StartActivity(typeof(PlaylistActivity)))
                     .DisposeWith(disposable);
+
+                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LocalSongsButton.Enabled);
+                this.LocalSongsButton.Events().Click.Subscribe(x => this.StartActivity(typeof(LocalArtistsActivity)))
+                    .DisposeWith(disposable); ;
 
                 return disposable;
             });
@@ -77,6 +81,8 @@ namespace Espera.Android.Views
         public Button LoadArtistsButton { get; private set; }
 
         public Button LoadCurrentPlaylistButton { get; private set; }
+
+        public Button LocalSongsButton { get; private set; }
 
         public override bool OnCreateOptionsMenu(IMenu menu)
         {

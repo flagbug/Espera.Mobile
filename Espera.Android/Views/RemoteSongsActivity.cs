@@ -18,11 +18,11 @@ using System.Reactive.Linq;
 namespace Espera.Android.Views
 {
     [Activity(ConfigurationChanges = ConfigChanges.Orientation)]
-    public class SongsActivity : ReactiveActivity<SongsViewModel>
+    public class RemoteSongsActivity : ReactiveActivity<RemoteSongsViewModel>
     {
         private readonly AutoSuspendActivityHelper autoSuspendHelper;
 
-        public SongsActivity()
+        public RemoteSongsActivity()
         {
             this.autoSuspendHelper = new AutoSuspendActivityHelper(this);
         }
@@ -34,7 +34,7 @@ namespace Espera.Android.Views
             base.OnCreate(bundle);
             this.autoSuspendHelper.OnCreate(bundle);
 
-            this.SetContentView(Resource.Layout.Songs);
+            this.SetContentView(Resource.Layout.RemoteSongs);
             this.WireUpControls();
 
             string songsJson = this.Intent.GetStringExtra("songs");
@@ -42,9 +42,9 @@ namespace Espera.Android.Views
             var songs = new ReactiveList<NetworkSong>(deserialized);
 
             this.Title = songs.First().Artist;
-            this.ViewModel = new SongsViewModel(songs);
+            this.ViewModel = new RemoteSongsViewModel(songs);
 
-            this.SongsList.Adapter = new SongsAdapter(this, this.ViewModel.Songs);
+            this.SongsList.Adapter = new RemoteSongsAdapter(this, this.ViewModel.Songs);
             this.SongsList.Events().ItemClick.Select(x => x.Position)
                 .Subscribe(x =>
                 {

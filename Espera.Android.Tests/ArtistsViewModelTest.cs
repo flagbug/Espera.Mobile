@@ -17,41 +17,6 @@ namespace Espera.Android.Tests
 {
     public class ArtistsViewModelTest
     {
-        [Fact]
-        public async Task LoadCommandSmokeTest()
-        {
-            var songs = SetupSongsWithArtist("B", "b", "C", "A").ToReadOnlyList();
-
-            var songFetcher = Substitute.For<ISongFetcher<Song>>();
-            songFetcher.GetSongsAsync().Returns(Observable.Return(songs));
-
-            var vm = new ArtistsViewModel<Song>(songFetcher);
-
-            await vm.LoadCommand.ExecuteAsync();
-
-            Assert.True(new[] { "A", "B", "C" }.SequenceEqual(vm.Artists));
-        }
-
-        [Fact]
-        public void LoadCommandTimeoutTriggersMessages()
-        {
-            var songFetcher = Substitute.For<ISongFetcher<Song>>();
-            songFetcher.GetSongsAsync().Returns(Observable.Never<IReadOnlyList<Song>>()
-                .Timeout(TimeSpan.FromSeconds(10)));
-
-            var vm = new ArtistsViewModel<Song>(songFetcher);
-
-            var coll = vm.Messages.CreateCollection();
-
-            (new TestScheduler()).With(scheduler =>
-            {
-                vm.LoadCommand.Execute(null);
-                scheduler.AdvanceByMs(15000);
-            });
-
-            Assert.Equal(1, coll.Count);
-        }
-
         private static IEnumerable<Song> SetupSongsWithArtist(params string[] artists)
         {
             return artists.Select(SetupSongWithArtist);
@@ -63,6 +28,44 @@ namespace Espera.Android.Tests
             song.Artist = artist;
 
             return new LocalSong(song.Title, song.Artist, song.Album, "0");
+        }
+
+        public class TheLoadCommand
+        {
+            [Fact]
+            public async Task SmokeTest()
+            {
+                var songs = SetupSongsWithArtist("B", "b", "C", "A").ToReadOnlyList();
+
+                var songFetcher = Substitute.For<ISongFetcher<Song>>();
+                songFetcher.GetSongsAsync().Returns(Observable.Return(songs));
+
+                var vm = new ArtistsViewModel<Song>(songFetcher);
+
+                await vm.LoadCommand.ExecuteAsync();
+
+                Assert.True(new[] { "A", "B", "C" }.SequenceEqual(vm.Artists));
+            }
+
+            [Fact]
+            public void TimeoutTriggersMessages()
+            {
+                var songFetcher = Substitute.For<ISongFetcher<Song>>();
+                songFetcher.GetSongsAsync().Returns(Observable.Never<IReadOnlyList<Song>>()
+                    .Timeout(TimeSpan.FromSeconds(10)));
+
+                var vm = new ArtistsViewModel<Song>(songFetcher);
+
+                var coll = vm.Messages.CreateCollection();
+
+                (new TestScheduler()).With(scheduler =>
+                {
+                    vm.LoadCommand.Execute(null);
+                    scheduler.AdvanceByMs(15000);
+                });
+
+                Assert.Equal(1, coll.Count);
+            }
         }
     }
 }

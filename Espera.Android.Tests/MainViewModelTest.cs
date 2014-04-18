@@ -50,6 +50,13 @@ namespace Espera.Android.Tests
                 var isConnected = new BehaviorSubject<bool>(false);
                 var messenger = Substitute.For<INetworkMessenger>();
                 messenger.IsConnected.Returns(isConnected);
+                messenger.ConnectAsync(Arg.Any<IPAddress>(), Arg.Any<int>(), Arg.Any<Guid>(), null)
+                    .Returns(Tuple.Create(ResponseStatus.Success,
+                        new ConnectionInfo
+                        {
+                            AccessPermission = NetworkAccessPermission.Admin,
+                            ServerVersion = new Version("99.99.99")
+                        }).ToTaskResult());
 
                 NetworkMessenger.Override(messenger, IPAddress.Parse("192.168.1.1"));
 

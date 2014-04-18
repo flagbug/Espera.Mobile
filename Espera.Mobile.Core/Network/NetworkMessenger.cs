@@ -110,6 +110,9 @@ namespace Espera.Mobile.Core.Network
 
         public static Task<IPAddress> DiscoverServerAsync(IPAddress localAddress, int port)
         {
+            if (localAddress == null && fakeIpAddress == null)
+                throw new ArgumentNullException("localAddress");
+
             if (fakeIpAddress != null)
                 return Task.FromResult(fakeIpAddress);
 

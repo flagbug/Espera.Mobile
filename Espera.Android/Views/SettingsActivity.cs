@@ -1,15 +1,16 @@
+using System;
+using System.Linq;
+using System.Reactive.Linq;
 using Android.App;
 using Android.OS;
 using Android.Preferences;
 using Android.Text;
 using Android.Widget;
 using Espera.Mobile.Core.Settings;
+using Espera.Network;
 using Google.Analytics.Tracking;
 using Lager.Android;
 using ReactiveUI;
-using System;
-using System.Linq;
-using System.Reactive.Linq;
 
 namespace Espera.Android.Views
 {
@@ -26,12 +27,12 @@ namespace Espera.Android.Views
             portPref.EditText.InputType = InputTypes.ClassNumber;
             portPref.EditText.Events().TextChanged
                 .Select(x => Int32.Parse(new string(x.Text.ToArray())))
-                .Where(x => !IsValidPort(x))
+                .Where(x => !NetworkHelpers.IsPortValid(x))
                 .Subscribe(x =>
                 {
                     portPref.EditText.Error = this.GetString(Resource.String.preference_port_validation_error);
                 });
-            portPref.BindToSetting(UserSettings.Instance, x => x.Port, x => x.Text, x => int.Parse(x.ToString()), x => x.ToString(), IsValidPort);
+            portPref.BindToSetting(UserSettings.Instance, x => x.Port, x => x.Text, x => int.Parse(x.ToString()), x => x.ToString(), NetworkHelpers.IsPortValid);
 
             var adminEnabledPref = (SwitchPreference)this.FindPreference(this.GetString(Resource.String.preference_administrator_mode));
             adminEnabledPref.BindToSetting(UserSettings.Instance, x => x.EnableAdministratorMode, x => x.Checked, x => bool.Parse(x.ToString()));
@@ -59,11 +60,6 @@ namespace Espera.Android.Views
             base.OnStop();
 
             EasyTracker.GetInstance(this).ActivityStop(this);
-        }
-
-        private static bool IsValidPort(int port)
-        {
-            return port > 49152 && port < 65535;
         }
     }
 }

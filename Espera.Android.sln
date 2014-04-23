@@ -8,13 +8,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Espera.Android", "Espera.An
 		{A66F5A81-780D-4B29-9A62-B8B37D2C8976} = {A66F5A81-780D-4B29-9A62-B8B37D2C8976}
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{E011B8BA-9B3C-4B15-83F6-446D20D1068C}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Espera.Android.Tests", "Espera.Android.Tests\Espera.Android.Tests.csproj", "{A4836C66-A13A-4BA7-824D-B81D24991B2B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A66F5A81-780D-4B29-9A62-B8B37D2C8976} = {A66F5A81-780D-4B29-9A62-B8B37D2C8976}

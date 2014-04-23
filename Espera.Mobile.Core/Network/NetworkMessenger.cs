@@ -33,7 +33,6 @@ namespace Espera.Mobile.Core.Network
         private IAnalytics analytics;
         private TcpClient currentClient;
         private TcpClient currentFileTransferClient;
-        private SemaphoreSlim fileTransferGate;
 
         static NetworkMessenger()
         {
@@ -43,7 +42,6 @@ namespace Espera.Mobile.Core.Network
         private NetworkMessenger()
         {
             this.gate = new SemaphoreSlim(1, 1);
-            this.fileTransferGate = new SemaphoreSlim(1, 1);
             this.messagePipeline = new Subject<NetworkMessage>();
             this.disconnected = new Subject<Unit>();
             this.connectionEstablished = new Subject<Unit>();
@@ -75,16 +73,16 @@ namespace Espera.Mobile.Core.Network
             var pushMessages = this.messagePipeline.Where(x => x.MessageType == NetworkMessageType.Push)
                 .Select(x => x.Payload.ToObject<PushInfo>());
 
-            this.PlaylistChanged = pushMessages.Where(x => x.PushAction == "update-current-playlist")
+            this.PlaylistChanged = pushMessages.Where(x => x.PushAction == PushAction.UpdateCurrentPlaylist)
                 .Select(x => x.Content.ToObject<NetworkPlaylist>());
 
-            this.PlaybackStateChanged = pushMessages.Where(x => x.PushAction == "update-playback-state")
+            this.PlaybackStateChanged = pushMessages.Where(x => x.PushAction == PushAction.UpdatePlaybackState)
                 .Select(x => x.Content["state"].ToObject<NetworkPlaybackState>());
 
-            this.RemainingVotesChanged = pushMessages.Where(x => x.PushAction == "update-remaining-votes")
+            this.RemainingVotesChanged = pushMessages.Where(x => x.PushAction == PushAction.UpdateRemainingVotes)
                 .Select(x => x.Content["remainingVotes"].ToObject<int?>());
 
-            var accessPermissionConn = pushMessages.Where(x => x.PushAction == "update-access-permission")
+            var accessPermissionConn = pushMessages.Where(x => x.PushAction == PushAction.UpdateAccessPermission)
                 .Select(x => x.Content["accessPermission"].ToObject<NetworkAccessPermission>())
                 .Merge(this.accessPermission)
                 .Publish(NetworkAccessPermission.Guest);
@@ -123,7 +121,7 @@ namespace Espera.Mobile.Core.Network
 
             return Observable.Using(() => new UdpClient(new IPEndPoint(localAddress, port)), x => Observable.FromAsync(x.ReceiveAsync))
                 .Repeat()
-                .FirstAsync(x => Encoding.Unicode.GetString(x.Buffer) == "espera-server-discovery")
+                .FirstAsync(x => Encoding.Unicode.GetString(x.Buffer) == NetworkConstants.DiscoveryMessage)
                 .Select(x => x.RemoteEndPoint.Address)
                 .ToTask();
         }
@@ -152,7 +150,7 @@ namespace Espera.Mobile.Core.Network
                 songGuid
             });
 
-            ResponseInfo response = await this.SendRequest("post-playlist-song", parameters);
+            ResponseInfo response = await this.SendRequest(RequestAction.AddPlaylistSongs, parameters);
 
             return response;
         }
@@ -196,7 +194,7 @@ namespace Espera.Mobile.Core.Network
                 password
             });
 
-            ResponseInfo response = await this.SendRequest("get-connection-info", parameters);
+            ResponseInfo response = await this.SendRequest(RequestAction.GetConnectionInfo, parameters);
 
             var connectionInfo = response.Content.ToObject<ConnectionInfo>();
 
@@ -211,7 +209,7 @@ namespace Espera.Mobile.Core.Network
 
         public async Task<ResponseInfo> ContinueSongAsync()
         {
-            ResponseInfo response = await this.SendRequest("post-continue-song");
+            ResponseInfo response = await this.SendRequest(RequestAction.ContinueSong);
 
             return response;
         }
@@ -235,30 +233,16 @@ namespace Espera.Mobile.Core.Network
             }
         }
 
-        public async Task<NetworkAccessPermission> GetAccessPermission()
-        {
-            ResponseInfo response = await this.SendRequest("get-access-permission");
-
-            return response.Content["accessPermission"].ToObject<NetworkAccessPermission>();
-        }
-
         public async Task<NetworkPlaylist> GetCurrentPlaylistAsync()
         {
-            ResponseInfo response = await this.SendRequest("get-current-playlist");
+            ResponseInfo response = await this.SendRequest(RequestAction.GetCurrentPlaylist);
 
             return response.Content.ToObject<NetworkPlaylist>();
         }
 
-        public async Task<NetworkPlaybackState> GetPlaybackStateAsync()
-        {
-            ResponseInfo response = await this.SendRequest("get-playback-state");
-
-            return response.Content["state"].ToObject<NetworkPlaybackState>();
-        }
-
         public async Task<IReadOnlyList<NetworkSong>> GetSongsAsync()
         {
-            ResponseInfo response = await this.SendRequest("get-library-content");
+            ResponseInfo response = await this.SendRequest(RequestAction.GetLibraryContent);
 
             // This can take about a second, if there are many songs, so deserialize the songs on a
             // background thread
@@ -274,7 +258,7 @@ namespace Espera.Mobile.Core.Network
                 entryGuid
             });
 
-            ResponseInfo response = await this.SendRequest("move-playlist-song-down", parameters);
+            ResponseInfo response = await this.SendRequest(RequestAction.MovePlaylistSongDown, parameters);
 
             return response;
         }
@@ -286,21 +270,21 @@ namespace Espera.Mobile.Core.Network
                 entryGuid
             });
 
-            ResponseInfo response = await this.SendRequest("move-playlist-song-up", parameters);
+            ResponseInfo response = await this.SendRequest(RequestAction.MovePlaylistSongUp, parameters);
 
             return response;
         }
 
         public async Task<ResponseInfo> PauseSongAsync()
         {
-            ResponseInfo response = await this.SendRequest("post-pause-song");
+            ResponseInfo response = await this.SendRequest(RequestAction.PauseSong);
 
             return response;
         }
 
         public async Task<ResponseInfo> PlayNextSongAsync()
         {
-            ResponseInfo response = await this.SendRequest("post-play-next-song");
+            ResponseInfo response = await this.SendRequest(RequestAction.PlayNextSong);
 
             return response;
         }
@@ -312,14 +296,14 @@ namespace Espera.Mobile.Core.Network
                 entryGuid
             });
 
-            ResponseInfo response = await this.SendRequest("post-play-playlist-song", parameters);
+            ResponseInfo response = await this.SendRequest(RequestAction.PlayPlaylistSong, parameters);
 
             return response;
         }
 
         public async Task<ResponseInfo> PlayPreviousSongAsync()
         {
-            ResponseInfo response = await this.SendRequest("post-play-previous-song");
+            ResponseInfo response = await this.SendRequest(RequestAction.PlayPreviousSong);
 
             return response;
         }
@@ -331,7 +315,7 @@ namespace Espera.Mobile.Core.Network
                 guids = guids.Select(x => x.ToString())
             });
 
-            ResponseInfo response = await this.SendRequest("post-play-instantly", parameters);
+            ResponseInfo response = await this.SendRequest(RequestAction.AddPlaylistSongsNow, parameters);
 
             return response;
         }
@@ -341,7 +325,7 @@ namespace Espera.Mobile.Core.Network
             Guid transferId = Guid.NewGuid();
             var info = new FileTransferInfo { TransferId = transferId };
 
-            ResponseInfo response = await this.SendRequest("queue-remote-song", JObject.FromObject(info));
+            ResponseInfo response = await this.SendRequest(RequestAction.QueueRemoteSong, JObject.FromObject(info));
 
             var message = new FileTransferMessage { Data = songData, TransferId = transferId };
 
@@ -373,7 +357,7 @@ namespace Espera.Mobile.Core.Network
                 entryGuid
             });
 
-            ResponseInfo response = await this.SendRequest("post-remove-playlist-song", parameters);
+            ResponseInfo response = await this.SendRequest(RequestAction.RemovePlaylistSong, parameters);
 
             return response;
         }
@@ -385,7 +369,7 @@ namespace Espera.Mobile.Core.Network
                 entryGuid
             });
 
-            ResponseInfo response = await this.SendRequest("vote-for-song", parameters);
+            ResponseInfo response = await this.SendRequest(RequestAction.VoteForSong, parameters);
 
             return response;
         }
@@ -407,7 +391,7 @@ namespace Espera.Mobile.Core.Network
             }
         }
 
-        private async Task<ResponseInfo> SendRequest(string action, JObject parameters = null)
+        private async Task<ResponseInfo> SendRequest(RequestAction action, JObject parameters = null)
         {
             Guid id = Guid.NewGuid();
 
@@ -443,7 +427,7 @@ namespace Espera.Mobile.Core.Network
 
                 if (analytics != null)
                 {
-                    this.analytics.RecordNetworkTiming(action, stopwatch.ElapsedMilliseconds);
+                    this.analytics.RecordNetworkTiming(action.ToString(), stopwatch.ElapsedMilliseconds);
                 }
 
                 return response;

@@ -43,7 +43,7 @@ namespace Espera.Android.Tests
             messenger.PlaybackStateChanged.Returns(Observable.Never<NetworkPlaybackState>());
             messenger.PlaylistChanged.Returns(Observable.Never<NetworkPlaylist>());
             messenger.AccessPermission.Returns(Observable.Return(NetworkAccessPermission.Admin));
-            messenger.GetPlaybackStateAsync().Returns(NetworkPlaybackState.None.ToTaskResult());
+
             messenger.RemainingVotesChanged.Returns(Observable.Never<int?>());
 
             NetworkMessenger.Override(messenger);
@@ -153,12 +153,14 @@ namespace Espera.Android.Tests
                     Songs = songs,
                     CurrentIndex = 1
                 });
+
                 playlists.OnNext(new NetworkPlaylist
                 {
                     Name = "A",
                     Songs = songs,
                     CurrentIndex = 0
                 });
+
                 playlists.OnNext(new NetworkPlaylist
                 {
                     Name = "A",

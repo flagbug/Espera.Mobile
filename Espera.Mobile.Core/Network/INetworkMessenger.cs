@@ -1,10 +1,10 @@
-using Espera.Mobile.Core.Analytics;
-using Espera.Network;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Reactive;
 using System.Threading.Tasks;
+using Espera.Mobile.Core.Analytics;
+using Espera.Network;
 
 namespace Espera.Mobile.Core.Network
 {
@@ -33,8 +33,6 @@ namespace Espera.Mobile.Core.Network
         void Dispose();
 
         Task<NetworkPlaylist> GetCurrentPlaylistAsync();
-
-        Task<NetworkPlaybackState> GetPlaybackStateAsync();
 
         Task<IReadOnlyList<NetworkSong>> GetSongsAsync();
 

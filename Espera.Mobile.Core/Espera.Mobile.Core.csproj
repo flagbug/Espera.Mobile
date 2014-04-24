@@ -53,7 +53,7 @@
     </Reference>
     <Reference Include="ReactiveUI, Version=5.99.5.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\reactiveui-core.5.99.5-beta\lib\Portable-Net45+WinRT45+WP8\ReactiveUI.dll</HintPath>
+      <HintPath>..\ext\ReactiveUI.dll</HintPath>
     </Reference>
     <Reference Include="Splat, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

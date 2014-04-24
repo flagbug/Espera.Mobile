@@ -93,7 +93,8 @@
     <Reference Include="ReactiveMarrow">
       <HintPath>..\packages\ReactiveMarrow.0.4.0\lib\portable-net45+wp8+win8+monoandroid+monotouch\ReactiveMarrow.dll</HintPath>
     </Reference>
-    <Reference Include="ReactiveUI">
+    <Reference Include="ReactiveUI, Version=5.99.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ext\ReactiveUI.dll</HintPath>
     </Reference>
     <Reference Include="ReactiveUI.Android">

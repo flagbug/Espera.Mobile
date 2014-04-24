@@ -168,7 +168,7 @@ namespace Espera.Android.Tests
                 });
 
                 messenger.Received(1).PlayNextSongAsync();
-                Assert.Equal(new[] { true, false, true, false, true, false }, canExecute);
+                Assert.Equal(new[] { false, true, false, true, false, true, false }, canExecute);
             }
         }
 
@@ -317,7 +317,7 @@ namespace Espera.Android.Tests
                 });
 
                 messenger.Received(1).PlayPreviousSongAsync();
-                Assert.Equal(new[] { true, false, true, false, true, false }, canExecute);
+                Assert.Equal(new[] { false, true, false, true, false, true, false }, canExecute);
             }
         }
     }

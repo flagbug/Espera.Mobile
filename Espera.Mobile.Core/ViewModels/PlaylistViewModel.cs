@@ -33,7 +33,7 @@ namespace Espera.Mobile.Core.ViewModels
 
                 var canModifyConn = NetworkMessenger.Instance.AccessPermission
                     .Select(x => x == NetworkAccessPermission.Admin)
-                    .Publish();
+                    .Replay(1);
                 this.CanModify = canModifyConn;
 
                 canModifyConn.Connect().DisposeWith(disposable);
@@ -71,11 +71,13 @@ namespace Espera.Mobile.Core.ViewModels
                     .Merge(this.VoteCommand.ThrownExceptions.Select(_ => "Vote failed")));
 
                 var canPlayNextSong = this.entries.Changed.Select(_ => this.entries)
+                    .StartWith(this.entries)
                     .Select(x => x.Any(y => y.IsPlaying) && x.FirstOrDefault(y => y.IsPlaying) != x.LastOrDefault())
                     .CombineLatest(this.CanModify, (canPlayNext, canModify) => canPlayNext && canModify);
                 this.PlayNextSongCommand = ReactiveCommand.CreateAsync(canPlayNextSong, _ => NetworkMessenger.Instance.PlayNextSongAsync());
 
                 var canPlayPreviousSong = this.entries.Changed.Select(_ => this.entries)
+                    .StartWith(this.entries)
                     .Select(x => x.Any(y => y.IsPlaying) && x.FirstOrDefault(y => y.IsPlaying) != x.FirstOrDefault())
                     .CombineLatest(this.CanModify, (canPlayPrevious, canModify) => canPlayPrevious && canModify);
                 this.PlayPreviousSongCommand = ReactiveCommand.CreateAsync(canPlayPreviousSong, _ => NetworkMessenger.Instance.PlayPreviousSongAsync());

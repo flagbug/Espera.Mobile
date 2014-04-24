@@ -75,14 +75,12 @@ namespace Espera.Mobile.Core.ViewModels
                 throw new Exception("Password incorrect");
             }
 
-#if !DEBUG
             var minimumVersion = new Version("2.0.0");
             if (response.Item2.ServerVersion < minimumVersion)
             {
                 NetworkMessenger.Instance.Disconnect();
                 throw new Exception(string.Format("Espera version {0} required", minimumVersion.ToString(3)));
             }
-#endif
         }
     }
 }

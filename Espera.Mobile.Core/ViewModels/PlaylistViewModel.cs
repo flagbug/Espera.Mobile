@@ -6,6 +6,7 @@ using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
 using Espera.Mobile.Core.Network;
 using Espera.Network;
+using ReactiveMarrow;
 using ReactiveUI;
 
 namespace Espera.Mobile.Core.ViewModels

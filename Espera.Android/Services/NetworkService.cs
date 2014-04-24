@@ -1,14 +1,14 @@
+using System;
+using System.Reactive.Linq;
 using Android.App;
 using Android.Content;
 using Android.OS;
 using Espera.Android.Analytics;
 using Espera.Android.Views;
-using Espera.Mobile.Core;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
+using ReactiveMarrow;
 using ReactiveUI;
-using System;
-using System.Reactive.Linq;
 
 namespace Espera.Android.Services
 {
@@ -34,8 +34,8 @@ namespace Espera.Android.Services
 
             this.keepAlive.Disconnected.Subscribe(x => this.NotifyNetworkMessengerDisconnected());
 
-            UserSettings.Instance.WhenAnyValue(x => x.Port).DistinctUntilChanged()
-                .CombineLatestValue(NetworkMessenger.Instance.IsConnected, (p, connected) => connected)
+            NetworkMessenger.Instance.IsConnected.SampleAndCombineLatest(UserSettings.Instance
+                .WhenAnyValue(x => x.Port).DistinctUntilChanged(), (connected, _) => connected)
                 .Where(x => x)
                 .Subscribe(x => NetworkMessenger.Instance.Disconnect());
         }

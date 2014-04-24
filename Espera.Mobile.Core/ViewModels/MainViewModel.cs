@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
 using Espera.Network;
+using ReactiveMarrow;
 using ReactiveUI;
 
 namespace Espera.Mobile.Core.ViewModels

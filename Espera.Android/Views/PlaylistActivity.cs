@@ -1,18 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Android.App;
 using Android.Content.PM;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
-using Espera.Mobile.Core;
 using Espera.Mobile.Core.ViewModels;
 using Google.Analytics.Tracking;
+using ReactiveMarrow;
 using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
-using System.Reactive.Disposables;
 
 namespace Espera.Android.Views
 {
@@ -28,24 +28,22 @@ namespace Espera.Android.Views
 
             this.WhenActivated(() =>
             {
-				var disposable = new CompositeDisposable();
-					
+                var disposable = new CompositeDisposable();
+
                 this.ViewModel.Message.Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show())
-					.DisposeWith(disposable);
+                    .DisposeWith(disposable);
 
                 var adapter = new ReactiveListAdapter<PlaylistEntryViewModel>(this.ViewModel.Entries,
-                		(vm, parent) => new PlaylistEntryView(this, vm, parent))
-					.DisposeWith(disposable);
+                        (vm, parent) => new PlaylistEntryView(this, vm, parent))
+                    .DisposeWith(disposable);
                 this.Playlist.Adapter = adapter;
                 this.Playlist.Events().ItemClick.Select(x => x.Position)
                     .InvokeCommand(this.ViewModel.PlayPlaylistSongCommand)
-					.DisposeWith(disposable);
+                    .DisposeWith(disposable);
 
-                this.Playlist.Events().ItemLongClick
-                    .Select(x => x.Position)
-                    .CombineLatestValue(this.ViewModel.CanModify
-                        .CombineLatest(this.ViewModel.CurrentIndex, this.ViewModel.RemainingVotes, Tuple.Create), (position, tuple) =>
-                        new { Position = position, CanModify = tuple.Item1, CurrentIndex = tuple.Item2, RemainingVotes = tuple.Item3 })
+                this.ViewModel.CanModify.CombineLatest(this.ViewModel.CurrentIndex, this.ViewModel.RemainingVotes, Tuple.Create)
+                    .SampleAndCombineLatest(this.Playlist.Events().ItemLongClick.Select(x => x.Position), (tuple, position) =>
+                        new { CanModify = tuple.Item1, CurrentIndex = tuple.Item2, RemainingVotes = tuple.Item3, Position = position })
                     .Subscribe(x =>
                     {
                         bool canVote = (x.CurrentIndex == null || x.Position > x.CurrentIndex) && x.RemainingVotes.HasValue;
@@ -111,32 +109,32 @@ namespace Espera.Android.Views
 
                 this.ViewModel.CanModify.Select(x => x ? ViewStates.Visible : ViewStates.Gone)
                     .BindTo(this.PlaybackControlPanel, x => x.Visibility)
-					.DisposeWith(disposable);
+                    .DisposeWith(disposable);
 
                 this.BindCommand(this.ViewModel, x => x.PlayNextSongCommand, x => x.NextButton)
-					.DisposeWith(disposable);
+                    .DisposeWith(disposable);
                 this.BindCommand(this.ViewModel, x => x.PlayPreviousSongCommand, x => x.PreviousButton)
-					.DisposeWith(disposable);
+                    .DisposeWith(disposable);
                 this.BindCommand(this.ViewModel, x => x.PlayPauseCommand, x => x.PlayPauseButton)
-					.DisposeWith(disposable);
+                    .DisposeWith(disposable);
 
                 this.ViewModel.WhenAnyValue(x => x.IsPlaying).Select(x => x ? Resource.Drawable.Pause : Resource.Drawable.Play)
                     .Subscribe(x => this.PlayPauseButton.SetBackgroundResource(x))
-					.DisposeWith(disposable);
+                    .DisposeWith(disposable);
 
                 Func<bool, int> alphaSelector = x => x ? 255 : 100;
 
                 this.ViewModel.PlayPauseCommand.CanExecuteObservable.Select(alphaSelector)
                     .Subscribe(x => this.PlayPauseButton.Background.SetAlpha(x))
-					.DisposeWith(disposable);
+                    .DisposeWith(disposable);
 
                 this.ViewModel.PlayPreviousSongCommand.CanExecuteObservable.Select(alphaSelector)
                     .Subscribe(x => this.PreviousButton.Background.SetAlpha(x))
-					.DisposeWith(disposable);
+                    .DisposeWith(disposable);
 
                 this.ViewModel.PlayNextSongCommand.CanExecuteObservable.Select(alphaSelector)
                     .Subscribe(x => this.NextButton.Background.SetAlpha(x))
-					.DisposeWith(disposable);
+                    .DisposeWith(disposable);
 
                 this.progressDialog = new ProgressDialog(this);
                 this.progressDialog.SetMessage("Loading playlist");
@@ -152,15 +150,15 @@ namespace Espera.Android.Views
                             this.progressDialog.Show();
                         }
 
-						else if(this.progressDialog.IsShowing)
+                        else if (this.progressDialog.IsShowing)
                         {
                             this.progressDialog.Dismiss();
                         }
                     }).DisposeWith(disposable);
 
                 this.ViewModel.LoadPlaylistCommand.Execute(null);
-					
-				return disposable;
+
+                return disposable;
             });
         }
 
@@ -183,6 +181,16 @@ namespace Espera.Android.Views
             this.WireUpControls();
 
             this.ViewModel = new PlaylistViewModel();
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            if (this.progressDialog != null && this.progressDialog.IsShowing)
+            {
+                this.progressDialog.Dismiss();
+            }
         }
 
         protected override void OnPause()
@@ -216,15 +224,5 @@ namespace Espera.Android.Views
 
             EasyTracker.GetInstance(this).ActivityStop(this);
         }
-		
-		protected override void OnDestroy ()
-		{
-			base.OnDestroy ();
-			
-			if(this.progressDialog != null && this.progressDialog.IsShowing)
-			{
-				this.progressDialog.Dismiss();
-			}
-		}
     }
 }

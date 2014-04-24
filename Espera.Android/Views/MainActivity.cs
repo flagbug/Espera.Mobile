@@ -11,10 +11,10 @@ using Android.Views;
 using Android.Widget;
 using Espera.Android.Analytics;
 using Espera.Android.Services;
-using Espera.Mobile.Core;
 using Espera.Mobile.Core.Analytics;
 using Espera.Mobile.Core.ViewModels;
 using Google.Analytics.Tracking;
+using ReactiveMarrow;
 using ReactiveUI;
 using ReactiveUI.Android;
 using ReactiveUI.Mobile;
@@ -39,7 +39,7 @@ namespace Espera.Android.Views
                 var connectOrDisconnectCommand = this.ViewModel.WhenAnyValue(x => x.IsConnected)
                     .Select(x => x ? (IReactiveCommand)this.ViewModel.DisconnectCommand : this.ViewModel.ConnectCommand);
 
-                this.ConnectButton.Events().Click.CombineLatestValue(connectOrDisconnectCommand, (args, command) => command)
+                connectOrDisconnectCommand.SampleAndCombineLatest(this.ConnectButton.Events().Click, (command, args) => command)
                     .Where(x => x.CanExecute(null))
                     .Subscribe(x => x.Execute(null))
                     .DisposeWith(disposable);

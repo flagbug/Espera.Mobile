@@ -2,7 +2,6 @@
 using System.IO;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Songs;
@@ -19,7 +18,7 @@ namespace Espera.Mobile.Core.ViewModels
 
             this.Songs = songs.CreateDerivedCollection(x => new LocalSongViewModel(x));
 
-            this.AddToPlaylistCommand = ReactiveCommand.Create(x => this.QueueSong(this.Songs[(int)x]).ToObservable());
+            this.AddToPlaylistCommand = ReactiveCommand.CreateAsync(x => this.QueueSong(this.Songs[(int)x]));
 
             this.Message = Observable.Never<string>()
                 .Throttle(TimeSpan.FromMilliseconds(200))

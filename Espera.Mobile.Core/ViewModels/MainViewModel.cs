@@ -37,8 +37,13 @@ namespace Espera.Mobile.Core.ViewModels
                 this.DisconnectCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.IsConnected));
                 this.DisconnectCommand.Subscribe(x => NetworkMessenger.Instance.Disconnect());
 
-                this.ConnectionFailed = this.ConnectCommand.ThrownExceptions
-                    .Select(x => x.Message);
+                var conn = this.ConnectCommand.ThrownExceptions
+                    .ObserveOn(RxApp.MainThreadScheduler)
+                    .Select(x => x.Message)
+                    .Publish();
+                conn.Connect().DisposeWith(disposable);
+
+                this.ConnectionFailed = conn;
 
                 return disposable;
             });

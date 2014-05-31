@@ -1,6 +1,7 @@
-using Akavache;
-using Lager;
 using System;
+using Akavache;
+using Espera.Network;
+using Lager;
 
 namespace Espera.Mobile.Core.Settings
 {
@@ -42,7 +43,7 @@ namespace Espera.Mobile.Core.Settings
 
         public int Port
         {
-            get { return this.GetOrCreate(49587); }
+            get { return this.GetOrCreate(NetworkConstants.DefaultPort); }
             set { this.SetOrCreate(value); }
         }
 

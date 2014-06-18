@@ -329,9 +329,7 @@ namespace Espera.Mobile.Core.Network
 
             var message = new FileTransferMessage { Data = songData, TransferId = transferId };
 
-            byte[] packed = await NetworkHelpers.PackFileTransferMessageAsync(message);
-
-            IObservable<int> progress = this.TransferFileAsync(packed).Publish(0).PermaRef();
+            IObservable<int> progress = this.TransferFileAsync(message).Publish(0).PermaRef();
 
             var status = new FileTransferStatus(progress);
 
@@ -448,19 +446,17 @@ namespace Espera.Mobile.Core.Network
             }
         }
 
-        private IObservable<int> TransferFileAsync(byte[] data)
+        private IObservable<int> TransferFileAsync(FileTransferMessage message)
         {
             const int bufferSize = 32 * 1024;
             int written = 0;
             Stream stream = this.currentFileTransferClient.GetStream();
 
-            byte[] length = BitConverter.GetBytes(data.Length); // We have a fixed size of 4 bytes
-
             var progress = new BehaviorSubject<int>(0);
 
-            Task.Run(() =>
+            Task.Run(async () =>
             {
-                stream.Write(length, 0, length.Length);
+                byte[] data = await NetworkHelpers.PackFileTransferMessageAsync(message);
 
                 using (var dataStream = new MemoryStream(data))
                 {

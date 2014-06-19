@@ -22,7 +22,6 @@ namespace Espera.Android
                 MediaStore.Audio.Media.InterfaceConsts.Title,
                 MediaStore.Audio.Media.InterfaceConsts.Artist,
                 MediaStore.Audio.Media.InterfaceConsts.Album,
-                MediaStore.Audio.Genres.InterfaceConsts.Name,
                 MediaStore.Audio.Media.InterfaceConsts.Duration,
                 MediaStore.Audio.Media.InterfaceConsts.Data
             };
@@ -34,7 +33,8 @@ namespace Espera.Android
                 while (cursor.MoveToNext())
                 {
                     var song = new LocalSong(cursor.GetString(0), cursor.GetString(1), cursor.GetString(2),
-                        cursor.GetString(3), TimeSpan.FromMilliseconds(cursor.GetInt(4)), cursor.GetString(5));
+                        "AndroidMakesMeCry", // There isn't a simple genre column, you have to jump through some hoops, so ignore it for now
+                        TimeSpan.FromMilliseconds(cursor.GetInt(3)), cursor.GetString(4));
 
                     list.Add(song);
                 }

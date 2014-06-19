@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Espera.Mobile.Core.Analytics;
+using Espera.Mobile.Core.Songs;
 using Espera.Network;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
@@ -320,14 +321,29 @@ namespace Espera.Mobile.Core.Network
             return response;
         }
 
-        public async Task<FileTransferStatus> QueueRemoteSong(byte[] songData)
+        public async Task<FileTransferStatus> QueueRemoteSong(LocalSong songMetadata, byte[] songData)
         {
+            var song = new NetworkSong
+            {
+                Album = songMetadata.Album,
+                Artist = songMetadata.Artist,
+                Duration = songMetadata.Duration,
+                Genre = songMetadata.Genre,
+                Source = NetworkSongSource.Mobile,
+                Title = songMetadata.Title,
+                Guid = Guid.NewGuid()
+            };
+
             Guid transferId = Guid.NewGuid();
-            var info = new FileTransferInfo { TransferId = transferId };
+            var info = new SongTransferInfo
+            {
+                TransferId = transferId,
+                Metadata = song
+            };
 
             ResponseInfo response = await this.SendRequest(RequestAction.QueueRemoteSong, JObject.FromObject(info));
 
-            var message = new FileTransferMessage { Data = songData, TransferId = transferId };
+            var message = new SongTransferMessage { Data = songData, TransferId = transferId };
 
             IObservable<int> progress = this.TransferFileAsync(message).Publish(0).PermaRef();
 
@@ -446,7 +462,7 @@ namespace Espera.Mobile.Core.Network
             }
         }
 
-        private IObservable<int> TransferFileAsync(FileTransferMessage message)
+        private IObservable<int> TransferFileAsync(SongTransferMessage message)
         {
             const int bufferSize = 32 * 1024;
             int written = 0;

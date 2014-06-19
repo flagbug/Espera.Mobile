@@ -35,7 +35,7 @@ namespace Espera.Mobile.Core.ViewModels
         {
             byte[] data = File.ReadAllBytes(song.Path);
 
-            FileTransferStatus status = await NetworkMessenger.Instance.QueueRemoteSong(data);
+            FileTransferStatus status = await NetworkMessenger.Instance.QueueRemoteSong(song.Model, data);
 
             song.IsTransfering = true;
 

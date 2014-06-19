@@ -27,7 +27,7 @@ namespace Espera.Android.Tests
             NetworkSong song = Helpers.SetupSong();
             song.Artist = artist;
 
-            return new LocalSong(song.Title, song.Artist, song.Album, "0");
+            return new LocalSong(song.Title, song.Artist, song.Album, song.Genre, song.Duration, "0");
         }
 
         public class TheLoadCommand

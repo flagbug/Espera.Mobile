@@ -1,6 +1,6 @@
-﻿using Espera.Mobile.Core.Songs;
+﻿using System;
+using Espera.Mobile.Core.Songs;
 using ReactiveUI;
-using System;
 
 namespace Espera.Mobile.Core.ViewModels
 {
@@ -27,6 +27,11 @@ namespace Espera.Mobile.Core.ViewModels
         {
             get { return this.isTransfering; }
             set { this.RaiseAndSetIfChanged(ref this.isTransfering, value); }
+        }
+
+        public LocalSong Model
+        {
+            get { return this.model; }
         }
 
         public string Path

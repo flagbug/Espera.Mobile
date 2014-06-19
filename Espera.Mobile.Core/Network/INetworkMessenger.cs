@@ -4,6 +4,7 @@ using System.Net;
 using System.Reactive;
 using System.Threading.Tasks;
 using Espera.Mobile.Core.Analytics;
+using Espera.Mobile.Core.Songs;
 using Espera.Network;
 
 namespace Espera.Mobile.Core.Network
@@ -50,7 +51,7 @@ namespace Espera.Mobile.Core.Network
 
         Task<ResponseInfo> PlaySongsAsync(IEnumerable<Guid> guids);
 
-        Task<FileTransferStatus> QueueRemoteSong(byte[] data);
+        Task<FileTransferStatus> QueueRemoteSong(LocalSong songMetadata, byte[] data);
 
         void RegisterAnalytics(IAnalytics analytics);
 

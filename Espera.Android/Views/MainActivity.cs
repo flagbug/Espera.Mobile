@@ -104,6 +104,8 @@ namespace Espera.Android.Views
             base.OnCreate(bundle);
             this.autoSuspendHelper.OnCreate(bundle);
 
+            this.Title = String.Empty;
+
             this.SetContentView(Resource.Layout.Main);
             this.WireUpControls();
 

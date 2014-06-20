@@ -1,6 +1,6 @@
-﻿using Espera.Network;
+﻿using System;
+using Espera.Network;
 using ReactiveUI;
-using System;
 
 namespace Espera.Mobile.Core.ViewModels
 {
@@ -20,7 +20,15 @@ namespace Espera.Mobile.Core.ViewModels
 
         public string Artist
         {
-            get { return song.Source == NetworkSongSource.Local ? song.Artist : "YouTube"; }
+            get
+            {
+                if (song.Source == NetworkSongSource.Youtube)
+                {
+                    return "YouTube";
+                }
+
+                return song.Artist;
+            }
         }
 
         public Guid Guid

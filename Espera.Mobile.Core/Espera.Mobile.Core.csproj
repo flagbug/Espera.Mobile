@@ -84,6 +84,7 @@
   <ItemGroup>
     <Compile Include="Analytics\AnalyticsMixin.cs" />
     <Compile Include="Analytics\IAnalytics.cs" />
+    <Compile Include="Linker.cs" />
     <Compile Include="MeasureHelper.cs" />
     <Compile Include="Songs\LocalSong.cs" />
     <Compile Include="SongFetchers\ISongFetcher.cs" />

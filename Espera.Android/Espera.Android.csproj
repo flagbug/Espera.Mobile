@@ -49,7 +49,7 @@
     <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
     <AndroidLinkSkip>
     </AndroidLinkSkip>
-    <AndroidLinkMode>None</AndroidLinkMode>
+    <AndroidLinkMode>SdkOnly</AndroidLinkMode>
     <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
     <AndroidStoreUncompressedFileExtensions>
     </AndroidStoreUncompressedFileExtensions>
@@ -158,6 +158,7 @@
   <ItemGroup>
     <Compile Include="Analytics\AndroidAnalytics.cs" />
     <Compile Include="AndroidSongFetcher.cs" />
+    <Compile Include="Linker.cs" />
     <Compile Include="Services\NetworkService.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,3 +1,4 @@
+using Android.Preferences;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
@@ -17,6 +18,18 @@ namespace Espera.Android
 
             var linearLayout = new LinearLayout(null);
             linearLayout.Visibility = ViewStates.Visible;
+
+            var textPref = new EditTextPreference(null);
+            textPref.Text = textPref.Text;
+            textPref.Enabled = textPref.Enabled;
+
+            var switchPref = new SwitchPreference(null);
+            switchPref.Checked = switchPref.Checked;
+            switchPref.Enabled = switchPref.Enabled;
+
+            var listPref = new ListPreference(null);
+            listPref.Enabled = listPref.Enabled;
+            listPref.Value = listPref.Value;
         }
     }
 }

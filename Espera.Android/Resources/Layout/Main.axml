@@ -3,23 +3,23 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-  <Button
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:id="@+id/ConnectButton" />
-  <Button
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:id="@+id/LoadArtistsButton"
-      android:text="Artists" />
-  <Button
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:id="@+id/LoadCurrentPlaylistButton"
-      android:text="Playlist" />
-  <Button
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:id="@+id/LocalSongsButton"
-      android:text="Songs on this devices" />
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ConnectButton" />
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/LoadArtistsButton"
+        android:text="Artists" />
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/LoadCurrentPlaylistButton"
+        android:text="Playlist" />
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/LocalSongsButton"
+        android:text="Songs on this device" />
 </LinearLayout>

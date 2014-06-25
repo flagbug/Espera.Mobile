@@ -18,7 +18,7 @@ namespace Espera.Mobile.Core.ViewModels
 
             this.Songs = songs.CreateDerivedCollection(x => new LocalSongViewModel(x));
 
-            this.AddToPlaylistCommand = ReactiveCommand.CreateAsync(x => this.QueueSong(this.Songs[(int)x]));
+            this.AddToPlaylistCommand = ReactiveCommand.CreateAsyncTask(x => this.QueueSong(this.Songs[(int)x]));
 
             this.Message = Observable.Never<string>()
                 .Throttle(TimeSpan.FromMilliseconds(200))

@@ -16,8 +16,6 @@ using Espera.Mobile.Core.ViewModels;
 using Google.Analytics.Tracking;
 using ReactiveMarrow;
 using ReactiveUI;
-using ReactiveUI.Android;
-using ReactiveUI.Mobile;
 using IMenuItem = Android.Views.IMenuItem;
 
 namespace Espera.Android.Views
@@ -26,12 +24,8 @@ namespace Espera.Android.Views
         ConfigurationChanges = ConfigChanges.Orientation, LaunchMode = LaunchMode.SingleTop)]
     public class MainActivity : ReactiveActivity<MainViewModel>
     {
-        private readonly AutoSuspendActivityHelper autoSuspendHelper;
-
         public MainActivity()
         {
-            this.autoSuspendHelper = new AutoSuspendActivityHelper(this);
-
             this.WhenActivated(() =>
             {
                 var disposable = new CompositeDisposable();
@@ -102,7 +96,6 @@ namespace Espera.Android.Views
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-            this.autoSuspendHelper.OnCreate(bundle);
 
             this.Title = String.Empty;
 
@@ -120,16 +113,9 @@ namespace Espera.Android.Views
             this.Intent = intent;
         }
 
-        protected override void OnPause()
-        {
-            base.OnPause();
-            this.autoSuspendHelper.OnPause();
-        }
-
         protected override void OnResume()
         {
             base.OnResume();
-            this.autoSuspendHelper.OnResume();
 
             if (this.Intent.HasExtra("connectionLost"))
             {
@@ -154,12 +140,6 @@ namespace Espera.Android.Views
 
                 this.ViewModel.LocalAddress = new IPAddress(info.IpAddress);
             }
-        }
-
-        protected override void OnSaveInstanceState(Bundle outState)
-        {
-            base.OnSaveInstanceState(outState);
-            this.autoSuspendHelper.OnSaveInstanceState(outState);
         }
 
         protected override void OnStart()

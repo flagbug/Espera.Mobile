@@ -16,11 +16,11 @@ namespace Espera.Mobile.Core.ViewModels
 
             this.Songs = songs;
 
-            this.PlaySongsCommand = ReactiveCommand.CreateAsync(x => NetworkMessenger.Instance.PlaySongsAsync(this.Songs.Skip((int)x).Select(y => y.Guid)));
+            this.PlaySongsCommand = ReactiveCommand.CreateAsyncTask(x => NetworkMessenger.Instance.PlaySongsAsync(this.Songs.Skip((int)x).Select(y => y.Guid)));
             var playSongsMessage = this.PlaySongsCommand
                 .Select(x => x.Status == ResponseStatus.Success ? "Playing songs" : "Error adding songs");
 
-            this.AddToPlaylistCommand = ReactiveCommand.CreateAsync(x => NetworkMessenger.Instance.AddSongToPlaylistAsync(this.Songs[(int)x].Guid));
+            this.AddToPlaylistCommand = ReactiveCommand.CreateAsyncTask(x => NetworkMessenger.Instance.AddSongToPlaylistAsync(this.Songs[(int)x].Guid));
             var addToPlaylistMessage = this.AddToPlaylistCommand
                 .Select(x => x.Status == ResponseStatus.Success ? "Song added to playlist" : "Error adding song");
 

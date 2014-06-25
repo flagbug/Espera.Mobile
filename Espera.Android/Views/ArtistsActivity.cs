@@ -5,10 +5,7 @@ using Android.OS;
 using Android.Widget;
 using Espera.Mobile.Core.Songs;
 using Espera.Mobile.Core.ViewModels;
-using Google.Analytics.Tracking;
 using ReactiveUI;
-using ReactiveUI.Android;
-using ReactiveUI.Mobile;
 
 namespace Espera.Android.Views
 {

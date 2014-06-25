@@ -7,8 +7,6 @@ using Espera.Mobile.Core.ViewModels;
 using Google.Analytics.Tracking;
 using Newtonsoft.Json;
 using ReactiveUI;
-using ReactiveUI.Android;
-using ReactiveUI.Mobile;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,19 +17,11 @@ namespace Espera.Android.Views
     [Activity(ConfigurationChanges = ConfigChanges.Orientation)]
     public class LocalSongsActivity : ReactiveActivity<LocalSongsViewModel>
     {
-        private readonly AutoSuspendActivityHelper autoSuspendHelper;
-
-        public LocalSongsActivity()
-        {
-            this.autoSuspendHelper = new AutoSuspendActivityHelper(this);
-        }
-
         public ListView SongsList { get; private set; }
 
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-            this.autoSuspendHelper.OnCreate(bundle);
 
             this.SetContentView(Resource.Layout.LocalSongs);
             this.WireUpControls();
@@ -71,24 +61,6 @@ namespace Espera.Android.Views
                 });*/
 
             this.ViewModel.Message.Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show());
-        }
-
-        protected override void OnPause()
-        {
-            base.OnPause();
-            this.autoSuspendHelper.OnPause();
-        }
-
-        protected override void OnResume()
-        {
-            base.OnResume();
-            this.autoSuspendHelper.OnResume();
-        }
-
-        protected override void OnSaveInstanceState(Bundle outState)
-        {
-            base.OnSaveInstanceState(outState);
-            this.autoSuspendHelper.OnSaveInstanceState(outState);
         }
 
         protected override void OnStart()

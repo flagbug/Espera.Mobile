@@ -3,7 +3,6 @@ using Android.Views;
 using Android.Widget;
 using Espera.Mobile.Core.ViewModels;
 using ReactiveUI;
-using ReactiveUI.Android;
 
 namespace Espera.Android.Views
 {

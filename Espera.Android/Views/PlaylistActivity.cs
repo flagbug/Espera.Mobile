@@ -33,21 +33,20 @@ namespace Espera.Android.Views
                 this.ViewModel.Message.Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show())
                     .DisposeWith(disposable);
 
-                var adapter = new ReactiveListAdapter<PlaylistEntryViewModel>(this.ViewModel.Entries,
-                        (vm, parent) => new PlaylistEntryView(this, vm, parent))
+                var adapter = new ReactiveListAdapter<PlaylistEntryViewModel>(this.ViewModel.Entries, (vm, parent) => new PlaylistEntryView(this, vm, parent))
                     .DisposeWith(disposable);
                 this.Playlist.Adapter = adapter;
                 this.Playlist.Events().ItemClick.Select(x => x.Position)
                     .InvokeCommand(this.ViewModel.PlayPlaylistSongCommand)
                     .DisposeWith(disposable);
 
-                this.ViewModel.CanModify.CombineLatest(this.ViewModel.CurrentIndex, this.ViewModel.RemainingVotes, Tuple.Create)
+                this.ViewModel.CanModify.CombineLatest(this.ViewModel.WhenAnyValue(x => x.CurrentSong), this.ViewModel.WhenAnyValue(x => x.RemainingVotes), Tuple.Create)
                     .SampleAndCombineLatest(this.Playlist.Events().ItemLongClick.Select(x => x.Position), (tuple, position) =>
-                        new { CanModify = tuple.Item1, CurrentIndex = tuple.Item2, RemainingVotes = tuple.Item3, Position = position })
+                        new { CanModify = tuple.Item1, CurrenSong = tuple.Item2, RemainingVotes = tuple.Item3, Position = position })
                     .Subscribe(x =>
                     {
-                        bool canVote = (x.CurrentIndex == null || x.Position > x.CurrentIndex) && x.RemainingVotes.HasValue;
-                        bool hasVotesLeft = x.RemainingVotes.HasValue && x.RemainingVotes > 0;
+                        bool canVote = x.CurrenSong.IsVoteAble && x.RemainingVotes.HasValue;
+                        bool hasVotesLeft = x.RemainingVotes > 0;
                         string voteString = hasVotesLeft ?
                             string.Format("Vote ({0})", x.RemainingVotes) : "No votes left";
 
@@ -65,28 +64,28 @@ namespace Espera.Android.Views
                             {
                                 switch (eventArgs.Which)
                                 {
-                                case 0:
-                                    this.ViewModel.PlayPlaylistSongCommand.Execute(x.Position);
-                                    break;
+                                    case 0:
+                                        this.ViewModel.PlayPlaylistSongCommand.Execute(x.Position);
+                                        break;
 
-                                case 1:
-                                    this.ViewModel.RemoveSongCommand.Execute(x.Position);
-                                    break;
+                                    case 1:
+                                        this.ViewModel.RemoveSongCommand.Execute(x.Position);
+                                        break;
 
-                                case 2:
-                                    this.ViewModel.MoveSongUpCommand.Execute(x.Position);
-                                    break;
+                                    case 2:
+                                        this.ViewModel.MoveSongUpCommand.Execute(x.Position);
+                                        break;
 
-                                case 3:
-                                    this.ViewModel.MoveSongDownCommand.Execute(x.Position);
-                                    break;
+                                    case 3:
+                                        this.ViewModel.MoveSongDownCommand.Execute(x.Position);
+                                        break;
 
-                                case 4:
-                                    if (hasVotesLeft)
-                                    {
-                                        this.ViewModel.VoteCommand.Execute(x.Position);
-                                    }
-                                    break;
+                                    case 4:
+                                        if (hasVotesLeft)
+                                        {
+                                            this.ViewModel.VoteCommand.Execute(x.Position);
+                                        }
+                                        break;
                                 }
                             });
                             builder.Create().Show();

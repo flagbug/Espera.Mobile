@@ -9,12 +9,13 @@ namespace Espera.Mobile.Core.ViewModels
         private readonly NetworkSong song;
         private bool isPlayling;
 
-        public PlaylistEntryViewModel(NetworkSong song, bool isPlaying = false)
+        public PlaylistEntryViewModel(NetworkSong song, bool isVoteable, bool isPlaying = false)
         {
             if (song == null)
                 throw new ArgumentNullException("song");
 
             this.song = song;
+            this.IsVoteAble = isVoteable;
             this.isPlayling = isPlaying;
         }
 
@@ -41,6 +42,8 @@ namespace Espera.Mobile.Core.ViewModels
             get { return this.isPlayling; }
             set { this.RaiseAndSetIfChanged(ref this.isPlayling, value); }
         }
+
+        public bool IsVoteAble { get; private set; }
 
         public string Title
         {

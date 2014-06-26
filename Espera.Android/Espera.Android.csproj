@@ -144,6 +144,7 @@
   <ItemGroup>
     <Compile Include="Analytics\AndroidAnalytics.cs" />
     <Compile Include="AndroidSongFetcher.cs" />
+    <Compile Include="AndroidWifiService.cs" />
     <Compile Include="App.cs" />
     <Compile Include="LinkerOverrides.cs" />
     <Compile Include="Services\NetworkService.cs" />

@@ -32,13 +32,13 @@ namespace Espera.Mobile.Core.UI
                 .BindTo(this.ConnectButton, x => x.Text);
 
             this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.RemoteArtistsButton.IsEnabled);
-            this.RemoteArtistsButton.Clicked += (sender, e) => this.Navigation.PushAsync(null);
+            this.RemoteArtistsButton.Clicked += async (sender, e) => await this.Navigation.PushAsync(null);
 
             this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.PlaylistButton.IsEnabled);
-            this.PlaylistButton.Clicked += (sender, e) => this.Navigation.PushAsync(null);
+            this.PlaylistButton.Clicked += async (sender, e) => await this.Navigation.PushAsync(new PlaylistPage());
 
             this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LocalArtistsButton.IsEnabled);
-            this.LocalArtistsButton.Clicked += (sender, e) => this.Navigation.PushAsync(null);
+            this.LocalArtistsButton.Clicked += async (sender, e) => await this.Navigation.PushAsync(null);
         }
 
         object IViewFor.ViewModel

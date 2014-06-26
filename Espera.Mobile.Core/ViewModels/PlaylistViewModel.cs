@@ -12,11 +12,14 @@ namespace Espera.Mobile.Core.ViewModels
 {
     public class PlaylistViewModel : ReactiveObject, ISupportsActivation
     {
+        private ObservableAsPropertyHelper<bool> canModify;
+        private ObservableAsPropertyHelper<bool> canVoteOnSelectedEntry;
         private ObservableAsPropertyHelper<PlaylistEntryViewModel> currentSong;
         private ReactiveList<PlaylistEntryViewModel> entries;
         private ObservableAsPropertyHelper<bool> isPlaying;
         private ObservableAsPropertyHelper<NetworkPlaybackState> playbackState;
         private ObservableAsPropertyHelper<int?> remainingVotes;
+        private PlaylistEntryViewModel selectedEntry;
 
         public PlaylistViewModel()
         {
@@ -27,11 +30,11 @@ namespace Espera.Mobile.Core.ViewModels
             {
                 var disposable = new CompositeDisposable();
 
-                var canModifyConn = NetworkMessenger.Instance.AccessPermission
+                this.canModify = NetworkMessenger.Instance.AccessPermission
                     .Select(x => x == NetworkAccessPermission.Admin)
-                    .Replay(1);
-                this.CanModify = canModifyConn;
-                canModifyConn.Connect().DisposeWith(disposable);
+                    .ToProperty(this, x => x.CanModify);
+                var temp = this.CanModify;
+                this.canModify.DisposeWith(disposable);
 
                 this.LoadPlaylistCommand = ReactiveCommand.CreateAsyncObservable(_ =>
                     NetworkMessenger.Instance.GetCurrentPlaylistAsync().ToObservable()
@@ -68,10 +71,15 @@ namespace Espera.Mobile.Core.ViewModels
 
                 var canVote = this.WhenAnyValue(x => x.CurrentSong, x => x.RemainingVotes, (currentSong, remainingVotes) =>
                         currentSong != null && remainingVotes > 0);
-                this.VoteCommand = ReactiveCommand.CreateAsyncTask(canVote, x => NetworkMessenger.Instance.VoteAsync(this.Entries[(int)x].Guid));
+                this.VoteCommand = ReactiveCommand.CreateAsyncTask(canVote, _ => NetworkMessenger.Instance.VoteAsync(this.SelectedEntry.Guid));
 
-                this.PlayPlaylistSongCommand = ReactiveCommand.CreateAsyncTask(this.CanModify, x => NetworkMessenger.Instance
-                        .PlayPlaylistSongAsync(this.Entries[(int)x].Guid));
+                this.canVoteOnSelectedEntry = this.WhenAnyValue(x => x.SelectedEntry).Select(x => x != null && x.IsVoteAble)
+                    .CombineLatest(this.WhenAnyValue(x => x.RemainingVotes).Select(x => x.HasValue), (isVoteable, hasVotes) => isVoteable && hasVotes)
+                    .ToProperty(this, x => x.CanVoteOnSelectedEntry);
+                var canVoteTemp = this.CanVoteOnSelectedEntry;
+
+                this.PlayPlaylistSongCommand = ReactiveCommand.CreateAsyncTask(this.WhenAnyValue(x => x.CanModify), _ => NetworkMessenger.Instance
+                    .PlayPlaylistSongAsync(this.SelectedEntry.Guid));
                 this.Message = this.PlayPlaylistSongCommand
                     .Select(x => x.Status == ResponseStatus.Success ? "Playing song" : "Playback failed")
                     .Merge(this.LoadPlaylistCommand.ThrownExceptions.Select(_ => "Loading playlist failed")
@@ -80,13 +88,13 @@ namespace Espera.Mobile.Core.ViewModels
                 var canPlayNextSong = this.entries.Changed.Select(_ => this.entries)
                     .StartWith(this.entries)
                     .Select(x => x.Any(y => y.IsPlaying) && x.FirstOrDefault(y => y.IsPlaying) != x.LastOrDefault())
-                    .CombineLatest(this.CanModify, (canPlayNext, canModify) => canPlayNext && canModify);
+                    .CombineLatest(this.WhenAnyValue(x => x.CanModify), (canPlayNext, canModify) => canPlayNext && canModify);
                 this.PlayNextSongCommand = ReactiveCommand.CreateAsyncTask(canPlayNextSong, _ => NetworkMessenger.Instance.PlayNextSongAsync());
 
                 var canPlayPreviousSong = this.entries.Changed.Select(_ => this.entries)
                     .StartWith(this.entries)
                     .Select(x => x.Any(y => y.IsPlaying) && x.FirstOrDefault(y => y.IsPlaying) != x.FirstOrDefault())
-                    .CombineLatest(this.CanModify, (canPlayPrevious, canModify) => canPlayPrevious && canModify);
+                    .CombineLatest(this.WhenAnyValue(x => x.CanModify), (canPlayPrevious, canModify) => canPlayPrevious && canModify);
                 this.PlayPreviousSongCommand = ReactiveCommand.CreateAsyncTask(canPlayPreviousSong, _ => NetworkMessenger.Instance.PlayPreviousSongAsync());
 
                 this.isPlaying = this.WhenAnyValue(x => x.PlaybackState)
@@ -95,7 +103,7 @@ namespace Espera.Mobile.Core.ViewModels
 
                 var canPlayOrPause = this.WhenAnyValue(x => x.PlaybackState)
                     .Select(x => x == NetworkPlaybackState.Playing || x == NetworkPlaybackState.Paused)
-                    .CombineLatest(this.CanModify, (canPlay, canModify) => canPlay && canModify);
+                    .CombineLatest(this.WhenAnyValue(x => x.CanModify), (canPlay, canModify) => canPlay && canModify);
                 this.PlayPauseCommand = ReactiveCommand.CreateAsyncTask(canPlayOrPause, _ =>
                 {
                     if (this.IsPlaying)
@@ -106,14 +114,14 @@ namespace Espera.Mobile.Core.ViewModels
                     return NetworkMessenger.Instance.ContinueSongAsync();
                 });
 
-                this.RemoveSongCommand = ReactiveCommand.CreateAsyncTask(this.CanModify, x =>
-                    NetworkMessenger.Instance.RemovePlaylistSongAsync(this.Entries[(int)x].Guid));
+                this.RemoveSongCommand = ReactiveCommand.CreateAsyncTask(this.WhenAnyValue(x => x.CanModify), _ =>
+                    NetworkMessenger.Instance.RemovePlaylistSongAsync(this.SelectedEntry.Guid));
 
-                this.MoveSongDownCommand = ReactiveCommand.CreateAsyncTask(this.CanModify, x =>
-                    NetworkMessenger.Instance.MovePlaylistSongDownAsync(this.Entries[(int)x].Guid));
+                this.MoveSongDownCommand = ReactiveCommand.CreateAsyncTask(this.WhenAnyValue(x => x.CanModify), _ =>
+                    NetworkMessenger.Instance.MovePlaylistSongDownAsync(this.SelectedEntry.Guid));
 
-                this.MoveSongUpCommand = ReactiveCommand.CreateAsyncTask(this.CanModify, x =>
-                    NetworkMessenger.Instance.MovePlaylistSongUpAsync(this.Entries[(int)x].Guid));
+                this.MoveSongUpCommand = ReactiveCommand.CreateAsyncTask(this.WhenAnyValue(x => x.CanModify), _ =>
+                    NetworkMessenger.Instance.MovePlaylistSongUpAsync(this.SelectedEntry.Guid));
 
                 return disposable;
             });
@@ -124,7 +132,15 @@ namespace Espera.Mobile.Core.ViewModels
         /// <summary>
         /// Returns whether the playlist can be modified by the users. Always true for administrators.
         /// </summary>
-        public IObservable<bool> CanModify { get; private set; }
+        public bool CanModify
+        {
+            get { return this.canModify.Value; }
+        }
+
+        public bool CanVoteOnSelectedEntry
+        {
+            get { return this.canVoteOnSelectedEntry.Value; }
+        }
 
         public PlaylistEntryViewModel CurrentSong
         {
@@ -168,6 +184,12 @@ namespace Espera.Mobile.Core.ViewModels
         }
 
         public ReactiveCommand<ResponseInfo> RemoveSongCommand { get; private set; }
+
+        public PlaylistEntryViewModel SelectedEntry
+        {
+            get { return this.selectedEntry; }
+            set { this.RaiseAndSetIfChanged(ref this.selectedEntry, value); }
+        }
 
         public ReactiveCommand<ResponseInfo> VoteCommand { get; private set; }
     }

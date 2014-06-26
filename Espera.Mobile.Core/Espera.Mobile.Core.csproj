@@ -98,6 +98,9 @@
     <Compile Include="SongFetchers\RemoteSongFetcher.cs" />
     <Compile Include="Songs\RemoteSong.cs" />
     <Compile Include="Songs\Song.cs" />
+    <Compile Include="UI\PlaylistPage.xaml.cs">
+      <DependentUpon>PlaylistPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\XamFormsApp.cs" />
     <Compile Include="ViewModels\ArtistsViewModel.cs" />
     <Compile Include="ViewModels\LocalSongsViewModel.cs" />
@@ -129,7 +132,12 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="UI\PlaylistPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UI\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>

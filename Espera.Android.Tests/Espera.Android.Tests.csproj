@@ -107,6 +107,7 @@
     <Compile Include="PlaylistViewModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers.cs" />
+    <Compile Include="RemoteSongsViewModelTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

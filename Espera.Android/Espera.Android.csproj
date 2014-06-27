@@ -129,16 +129,12 @@
     <Compile Include="Views\LocalSongView.cs" />
     <Compile Include="Views\MainActivity.cs" />
     <Compile Include="Views\SettingsActivity.cs" />
-    <Compile Include="Views\RemoteSongsActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
-    <AndroidResource Include="Resources\Layout\RemoteSongs.axml">
-      <SubType>AndroidResource</SubType>
-    </AndroidResource>
     <AndroidResource Include="Resources\Layout\Artists.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>

@@ -17,7 +17,7 @@ namespace Espera.Mobile.Core.UI
         {
             InitializeComponent();
 
-            this.ViewModel = new ArtistsViewModel<RemoteSong>(new RemoteSongFetcher());
+            this.ViewModel = new ArtistsViewModel<RemoteSong>(new RemoteSongFetcher(), BlobCacheKeys.SelectedRemoteSongs);
             this.BindingContext = this.ViewModel;
 
             this.ViewModel.LoadCommand.IsExecuting

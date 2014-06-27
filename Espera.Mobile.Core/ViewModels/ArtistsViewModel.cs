@@ -15,7 +15,7 @@ namespace Espera.Mobile.Core.ViewModels
         private string selectedArtist;
         private IReadOnlyList<T> songs;
 
-        public ArtistsViewModel(ISongFetcher<T> songFetcher)
+        public ArtistsViewModel(ISongFetcher<T> songFetcher, string serializationKey)
         {
             if (songFetcher == null)
                 throw new ArgumentNullException("songFetcher");
@@ -30,7 +30,7 @@ namespace Espera.Mobile.Core.ViewModels
 
             this.WhenAnyValue(x => x.SelectedArtist).Where(x => x != null)
                 .Select(FilterSongsByArtist)
-                .Select(x => BlobCache.InMemory.InsertObject(BlobCacheKeys.SelectedRemoteSongs, x))
+                .Select(x => BlobCache.InMemory.InsertObject(serializationKey, x))
                 .Concat()
                 .Subscribe();
         }
@@ -59,7 +59,7 @@ namespace Espera.Mobile.Core.ViewModels
                 .ToList();
         }
 
-        private IEnumerable<Song> FilterSongsByArtist(string artist)
+        private IEnumerable<T> FilterSongsByArtist(string artist)
         {
             return this.songs
                 .Where(x => x.Artist.Equals(this.SelectedArtist, StringComparison.InvariantCultureIgnoreCase))

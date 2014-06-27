@@ -84,6 +84,7 @@
   <ItemGroup>
     <Compile Include="Analytics\AnalyticsMixin.cs" />
     <Compile Include="Analytics\IAnalytics.cs" />
+    <Compile Include="BlobCacheKeys.cs" />
     <Compile Include="MeasureHelper.cs" />
     <Compile Include="Network\IWifiService.cs" />
     <Compile Include="Songs\LocalSong.cs" />
@@ -98,6 +99,9 @@
     <Compile Include="SongFetchers\RemoteSongFetcher.cs" />
     <Compile Include="Songs\RemoteSong.cs" />
     <Compile Include="Songs\Song.cs" />
+    <Compile Include="UI\RemoteArtistsPage.xaml.cs">
+      <DependentUpon>RemoteArtistsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\PlaylistPage.xaml.cs">
       <DependentUpon>PlaylistPage.xaml</DependentUpon>
     </Compile>
@@ -111,6 +115,9 @@
     <Compile Include="ViewModels\RemoteSongsViewModel.cs" />
     <Compile Include="UI\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\RemoteSongsPage.xaml.cs">
+      <DependentUpon>RemoteSongsPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -137,9 +144,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\RemoteSongsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UI\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\RemoteArtistsPage.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>

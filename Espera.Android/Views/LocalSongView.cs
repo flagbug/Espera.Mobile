@@ -1,11 +1,6 @@
-using Android.Content;
-using Android.Views;
-using Android.Widget;
-using Espera.Mobile.Core.ViewModels;
-using ReactiveUI;
-
 namespace Espera.Android.Views
 {
+    /*
     public class LocalSongView : ReactiveViewHost<LocalSongViewModel>
     {
         public LocalSongView(Context ctx, LocalSongViewModel viewModel, ViewGroup parent)
@@ -24,5 +19,5 @@ namespace Espera.Android.Views
         public TextView LocalSongTitle { get; private set; }
 
         public ProgressBar LocalSongTransferProgress { get; private set; }
-    }
+    }*/
 }

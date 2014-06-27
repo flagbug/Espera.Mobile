@@ -1,20 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Linq;
-using Android.App;
-using Android.Content.PM;
-using Android.OS;
-using Android.Widget;
-using Espera.Mobile.Core.Settings;
-using Espera.Mobile.Core.ViewModels;
-using Espera.Network;
-using Google.Analytics.Tracking;
-using Newtonsoft.Json;
-using ReactiveUI;
-
 namespace Espera.Android.Views
 {
+    /*
     [Activity(ConfigurationChanges = ConfigChanges.Orientation)]
     public class RemoteSongsActivity : ReactiveActivity<RemoteSongsViewModel>
     {
@@ -90,5 +76,5 @@ namespace Espera.Android.Views
 
             EasyTracker.GetInstance(this).ActivityStop(this);
         }
-    }
+    }*/
 }

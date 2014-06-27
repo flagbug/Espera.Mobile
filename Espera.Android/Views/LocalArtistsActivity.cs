@@ -1,13 +1,6 @@
-using Android.App;
-using Android.Content;
-using Android.Content.PM;
-using Android.Provider;
-using Espera.Mobile.Core.Songs;
-using Espera.Mobile.Core.ViewModels;
-using Google.Analytics.Tracking;
-
 namespace Espera.Android.Views
 {
+    /*
     [Activity(Label = "Local Artists", ConfigurationChanges = ConfigChanges.Orientation)]
     public class LocalArtistsActivity : ArtistsActivity<LocalSong>
     {
@@ -38,5 +31,5 @@ namespace Espera.Android.Views
 
             this.StartActivity(intent);
         }
-    }
+    }*/
 }

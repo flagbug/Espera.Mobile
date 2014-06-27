@@ -1,19 +1,6 @@
-using Android.App;
-using Android.Content.PM;
-using Android.OS;
-using Android.Widget;
-using Espera.Mobile.Core.Songs;
-using Espera.Mobile.Core.ViewModels;
-using Google.Analytics.Tracking;
-using Newtonsoft.Json;
-using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Linq;
-
 namespace Espera.Android.Views
 {
+    /*
     [Activity(ConfigurationChanges = ConfigChanges.Orientation)]
     public class LocalSongsActivity : ReactiveActivity<LocalSongsViewModel>
     {
@@ -39,7 +26,7 @@ namespace Espera.Android.Views
 
             this.SongsList.Events().ItemClick.Select(x => x.Position)
                 .Subscribe(x => this.ViewModel.AddToPlaylistCommand.Execute(x));
-            /*
+
             this.SongsList.Events().ItemLongClick.Select(x => x.Position)
                 .Subscribe(x =>
                 {
@@ -58,7 +45,7 @@ namespace Espera.Android.Views
                         }
                     });
                     builder.Create().Show();
-                });*/
+                });
 
             this.ViewModel.Message.Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show());
         }
@@ -76,5 +63,5 @@ namespace Espera.Android.Views
 
             EasyTracker.GetInstance(this).ActivityStop(this);
         }
-    }
+    }*/
 }

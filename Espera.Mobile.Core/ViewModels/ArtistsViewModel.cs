@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using Akavache;
 using Espera.Mobile.Core.SongFetchers;
 using Espera.Mobile.Core.Songs;
-using Newtonsoft.Json;
 using ReactiveUI;
 
 namespace Espera.Mobile.Core.ViewModels
@@ -12,6 +12,7 @@ namespace Espera.Mobile.Core.ViewModels
     public class ArtistsViewModel<T> : ReactiveObject where T : Song
     {
         private readonly ObservableAsPropertyHelper<IReadOnlyList<string>> artists;
+        private string selectedArtist;
         private IReadOnlyList<T> songs;
 
         public ArtistsViewModel(ISongFetcher<T> songFetcher)
@@ -26,6 +27,12 @@ namespace Espera.Mobile.Core.ViewModels
                .ToProperty(this, x => x.Artists, new List<string>());
 
             this.Messages = this.LoadCommand.ThrownExceptions.Select(_ => "Loading artists failed");
+
+            this.WhenAnyValue(x => x.SelectedArtist).Where(x => x != null)
+                .Select(FilterSongsByArtist)
+                .Select(x => BlobCache.InMemory.InsertObject(BlobCacheKeys.SelectedRemoteSongs, x))
+                .Concat()
+                .Subscribe();
         }
 
         public IReadOnlyList<string> Artists
@@ -37,13 +44,10 @@ namespace Espera.Mobile.Core.ViewModels
 
         public IObservable<string> Messages { get; private set; }
 
-        public string SerializeSongsForSelectedArtist(string artist)
+        public string SelectedArtist
         {
-            IReadOnlyList<T> filteredSongs = this.songs
-                .Where(x => x.Artist.Equals(artist, StringComparison.InvariantCultureIgnoreCase))
-                .ToList();
-
-            return JsonConvert.SerializeObject(filteredSongs, Formatting.None);
+            get { return this.selectedArtist; }
+            set { this.RaiseAndSetIfChanged(ref this.selectedArtist, value); }
         }
 
         private static IReadOnlyList<string> GetArtists(IEnumerable<T> songs)
@@ -52,6 +56,13 @@ namespace Espera.Mobile.Core.ViewModels
                 .Select(g => g.Key)
                 .Distinct(StringComparer.InvariantCultureIgnoreCase)
                 .OrderBy(_ => _)
+                .ToList();
+        }
+
+        private IEnumerable<Song> FilterSongsByArtist(string artist)
+        {
+            return this.songs
+                .Where(x => x.Artist.Equals(this.SelectedArtist, StringComparison.InvariantCultureIgnoreCase))
                 .ToList();
         }
     }

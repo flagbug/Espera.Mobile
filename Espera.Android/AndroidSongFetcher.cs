@@ -32,9 +32,11 @@ namespace Espera.Android
             {
                 while (cursor.MoveToNext())
                 {
+                    string path = cursor.GetString(4);
+
                     var song = new LocalSong(cursor.GetString(0), cursor.GetString(1), cursor.GetString(2),
                         "AndroidMakesMeCry", // There isn't a simple genre column, you have to jump through some hoops, so ignore it for now
-                        TimeSpan.FromMilliseconds(cursor.GetInt(3)), cursor.GetString(4));
+                        TimeSpan.FromMilliseconds(cursor.GetInt(3)), path, () => System.IO.File.ReadAllBytes(path));
 
                     list.Add(song);
                 }

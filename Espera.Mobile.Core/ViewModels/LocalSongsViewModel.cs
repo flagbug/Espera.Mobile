@@ -42,7 +42,7 @@ namespace Espera.Mobile.Core.ViewModels
 
         private async Task QueueSong(LocalSongViewModel song)
         {
-            byte[] data = null;// File.ReadAllBytes(song.Path);
+            byte[] data = song.Model.Data();
 
             FileTransferStatus status = await NetworkMessenger.Instance.QueueRemoteSong(song.Model, data);
 

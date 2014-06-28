@@ -99,6 +99,12 @@
     <Compile Include="SongFetchers\RemoteSongFetcher.cs" />
     <Compile Include="Songs\RemoteSong.cs" />
     <Compile Include="Songs\Song.cs" />
+    <Compile Include="UI\LocalArtistsPage.xaml.cs">
+      <DependentUpon>LocalArtistsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\LocalSongsPage.xaml.cs">
+      <DependentUpon>LocalSongsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\RemoteArtistsPage.xaml.cs">
       <DependentUpon>RemoteArtistsPage.xaml</DependentUpon>
     </Compile>
@@ -155,6 +161,18 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UI\RemoteArtistsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\LocalArtistsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\LocalSongsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>

@@ -16,7 +16,7 @@ namespace Espera.Mobile.Core.UI
         {
             this.InitializeComponent();
 
-            var wifiService = (IWifiService)Locator.Current.GetService(typeof(IWifiService));
+            var wifiService = Locator.Current.GetService<IWifiService>();
 
             this.ViewModel = new MainViewModel();
             this.ViewModel.LocalAddress = wifiService.GetIpAddress();
@@ -38,7 +38,7 @@ namespace Espera.Mobile.Core.UI
             this.PlaylistButton.Clicked += async (sender, e) => await this.Navigation.PushAsync(new PlaylistPage());
 
             this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LocalArtistsButton.IsEnabled);
-            this.LocalArtistsButton.Clicked += async (sender, e) => await this.Navigation.PushAsync(null);
+            this.LocalArtistsButton.Clicked += async (sender, e) => await this.Navigation.PushAsync(new LocalArtistsPage());
         }
 
         object IViewFor.ViewModel

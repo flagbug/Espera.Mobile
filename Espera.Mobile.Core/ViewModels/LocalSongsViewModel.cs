@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -11,14 +13,16 @@ namespace Espera.Mobile.Core.ViewModels
 {
     public class LocalSongsViewModel : ReactiveObject
     {
-        public LocalSongsViewModel(IReadOnlyReactiveList<LocalSong> songs)
+        private LocalSongViewModel selectedSong;
+
+        public LocalSongsViewModel(IReadOnlyList<LocalSong> songs)
         {
             if (songs == null)
                 throw new ArgumentNullException("songs");
 
-            this.Songs = songs.CreateDerivedCollection(x => new LocalSongViewModel(x));
+            this.Songs = songs.Select(x => new LocalSongViewModel(x)).ToList();
 
-            this.AddToPlaylistCommand = ReactiveCommand.CreateAsyncTask(x => this.QueueSong(this.Songs[(int)x]));
+            this.AddToPlaylistCommand = ReactiveCommand.CreateAsyncTask(x => this.QueueSong(this.SelectedSong));
 
             this.Message = Observable.Never<string>()
                 .Throttle(TimeSpan.FromMilliseconds(200))
@@ -29,7 +33,13 @@ namespace Espera.Mobile.Core.ViewModels
 
         public IObservable<string> Message { get; private set; }
 
-        public IReadOnlyReactiveList<LocalSongViewModel> Songs { get; private set; }
+        public LocalSongViewModel SelectedSong
+        {
+            get { return this.selectedSong; }
+            set { this.RaiseAndSetIfChanged(ref this.selectedSong, value); }
+        }
+
+        public IReadOnlyList<LocalSongViewModel> Songs { get; private set; }
 
         private async Task QueueSong(LocalSongViewModel song)
         {

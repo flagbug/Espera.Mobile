@@ -124,9 +124,6 @@
     <Compile Include="Services\NetworkService.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Views\LocalArtistsActivity.cs" />
-    <Compile Include="Views\LocalSongsActivity.cs" />
-    <Compile Include="Views\LocalSongView.cs" />
     <Compile Include="Views\MainActivity.cs" />
     <Compile Include="Views\SettingsActivity.cs" />
   </ItemGroup>
@@ -136,12 +133,6 @@
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <AndroidResource Include="Resources\Layout\Settings.axml">
-      <SubType>AndroidResource</SubType>
-    </AndroidResource>
-    <AndroidResource Include="Resources\Layout\LocalSongs.axml">
-      <SubType>AndroidResource</SubType>
-    </AndroidResource>
-    <AndroidResource Include="Resources\Layout\LocalSongItem.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
   </ItemGroup>

@@ -111,42 +111,11 @@ namespace Espera.Android
 			}
 		}
 		
-		public partial class Id
-		{
-			
-			// aapt resource value: 0x7f070001
-			public const int LocalSongAlbum = 2131165185;
-			
-			// aapt resource value: 0x7f070000
-			public const int LocalSongTitle = 2131165184;
-			
-			// aapt resource value: 0x7f070002
-			public const int LocalSongTransferProgress = 2131165186;
-			
-			// aapt resource value: 0x7f070003
-			public const int SongsList = 2131165187;
-			
-			static Id()
-			{
-				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
-			}
-			
-			private Id()
-			{
-			}
-		}
-		
 		public partial class Layout
 		{
 			
 			// aapt resource value: 0x7f030000
-			public const int LocalSongItem = 2130903040;
-			
-			// aapt resource value: 0x7f030001
-			public const int LocalSongs = 2130903041;
-			
-			// aapt resource value: 0x7f030002
-			public const int Settings = 2130903042;
+			public const int Settings = 2130903040;
 			
 			static Layout()
 			{

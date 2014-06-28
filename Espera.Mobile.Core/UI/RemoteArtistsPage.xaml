@@ -5,6 +5,6 @@
     <Grid VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
         <ActivityIndicator x:Name="LoadIndicator" />
         <Label x:Name="EmptyIndicator" Text="Library is empty" VerticalOptions="Center" HorizontalOptions="Center" />
-        <ListView x:Name="ArtistsListView" Grid.Row="0" ItemsSource="{Binding Artists}" SelectedItem="{Binding SelectedArtist}" />
+        <ListView x:Name="ArtistsListView" Grid.Row="0"  SelectedItem="{Binding SelectedArtist}" />
     </Grid>
 </ContentPage>

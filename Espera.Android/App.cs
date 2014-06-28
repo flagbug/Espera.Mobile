@@ -5,6 +5,7 @@ using Android.Runtime;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.SongFetchers;
 using Espera.Mobile.Core.Songs;
+using Espera.Mobile.Networking;
 using ReactiveUI;
 using Splat;
 
@@ -36,6 +37,7 @@ namespace Espera.Android
                 new AndroidSongFetcher(x =>
                     this.ContentResolver.Query(MediaStore.Audio.Media.ExternalContentUri, x,
                         MediaStore.Audio.Media.InterfaceConsts.IsMusic + " != 0", null, null)), typeof(ISongFetcher<LocalSong>));
+            Locator.CurrentMutable.RegisterConstant(new NetworkMessengerImpl(), typeof(INetworkMessenger));
         }
     }
 }

@@ -54,7 +54,7 @@ namespace Espera.Mobile.Core.ViewModels
         {
             return songs.GroupBy(s => s.Artist)
                 .Select(g => g.Key)
-                .Distinct(StringComparer.InvariantCultureIgnoreCase)
+                .Distinct(StringComparer.CurrentCultureIgnoreCase)
                 .OrderBy(_ => _)
                 .ToList();
         }
@@ -62,7 +62,7 @@ namespace Espera.Mobile.Core.ViewModels
         private IEnumerable<T> FilterSongsByArtist(string artist)
         {
             return this.songs
-                .Where(x => x.Artist.Equals(this.SelectedArtist, StringComparison.InvariantCultureIgnoreCase))
+                .Where(x => x.Artist.Equals(this.SelectedArtist, StringComparison.CurrentCultureIgnoreCase))
                 .ToList();
         }
     }

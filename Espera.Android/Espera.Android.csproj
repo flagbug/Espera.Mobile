@@ -167,6 +167,10 @@
       <Project>{A66F5A81-780D-4B29-9A62-B8B37D2C8976}</Project>
       <Name>Espera.Mobile.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Espera.Mobile.Networking\Espera.Mobile.Networking.csproj">
+      <Project>{39e663ea-5f17-4201-9c43-3498f48fc2cd}</Project>
+      <Name>Espera.Mobile.Networking</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\Xamarin.Forms.1.1.1.6206\build\portable-win+net45+wp80+MonoAndroid10+MonoTouch10\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.1.1.1.6206\build\portable-win+net45+wp80+MonoAndroid10+MonoTouch10\Xamarin.Forms.targets')" />

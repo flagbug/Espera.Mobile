@@ -1,5 +1,4 @@
 using System;
-using System.Net;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -65,11 +64,11 @@ namespace Espera.Mobile.Core.ViewModels
         /// <summary>
         /// The Wifi IP address of this device.
         /// </summary>
-        public IPAddress LocalAddress { get; set; }
+        public string LocalAddress { get; set; }
 
-        private static async Task ConnectAsync(IPAddress localAddress, int port)
+        private static async Task ConnectAsync(string localAddress, int port)
         {
-            IPAddress address = await NetworkMessenger.DiscoverServerAsync(localAddress, port);
+            string address = await NetworkMessenger.Instance.DiscoverServerAsync(localAddress, port);
 
             string password = UserSettings.Instance.EnableAdministratorMode ? UserSettings.Instance.AdministratorPassword : null;
 

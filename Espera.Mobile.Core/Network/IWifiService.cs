@@ -1,9 +1,7 @@
-﻿using System.Net;
-
-namespace Espera.Mobile.Core.Network
+﻿namespace Espera.Mobile.Core.Network
 {
     public interface IWifiService
     {
-        IPAddress GetIpAddress();
+        string GetIpAddress();
     }
 }

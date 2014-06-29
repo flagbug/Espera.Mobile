@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Songs;
 using ReactiveUI;
+using Splat;
 
 namespace Espera.Mobile.Core.ViewModels
 {
@@ -42,7 +43,8 @@ namespace Espera.Mobile.Core.ViewModels
 
         private async Task QueueSong(LocalSongViewModel song)
         {
-            byte[] data = song.Model.Data();
+            var file = Locator.Current.GetService<IFile>();
+            byte[] data = file.ReadAllBytes(song.Path);
 
             FileTransferStatus status = await NetworkMessenger.Instance.QueueRemoteSong(song.Model, data);
 

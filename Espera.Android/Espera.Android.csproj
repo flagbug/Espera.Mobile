@@ -123,10 +123,12 @@
     <Compile Include="AndroidSongFetcher.cs" />
     <Compile Include="AndroidWifiService.cs" />
     <Compile Include="App.cs" />
+    <Compile Include="File.cs" />
     <Compile Include="LinkerOverrides.cs" />
     <Compile Include="Services\NetworkService.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ToastNotification.cs" />
     <Compile Include="Views\MainActivity.cs" />
     <Compile Include="Views\SettingsActivity.cs" />
   </ItemGroup>

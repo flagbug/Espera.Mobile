@@ -6,6 +6,7 @@ using Android.OS;
 using Espera.Android.Services;
 using Espera.Mobile.Core.UI;
 using Google.Analytics.Tracking;
+using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 
 namespace Espera.Android.Views
@@ -18,7 +19,8 @@ namespace Espera.Android.Views
         {
             base.OnCreate(bundle);
 
-            Xamarin.Forms.Forms.Init(this, bundle);
+            Forms.Init(this, bundle);
+
             this.SetPage(XamFormsApp.GetMainPage());
 
             this.StartService(new Intent(this, typeof(NetworkService)));

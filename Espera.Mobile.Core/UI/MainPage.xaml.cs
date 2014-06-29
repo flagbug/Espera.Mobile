@@ -1,4 +1,6 @@
-﻿using System.Reactive.Linq;
+﻿using System;
+using System.Diagnostics;
+using System.Reactive.Linq;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.ViewModels;
 using ReactiveUI;
@@ -30,6 +32,9 @@ namespace Espera.Mobile.Core.UI
                 .CombineLatest(this.ViewModel.WhenAnyValue(x => x.IsConnected), (connecting, connected) =>
                     connected ? "Disconnect" : connecting ? "Connecting..." : "Connect")
                 .BindTo(this.ConnectButton, x => x.Text);
+
+            var notification = Locator.Current.GetService<INotification>();
+            this.ViewModel.ConnectionFailed.Subscribe(notification.Notify);
 
             this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.RemoteArtistsButton.IsEnabled);
             this.RemoteArtistsButton.Clicked += async (sender, e) => await this.Navigation.PushAsync(new RemoteArtistsPage());

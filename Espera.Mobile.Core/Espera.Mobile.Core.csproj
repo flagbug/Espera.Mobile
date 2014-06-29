@@ -38,6 +38,7 @@
     <Compile Include="Analytics\AnalyticsMixin.cs" />
     <Compile Include="Analytics\IAnalytics.cs" />
     <Compile Include="BlobCacheKeys.cs" />
+    <Compile Include="IFile.cs" />
     <Compile Include="MeasureHelper.cs" />
     <Compile Include="Network\IWifiService.cs" />
     <Compile Include="Network\NetworkMessenger.cs" />
@@ -52,6 +53,7 @@
     <Compile Include="SongFetchers\RemoteSongFetcher.cs" />
     <Compile Include="Songs\RemoteSong.cs" />
     <Compile Include="Songs\Song.cs" />
+    <Compile Include="UI\INotification.cs" />
     <Compile Include="UI\LocalArtistsPage.xaml.cs">
       <DependentUpon>LocalArtistsPage.xaml</DependentUpon>
     </Compile>

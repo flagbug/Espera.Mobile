@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using Akavache;
@@ -24,6 +25,8 @@ namespace Espera.Mobile.Core.UI
 
             this.ViewModel = new RemoteSongsViewModel(songs.ToList());
             this.BindingContext = this.ViewModel;
+
+            this.ViewModel.Messages.Subscribe(XamFormsApp.Notifications.Notify);
 
             this.SongsListView.ItemTapped += async (sender, e) =>
             {

@@ -1,4 +1,5 @@
-﻿using Espera.Mobile.Core.SongFetchers;
+﻿using System;
+using Espera.Mobile.Core.SongFetchers;
 using Espera.Mobile.Core.Songs;
 using Espera.Mobile.Core.ViewModels;
 using ReactiveUI;
@@ -21,12 +22,14 @@ namespace Espera.Mobile.Core.UI
             this.ViewModel = new ArtistsViewModel<LocalSong>(songFetcher, BlobCacheKeys.SelectedLocalSongs);
             this.BindingContext = this.ViewModel;
 
+            this.ViewModel.Messages.Subscribe(XamFormsApp.Notifications.Notify);
+
             this.ViewModel.WhenAnyValue(x => x.Artists).BindTo(this.ArtistsListView, x => x.ItemsSource);
-			
-			this.ViewModel.WhenAnyValue(x => x.Artists).Select(x => x.Count == 0)
-				.BindTo(this.EmptyIndicator, x => x.IsVisible);
-			
-			this.ArtistsListView.ItemTapped += async (sender, e) => await this.Navigation.PushAsync(new LocalSongsPage());
+
+            this.ViewModel.WhenAnyValue(x => x.Artists).Select(x => x.Count == 0)
+                .BindTo(this.EmptyIndicator, x => x.IsVisible);
+
+            this.ArtistsListView.ItemTapped += async (sender, e) => await this.Navigation.PushAsync(new LocalSongsPage());
 
             this.ViewModel.LoadCommand.Execute(null);
         }

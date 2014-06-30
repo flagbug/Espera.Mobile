@@ -33,8 +33,7 @@ namespace Espera.Mobile.Core.UI
                     connected ? "Disconnect" : connecting ? "Connecting..." : "Connect")
                 .BindTo(this.ConnectButton, x => x.Text);
 
-            var notification = Locator.Current.GetService<INotification>();
-            this.ViewModel.ConnectionFailed.Subscribe(notification.Notify);
+            this.ViewModel.ConnectionFailed.Subscribe(XamFormsApp.Notifications.Notify);
 
             this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.RemoteArtistsButton.IsEnabled);
             this.RemoteArtistsButton.Clicked += async (sender, e) => await this.Navigation.PushAsync(new RemoteArtistsPage());

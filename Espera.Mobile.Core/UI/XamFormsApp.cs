@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using Splat;
 using Xamarin.Forms;
 
 namespace Espera.Mobile.Core.UI
@@ -8,6 +9,11 @@ namespace Espera.Mobile.Core.UI
         static XamFormsApp()
         {
             RxApp.MainThreadScheduler = new DeviceScheduler();
+        }
+
+        public static INotification Notifications
+        {
+            get { return Locator.Current.GetService<INotification>(); }
         }
 
         public static Page GetMainPage()

@@ -29,14 +29,13 @@ namespace Espera.Mobile.Core.ViewModels
             var addToPlaylistMessage = this.AddToPlaylistCommand
                 .Select(x => x.Status == ResponseStatus.Success ? "Song added to playlist" : "Error adding song");
 
-            this.Message = playSongsMessage.Merge(addToPlaylistMessage)
-                .Throttle(TimeSpan.FromMilliseconds(200))
+            this.Messages = playSongsMessage.Merge(addToPlaylistMessage)
                 .ObserveOn(RxApp.MainThreadScheduler);
         }
 
         public ReactiveCommand<ResponseInfo> AddToPlaylistCommand { get; private set; }
 
-        public IObservable<string> Message { get; private set; }
+        public IObservable<string> Messages { get; private set; }
 
         public ReactiveCommand<ResponseInfo> PlaySongsCommand { get; private set; }
 

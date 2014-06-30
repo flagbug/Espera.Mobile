@@ -31,11 +31,7 @@ namespace Espera.Mobile.Core.UI
                 .CombineLatest(this.ViewModel.WhenAnyValue(x => x.Artists, x => x.Count == 0), (loading, empty) => !loading && empty)
                 .BindTo(this.EmptyIndicator, x => x.IsVisible);
 
-            this.ViewModel.Messages.Subscribe(async x =>
-            {
-                await this.DisplayAlert("Error", x, "Ok", null);
-                //await Navigation.PopAsync();
-            });
+            this.ViewModel.Messages.Subscribe(XamFormsApp.Notifications.Notify);
 
             this.ArtistsListView.ItemTapped += async (sender, e) => await this.Navigation.PushAsync(new RemoteSongsPage());
 

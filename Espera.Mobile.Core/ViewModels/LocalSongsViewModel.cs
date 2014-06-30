@@ -24,14 +24,14 @@ namespace Espera.Mobile.Core.ViewModels
 
             this.AddToPlaylistCommand = ReactiveCommand.CreateAsyncTask(x => this.QueueSong(this.SelectedSong));
 
-            this.Message = Observable.Never<string>()
-                .Throttle(TimeSpan.FromMilliseconds(200))
+            this.Messages = this.AddToPlaylistCommand.ThrownExceptions
+                .Select(_ => "Something went wrong")
                 .ObserveOn(RxApp.MainThreadScheduler);
         }
 
         public ReactiveCommand<Unit> AddToPlaylistCommand { get; private set; }
 
-        public IObservable<string> Message { get; private set; }
+        public IObservable<string> Messages { get; private set; }
 
         public LocalSongViewModel SelectedSong
         {

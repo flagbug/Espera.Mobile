@@ -53,6 +53,8 @@ namespace Espera.Mobile.Core.UI
                 .Select(x => !x)
                 .BindTo(this.PlaylistContent, x => x.IsVisible);
 
+            this.ViewModel.Message.Subscribe(XamFormsApp.Notifications.Notify);
+
             Observable.FromEventPattern<ItemTappedEventArgs>(h => this.PlaylistListView.ItemTapped += h, h => this.PlaylistListView.ItemTapped -= h)
                 .Subscribe(async x =>
                 {

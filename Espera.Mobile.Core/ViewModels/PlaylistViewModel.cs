@@ -23,9 +23,6 @@ namespace Espera.Mobile.Core.ViewModels
         private PlaylistEntryViewModel selectedEntry;
         private ObservableAsPropertyHelper<TimeSpan> totalTime;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Espera.Mobile.Core.ViewModels.PlaylistViewModel"/> class.
-        /// </summary>
         public PlaylistViewModel()
         {
             this.Activator = new ViewModelActivator();
@@ -165,6 +162,7 @@ namespace Espera.Mobile.Core.ViewModels
         public int CurrentTimeSeconds
         {
             get { return this.currentTimeSeconds.Value; }
+            set { NetworkMessenger.Instance.SetCurrentTime(TimeSpan.FromSeconds(value)); }
         }
 
         public IReadOnlyReactiveList<PlaylistEntryViewModel> Entries

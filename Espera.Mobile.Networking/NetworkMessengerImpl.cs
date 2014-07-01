@@ -356,6 +356,16 @@ namespace Espera.Mobile.Networking
             return response;
         }
 
+        public Task<ResponseInfo> SetCurrentTime(TimeSpan time)
+        {
+            var parameters = JObject.FromObject(new
+            {
+                time
+            });
+
+            return this.SendRequest(RequestAction.SetCurrentTime, parameters);
+        }
+
         public async Task<ResponseInfo> VoteAsync(Guid entryGuid)
         {
             var parameters = JObject.FromObject(new

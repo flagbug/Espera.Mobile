@@ -33,7 +33,7 @@
       <StackLayout Grid.Row="1" Orientation="Vertical">
         <StackLayout Orientation="Horizontal" Padding="5, 0, 5, 0">
           <Label x:Name="CurrentTimeLabel" VerticalOptions="Center" />
-          <Slider x:Name="TimeSlider" HorizontalOptions="FillAndExpand" />
+          <Slider x:Name="TimeSlider" HorizontalOptions="FillAndExpand" IsEnabled="{Binding CanModify}" />
           <Label x:Name="TotalTimeLabel" VerticalOptions="Center" />
         </StackLayout>
         <StackLayout Orientation="Horizontal" HorizontalOptions="Center" IsVisible="{Binding CanModify}">

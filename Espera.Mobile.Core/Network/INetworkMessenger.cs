@@ -60,6 +60,8 @@ namespace Espera.Mobile.Core.Network
 
         Task<ResponseInfo> RemovePlaylistSongAsync(Guid entryGuid);
 
+        Task<ResponseInfo> SetCurrentTime(TimeSpan time);
+
         Task<ResponseInfo> VoteAsync(Guid entryGuid);
     }
 }

@@ -14,7 +14,7 @@ namespace Espera.Android
 
             WifiInfo info = wifiManager.ConnectionInfo;
 
-            return new IPAddress(info.IpAddress).ToString();
+            return wifiManager.IsWifiEnabled ? new IPAddress(info.IpAddress).ToString() : null;
         }
     }
 }

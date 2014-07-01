@@ -16,8 +16,11 @@ namespace Espera.Mobile.Core.ViewModels
     {
         private ObservableAsPropertyHelper<bool> isConnected;
 
-        public MainViewModel()
+        public MainViewModel(Func<string> ipAddress)
         {
+            if (ipAddress == null)
+                throw new ArgumentNullException("ipAddress");
+
             this.Activator = new ViewModelActivator();
 
             this.WhenActivated(() =>
@@ -29,7 +32,7 @@ namespace Espera.Mobile.Core.ViewModels
                     .DisposeWith(disposable);
 
                 var canConnect = this.WhenAnyValue(x => x.IsConnected, x => !x);
-                this.ConnectCommand = ReactiveCommand.CreateAsyncObservable(canConnect, _ => ConnectAsync(this.LocalAddress, UserSettings.Instance.Port).ToObservable()
+                this.ConnectCommand = ReactiveCommand.CreateAsyncObservable(canConnect, _ => ConnectAsync(ipAddress(), UserSettings.Instance.Port).ToObservable()
                     .Timeout(TimeSpan.FromSeconds(10), RxApp.TaskpoolScheduler)
                     .Catch<Unit, TimeoutException>(ex => Observable.Throw<Unit>(new Exception("Connection failed"))));
 
@@ -57,13 +60,11 @@ namespace Espera.Mobile.Core.ViewModels
             get { return this.isConnected.Value; }
         }
 
-        /// <summary>
-        /// The Wifi IP address of this device.
-        /// </summary>
-        public string LocalAddress { get; set; }
-
         private static async Task ConnectAsync(string localAddress, int port)
         {
+            if (localAddress == null)
+                throw new Exception("You have to enable WiFi!");
+
             string address = await NetworkMessenger.Instance.DiscoverServerAsync(localAddress, port);
 
             string password = UserSettings.Instance.EnableAdministratorMode ? UserSettings.Instance.AdministratorPassword : null;

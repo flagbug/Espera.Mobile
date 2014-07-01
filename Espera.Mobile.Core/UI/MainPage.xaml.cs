@@ -20,8 +20,7 @@ namespace Espera.Mobile.Core.UI
 
             var wifiService = Locator.Current.GetService<IWifiService>();
 
-            this.ViewModel = new MainViewModel();
-            this.ViewModel.LocalAddress = wifiService.GetIpAddress();
+            this.ViewModel = new MainViewModel(wifiService.GetIpAddress);
             this.ViewModel.Activator.Activate();
 
             var connectOrDisconnectCommand = this.ViewModel.WhenAnyValue(x => x.IsConnected)

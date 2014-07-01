@@ -3,40 +3,45 @@
 		     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 		     x:Class="Espera.Mobile.Core.UI.PlaylistPage"
              xmlns:controls="clr-namespace:Espera.Mobile.Core.UI.Controls;assembly=Espera.Mobile.Core">
-    <Grid VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
-        <ActivityIndicator x:Name="LoadIndicator" />
-		<Label x:Name="EmptyIndicator" Text="Playlist is empty" VerticalOptions="Center" HorizontalOptions="Center" />
-        <Grid x:Name="PlaylistContent">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+  <Grid VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+    <ActivityIndicator x:Name="LoadIndicator" />
+    <Label x:Name="EmptyIndicator" Text="Playlist is empty" VerticalOptions="Center" HorizontalOptions="Center" />
+    <Grid x:Name="PlaylistContent">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
 
-            <ListView x:Name="PlaylistListView" Grid.Row="0" ItemsSource="{Binding Entries}" HasUnevenRows="True" SelectedItem="{Binding SelectedEntry}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <ViewCell.View>
-                                <StackLayout Orientation="Horizontal" Padding="8">
-                                    <Image Source="CurrentSongIcon" IsVisible="{Binding IsPlaying}" />
-                                    <StackLayout Orientation="Vertical">
-                                        <Label Text="{Binding Title}" Font="Large" />
-                                        <Label Text="{Binding Artist}" Font="Small" />
-                                    </StackLayout>
-                                </StackLayout>
-                            </ViewCell.View>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-			<StackLayout Grid.Row="1" Orientation="Vertical">
-	            <Slider x:Name="TimeSlider" />
-	            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" IsVisible="{Binding CanModify}">
-	                <Image x:Name="PreviousButton" Source="Previous" />
-	                <Image x:Name="PlayPauseButton" />
-	                <Image x:Name="NextButton" Source="Next" />
-	            </StackLayout>
-			</StackLayout>
-        </Grid>
+      <ListView x:Name="PlaylistListView" Grid.Row="0" ItemsSource="{Binding Entries}" HasUnevenRows="True" SelectedItem="{Binding SelectedEntry}">
+        <ListView.ItemTemplate>
+          <DataTemplate>
+            <ViewCell>
+              <ViewCell.View>
+                <StackLayout Orientation="Horizontal" Padding="8">
+                  <Image Source="CurrentSongIcon" IsVisible="{Binding IsPlaying}" />
+                  <StackLayout Orientation="Vertical">
+                    <Label Text="{Binding Title}" Font="Large" />
+                    <Label Text="{Binding Artist}" Font="Small" />
+                  </StackLayout>
+                </StackLayout>
+              </ViewCell.View>
+            </ViewCell>
+          </DataTemplate>
+        </ListView.ItemTemplate>
+      </ListView>
+
+      <StackLayout Grid.Row="1" Orientation="Vertical">
+        <StackLayout Orientation="Horizontal" Padding="5, 0, 5, 0">
+          <Label x:Name="CurrentTimeLabel" VerticalOptions="Center" />
+          <Slider x:Name="TimeSlider" HorizontalOptions="FillAndExpand" />
+          <Label x:Name="TotalTimeLabel" VerticalOptions="Center" />
+        </StackLayout>
+        <StackLayout Orientation="Horizontal" HorizontalOptions="Center" IsVisible="{Binding CanModify}">
+          <Image x:Name="PreviousButton" Source="Previous" />
+          <Image x:Name="PlayPauseButton" />
+          <Image x:Name="NextButton" Source="Next" />
+        </StackLayout>
+      </StackLayout>
     </Grid>
+  </Grid>
 </ContentPage>

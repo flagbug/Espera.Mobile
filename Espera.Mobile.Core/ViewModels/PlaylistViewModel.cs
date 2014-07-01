@@ -77,6 +77,7 @@ namespace Espera.Mobile.Core.ViewModels
                     .Select(x => Observable.Interval(TimeSpan.FromSeconds(1), RxApp.TaskpoolScheduler)
                         .Select((_, i) => x + i).StartWith(x).Where(_ => this.IsPlaying))
                     .Switch()
+                    .ObserveOn(RxApp.MainThreadScheduler)
                     .ToProperty(this, x => x.CurrentTimeSeconds);
 
                 this.totalTime = currentPlaylist.Select(x => x.TotalTime)

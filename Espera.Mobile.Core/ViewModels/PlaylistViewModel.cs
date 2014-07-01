@@ -74,7 +74,8 @@ namespace Espera.Mobile.Core.ViewModels
                 this.currentTimeSeconds = currentPlaylist.Select(x => x.CurrentTime)
                     .Merge(NetworkMessenger.Instance.PlaybackTimeChanged)
                     .Select(x => (int)x.TotalSeconds)
-                    .Select(x => Observable.Interval(TimeSpan.FromSeconds(1), RxApp.TaskpoolScheduler).Select((_, i) => x + i))
+                    .Select(x => Observable.Interval(TimeSpan.FromSeconds(1), RxApp.TaskpoolScheduler)
+                        .Select((_, i) => x + i).StartWith(x).Where(_ => this.IsPlaying))
                     .Switch()
                     .ToProperty(this, x => x.CurrentTimeSeconds);
 

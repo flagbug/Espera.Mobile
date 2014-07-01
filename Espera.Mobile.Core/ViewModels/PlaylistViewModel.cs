@@ -78,7 +78,8 @@ namespace Espera.Mobile.Core.ViewModels
                         .Select((_, i) => x + i).StartWith(x).Where(_ => this.IsPlaying))
                     .Switch()
                     .ObserveOn(RxApp.MainThreadScheduler)
-                    .ToProperty(this, x => x.CurrentTimeSeconds);
+                    .ToProperty(this, x => x.CurrentTimeSeconds)
+                    .DisposeWith(disposable);
 
                 this.totalTime = currentPlaylist.Select(x => x.TotalTime)
                     .ToProperty(this, x => x.TotalTime, TimeSpan.FromSeconds(1));

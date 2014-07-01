@@ -51,7 +51,7 @@ namespace Espera.Android.Tests
                 var isConnected = new BehaviorSubject<bool>(false);
                 var messenger = Substitute.For<INetworkMessenger>();
                 messenger.IsConnected.Returns(isConnected);
-                messenger.ConnectAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<Guid>(), null)
+                messenger.ConnectAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<Guid>(), Arg.Any<string>())
                     .Returns(Tuple.Create(ResponseStatus.Success,
                         new ConnectionInfo
                         {
@@ -78,7 +78,7 @@ namespace Espera.Android.Tests
             public void TimeoutTriggersConnectionFailed()
             {
                 var messenger = Substitute.For<INetworkMessenger>();
-                messenger.ConnectAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<Guid>(), null)
+                messenger.ConnectAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<Guid>(), Arg.Any<string>())
                     .Returns(Observable.Never<Tuple<ResponseStatus, ConnectionInfo>>().ToTask());
                 messenger.IsConnected.Returns(Observable.Return(false));
                 messenger.DiscoverServerAsync(Arg.Any<string>(), Arg.Any<int>()).Returns(Task.FromResult("192.168.1.1"));
@@ -104,7 +104,7 @@ namespace Espera.Android.Tests
             {
                 var messenger = Substitute.For<INetworkMessenger>();
                 messenger.IsConnected.Returns(Observable.Return(false));
-                messenger.ConnectAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<Guid>(), null)
+                messenger.ConnectAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<Guid>(), Arg.Any<string>())
                     .Returns(Tuple.Create(ResponseStatus.WrongPassword,
                         new ConnectionInfo { AccessPermission = NetworkAccessPermission.Admin, ServerVersion = new Version(99, 99) }).ToTaskResult());
                 messenger.DiscoverServerAsync(Arg.Any<string>(), Arg.Any<int>()).Returns(Task.FromResult("192.168.1.1"));

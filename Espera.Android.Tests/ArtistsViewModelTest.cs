@@ -40,11 +40,12 @@ namespace Espera.Android.Tests
                 var songFetcher = Substitute.For<ISongFetcher<Song>>();
                 songFetcher.GetSongsAsync().Returns(Observable.Return(songs));
 
-                var vm = new ArtistsViewModel<Song>(songFetcher);
+                var vm = new ArtistsViewModel<Song>(songFetcher, "AnyKey");
+                var artists = vm.Artists;
 
                 await vm.LoadCommand.ExecuteAsync();
 
-                Assert.True(new[] { "A", "B", "C" }.SequenceEqual(vm.Artists));
+                Assert.Equal(new[] { "A", "B", "C" }.AsEnumerable(), vm.Artists.AsEnumerable());
             }
 
             [Fact]
@@ -54,7 +55,7 @@ namespace Espera.Android.Tests
                 songFetcher.GetSongsAsync().Returns(Observable.Never<IReadOnlyList<Song>>()
                     .Timeout(TimeSpan.FromSeconds(10)));
 
-                var vm = new ArtistsViewModel<Song>(songFetcher);
+                var vm = new ArtistsViewModel<Song>(songFetcher, "AnyKey");
 
                 var coll = vm.Messages.CreateCollection();
 

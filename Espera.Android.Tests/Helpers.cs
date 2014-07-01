@@ -17,7 +17,7 @@ namespace Espera.Android.Tests
                 Artist = String.Empty,
                 Duration = TimeSpan.Zero,
                 Genre = String.Empty,
-                Guid = new Guid(),
+                Guid = Guid.NewGuid(),
                 Source = NetworkSongSource.Local,
                 Title = String.Empty
             };

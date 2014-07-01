@@ -40,6 +40,9 @@ namespace Espera.Mobile.Core.UI
             this.ViewModel.PlayNextSongCommand.CanExecuteObservable.Select(opacitySelector)
                 .BindTo(this.NextButton, x => x.Opacity);
 
+			this.Bind(this.ViewModel, x => x.CurrentTimeSeconds, x => x.TimeSlider.Value);
+			this.Bind(this.ViewModel, x => x.TotalTime.TotalSeconds, x => x.TimeSlider.Maximum); 
+
             this.ViewModel.LoadPlaylistCommand.IsExecuting
                 .BindTo(this.LoadIndicator, x => x.IsVisible);
             this.ViewModel.LoadPlaylistCommand.IsExecuting

@@ -18,6 +18,8 @@ namespace Espera.Mobile.Core.Network
 
         IObservable<NetworkPlaybackState> PlaybackStateChanged { get; }
 
+        IObservable<TimeSpan> PlaybackTimeChanged { get; }
+
         IObservable<NetworkPlaylist> PlaylistChanged { get; }
 
         IObservable<int?> RemainingVotesChanged { get; }

@@ -15,12 +15,17 @@ namespace Espera.Mobile.Core.ViewModels
         private ObservableAsPropertyHelper<bool> canModify;
         private ObservableAsPropertyHelper<bool> canVoteOnSelectedEntry;
         private ObservableAsPropertyHelper<PlaylistEntryViewModel> currentSong;
+        private ObservableAsPropertyHelper<int> currentTimeSeconds;
         private ReactiveList<PlaylistEntryViewModel> entries;
         private ObservableAsPropertyHelper<bool> isPlaying;
         private ObservableAsPropertyHelper<NetworkPlaybackState> playbackState;
         private ObservableAsPropertyHelper<int?> remainingVotes;
         private PlaylistEntryViewModel selectedEntry;
+        private ObservableAsPropertyHelper<TimeSpan> totalTime;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Espera.Mobile.Core.ViewModels.PlaylistViewModel"/> class.
+        /// </summary>
         public PlaylistViewModel()
         {
             this.Activator = new ViewModelActivator();
@@ -68,6 +73,16 @@ namespace Espera.Mobile.Core.ViewModels
                 this.playbackState = currentPlaylist.Select(x => x.PlaybackState)
                     .Merge(NetworkMessenger.Instance.PlaybackStateChanged)
                     .ToProperty(this, x => x.PlaybackState);
+
+                this.currentTimeSeconds = currentPlaylist.Select(x => x.CurrentTime)
+                    .Merge(NetworkMessenger.Instance.PlaybackTimeChanged)
+                    .Select(x => (int)x.TotalSeconds)
+                    .Select(x => Observable.Interval(TimeSpan.FromSeconds(1), RxApp.TaskpoolScheduler).Select((_, i) => x + i))
+                    .Switch()
+                    .ToProperty(this, x => x.CurrentTimeSeconds);
+
+                this.totalTime = currentPlaylist.Select(x => x.TotalTime)
+                    .ToProperty(this, x => x.TotalTime, TimeSpan.FromSeconds(1));
 
                 var canVote = this.WhenAnyValue(x => x.CurrentSong, x => x.RemainingVotes, (currentSong, remainingVotes) =>
                         currentSong != null && remainingVotes > 0);
@@ -147,6 +162,11 @@ namespace Espera.Mobile.Core.ViewModels
             get { return this.currentSong.Value; }
         }
 
+        public int CurrentTimeSeconds
+        {
+            get { return this.currentTimeSeconds.Value; }
+        }
+
         public IReadOnlyReactiveList<PlaylistEntryViewModel> Entries
         {
             get { return this.entries; }
@@ -189,6 +209,11 @@ namespace Espera.Mobile.Core.ViewModels
         {
             get { return this.selectedEntry; }
             set { this.RaiseAndSetIfChanged(ref this.selectedEntry, value); }
+        }
+
+        public TimeSpan TotalTime
+        {
+            get { return this.totalTime.Value; }
         }
 
         public ReactiveCommand<ResponseInfo> VoteCommand { get; private set; }

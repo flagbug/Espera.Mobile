@@ -77,6 +77,9 @@ namespace Espera.Mobile.Networking
             this.PlaybackStateChanged = pushMessages.Where(x => x.PushAction == PushAction.UpdatePlaybackState)
                 .Select(x => x.Content["state"].ToObject<NetworkPlaybackState>());
 
+            this.PlaybackTimeChanged = pushMessages.Where(x => x.PushAction == PushAction.UpdateCurrentPlaybackTime)
+                .Select(x => x.Content["currentPlaybackTime"].ToObject<TimeSpan>());
+
             this.RemainingVotesChanged = pushMessages.Where(x => x.PushAction == PushAction.UpdateRemainingVotes)
                 .Select(x => x.Content["remainingVotes"].ToObject<int?>());
 
@@ -99,6 +102,8 @@ namespace Espera.Mobile.Networking
         public IObservable<bool> IsConnected { get; private set; }
 
         public IObservable<NetworkPlaybackState> PlaybackStateChanged { get; private set; }
+
+        public IObservable<TimeSpan> PlaybackTimeChanged { get; private set; }
 
         public IObservable<NetworkPlaylist> PlaylistChanged { get; private set; }
 

@@ -29,11 +29,14 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <StackLayout Grid.Row="1" Orientation="Horizontal" HorizontalOptions="Center" IsVisible="{Binding CanModify}">
-                <Image x:Name="PreviousButton" Source="Previous" />
-                <Image x:Name="PlayPauseButton" />
-                <Image x:Name="NextButton" Source="Next" />
-            </StackLayout>
+			<StackLayout Grid.Row="1" Orientation="Vertical">
+	            <Slider x:Name="TimeSlider" />
+	            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" IsVisible="{Binding CanModify}">
+	                <Image x:Name="PreviousButton" Source="Previous" />
+	                <Image x:Name="PlayPauseButton" />
+	                <Image x:Name="NextButton" Source="Next" />
+	            </StackLayout>
+			</StackLayout>
         </Grid>
     </Grid>
 </ContentPage>

@@ -35,7 +35,7 @@ namespace Espera.Android.Tests
 
                 NetworkMessenger.Override(messenger);
 
-                var vm = new MainViewModel();
+                var vm = new MainViewModel(() => "192.168.1.2");
                 vm.Activator.Activate();
 
                 var thrown = vm.ConnectionFailed.CreateCollection();
@@ -61,7 +61,7 @@ namespace Espera.Android.Tests
                 messenger.DiscoverServerAsync(Arg.Any<string>(), Arg.Any<int>()).Returns(Task.FromResult("192.168.1.1"));
                 NetworkMessenger.Override(messenger);
 
-                var vm = new MainViewModel();
+                var vm = new MainViewModel(() => "192.168.1.2");
                 vm.Activator.Activate();
 
                 Assert.True(vm.ConnectCommand.CanExecute(null));
@@ -85,7 +85,7 @@ namespace Espera.Android.Tests
 
                 NetworkMessenger.Override(messenger);
 
-                var vm = new MainViewModel();
+                var vm = new MainViewModel(() => "192.168.1.2");
                 vm.Activator.Activate();
 
                 var coll = vm.ConnectionFailed.CreateCollection();
@@ -114,7 +114,7 @@ namespace Espera.Android.Tests
                 UserSettings.Instance.EnableAdministratorMode = true;
                 UserSettings.Instance.AdministratorPassword = "Bla";
 
-                var vm = new MainViewModel();
+                var vm = new MainViewModel(() => "192.168.1.2");
                 vm.Activator.Activate();
 
                 var coll = vm.ConnectionFailed.CreateCollection();
@@ -136,7 +136,7 @@ namespace Espera.Android.Tests
 
                 NetworkMessenger.Override(messenger);
 
-                var vm = new MainViewModel();
+                var vm = new MainViewModel(() => "192.168.1.2");
                 vm.Activator.Activate();
 
                 Assert.True(vm.DisconnectCommand.CanExecute(true));
@@ -177,7 +177,7 @@ namespace Espera.Android.Tests
                 UserSettings.Instance.EnableAdministratorMode = true;
                 UserSettings.Instance.AdministratorPassword = "Bla";
 
-                var vm = new MainViewModel();
+                var vm = new MainViewModel(() => "192.168.1.2");
                 vm.Activator.Activate();
 
                 isConnected.FirstAsync(x => x).Subscribe(_ => Assert.False(vm.IsConnected));

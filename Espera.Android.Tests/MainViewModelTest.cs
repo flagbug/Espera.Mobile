@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Net;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
+using System.Threading.Tasks;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
 using Espera.Mobile.Core.ViewModels;
@@ -24,15 +24,16 @@ namespace Espera.Android.Tests
             {
                 var messenger = Substitute.For<INetworkMessenger>();
                 messenger.IsConnected.Returns(Observable.Return(true));
-                messenger.ConnectAsync(Arg.Any<IPAddress>(), Arg.Any<int>(), Arg.Any<Guid>(), Arg.Any<string>())
+                messenger.ConnectAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<Guid>(), Arg.Any<string>())
                     .Returns(Tuple.Create(ResponseStatus.Success,
                         new ConnectionInfo
                         {
                             AccessPermission = NetworkAccessPermission.Admin,
                             ServerVersion = new Version(0, 1, 0)
                         }).ToTaskResult());
+                messenger.DiscoverServerAsync(Arg.Any<string>(), Arg.Any<int>()).Returns(Task.FromResult("192.168.1.1"));
 
-                NetworkMessenger.Override(messenger, IPAddress.Parse("192.168.1.1"));
+                NetworkMessenger.Override(messenger);
 
                 var vm = new MainViewModel();
                 vm.Activator.Activate();
@@ -50,15 +51,15 @@ namespace Espera.Android.Tests
                 var isConnected = new BehaviorSubject<bool>(false);
                 var messenger = Substitute.For<INetworkMessenger>();
                 messenger.IsConnected.Returns(isConnected);
-                messenger.ConnectAsync(Arg.Any<IPAddress>(), Arg.Any<int>(), Arg.Any<Guid>(), null)
+                messenger.ConnectAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<Guid>(), Arg.Any<string>())
                     .Returns(Tuple.Create(ResponseStatus.Success,
                         new ConnectionInfo
                         {
                             AccessPermission = NetworkAccessPermission.Admin,
                             ServerVersion = new Version("99.99.99")
                         }).ToTaskResult());
-
-                NetworkMessenger.Override(messenger, IPAddress.Parse("192.168.1.1"));
+                messenger.DiscoverServerAsync(Arg.Any<string>(), Arg.Any<int>()).Returns(Task.FromResult("192.168.1.1"));
+                NetworkMessenger.Override(messenger);
 
                 var vm = new MainViewModel();
                 vm.Activator.Activate();
@@ -70,18 +71,19 @@ namespace Espera.Android.Tests
 
                 Assert.False(vm.ConnectCommand.CanExecute(null));
 
-                messenger.Received(1).ConnectAsync(IPAddress.Parse("192.168.1.1"), UserSettings.Instance.Port, Arg.Any<Guid>(), null);
+                messenger.Received(1).ConnectAsync("192.168.1.1", UserSettings.Instance.Port, Arg.Any<Guid>(), null);
             }
 
             [Fact]
             public void TimeoutTriggersConnectionFailed()
             {
                 var messenger = Substitute.For<INetworkMessenger>();
-                messenger.ConnectAsync(Arg.Any<IPAddress>(), Arg.Any<int>(), Arg.Any<Guid>(), null)
+                messenger.ConnectAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<Guid>(), Arg.Any<string>())
                     .Returns(Observable.Never<Tuple<ResponseStatus, ConnectionInfo>>().ToTask());
                 messenger.IsConnected.Returns(Observable.Return(false));
+                messenger.DiscoverServerAsync(Arg.Any<string>(), Arg.Any<int>()).Returns(Task.FromResult("192.168.1.1"));
 
-                NetworkMessenger.Override(messenger, IPAddress.Parse("192.168.1.1"));
+                NetworkMessenger.Override(messenger);
 
                 var vm = new MainViewModel();
                 vm.Activator.Activate();
@@ -102,11 +104,12 @@ namespace Espera.Android.Tests
             {
                 var messenger = Substitute.For<INetworkMessenger>();
                 messenger.IsConnected.Returns(Observable.Return(false));
-                messenger.ConnectAsync(Arg.Any<IPAddress>(), Arg.Any<int>(), Arg.Any<Guid>(), null)
+                messenger.ConnectAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<Guid>(), Arg.Any<string>())
                     .Returns(Tuple.Create(ResponseStatus.WrongPassword,
                         new ConnectionInfo { AccessPermission = NetworkAccessPermission.Admin, ServerVersion = new Version(99, 99) }).ToTaskResult());
+                messenger.DiscoverServerAsync(Arg.Any<string>(), Arg.Any<int>()).Returns(Task.FromResult("192.168.1.1"));
 
-                NetworkMessenger.Override(messenger, IPAddress.Parse("192.168.1.1"));
+                NetworkMessenger.Override(messenger);
 
                 UserSettings.Instance.EnableAdministratorMode = true;
                 UserSettings.Instance.AdministratorPassword = "Bla";
@@ -131,7 +134,7 @@ namespace Espera.Android.Tests
                 var messenger = Substitute.For<INetworkMessenger>();
                 messenger.IsConnected.Returns(isConnected);
 
-                NetworkMessenger.Override(messenger, IPAddress.Parse("192.168.1.1"));
+                NetworkMessenger.Override(messenger);
 
                 var vm = new MainViewModel();
                 vm.Activator.Activate();
@@ -154,7 +157,7 @@ namespace Espera.Android.Tests
             {
                 var isConnected = new BehaviorSubject<bool>(false);
                 var messenger = Substitute.For<INetworkMessenger>();
-                messenger.ConnectAsync(Arg.Any<IPAddress>(), Arg.Any<int>(), Arg.Any<Guid>(), Arg.Any<string>())
+                messenger.ConnectAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<Guid>(), Arg.Any<string>())
                     .Returns(x =>
                     {
                         isConnected.OnNext(true);
@@ -167,8 +170,9 @@ namespace Espera.Android.Tests
                         .ToTaskResult();
                     });
                 messenger.IsConnected.Returns(isConnected);
+                messenger.DiscoverServerAsync(Arg.Any<string>(), Arg.Any<int>()).Returns(Task.FromResult("192.168.1.1"));
 
-                NetworkMessenger.Override(messenger, IPAddress.Parse("192.168.1.1"));
+                NetworkMessenger.Override(messenger);
 
                 UserSettings.Instance.EnableAdministratorMode = true;
                 UserSettings.Instance.AdministratorPassword = "Bla";

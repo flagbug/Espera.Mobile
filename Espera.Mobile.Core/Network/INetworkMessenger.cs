@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Reactive;
 using System.Threading.Tasks;
 using Espera.Mobile.Core.Analytics;
@@ -25,11 +24,13 @@ namespace Espera.Mobile.Core.Network
 
         Task<ResponseInfo> AddSongToPlaylistAsync(Guid songGuid);
 
-        Task<Tuple<ResponseStatus, ConnectionInfo>> ConnectAsync(IPAddress address, int port, Guid deviceId, string password);
+        Task<Tuple<ResponseStatus, ConnectionInfo>> ConnectAsync(string address, int port, Guid deviceId, string password);
 
         Task<ResponseInfo> ContinueSongAsync();
 
         void Disconnect();
+
+        Task<string> DiscoverServerAsync(string localAddress, int port);
 
         void Dispose();
 

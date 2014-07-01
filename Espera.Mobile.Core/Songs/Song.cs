@@ -13,14 +13,20 @@ namespace Espera.Mobile.Core.Songs
             this.Duration = duration;
         }
 
-        public string Album { get; private set; }
+        /// <summary>
+        /// Serialization constructor
+        /// </summary>
+        protected Song()
+        { }
 
-        public string Artist { get; private set; }
+        public string Album { get; set; }
 
-        public TimeSpan Duration { get; private set; }
+        public string Artist { get; set; }
 
-        public string Genre { get; private set; }
+        public TimeSpan Duration { get; set; }
 
-        public string Title { get; private set; }
+        public string Genre { get; set; }
+
+        public string Title { get; set; }
     }
 }

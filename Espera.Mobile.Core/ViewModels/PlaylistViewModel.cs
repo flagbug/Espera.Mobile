@@ -83,7 +83,7 @@ namespace Espera.Mobile.Core.ViewModels
                     .DisposeWith(disposable);
 
                 this.totalTime = currentPlaylist.Select(x => x.TotalTime)
-                    .ToProperty(this, x => x.TotalTime, TimeSpan.FromSeconds(1));
+                    .ToProperty(this, x => x.TotalTime);
 
                 var canVote = this.WhenAnyValue(x => x.CurrentSong, x => x.RemainingVotes, (currentSong, remainingVotes) =>
                         currentSong != null && remainingVotes > 0);

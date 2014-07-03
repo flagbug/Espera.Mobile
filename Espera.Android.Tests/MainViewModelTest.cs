@@ -2,7 +2,6 @@
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
-using System.Threading.Tasks;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
 using Espera.Mobile.Core.ViewModels;
@@ -31,7 +30,7 @@ namespace Espera.Android.Tests
                             AccessPermission = NetworkAccessPermission.Admin,
                             ServerVersion = new Version(0, 1, 0)
                         }).ToTaskResult());
-                messenger.DiscoverServerAsync(Arg.Any<string>(), Arg.Any<int>()).Returns(Task.FromResult("192.168.1.1"));
+                messenger.DiscoverServerAsync(Arg.Any<string>(), Arg.Any<int>()).Returns(Observable.Return("192.168.1.1"));
 
                 NetworkMessenger.Override(messenger);
 
@@ -58,7 +57,7 @@ namespace Espera.Android.Tests
                             AccessPermission = NetworkAccessPermission.Admin,
                             ServerVersion = new Version("99.99.99")
                         }).ToTaskResult());
-                messenger.DiscoverServerAsync(Arg.Any<string>(), Arg.Any<int>()).Returns(Task.FromResult("192.168.1.1"));
+                messenger.DiscoverServerAsync(Arg.Any<string>(), Arg.Any<int>()).Returns(Observable.Return("192.168.1.1"));
                 NetworkMessenger.Override(messenger);
 
                 var vm = new MainViewModel(() => "192.168.1.2");
@@ -81,7 +80,7 @@ namespace Espera.Android.Tests
                 messenger.ConnectAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<Guid>(), Arg.Any<string>())
                     .Returns(Observable.Never<Tuple<ResponseStatus, ConnectionInfo>>().ToTask());
                 messenger.IsConnected.Returns(Observable.Return(false));
-                messenger.DiscoverServerAsync(Arg.Any<string>(), Arg.Any<int>()).Returns(Task.FromResult("192.168.1.1"));
+                messenger.DiscoverServerAsync(Arg.Any<string>(), Arg.Any<int>()).Returns(Observable.Return("192.168.1.1"));
 
                 NetworkMessenger.Override(messenger);
 
@@ -107,7 +106,7 @@ namespace Espera.Android.Tests
                 messenger.ConnectAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<Guid>(), Arg.Any<string>())
                     .Returns(Tuple.Create(ResponseStatus.WrongPassword,
                         new ConnectionInfo { AccessPermission = NetworkAccessPermission.Admin, ServerVersion = new Version(99, 99) }).ToTaskResult());
-                messenger.DiscoverServerAsync(Arg.Any<string>(), Arg.Any<int>()).Returns(Task.FromResult("192.168.1.1"));
+                messenger.DiscoverServerAsync(Arg.Any<string>(), Arg.Any<int>()).Returns(Observable.Return("192.168.1.1"));
 
                 NetworkMessenger.Override(messenger);
 
@@ -170,7 +169,7 @@ namespace Espera.Android.Tests
                         .ToTaskResult();
                     });
                 messenger.IsConnected.Returns(isConnected);
-                messenger.DiscoverServerAsync(Arg.Any<string>(), Arg.Any<int>()).Returns(Task.FromResult("192.168.1.1"));
+                messenger.DiscoverServerAsync(Arg.Any<string>(), Arg.Any<int>()).Returns(Observable.Return("192.168.1.1"));
 
                 NetworkMessenger.Override(messenger);
 

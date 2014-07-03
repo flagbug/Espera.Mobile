@@ -365,6 +365,7 @@ namespace Espera.Mobile.Networking
             {
                 await this.currentClient.GetStream().WriteAsync(packedMessage, 0, packedMessage.Length);
             }
+
             finally
             {
                 this.gate.Release();
@@ -412,6 +413,7 @@ namespace Espera.Mobile.Networking
 
                 return response;
             }
+
             catch (Exception ex)
             {
                 stopwatch.Stop();

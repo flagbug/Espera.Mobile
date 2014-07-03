@@ -2,8 +2,6 @@ using System;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using System.Reactive.Threading.Tasks;
-using System.Threading.Tasks;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
 using Espera.Network;
@@ -32,7 +30,7 @@ namespace Espera.Mobile.Core.ViewModels
                     .DisposeWith(disposable);
 
                 var canConnect = this.WhenAnyValue(x => x.IsConnected, x => !x);
-                this.ConnectCommand = ReactiveCommand.CreateAsyncObservable(canConnect, _ => ConnectAsync(ipAddress(), UserSettings.Instance.Port).ToObservable()
+                this.ConnectCommand = ReactiveCommand.CreateAsyncObservable(canConnect, _ => ConnectAsync(ipAddress(), UserSettings.Instance.Port)
                     .Timeout(TimeSpan.FromSeconds(10), RxApp.TaskpoolScheduler)
                     .Catch<Unit, TimeoutException>(ex => Observable.Throw<Unit>(new Exception("Connection failed"))));
 
@@ -60,29 +58,33 @@ namespace Espera.Mobile.Core.ViewModels
             get { return this.isConnected.Value; }
         }
 
-        private static async Task ConnectAsync(string localAddress, int port)
+        private static IObservable<Unit> ConnectAsync(string localAddress, int port)
         {
             if (localAddress == null)
                 throw new Exception("You have to enable WiFi!");
 
-            string address = await NetworkMessenger.Instance.DiscoverServerAsync(localAddress, port);
+            return NetworkMessenger.Instance.DiscoverServerAsync(localAddress, port)
+                .SelectMany(async address =>
+                {
+                    string password = UserSettings.Instance.EnableAdministratorMode ? UserSettings.Instance.AdministratorPassword : null;
 
-            string password = UserSettings.Instance.EnableAdministratorMode ? UserSettings.Instance.AdministratorPassword : null;
+                    Tuple<ResponseStatus, ConnectionInfo> response = await NetworkMessenger.Instance
+                        .ConnectAsync(address, port, new Guid(UserSettings.Instance.UniqueIdentifier), password);
 
-            Tuple<ResponseStatus, ConnectionInfo> response = await NetworkMessenger.Instance
-                .ConnectAsync(address, port, new Guid(UserSettings.Instance.UniqueIdentifier), password);
+                    if (response.Item1 == ResponseStatus.WrongPassword)
+                    {
+                        throw new Exception("Password incorrect");
+                    }
 
-            if (response.Item1 == ResponseStatus.WrongPassword)
-            {
-                throw new Exception("Password incorrect");
-            }
+                    var minimumVersion = new Version("2.0.0");
+                    if (response.Item2.ServerVersion < minimumVersion)
+                    {
+                        NetworkMessenger.Instance.Disconnect();
+                        throw new Exception(string.Format("Espera version {0} required", minimumVersion.ToString(3)));
+                    }
 
-            var minimumVersion = new Version("2.0.0");
-            if (response.Item2.ServerVersion < minimumVersion)
-            {
-                NetworkMessenger.Instance.Disconnect();
-                throw new Exception(string.Format("Espera version {0} required", minimumVersion.ToString(3)));
-            }
+                    return Unit.Default;
+                });
         }
     }
 }

@@ -32,7 +32,7 @@ namespace Espera.Mobile.Core.Network
 
         void Disconnect();
 
-        Task<string> DiscoverServerAsync(string localAddress, int port);
+        IObservable<string> DiscoverServerAsync(string localAddress, int port);
 
         void Dispose();
 

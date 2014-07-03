@@ -188,7 +188,7 @@ namespace Espera.Mobile.Networking
             this.currentClient = null;
         }
 
-        public Task<string> DiscoverServerAsync(string localAddress, int port)
+        public IObservable<string> DiscoverServerAsync(string localAddress, int port)
         {
             if (localAddress == null)
                 throw new ArgumentNullException("localAddress");
@@ -196,8 +196,7 @@ namespace Espera.Mobile.Networking
             return Observable.Using(() => new UdpClient(new IPEndPoint(IPAddress.Parse(localAddress), port)), x => Observable.FromAsync(x.ReceiveAsync))
                 .Repeat()
                 .FirstAsync(x => Encoding.Unicode.GetString(x.Buffer) == NetworkConstants.DiscoveryMessage)
-                .Select(x => x.RemoteEndPoint.Address.ToString())
-                .ToTask();
+                .Select(x => x.RemoteEndPoint.Address.ToString());
         }
 
         public void Dispose()
@@ -388,7 +387,6 @@ namespace Espera.Mobile.Networking
             {
                 await this.currentClient.GetStream().WriteAsync(packedMessage, 0, packedMessage.Length);
             }
-
             finally
             {
                 this.gate.Release();
@@ -436,7 +434,6 @@ namespace Espera.Mobile.Networking
 
                 return response;
             }
-
             catch (Exception ex)
             {
                 stopwatch.Stop();

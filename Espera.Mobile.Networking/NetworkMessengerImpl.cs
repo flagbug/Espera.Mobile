@@ -109,16 +109,14 @@ namespace Espera.Mobile.Networking
 
         public IObservable<int?> RemainingVotesChanged { get; private set; }
 
-        public async Task<ResponseInfo> AddSongToPlaylistAsync(Guid songGuid)
+        public Task<ResponseInfo> AddSongToPlaylistAsync(Guid songGuid)
         {
             var parameters = JObject.FromObject(new
             {
                 songGuid
             });
 
-            ResponseInfo response = await this.SendRequest(RequestAction.AddPlaylistSongs, parameters);
-
-            return response;
+            return this.SendRequest(RequestAction.AddPlaylistSongs, parameters);
         }
 
         /// <summary>
@@ -175,11 +173,9 @@ namespace Espera.Mobile.Networking
             return Tuple.Create(response.Status, connectionInfo);
         }
 
-        public async Task<ResponseInfo> ContinueSongAsync()
+        public Task<ResponseInfo> ContinueSongAsync()
         {
-            ResponseInfo response = await this.SendRequest(RequestAction.ContinueSong);
-
-            return response;
+            return this.SendRequest(RequestAction.ContinueSong);
         }
 
         public void Disconnect()
@@ -230,73 +226,59 @@ namespace Espera.Mobile.Networking
             return songs;
         }
 
-        public async Task<ResponseInfo> MovePlaylistSongDownAsync(Guid entryGuid)
+        public Task<ResponseInfo> MovePlaylistSongDownAsync(Guid entryGuid)
         {
             var parameters = JObject.FromObject(new
             {
                 entryGuid
             });
 
-            ResponseInfo response = await this.SendRequest(RequestAction.MovePlaylistSongDown, parameters);
-
-            return response;
+            return this.SendRequest(RequestAction.MovePlaylistSongDown, parameters);
         }
 
-        public async Task<ResponseInfo> MovePlaylistSongUpAsync(Guid entryGuid)
+        public Task<ResponseInfo> MovePlaylistSongUpAsync(Guid entryGuid)
         {
             var parameters = JObject.FromObject(new
             {
                 entryGuid
             });
 
-            ResponseInfo response = await this.SendRequest(RequestAction.MovePlaylistSongUp, parameters);
-
-            return response;
+            return this.SendRequest(RequestAction.MovePlaylistSongUp, parameters);
         }
 
-        public async Task<ResponseInfo> PauseSongAsync()
+        public Task<ResponseInfo> PauseSongAsync()
         {
-            ResponseInfo response = await this.SendRequest(RequestAction.PauseSong);
-
-            return response;
+            return this.SendRequest(RequestAction.PauseSong);
         }
 
-        public async Task<ResponseInfo> PlayNextSongAsync()
+        public Task<ResponseInfo> PlayNextSongAsync()
         {
-            ResponseInfo response = await this.SendRequest(RequestAction.PlayNextSong);
-
-            return response;
+            return this.SendRequest(RequestAction.PlayNextSong);
         }
 
-        public async Task<ResponseInfo> PlayPlaylistSongAsync(Guid entryGuid)
+        public Task<ResponseInfo> PlayPlaylistSongAsync(Guid entryGuid)
         {
             var parameters = JObject.FromObject(new
             {
                 entryGuid
             });
 
-            ResponseInfo response = await this.SendRequest(RequestAction.PlayPlaylistSong, parameters);
-
-            return response;
+            return this.SendRequest(RequestAction.PlayPlaylistSong, parameters);
         }
 
-        public async Task<ResponseInfo> PlayPreviousSongAsync()
+        public Task<ResponseInfo> PlayPreviousSongAsync()
         {
-            ResponseInfo response = await this.SendRequest(RequestAction.PlayPreviousSong);
-
-            return response;
+            return this.SendRequest(RequestAction.PlayPreviousSong);
         }
 
-        public async Task<ResponseInfo> PlaySongsAsync(IEnumerable<Guid> guids)
+        public Task<ResponseInfo> PlaySongsAsync(IEnumerable<Guid> guids)
         {
             var parameters = JObject.FromObject(new
             {
                 guids = guids.Select(x => x.ToString())
             });
 
-            ResponseInfo response = await this.SendRequest(RequestAction.AddPlaylistSongsNow, parameters);
-
-            return response;
+            return this.SendRequest(RequestAction.AddPlaylistSongsNow, parameters);
         }
 
         public async Task<FileTransferStatus> QueueRemoteSong(LocalSong songMetadata, byte[] songData)
@@ -343,16 +325,14 @@ namespace Espera.Mobile.Networking
             this.analytics = analytics;
         }
 
-        public async Task<ResponseInfo> RemovePlaylistSongAsync(Guid entryGuid)
+        public Task<ResponseInfo> RemovePlaylistSongAsync(Guid entryGuid)
         {
             var parameters = JObject.FromObject(new
             {
                 entryGuid
             });
 
-            ResponseInfo response = await this.SendRequest(RequestAction.RemovePlaylistSong, parameters);
-
-            return response;
+            return this.SendRequest(RequestAction.RemovePlaylistSong, parameters);
         }
 
         public Task<ResponseInfo> SetCurrentTime(TimeSpan time)
@@ -365,16 +345,14 @@ namespace Espera.Mobile.Networking
             return this.SendRequest(RequestAction.SetCurrentTime, parameters);
         }
 
-        public async Task<ResponseInfo> VoteAsync(Guid entryGuid)
+        public Task<ResponseInfo> VoteAsync(Guid entryGuid)
         {
             var parameters = JObject.FromObject(new
             {
                 entryGuid
             });
 
-            ResponseInfo response = await this.SendRequest(RequestAction.VoteForSong, parameters);
-
-            return response;
+            return this.SendRequest(RequestAction.VoteForSong, parameters);
         }
 
         private async Task SendMessage(NetworkMessage message)

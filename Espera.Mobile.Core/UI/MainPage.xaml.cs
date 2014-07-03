@@ -20,27 +20,43 @@ namespace Espera.Mobile.Core.UI
             var wifiService = Locator.Current.GetService<IWifiService>();
 
             this.ViewModel = new MainViewModel(wifiService.GetIpAddress);
+            
+            this.WhenActivated(d =>
+            {
+                var connectOrDisconnectCommand = this.ViewModel.WhenAnyValue(x => x.IsConnected)
+                    .Select(x => x ? (IReactiveCommand)this.ViewModel.DisconnectCommand : this.ViewModel.ConnectCommand);
+                connectOrDisconnectCommand.BindTo(this.ConnectButton, x => x.Command);
+
+                this.ViewModel.ConnectCommand.IsExecuting
+                    .CombineLatest(this.ViewModel.WhenAnyValue(x => x.IsConnected), (connecting, connected) =>
+                        connected ? "Disconnect" : connecting ? "Connecting..." : "Connect")
+                    .BindTo(this.ConnectButton, x => x.Text);
+
+                this.ViewModel.ConnectionFailed.Subscribe(XamFormsApp.Notifications.Notify);
+
+                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.RemoteArtistsButton.IsEnabled);
+                this.RemoteArtistsButton.Clicked += async (sender, e) => await this.Navigation.PushAsync(new RemoteArtistsPage());
+
+                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.PlaylistButton.IsEnabled);
+                this.PlaylistButton.Clicked += async (sender, e) => await this.Navigation.PushAsync(new PlaylistPage());
+
+                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LocalArtistsButton.IsEnabled);
+                this.LocalArtistsButton.Clicked += async (sender, e) => await this.Navigation.PushAsync(new LocalArtistsPage());
+            });
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
             this.ViewModel.Activator.Activate();
+        }
 
-            var connectOrDisconnectCommand = this.ViewModel.WhenAnyValue(x => x.IsConnected)
-                .Select(x => x ? (IReactiveCommand)this.ViewModel.DisconnectCommand : this.ViewModel.ConnectCommand);
-            connectOrDisconnectCommand.BindTo(this.ConnectButton, x => x.Command);
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
 
-            this.ViewModel.ConnectCommand.IsExecuting
-                .CombineLatest(this.ViewModel.WhenAnyValue(x => x.IsConnected), (connecting, connected) =>
-                    connected ? "Disconnect" : connecting ? "Connecting..." : "Connect")
-                .BindTo(this.ConnectButton, x => x.Text);
-
-            this.ViewModel.ConnectionFailed.Subscribe(XamFormsApp.Notifications.Notify);
-
-            this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.RemoteArtistsButton.IsEnabled);
-            this.RemoteArtistsButton.Clicked += async (sender, e) => await this.Navigation.PushAsync(new RemoteArtistsPage());
-
-            this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.PlaylistButton.IsEnabled);
-            this.PlaylistButton.Clicked += async (sender, e) => await this.Navigation.PushAsync(new PlaylistPage());
-
-            this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LocalArtistsButton.IsEnabled);
-            this.LocalArtistsButton.Clicked += async (sender, e) => await this.Navigation.PushAsync(new LocalArtistsPage());
+            this.ViewModel.Activator.Deactivate();
         }
 
         object IViewFor.ViewModel

@@ -41,10 +41,16 @@ namespace Espera.Mobile.Core.UI
                 .BindTo(this.NextButton, x => x.Opacity);
 
             this.Bind(this.ViewModel, x => x.CurrentTimeSeconds, x => x.TimeSlider.Value);
-            this.Bind(this.ViewModel, x => x.TotalTime.TotalSeconds, x => x.TimeSlider.Maximum);
-            this.ViewModel.WhenAnyValue(x => x.CurrentTimeSeconds).Select(x => TimeSpan.FromSeconds(x))
-                .Select(x => x.FormatAdaptive()).BindTo(this, x => x.CurrentTimeLabel.Text);
-            this.ViewModel.WhenAnyValue(x => x.TotalTime).Select(x => x.FormatAdaptive())
+            this.ViewModel.WhenAnyValue(x => x.TotalTime.TotalSeconds)
+                .Select(x => x < 1 ? 1 : x) // The slider dies if the maximum value is 0, lol)
+                .BindTo(this.TimeSlider, x => x.Maximum);
+
+            this.ViewModel.WhenAnyValue(x => x.CurrentTimeSeconds)
+                .Select(x => TimeSpan.FromSeconds(x))
+                .Select(x => x.FormatAdaptive())
+                .BindTo(this, x => x.CurrentTimeLabel.Text);
+            this.ViewModel.WhenAnyValue(x => x.TotalTime)
+                .Select(x => x.FormatAdaptive())
                 .BindTo(this, x => x.TotalTimeLabel.Text);
 
             this.ViewModel.LoadPlaylistCommand.IsExecuting

@@ -58,7 +58,7 @@ namespace Espera.Mobile.Core.UI
             this.ViewModel.LoadPlaylistCommand.IsExecuting
                 .BindTo(this.LoadIndicator, x => x.IsRunning);
 
-            this.ViewModel.LoadPlaylistCommand.IsExecuting.CombineLatest(this.ViewModel.Entries.IsEmptyChanged,
+            this.ViewModel.LoadPlaylistCommand.IsExecuting.CombineLatest(this.ViewModel.Entries.IsEmptyChanged.StartWith(true),
                     (executing, empty) => !executing && empty)
                 .BindTo(this.EmptyIndicator, x => x.IsVisible);
 

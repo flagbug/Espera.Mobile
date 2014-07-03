@@ -24,7 +24,7 @@ namespace Espera.Mobile.Core.UI
 
             this.ViewModel.Messages.Subscribe(XamFormsApp.Notifications.Notify);
 
-            this.ViewModel.WhenAnyValue(x => x.Artists).BindTo(this.ArtistsListView, x => x.ItemsSource);
+            this.OneWayBind(this.ViewModel, x => x.Artists, x => x.ArtistsListView.ItemsSource);
 
             this.ViewModel.WhenAnyValue(x => x.Artists).Select(x => x.Count == 0)
                 .BindTo(this.EmptyIndicator, x => x.IsVisible);

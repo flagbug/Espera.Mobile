@@ -18,6 +18,8 @@ namespace Espera.Mobile.Core.Network
 
         IObservable<NetworkPlaybackState> PlaybackStateChanged { get; }
 
+        IObservable<TimeSpan> PlaybackTimeChanged { get; }
+
         IObservable<NetworkPlaylist> PlaylistChanged { get; }
 
         IObservable<int?> RemainingVotesChanged { get; }
@@ -57,6 +59,8 @@ namespace Espera.Mobile.Core.Network
         void RegisterAnalytics(IAnalytics analytics);
 
         Task<ResponseInfo> RemovePlaylistSongAsync(Guid entryGuid);
+
+        Task<ResponseInfo> SetCurrentTime(TimeSpan time);
 
         Task<ResponseInfo> VoteAsync(Guid entryGuid);
     }

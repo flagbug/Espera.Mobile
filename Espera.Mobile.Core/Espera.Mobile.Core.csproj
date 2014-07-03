@@ -53,6 +53,7 @@
     <Compile Include="SongFetchers\RemoteSongFetcher.cs" />
     <Compile Include="Songs\RemoteSong.cs" />
     <Compile Include="Songs\Song.cs" />
+    <Compile Include="TimeSpanHelper.cs" />
     <Compile Include="UI\INotification.cs" />
     <Compile Include="UI\LocalArtistsPage.xaml.cs">
       <DependentUpon>LocalArtistsPage.xaml</DependentUpon>
@@ -130,7 +131,7 @@
       <HintPath>..\packages\akavache.core.3.99.1-beta\lib\Portable-Net45+WinRT45+WP8\Akavache.dll</HintPath>
     </Reference>
     <Reference Include="Espera.Network">
-      <HintPath>..\packages\Espera-Network.1.0.17\lib\portable-net45+win+wp80\Espera.Network.dll</HintPath>
+      <HintPath>..\packages\Espera-Network.1.0.19\lib\portable-net45+win+wp80\Espera.Network.dll</HintPath>
     </Reference>
     <Reference Include="Lager">
       <HintPath>..\packages\Lager.0.3.101-beta\lib\portable-net45+wp8+win8+monoandroid+monotouch\Lager.dll</HintPath>

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Reactive.Linq;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.ViewModels;

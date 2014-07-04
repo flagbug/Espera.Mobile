@@ -17,7 +17,6 @@ namespace Espera.Mobile.Core.UI
             InitializeComponent();
 
             this.ViewModel = new PlaylistViewModel();
-            this.BindingContext = this.ViewModel;
 
             this.WhenActivated(d =>
             {
@@ -139,6 +138,8 @@ namespace Espera.Mobile.Core.UI
             base.OnAppearing();
 
             this.ViewModel.Activator.Activate();
+
+            this.BindingContext = this.ViewModel;
         }
 
         protected override void OnDisappearing()

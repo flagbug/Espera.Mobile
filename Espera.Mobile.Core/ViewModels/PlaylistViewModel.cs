@@ -44,7 +44,7 @@ namespace Espera.Mobile.Core.ViewModels
 
                 var currentPlaylist = this.LoadPlaylistCommand
                     .FirstAsync()
-                    .Concat(NetworkMessenger.Instance.PlaylistChanged)
+                    .Concat(NetworkMessenger.Instance.PlaylistChanged.ObserveOn(RxApp.MainThreadScheduler))
                     .Publish();
                 currentPlaylist.Connect().DisposeWith(disposable);
 
@@ -63,12 +63,12 @@ namespace Espera.Mobile.Core.ViewModels
                     .ToProperty(this, x => x.CurrentSong);
 
                 this.remainingVotes = currentPlaylist.Select(x => x.RemainingVotes)
-                    .Merge(NetworkMessenger.Instance.RemainingVotesChanged)
+                    .Merge(NetworkMessenger.Instance.RemainingVotesChanged.ObserveOn(RxApp.MainThreadScheduler))
                     .ToProperty(this, x => x.RemainingVotes)
                     .DisposeWith(disposable);
 
                 this.playbackState = currentPlaylist.Select(x => x.PlaybackState)
-                    .Merge(NetworkMessenger.Instance.PlaybackStateChanged)
+                    .Merge(NetworkMessenger.Instance.PlaybackStateChanged.ObserveOn(RxApp.MainThreadScheduler))
                     .ToProperty(this, x => x.PlaybackState)
                     .DisposeWith(disposable);
 

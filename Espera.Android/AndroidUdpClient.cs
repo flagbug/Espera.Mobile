@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Espera.Mobile.Core.Network;
@@ -16,7 +17,7 @@ namespace Espera.Android
 
         public void Initialize(string ipAddress, int port)
         {
-            this.client = new UdpClient(ipAddress, port);
+            this.client = new UdpClient(new IPEndPoint(IPAddress.Parse(ipAddress), port));
         }
 
         public async Task<Tuple<byte[], string>> ReceiveAsync()

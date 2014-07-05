@@ -50,8 +50,7 @@
     <Reference Include="Akavache.Sqlite3">
       <HintPath>..\packages\akavache.sqlite3.3.99.1-beta\lib\MonoAndroid\Akavache.Sqlite3.dll</HintPath>
     </Reference>
-    <Reference Include="Espera.Network, Version=1.0.19.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Espera.Network">
       <HintPath>..\packages\Espera-Network.1.0.19\lib\portable-net45+monoandroid\Espera.Network.dll</HintPath>
     </Reference>
     <Reference Include="Lager, Version=0.3.99.0, Culture=neutral, processorArchitecture=MSIL">
@@ -62,7 +61,6 @@
       <HintPath>..\packages\Lager.Android.0.3.101-beta\lib\monoandroid\Lager.Android.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Android" />
-    <Reference Include="mscorlib" />
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.3\lib\portable-net40+sl4+wp7+win8\Newtonsoft.Json.dll</HintPath>
@@ -94,7 +92,6 @@
     <Reference Include="System.Reactive.PlatformServices">
       <HintPath>..\packages\Rx-PlatformServices.2.2.4\lib\portable-windows8+net45+wp8\System.Reactive.PlatformServices.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime" />
     <Reference Include="System.Threading" />
     <Reference Include="System.Threading.Tasks" />
     <Reference Include="System.Xml" />
@@ -126,6 +123,8 @@
   <ItemGroup>
     <Compile Include="Analytics\AndroidAnalytics.cs" />
     <Compile Include="AndroidSongFetcher.cs" />
+    <Compile Include="AndroidTcpClient.cs" />
+    <Compile Include="AndroidUdpClient.cs" />
     <Compile Include="AndroidWifiService.cs" />
     <Compile Include="App.cs" />
     <Compile Include="File.cs" />
@@ -174,12 +173,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Espera.Mobile.Core\Espera.Mobile.Core.csproj">
-      <Project>{A66F5A81-780D-4B29-9A62-B8B37D2C8976}</Project>
+      <Project>{a66f5a81-780d-4b29-9a62-b8b37d2c8976}</Project>
       <Name>Espera.Mobile.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Espera.Mobile.Networking\Espera.Mobile.Networking.csproj">
-      <Project>{39e663ea-5f17-4201-9c43-3498f48fc2cd}</Project>
-      <Name>Espera.Mobile.Networking</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

@@ -50,7 +50,6 @@ namespace Espera.Mobile.Networking
             var isConnected = this.Disconnected.Select(_ => false)
                 .Merge(this.connectionEstablished.Select(_ => true))
                 .DistinctUntilChanged()
-                .ObserveOn(RxApp.MainThreadScheduler)
                 .Publish(false);
             isConnected.Connect();
             this.IsConnected = isConnected;
@@ -63,9 +62,8 @@ namespace Espera.Mobile.Networking
                     .Catch(Observable.Never<NetworkMessage>()))
                 .Switch()
                 .Publish();
-            // Serialize all incoming messages to the main thread scheduler, as we process them on
-            // the UI anyway
-            this.messagePipeline = pipeline.ObserveOn(RxApp.MainThreadScheduler);
+
+            this.messagePipeline = pipeline.ObserveOn(RxApp.TaskpoolScheduler);
             this.messagePipelineConnection = pipeline.Connect();
 
             var pushMessages = this.messagePipeline.Where(x => x.MessageType == NetworkMessageType.Push)
@@ -219,11 +217,7 @@ namespace Espera.Mobile.Networking
         {
             ResponseInfo response = await this.SendRequest(RequestAction.GetLibraryContent);
 
-            // This can take about a second, if there are many songs, so deserialize the songs on a
-            // background thread
-            var songs = await Task.Run(() => response.Content["songs"].ToObject<List<NetworkSong>>());
-
-            return songs;
+            return response.Content["songs"].ToObject<List<NetworkSong>>();
         }
 
         public Task<ResponseInfo> MovePlaylistSongDownAsync(Guid entryGuid)

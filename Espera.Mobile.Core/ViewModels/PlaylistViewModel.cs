@@ -69,7 +69,8 @@ namespace Espera.Mobile.Core.ViewModels
 
                 this.playbackState = currentPlaylist.Select(x => x.PlaybackState)
                     .Merge(NetworkMessenger.Instance.PlaybackStateChanged)
-                    .ToProperty(this, x => x.PlaybackState);
+                    .ToProperty(this, x => x.PlaybackState)
+                    .DisposeWith(disposable);
 
                 this.currentTimeSeconds = currentPlaylist.Select(x => x.CurrentTime)
                     .Merge(NetworkMessenger.Instance.PlaybackTimeChanged)

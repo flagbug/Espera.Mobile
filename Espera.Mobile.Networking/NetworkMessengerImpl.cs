@@ -111,10 +111,10 @@ namespace Espera.Mobile.Networking
 
         public Task<ResponseInfo> AddSongToPlaylistAsync(Guid songGuid)
         {
-            var parameters = JObject.FromObject(new
+            var parameters = new
             {
                 songGuid
-            });
+            };
 
             return this.SendRequest(RequestAction.AddPlaylistSongs, parameters);
         }
@@ -154,11 +154,11 @@ namespace Espera.Mobile.Networking
             await f.ConnectAsync(address, port + 1);
             this.client.OnNext(c);
 
-            var parameters = JObject.FromObject(new
+            var parameters = new
             {
                 deviceId,
                 password
-            });
+            };
 
             ResponseInfo response = await this.SendRequest(RequestAction.GetConnectionInfo, parameters);
 
@@ -228,20 +228,20 @@ namespace Espera.Mobile.Networking
 
         public Task<ResponseInfo> MovePlaylistSongDownAsync(Guid entryGuid)
         {
-            var parameters = JObject.FromObject(new
+            var parameters = new
             {
                 entryGuid
-            });
+            };
 
             return this.SendRequest(RequestAction.MovePlaylistSongDown, parameters);
         }
 
         public Task<ResponseInfo> MovePlaylistSongUpAsync(Guid entryGuid)
         {
-            var parameters = JObject.FromObject(new
+            var parameters = new
             {
                 entryGuid
-            });
+            };
 
             return this.SendRequest(RequestAction.MovePlaylistSongUp, parameters);
         }
@@ -258,10 +258,10 @@ namespace Espera.Mobile.Networking
 
         public Task<ResponseInfo> PlayPlaylistSongAsync(Guid entryGuid)
         {
-            var parameters = JObject.FromObject(new
+            var parameters = new
             {
                 entryGuid
-            });
+            };
 
             return this.SendRequest(RequestAction.PlayPlaylistSong, parameters);
         }
@@ -273,10 +273,10 @@ namespace Espera.Mobile.Networking
 
         public Task<ResponseInfo> PlaySongsAsync(IEnumerable<Guid> guids)
         {
-            var parameters = JObject.FromObject(new
+            var parameters = new
             {
                 guids = guids.Select(x => x.ToString())
-            });
+            };
 
             return this.SendRequest(RequestAction.AddPlaylistSongsNow, parameters);
         }
@@ -301,7 +301,7 @@ namespace Espera.Mobile.Networking
                 Metadata = song
             };
 
-            ResponseInfo response = await this.SendRequest(RequestAction.QueueRemoteSong, JObject.FromObject(info));
+            ResponseInfo response = await this.SendRequest(RequestAction.QueueRemoteSong, info);
 
             var message = new SongTransferMessage { Data = songData, TransferId = transferId };
 
@@ -327,30 +327,30 @@ namespace Espera.Mobile.Networking
 
         public Task<ResponseInfo> RemovePlaylistSongAsync(Guid entryGuid)
         {
-            var parameters = JObject.FromObject(new
+            var parameters = new
             {
                 entryGuid
-            });
+            };
 
             return this.SendRequest(RequestAction.RemovePlaylistSong, parameters);
         }
 
         public Task<ResponseInfo> SetCurrentTime(TimeSpan time)
         {
-            var parameters = JObject.FromObject(new
+            var parameters = new
             {
                 time
-            });
+            };
 
             return this.SendRequest(RequestAction.SetCurrentTime, parameters);
         }
 
         public Task<ResponseInfo> VoteAsync(Guid entryGuid)
         {
-            var parameters = JObject.FromObject(new
+            var parameters = new
             {
                 entryGuid
-            });
+            };
 
             return this.SendRequest(RequestAction.VoteForSong, parameters);
         }
@@ -372,14 +372,14 @@ namespace Espera.Mobile.Networking
             }
         }
 
-        private async Task<ResponseInfo> SendRequest(RequestAction action, JObject parameters = null)
+        private async Task<ResponseInfo> SendRequest(RequestAction action, object parameters = null)
         {
             Guid id = Guid.NewGuid();
 
             var requestInfo = new RequestInfo
             {
                 RequestAction = action,
-                Parameters = parameters,
+                Parameters = parameters != null ? JObject.FromObject(parameters) : null,
                 RequestId = id
             };
 
@@ -395,8 +395,7 @@ namespace Espera.Mobile.Networking
                 .FirstAsync(x => x.RequestId == id)
                 .ToTask();
 
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
+            var stopwatch = Stopwatch.StartNew();
 
             try
             {

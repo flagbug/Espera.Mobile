@@ -29,7 +29,8 @@ namespace Espera.Mobile.Core.UI
             this.ViewModel.WhenAnyValue(x => x.Artists).Select(x => x.Count == 0)
                 .BindTo(this.EmptyIndicator, x => x.IsVisible);
 
-            this.ArtistsListView.ItemTapped += async (sender, e) => await this.Navigation.PushAsync(new LocalSongsPage());
+            this.ArtistsListView.Events().ItemTapped
+				.Subscribe(async _ => await this.Navigation.PushAsync(new LocalSongsPage()));
 
             this.ViewModel.LoadCommand.Execute(null);
         }

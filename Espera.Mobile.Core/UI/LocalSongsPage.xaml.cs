@@ -26,7 +26,7 @@ namespace Espera.Mobile.Core.UI
 
             this.ViewModel.Messages.Subscribe(XamFormsApp.Notifications.Notify);
 
-            this.SongsListView.ItemTapped += async (sender, e) => await this.ViewModel.AddToPlaylistCommand.ExecuteAsync();
+            this.SongsListView.Events().ItemTapped.Subscribe(async _ => await this.ViewModel.AddToPlaylistCommand.ExecuteAsync());
         }
 
         object IViewFor.ViewModel

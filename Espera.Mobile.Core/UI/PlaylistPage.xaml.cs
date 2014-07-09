@@ -71,7 +71,7 @@ namespace Espera.Mobile.Core.UI
                 this.ViewModel.LoadPlaylistCommand.Execute(null);
             });
 
-            Observable.FromEventPattern<ItemTappedEventArgs>(h => this.PlaylistListView.ItemTapped += h, h => this.PlaylistListView.ItemTapped -= h)
+            this.PlaylistListView.Events().ItemTapped
                 .Subscribe(async x =>
                 {
                     bool hasVotesLeft = this.ViewModel.RemainingVotes > 0;

@@ -35,13 +35,13 @@ namespace Espera.Mobile.Core.UI
                 this.ViewModel.ConnectionFailed.Subscribe(XamFormsApp.Notifications.Notify);
 
                 this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.RemoteArtistsButton.IsEnabled);
-                this.RemoteArtistsButton.Clicked += async (sender, e) => await this.Navigation.PushAsync(new RemoteArtistsPage());
+                this.RemoteArtistsButton.Events().Clicked.Subscribe(async _ => await this.Navigation.PushAsync(new RemoteArtistsPage()));
 
                 this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.PlaylistButton.IsEnabled);
-                this.PlaylistButton.Clicked += async (sender, e) => await this.Navigation.PushAsync(new PlaylistPage());
+                this.PlaylistButton.Events().Clicked.Subscribe(async _ => await this.Navigation.PushAsync(new PlaylistPage()));
 
                 this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LocalArtistsButton.IsEnabled);
-                this.LocalArtistsButton.Clicked += async (sender, e) => await this.Navigation.PushAsync(new LocalArtistsPage());
+                this.LocalArtistsButton.Events().Clicked.Subscribe(async _ => await this.Navigation.PushAsync(new LocalArtistsPage()));
             });
         }
 

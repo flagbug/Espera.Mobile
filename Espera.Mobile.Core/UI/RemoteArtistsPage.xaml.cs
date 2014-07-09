@@ -33,7 +33,7 @@ namespace Espera.Mobile.Core.UI
 
             this.ViewModel.Messages.Subscribe(XamFormsApp.Notifications.Notify);
 
-            this.ArtistsListView.ItemTapped += async (sender, e) => await this.Navigation.PushAsync(new RemoteSongsPage());
+            this.ArtistsListView.Events().ItemTapped.Subscribe(async _ => await this.Navigation.PushAsync(new RemoteSongsPage()));
 
             this.ViewModel.LoadCommand.Execute(null);
         }

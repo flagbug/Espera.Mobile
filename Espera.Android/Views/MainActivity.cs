@@ -1,11 +1,9 @@
 ﻿using Android.App;
 using Android.Content;
 using Android.Content.PM;
-using Android.Net.Wifi;
 using Android.OS;
 using Espera.Android.Services;
 using Espera.Mobile.Core.UI;
-using Google.Analytics.Tracking;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 
@@ -32,10 +30,11 @@ namespace Espera.Android.Views
             this.Intent = intent;
         }
 
+        /*
         protected override void OnResume()
         {
             base.OnResume();
-            /*
+
             if (this.Intent.HasExtra("connectionLost"))
             {
                 Toast.MakeText(this, "Connection lost", ToastLength.Long).Show();
@@ -58,32 +57,8 @@ namespace Espera.Android.Views
                 analytics.RecordWifiSpeed(wifiSpeed);
 
                 this.ViewModel.LocalAddress = new IPAddress(info.IpAddress);
-            }*/
+            }
         }
-
-        protected override void OnStart()
-        {
-            base.OnStart();
-
-            EasyTracker.GetInstance(this).ActivityStart(this);
-        }
-
-        protected override void OnStop()
-        {
-            base.OnStop();
-
-            EasyTracker.GetInstance(this).ActivityStop(this);
-        }
-
-        private void ShowWifiPrompt(WifiManager wifiManager)
-        {
-            var builder = new AlertDialog.Builder(this);
-            builder.SetTitle("Error");
-            builder.SetMessage("You have to enable Wifi.");
-            builder.SetPositiveButton("Enable", (sender, args) => wifiManager.SetWifiEnabled(true));
-            builder.SetNegativeButton("Exit", (sender, args) => this.Finish());
-
-            builder.Show();
-        }
+         * */
     }
 }

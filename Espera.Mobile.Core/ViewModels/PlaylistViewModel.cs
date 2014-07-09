@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
 using Espera.Mobile.Core.Network;
 using Espera.Network;
@@ -12,6 +13,7 @@ namespace Espera.Mobile.Core.ViewModels
 {
     public class PlaylistViewModel : ReactiveObject, ISupportsActivation
     {
+        private readonly Subject<int> currentTimeSecondsUserChanged;
         private ObservableAsPropertyHelper<bool> canModify;
         private ObservableAsPropertyHelper<bool> canVoteOnSelectedEntry;
         private ObservableAsPropertyHelper<PlaylistEntryViewModel> currentSong;
@@ -27,6 +29,7 @@ namespace Espera.Mobile.Core.ViewModels
         {
             this.Activator = new ViewModelActivator();
             this.entries = new ReactiveList<PlaylistEntryViewModel>();
+            this.currentTimeSecondsUserChanged = new Subject<int>();
 
             this.WhenActivated(() =>
             {
@@ -82,6 +85,10 @@ namespace Espera.Mobile.Core.ViewModels
                     .ObserveOn(RxApp.MainThreadScheduler)
                     .ToProperty(this, x => x.CurrentTimeSeconds)
                     .DisposeWith(disposable);
+
+                this.currentTimeSecondsUserChanged
+                    .Skip(1) // The XamForms playlist fires an initial value that we don't want
+                    .Subscribe(async x => await NetworkMessenger.Instance.SetCurrentTime(TimeSpan.FromSeconds(x)));
 
                 this.totalTime = currentPlaylist.Select(x => x.TotalTime)
                     .ToProperty(this, x => x.TotalTime);
@@ -167,7 +174,7 @@ namespace Espera.Mobile.Core.ViewModels
         public int CurrentTimeSeconds
         {
             get { return this.currentTimeSeconds.Value; }
-            set { NetworkMessenger.Instance.SetCurrentTime(TimeSpan.FromSeconds(value)); }
+            set { this.currentTimeSecondsUserChanged.OnNext(value); }
         }
 
         public IReadOnlyReactiveList<PlaylistEntryViewModel> Entries

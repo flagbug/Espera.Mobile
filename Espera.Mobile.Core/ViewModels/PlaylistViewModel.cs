@@ -87,8 +87,8 @@ namespace Espera.Mobile.Core.ViewModels
                     .DisposeWith(disposable);
 
                 this.currentTimeSecondsUserChanged
-                    .Skip(1) // The XamForms playlist fires an initial value that we don't want
-                    .Subscribe(async x => await NetworkMessenger.Instance.SetCurrentTime(TimeSpan.FromSeconds(x)));
+                    .DistinctUntilChanged()
+                    .Subscribe(x => NetworkMessenger.Instance.SetCurrentTime(TimeSpan.FromSeconds(x)));
 
                 this.totalTime = currentPlaylist.Select(x => x.TotalTime)
                     .ToProperty(this, x => x.TotalTime);

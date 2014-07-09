@@ -7,6 +7,7 @@ using Android.Content.PM;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
+using Espera.Mobile.Core;
 using Espera.Mobile.Core.ViewModels;
 using Google.Analytics.Tracking;
 using ReactiveMarrow;
@@ -100,6 +101,17 @@ namespace Espera.Android.Views
                     .BindTo(this.PlaybackControlPanel, x => x.Visibility)
                     .DisposeWith(disposable);
 
+                this.ViewModel.WhenAnyValue(x => x.TotalTime.TotalSeconds).Select(x => (int)x)
+                    .BindTo(this.DurationSeekBar, x => x.Max);
+                this.OneWayBind(this.ViewModel, x => x.CurrentTimeSeconds, x => x.DurationSeekBar.Progress);
+                this.DurationSeekBar.Events().ProgressChanged.Where(x => x.FromUser)
+                    .Subscribe(x => this.ViewModel.CurrentTimeSeconds = x.Progress);
+
+                this.ViewModel.WhenAnyValue(x => x.CurrentTimeSeconds, x => TimeSpan.FromSeconds(x).FormatAdaptive())
+                    .BindTo(this.CurrentTimeTextView, x => x.Text);
+                this.ViewModel.WhenAnyValue(x => x.TotalTime, x => x.FormatAdaptive())
+                    .BindTo(this.TotalTimeTextView, x => x.Text);
+
                 this.BindCommand(this.ViewModel, x => x.PlayNextSongCommand, x => x.NextButton)
                     .DisposeWith(disposable);
                 this.BindCommand(this.ViewModel, x => x.PlayPreviousSongCommand, x => x.PreviousButton)
@@ -151,6 +163,10 @@ namespace Espera.Android.Views
             });
         }
 
+        public TextView CurrentTimeTextView { get; private set; }
+
+        public SeekBar DurationSeekBar { get; private set; }
+
         public Button NextButton { get; private set; }
 
         public LinearLayout PlaybackControlPanel { get; private set; }
@@ -160,6 +176,8 @@ namespace Espera.Android.Views
         public Button PlayPauseButton { get; private set; }
 
         public Button PreviousButton { get; private set; }
+
+        public TextView TotalTimeTextView { get; private set; }
 
         protected override void OnCreate(Bundle bundle)
         {

@@ -6,9 +6,6 @@ using Android.OS;
 using Espera.Android.Services;
 using Espera.Mobile.Core.UI;
 using Google.Analytics.Tracking;
-using ReactiveUI;
-using ReactiveUI.XamForms;
-using Splat;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 
@@ -23,10 +20,6 @@ namespace Espera.Android.Views
             base.OnCreate(bundle);
 
             Forms.Init(this, bundle);
-
-            Locator.CurrentMutable.Register(() => new ActivationForViewFetcher(), typeof(IActivationForViewFetcher));
-            Locator.CurrentMutable.Register(() => new XamlDefaultPropertyBinding(), typeof(IDefaultPropertyBindingProvider));
-            RxApp.MainThreadScheduler = new DeviceScheduler();
 
             this.SetPage(XamFormsApp.GetMainPage());
 

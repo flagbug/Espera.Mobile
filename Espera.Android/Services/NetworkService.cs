@@ -7,8 +7,10 @@ using Espera.Android.Analytics;
 using Espera.Android.Views;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
+using Espera.Network;
 using ReactiveMarrow;
 using ReactiveUI;
+using Notification = Android.App.Notification;
 
 namespace Espera.Android.Services
 {
@@ -38,6 +40,18 @@ namespace Espera.Android.Services
                 .WhenAnyValue(x => x.Port).DistinctUntilChanged(), (connected, _) => connected)
                 .Where(x => x)
                 .Subscribe(x => NetworkMessenger.Instance.Disconnect());
+
+            AndroidVolumeRequests.Instance.VolumeDown.CombineLatest(NetworkMessenger.Instance.IsConnected, NetworkMessenger.Instance.AccessPermission,
+                    (_, connected, permission) => connected && permission == NetworkAccessPermission.Admin)
+                .Where(x => x)
+                .SelectMany(async _ => await NetworkMessenger.Instance.GetVolume())
+                .Subscribe(async currentVolume => await NetworkMessenger.Instance.SetVolume(Math.Max(currentVolume - 0.1f, 0)));
+
+            AndroidVolumeRequests.Instance.VolumeUp.CombineLatest(NetworkMessenger.Instance.IsConnected, NetworkMessenger.Instance.AccessPermission,
+                    (_, connected, permission) => connected && permission == NetworkAccessPermission.Admin)
+                .Where(x => x)
+                .SelectMany(async _ => await NetworkMessenger.Instance.GetVolume())
+                .Subscribe(async currentVolume => await NetworkMessenger.Instance.SetVolume(Math.Min(currentVolume + 0.1f, 1)));
         }
 
         public override void OnDestroy()

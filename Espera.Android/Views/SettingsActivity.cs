@@ -5,6 +5,7 @@ using Android.App;
 using Android.OS;
 using Android.Preferences;
 using Android.Text;
+using Android.Views;
 using Android.Widget;
 using Espera.Mobile.Core.Settings;
 using Espera.Network;
@@ -17,6 +18,11 @@ namespace Espera.Android.Views
     [Activity(Label = "Settings")]
     public class SettingsActivity : PreferenceActivity
     {
+        public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
+        {
+            return AndroidVolumeRequests.Instance.HandleKeyCode(keyCode);
+        }
+
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);

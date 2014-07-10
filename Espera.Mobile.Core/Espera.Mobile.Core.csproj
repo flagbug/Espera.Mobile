@@ -39,6 +39,7 @@
     <Compile Include="Analytics\IAnalytics.cs" />
     <Compile Include="BlobCacheKeys.cs" />
     <Compile Include="IFile.cs" />
+    <Compile Include="IVolumeRequests.cs" />
     <Compile Include="MeasureHelper.cs" />
     <Compile Include="Network\ITcpClient.cs" />
     <Compile Include="Network\IUdpClient.cs" />

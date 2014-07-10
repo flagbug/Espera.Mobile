@@ -90,6 +90,11 @@ namespace Espera.Android.Views
             return true;
         }
 
+        public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
+        {
+            return AndroidVolumeRequests.Instance.HandleKeyCode(keyCode);
+        }
+
         public override bool OnOptionsItemSelected(IMenuItem item)
         {
             this.StartActivity(typeof(SettingsActivity));

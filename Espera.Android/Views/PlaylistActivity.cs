@@ -179,6 +179,11 @@ namespace Espera.Android.Views
 
         public TextView TotalTimeTextView { get; private set; }
 
+        public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
+        {
+            return AndroidVolumeRequests.Instance.HandleKeyCode(keyCode);
+        }
+
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);

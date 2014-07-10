@@ -247,6 +247,13 @@ namespace Espera.Mobile.Core.Network
             return response.Content["songs"].ToObject<List<NetworkSong>>();
         }
 
+        public async Task<float> GetVolume()
+        {
+            ResponseInfo response = await this.SendRequest(RequestAction.GetVolume);
+
+            return response.Content["volume"].ToObject<float>();
+        }
+
         public Task<ResponseInfo> MovePlaylistSongDownAsync(Guid entryGuid)
         {
             var parameters = new
@@ -364,6 +371,19 @@ namespace Espera.Mobile.Core.Network
             };
 
             return this.SendRequest(RequestAction.SetCurrentTime, parameters);
+        }
+
+        public Task<ResponseInfo> SetVolume(float volume)
+        {
+            if (volume < 0 || volume > 1)
+                throw new ArgumentOutOfRangeException("volume");
+
+            var parameters = new
+            {
+                volume
+            };
+
+            return this.SendRequest(RequestAction.SetVolume, parameters);
         }
 
         public Task<ResponseInfo> VoteAsync(Guid entryGuid)

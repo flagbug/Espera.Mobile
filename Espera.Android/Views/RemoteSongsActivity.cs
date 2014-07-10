@@ -6,6 +6,7 @@ using Akavache;
 using Android.App;
 using Android.Content.PM;
 using Android.OS;
+using Android.Views;
 using Android.Widget;
 using Espera.Mobile.Core;
 using Espera.Mobile.Core.Songs;
@@ -19,6 +20,11 @@ namespace Espera.Android.Views
     public class RemoteSongsActivity : ReactiveActivity<RemoteSongsViewModel>
     {
         public ListView SongsList { get; private set; }
+
+        public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
+        {
+            return AndroidVolumeRequests.Instance.HandleKeyCode(keyCode);
+        }
 
         protected override void OnCreate(Bundle bundle)
         {

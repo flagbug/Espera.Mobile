@@ -2,6 +2,7 @@ using System;
 using System.Reactive.Linq;
 using Android.App;
 using Android.OS;
+using Android.Views;
 using Android.Widget;
 using Espera.Mobile.Core.Songs;
 using Espera.Mobile.Core.ViewModels;
@@ -14,6 +15,11 @@ namespace Espera.Android.Views
         private ProgressDialog progressDialog;
 
         public ListView ArtistList { get; private set; }
+
+        public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
+        {
+            return AndroidVolumeRequests.Instance.HandleKeyCode(keyCode);
+        }
 
         protected abstract ArtistsViewModel<T> ConstructViewModel();
 

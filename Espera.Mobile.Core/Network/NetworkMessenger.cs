@@ -249,9 +249,12 @@ namespace Espera.Mobile.Core.Network
 
         public async Task<float> GetVolume()
         {
-            ResponseInfo response = await this.SendRequest(RequestAction.GetVolume);
+            using (MeasureHelper.Measure())
+            {
+                ResponseInfo response = await this.SendRequest(RequestAction.GetVolume);
 
-            return response.Content["volume"].ToObject<float>();
+                return response.Content["volume"].ToObject<float>();
+            }
         }
 
         public Task<ResponseInfo> MovePlaylistSongDownAsync(Guid entryGuid)

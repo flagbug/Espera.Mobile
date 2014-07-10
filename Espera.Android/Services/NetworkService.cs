@@ -45,13 +45,21 @@ namespace Espera.Android.Services
                     (_, connected, permission) => connected && permission == NetworkAccessPermission.Admin)
                 .Where(x => x)
                 .SelectMany(async _ => await NetworkMessenger.Instance.GetVolume())
-                .Subscribe(async currentVolume => await NetworkMessenger.Instance.SetVolume(Math.Max(currentVolume - 0.1f, 0)));
+                .Where(currentVolume => currentVolume > 0)
+                .Select(currentVolume => Math.Max(currentVolume - 0.1f, 0))
+                .Select(async volume => await NetworkMessenger.Instance.SetVolume(volume))
+                .Concat()
+                .Subscribe();
 
             AndroidVolumeRequests.Instance.VolumeUp.CombineLatest(NetworkMessenger.Instance.IsConnected, NetworkMessenger.Instance.AccessPermission,
                     (_, connected, permission) => connected && permission == NetworkAccessPermission.Admin)
                 .Where(x => x)
                 .SelectMany(async _ => await NetworkMessenger.Instance.GetVolume())
-                .Subscribe(async currentVolume => await NetworkMessenger.Instance.SetVolume(Math.Min(currentVolume + 0.1f, 1)));
+                .Where(currentVolume => currentVolume < 1)
+                .Select(currentVolume => Math.Min(currentVolume + 0.1f, 1))
+                .Select(async volume => await NetworkMessenger.Instance.SetVolume(volume))
+                .Concat()
+                .Subscribe();
         }
 
         public override void OnDestroy()

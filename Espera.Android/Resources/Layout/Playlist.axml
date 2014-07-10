@@ -23,7 +23,7 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="5dp"
             android:layout_marginBottom="15dp">
             <TextView
                 android:id="@+id/CurrentTimeTextView"
@@ -33,7 +33,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_width="0px"
                 android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp" />
+                android:layout_marginRight="5dp" />
             <SeekBar
                 android:layout_height="wrap_content"
                 android:id="@+id/DurationSeekBar"
@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="0px"
                 android:layout_marginRight="8dp"
-                android:layout_marginLeft="8dp" />
+                android:layout_marginLeft="5dp" />
         </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
@@ -56,20 +56,20 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="15dp">
             <Button
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:id="@+id/PreviousButton"
                 android:background="@drawable/Previous" />
             <Button
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:id="@+id/PlayPauseButton"
                 android:background="@drawable/Play"
-                android:layout_marginLeft="35dp"
-                android:layout_marginRight="35dp" />
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp" />
             <Button
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:id="@+id/NextButton"
                 android:background="@drawable/Next" />
         </LinearLayout>

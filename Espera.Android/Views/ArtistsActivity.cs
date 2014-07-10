@@ -18,7 +18,7 @@ namespace Espera.Android.Views
 
         public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
         {
-            return AndroidVolumeRequests.Instance.HandleKeyCode(keyCode);
+            return AndroidVolumeRequests.Instance.HandleKeyCode(keyCode) || base.OnKeyDown(keyCode, e);
         }
 
         protected abstract ArtistsViewModel<T> ConstructViewModel();

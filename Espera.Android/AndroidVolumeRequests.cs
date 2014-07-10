@@ -8,24 +8,24 @@ namespace Espera.Android
 {
     internal class AndroidVolumeRequests : IVolumeRequests
     {
+        private static readonly Lazy<AndroidVolumeRequests> instance;
         private readonly Subject<Unit> volumeDown;
         private readonly Subject<Unit> volumeUp;
-        private static readonly Lazy<AndroidVolumeRequests> instance;
 
         static AndroidVolumeRequests()
         {
             instance = new Lazy<AndroidVolumeRequests>(() => new AndroidVolumeRequests());
         }
 
-        public static AndroidVolumeRequests Instance
-        {
-            get { return instance.Value; }
-        }
-
         private AndroidVolumeRequests()
         {
             this.volumeDown = new Subject<Unit>();
             this.volumeUp = new Subject<Unit>();
+        }
+
+        public static AndroidVolumeRequests Instance
+        {
+            get { return instance.Value; }
         }
 
         public IObservable<Unit> VolumeDown
@@ -36,16 +36,6 @@ namespace Espera.Android
         public IObservable<Unit> VolumeUp
         {
             get { return this.volumeUp.AsObservable(); }
-        }
-
-        private void RaiseVolumeDown()
-        {
-            this.volumeDown.OnNext(Unit.Default);
-        }
-
-        private void RaiseVolumeUp()
-        {
-            this.volumeUp.OnNext(Unit.Default);
         }
 
         public bool HandleKeyCode(global::Android.Views.Keycode keyCode)
@@ -62,6 +52,16 @@ namespace Espera.Android
             }
 
             return false;
+        }
+
+        private void RaiseVolumeDown()
+        {
+            this.volumeDown.OnNext(Unit.Default);
+        }
+
+        private void RaiseVolumeUp()
+        {
+            this.volumeUp.OnNext(Unit.Default);
         }
     }
 }

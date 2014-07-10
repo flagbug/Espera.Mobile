@@ -8,12 +8,13 @@
         android:layout_height="fill_parent"
         android:id="@+id/PlayList"
         android:layout_weight="1" />
+<!--
     <TextView
         android:id="@android:id/empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Playlist is empty"
-        android:gravity="center" />
+        android:gravity="center" />-->
     <LinearLayout
         android:id="@+id/PlaybackControlPanel"
         android:orientation="vertical"
@@ -23,7 +24,8 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20px">
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp">
             <TextView
                 android:id="@+id/CurrentTimeTextView"
                 android:layout_height="wrap_content"
@@ -31,8 +33,8 @@
                 android:layout_weight="1"
                 android:layout_gravity="center_vertical"
                 android:layout_width="0px"
-                android:layout_marginLeft="10px"
-                android:layout_marginRight="10px" />
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp" />
             <SeekBar
                 android:layout_height="wrap_content"
                 android:id="@+id/DurationSeekBar"
@@ -45,29 +47,30 @@
                 android:layout_gravity="center_vertical"
                 android:layout_height="wrap_content"
                 android:layout_width="0px"
-                android:layout_marginRight="10px"
-                android:layout_marginLeft="10px" />
+                android:layout_marginRight="8dp"
+                android:layout_marginLeft="8dp" />
         </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="15dp">
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:id="@+id/PreviousButton"
                 android:background="@drawable/Previous" />
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:id="@+id/PlayPauseButton"
                 android:background="@drawable/Play"
-                android:layout_marginLeft="15dip"
-                android:layout_marginRight="15dip" />
+                android:layout_marginLeft="35dp"
+                android:layout_marginRight="35dp" />
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:id="@+id/NextButton"
                 android:background="@drawable/Next" />
         </LinearLayout>

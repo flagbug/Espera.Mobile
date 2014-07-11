@@ -56,18 +56,18 @@ namespace Espera.Android.Views
                     .Subscribe(x => Toast.MakeText(this, x, ToastLength.Long).Show())
                     .DisposeWith(disposable);
 
-                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadArtistsButton.Enabled)
+                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadPlaylistButton.Enabled)
                     .DisposeWith(disposable);
-                this.LoadArtistsButton.Events().Click.Subscribe(x => this.StartActivity(typeof(RemoteArtistsActivity)))
-                    .DisposeWith(disposable);
-
-                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadCurrentPlaylistButton.Enabled)
-                    .DisposeWith(disposable);
-                this.LoadCurrentPlaylistButton.Events().Click.Subscribe(x => this.StartActivity(typeof(PlaylistActivity)))
+                this.LoadPlaylistButton.Events().Click.Subscribe(x => this.StartActivity(typeof(PlaylistActivity)))
                     .DisposeWith(disposable);
 
-                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LocalSongsButton.Enabled);
-                this.LocalSongsButton.Events().Click.Subscribe(x => this.StartActivity(typeof(LocalArtistsActivity)))
+                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadRemoteArtistsButton.Enabled)
+                    .DisposeWith(disposable);
+                this.LoadRemoteArtistsButton.Events().Click.Subscribe(x => this.StartActivity(typeof(RemoteArtistsActivity)))
+                    .DisposeWith(disposable);
+
+                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadLocalArtistsButton.Enabled);
+                this.LoadLocalArtistsButton.Events().Click.Subscribe(x => this.StartActivity(typeof(LocalArtistsActivity)))
                     .DisposeWith(disposable); ;
 
                 return disposable;
@@ -76,11 +76,11 @@ namespace Espera.Android.Views
 
         public Button ConnectButton { get; private set; }
 
-        public Button LoadArtistsButton { get; private set; }
+        public Button LoadLocalArtistsButton { get; private set; }
 
-        public Button LoadCurrentPlaylistButton { get; private set; }
+        public Button LoadPlaylistButton { get; private set; }
 
-        public Button LocalSongsButton { get; private set; }
+        public Button LoadRemoteArtistsButton { get; private set; }
 
         public override bool OnCreateOptionsMenu(IMenu menu)
         {

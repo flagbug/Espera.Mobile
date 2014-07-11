@@ -23,13 +23,13 @@ namespace Espera.Mobile.Core.Network
     {
         private static Lazy<INetworkMessenger> instance;
         private readonly Subject<NetworkAccessPermission> accessPermission;
+        private readonly IAnalytics analytics;
         private readonly Subject<ITcpClient> client;
         private readonly Subject<Unit> connectionEstablished;
         private readonly Subject<Unit> disconnected;
         private readonly SemaphoreSlim gate;
         private readonly IObservable<NetworkMessage> messagePipeline;
         private readonly IDisposable messagePipelineConnection;
-        private IAnalytics analytics;
         private ITcpClient currentClient;
         private ITcpClient currentFileTransferClient;
 
@@ -45,6 +45,8 @@ namespace Espera.Mobile.Core.Network
             this.disconnected = new Subject<Unit>();
             this.connectionEstablished = new Subject<Unit>();
             this.accessPermission = new Subject<NetworkAccessPermission>();
+
+            this.analytics = Locator.Current.GetService<IAnalytics>();
 
             this.client = new Subject<ITcpClient>();
 
@@ -339,18 +341,6 @@ namespace Espera.Mobile.Core.Network
             var status = new FileTransferStatus(progress);
 
             return status;
-        }
-
-        /// <summary>
-        /// Registers an analytics provider ton measure network timings
-        /// </summary>
-        /// <param name="analytics"></param>
-        public void RegisterAnalytics(IAnalytics analytics)
-        {
-            if (analytics == null)
-                throw new ArgumentNullException("analytics");
-
-            this.analytics = analytics;
         }
 
         public Task<ResponseInfo> RemovePlaylistSongAsync(Guid entryGuid)

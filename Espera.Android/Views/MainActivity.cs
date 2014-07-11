@@ -8,7 +8,6 @@ using Android.Net.Wifi;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
-using Espera.Android.Analytics;
 using Espera.Android.Services;
 using Espera.Mobile.Core.Analytics;
 using Espera.Mobile.Core.Network;
@@ -130,20 +129,17 @@ namespace Espera.Android.Views
                 this.Intent.RemoveExtra("connectionLost");
             }
 
-            var wifiManager = (WifiManager)this.GetSystemService(WifiService);
+            var wifiService = Locator.Current.GetService<IWifiService>();
 
-            if (!wifiManager.IsWifiEnabled)
+            if (wifiService.GetIpAddress() == null)
             {
-                this.ShowWifiPrompt(wifiManager);
+                this.ShowWifiPrompt();
             }
 
             else
             {
-                WifiInfo info = wifiManager.ConnectionInfo;
-
-                var analytics = new AndroidAnalytics(this.ApplicationContext);
-                int wifiSpeed = info.LinkSpeed;
-                analytics.RecordWifiSpeed(wifiSpeed);
+                var analytics = Locator.Current.GetService<IAnalytics>();
+                analytics.RecordWifiSpeed(wifiService.GetWifiSpeed());
             }
         }
 
@@ -161,8 +157,9 @@ namespace Espera.Android.Views
             EasyTracker.GetInstance(this).ActivityStop(this);
         }
 
-        private void ShowWifiPrompt(WifiManager wifiManager)
+        private void ShowWifiPrompt()
         {
+            var wifiManager = WifiManager.FromContext(this);
             var builder = new AlertDialog.Builder(this);
             builder.SetTitle("Error");
             builder.SetMessage("You have to enable Wifi.");

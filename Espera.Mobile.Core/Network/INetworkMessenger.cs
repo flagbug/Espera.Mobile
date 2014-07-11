@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Reactive;
 using System.Threading.Tasks;
-using Espera.Mobile.Core.Analytics;
 using Espera.Mobile.Core.Songs;
 using Espera.Network;
 
@@ -17,8 +16,6 @@ namespace Espera.Mobile.Core.Network
         IObservable<bool> IsConnected { get; }
 
         IObservable<NetworkPlaybackState> PlaybackStateChanged { get; }
-
-        Task<float> GetVolume();
 
         IObservable<TimeSpan> PlaybackTimeChanged { get; }
 
@@ -42,6 +39,8 @@ namespace Espera.Mobile.Core.Network
 
         Task<IReadOnlyList<NetworkSong>> GetSongsAsync();
 
+        Task<float> GetVolume();
+
         Task<ResponseInfo> MovePlaylistSongDownAsync(Guid entryGuid);
 
         Task<ResponseInfo> MovePlaylistSongUpAsync(Guid entryGuid);
@@ -57,8 +56,6 @@ namespace Espera.Mobile.Core.Network
         Task<ResponseInfo> PlaySongsAsync(IEnumerable<Guid> guids);
 
         Task<FileTransferStatus> QueueRemoteSong(LocalSong songMetadata, byte[] data);
-
-        void RegisterAnalytics(IAnalytics analytics);
 
         Task<ResponseInfo> RemovePlaylistSongAsync(Guid entryGuid);
 

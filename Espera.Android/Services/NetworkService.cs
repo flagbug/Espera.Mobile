@@ -5,7 +5,6 @@ using Android.Content;
 using Android.Net;
 using Android.Net.Wifi;
 using Android.OS;
-using Espera.Android.Analytics;
 using Espera.Android.Views;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
@@ -32,8 +31,6 @@ namespace Espera.Android.Services
         public override void OnCreate()
         {
             base.OnCreate();
-
-            NetworkMessenger.Instance.RegisterAnalytics(new AndroidAnalytics(this.ApplicationContext));
 
             this.keepAlive = NetworkMessenger.Instance;
             this.keepAlive.IsConnected.Where(x => x)

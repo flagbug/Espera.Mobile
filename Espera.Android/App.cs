@@ -2,7 +2,9 @@ using System;
 using Android.App;
 using Android.Provider;
 using Android.Runtime;
+using Espera.Android.Analytics;
 using Espera.Mobile.Core;
+using Espera.Mobile.Core.Analytics;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.SongFetchers;
 using Espera.Mobile.Core.Songs;
@@ -40,6 +42,7 @@ namespace Espera.Android
             Locator.CurrentMutable.Register(() => new File(), typeof(IFile));
             Locator.CurrentMutable.Register(() => new AndroidTcpClient(), typeof(ITcpClient));
             Locator.CurrentMutable.Register(() => new AndroidUdpClient(), typeof(IUdpClient));
+            Locator.CurrentMutable.RegisterConstant(new AndroidAnalytics(this), typeof(IAnalytics));
         }
     }
 }

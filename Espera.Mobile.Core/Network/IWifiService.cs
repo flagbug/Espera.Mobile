@@ -3,5 +3,7 @@
     public interface IWifiService
     {
         string GetIpAddress();
+
+        int GetWifiSpeed();
     }
 }

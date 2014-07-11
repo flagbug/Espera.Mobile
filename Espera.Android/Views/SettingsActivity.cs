@@ -5,9 +5,11 @@ using Android.App;
 using Android.OS;
 using Android.Preferences;
 using Android.Text;
+using Android.Views;
 using Android.Widget;
 using Espera.Mobile.Core.Settings;
 using Espera.Network;
+using Google.Analytics.Tracking;
 using Lager.Android;
 using ReactiveUI;
 
@@ -16,6 +18,11 @@ namespace Espera.Android.Views
     [Activity(Label = "Settings")]
     public class SettingsActivity : PreferenceActivity
     {
+        public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
+        {
+            return AndroidVolumeRequests.Instance.HandleKeyCode(keyCode) || base.OnKeyDown(keyCode, e);
+        }
+
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
@@ -45,6 +52,20 @@ namespace Espera.Android.Views
             defaultLibraryActionPreference.BindToSetting(UserSettings.Instance, x => x.DefaultLibraryAction,
                 x => x.Value, x => Enum.Parse(typeof(DefaultLibraryAction), (string)x), x => x.ToString());
             UserSettings.Instance.WhenAnyValue(x => x.EnableAdministratorMode).BindTo(defaultLibraryActionPreference, x => x.Enabled);
+        }
+
+        protected override void OnStart()
+        {
+            base.OnStart();
+
+            EasyTracker.GetInstance(this).ActivityStart(this);
+        }
+
+        protected override void OnStop()
+        {
+            base.OnStop();
+
+            EasyTracker.GetInstance(this).ActivityStop(this);
         }
     }
 }

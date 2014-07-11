@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Reactive;
 using System.Threading.Tasks;
-using Espera.Mobile.Core.Analytics;
 using Espera.Mobile.Core.Songs;
 using Espera.Network;
 
@@ -40,6 +39,8 @@ namespace Espera.Mobile.Core.Network
 
         Task<IReadOnlyList<NetworkSong>> GetSongsAsync();
 
+        Task<float> GetVolume();
+
         Task<ResponseInfo> MovePlaylistSongDownAsync(Guid entryGuid);
 
         Task<ResponseInfo> MovePlaylistSongUpAsync(Guid entryGuid);
@@ -56,11 +57,11 @@ namespace Espera.Mobile.Core.Network
 
         Task<FileTransferStatus> QueueRemoteSong(LocalSong songMetadata, byte[] data);
 
-        void RegisterAnalytics(IAnalytics analytics);
-
         Task<ResponseInfo> RemovePlaylistSongAsync(Guid entryGuid);
 
         Task<ResponseInfo> SetCurrentTime(TimeSpan time);
+
+        Task<ResponseInfo> SetVolume(float volume);
 
         Task<ResponseInfo> VoteAsync(Guid entryGuid);
     }

@@ -79,16 +79,17 @@ namespace Espera.Mobile.Core.ViewModels
                     .Merge(NetworkMessenger.Instance.PlaybackTimeChanged)
                     .Select(x => (int)x.TotalSeconds)
                     .Select(x => Observable.Interval(TimeSpan.FromSeconds(1), RxApp.TaskpoolScheduler)
+                        .Where(_ => this.IsPlaying)
                         .StartWith(x)
-                        .Select((_, i) => x + i).Where(_ => this.IsPlaying))
+                        .Select((_, i) => x + i))
                     .Switch()
                     .ObserveOn(RxApp.MainThreadScheduler)
                     .ToProperty(this, x => x.CurrentTimeSeconds)
                     .DisposeWith(disposable);
 
                 this.currentTimeSecondsUserChanged
-                    .Skip(1) // The XamForms playlist fires an initial value that we don't want
-                    .Subscribe(async x => await NetworkMessenger.Instance.SetCurrentTime(TimeSpan.FromSeconds(x)));
+                    .DistinctUntilChanged()
+                    .Subscribe(x => NetworkMessenger.Instance.SetCurrentTime(TimeSpan.FromSeconds(x)));
 
                 this.totalTime = currentPlaylist.Select(x => x.TotalTime)
                     .ToProperty(this, x => x.TotalTime);

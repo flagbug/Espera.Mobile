@@ -19,6 +19,10 @@ namespace Espera.Android
             var linearLayout = new LinearLayout(null);
             linearLayout.Visibility = ViewStates.Visible;
 
+            var seekBar = new SeekBar(null);
+            seekBar.Max = seekBar.Max;
+            seekBar.Progress = seekBar.Progress;
+
             var textPref = new EditTextPreference(null);
             textPref.Text = textPref.Text;
             textPref.Enabled = textPref.Enabled;

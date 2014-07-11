@@ -21,7 +21,7 @@
     <AndroidStoreUncompressedFileExtensions />
     <JavaMaximumHeapSize />
     <JavaOptions />
-    <NuGetPackageImportStamp>f22814ce</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>64ca9a69</NuGetPackageImportStamp>
     <AndroidLinkSkip />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -71,14 +71,10 @@
     </Reference>
     <Reference Include="ReactiveUI, Version=6.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\reactiveui-core.6.0.0\lib\MonoAndroid\ReactiveUI.dll</HintPath>
+      <HintPath>ext\ReactiveUI.dll</HintPath>
     </Reference>
     <Reference Include="ReactiveUI.Events">
       <HintPath>..\packages\reactiveui-events.6.0.0\lib\Monoandroid\ReactiveUI.Events.dll</HintPath>
-    </Reference>
-    <Reference Include="ReactiveUI.XamForms, Version=5.99.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ext\ReactiveUI.XamForms.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -99,17 +95,8 @@
     <Reference Include="System.Threading" />
     <Reference Include="System.Threading.Tasks" />
     <Reference Include="System.Xml" />
-    <Reference Include="Xamarin.Android.Support.v4">
-      <HintPath>..\packages\Xamarin.Android.Support.v4.19.1.0\lib\MonoAndroid10\Xamarin.Android.Support.v4.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.Forms.Core">
-      <HintPath>..\packages\Xamarin.Forms.1.1.1.6206\lib\MonoAndroid10\Xamarin.Forms.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.Forms.Platform.Android">
-      <HintPath>..\packages\Xamarin.Forms.1.1.1.6206\lib\MonoAndroid10\Xamarin.Forms.Platform.Android.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.Forms.Xaml">
-      <HintPath>..\packages\Xamarin.Forms.1.1.1.6206\lib\MonoAndroid10\Xamarin.Forms.Xaml.dll</HintPath>
+    <Reference Include="GoogleAnalytics.Android">
+      <HintPath>..\Components\googleanalytics-3.0.3\lib\android\GoogleAnalytics.Android.dll</HintPath>
     </Reference>
     <Reference Include="Akavache">
       <HintPath>..\packages\akavache.core.3.99.1-beta\lib\MonoAndroid\Akavache.dll</HintPath>
@@ -123,6 +110,7 @@
     <Compile Include="AndroidSongFetcher.cs" />
     <Compile Include="AndroidTcpClient.cs" />
     <Compile Include="AndroidUdpClient.cs" />
+    <Compile Include="AndroidVolumeRequests.cs" />
     <Compile Include="AndroidWifiService.cs" />
     <Compile Include="App.cs" />
     <Compile Include="File.cs" />
@@ -130,8 +118,17 @@
     <Compile Include="Services\NetworkService.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ToastNotification.cs" />
+    <Compile Include="Views\ArtistsActivity.cs" />
+    <Compile Include="Views\ArtistsAdapter.cs" />
+    <Compile Include="Views\LocalArtistsActivity.cs" />
+    <Compile Include="Views\LocalSongsActivity.cs" />
+    <Compile Include="Views\LocalSongView.cs" />
     <Compile Include="Views\MainActivity.cs" />
+    <Compile Include="Views\PlaylistActivity.cs" />
+    <Compile Include="Views\PlaylistEntryView.cs" />
+    <Compile Include="Views\RemoteArtistsActivity.cs" />
+    <Compile Include="Views\RemoteSongsActivity.cs" />
+    <Compile Include="Views\RemoteSongsAdapter.cs" />
     <Compile Include="Views\SettingsActivity.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +139,13 @@
     <AndroidResource Include="Resources\Layout\Settings.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
+    <AndroidResource Include="Resources\Layout\Main.axml" />
+    <AndroidResource Include="Resources\Layout\Playlist.axml" />
+    <AndroidResource Include="Resources\Layout\PlaylistListItem.axml" />
+    <AndroidResource Include="Resources\Layout\RemoteSongs.axml" />
+    <AndroidResource Include="Resources\Layout\Artists.axml" />
+    <AndroidResource Include="Resources\Layout\LocalSongItem.axml" />
+    <AndroidResource Include="Resources\Layout\LocalSongs.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\Values\Strings.xml">
@@ -150,17 +154,42 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\AndroidManifest.xml" />
-    <AndroidResource Include="Resources\Drawable\CurrentSongIcon.png" />
-    <AndroidResource Include="Resources\Drawable\Next.png" />
-    <AndroidResource Include="Resources\Drawable\Play.png" />
-    <AndroidResource Include="Resources\Drawable\Previous.png" />
-    <AndroidResource Include="Resources\Drawable\Pause.png" />
-    <AndroidResource Include="Resources\Drawable\Settings.png" />
     <AndroidResource Include="Resources\Values\analytics.xml" />
     <AndroidResource Include="Resources\drawable-hdpi\Icon.png" />
     <AndroidResource Include="Resources\drawable-mdpi\Icon.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\Icon.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\Icon.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\CurrentSongIcon.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\Next.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\CurrentSongIcon.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\Next.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\CurrentSongIcon.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\Next.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\CurrentSongIcon.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\Next.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\Pause.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\Play.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\Previous.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\Settings.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\Pause.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\Play.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\Previous.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\Settings.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\Pause.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\Play.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\Previous.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\Settings.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\Pause.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\Play.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\Previous.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\Settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <XamarinComponentReference Include="googleanalytics">
+      <InstallationInProgress>True</InstallationInProgress>
+      <Version>3.0.3</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Espera.Mobile.Core\Espera.Mobile.Core.csproj">
@@ -168,14 +197,10 @@
       <Name>Espera.Mobile.Core</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\Drawable\" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
-  <Import Project="..\packages\Xamarin.Forms.1.1.1.6206\build\portable-win+net45+wp80+MonoAndroid10+MonoTouch10\Xamarin.Forms.targets" Condition="Exists('..\packages\Xamarin.Forms.1.1.1.6206\build\portable-win+net45+wp80+MonoAndroid10+MonoTouch10\Xamarin.Forms.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Xamarin.Forms.1.1.1.6206\build\portable-win+net45+wp80+MonoAndroid10+MonoTouch10\Xamarin.Forms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Xamarin.Forms.1.1.1.6206\build\portable-win+net45+wp80+MonoAndroid10+MonoTouch10\Xamarin.Forms.targets'))" />
-  </Target>
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
     <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />

@@ -23,6 +23,7 @@ namespace Espera.Android
                 MediaStore.Audio.Media.InterfaceConsts.Artist,
                 MediaStore.Audio.Media.InterfaceConsts.Album,
                 MediaStore.Audio.Media.InterfaceConsts.Duration,
+                MediaStore.Audio.Media.InterfaceConsts.Track,
                 MediaStore.Audio.Media.InterfaceConsts.Data
             };
 
@@ -34,7 +35,7 @@ namespace Espera.Android
                 {
                     var song = new LocalSong(cursor.GetString(0), cursor.GetString(1), cursor.GetString(2),
                         "AndroidMakesMeCry", // There isn't a simple genre column, you have to jump through some hoops, so ignore it for now
-                        TimeSpan.FromMilliseconds(cursor.GetInt(3)), cursor.GetString(4));
+                        TimeSpan.FromMilliseconds(cursor.GetInt(3)), cursor.GetInt(4), cursor.GetString(5));
 
                     list.Add(song);
                 }

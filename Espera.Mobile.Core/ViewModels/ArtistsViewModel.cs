@@ -55,7 +55,7 @@ namespace Espera.Mobile.Core.ViewModels
             return songs.GroupBy(s => s.Artist)
                 .Select(g => g.Key)
                 .Distinct(StringComparer.CurrentCultureIgnoreCase)
-                .OrderBy(_ => _)
+                .OrderBy(SortHelpers.RemoveArtistPrefixes)
                 .ToList();
         }
 

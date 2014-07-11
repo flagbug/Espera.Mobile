@@ -20,7 +20,7 @@ namespace Espera.Mobile.Core.ViewModels
             if (songs == null)
                 throw new ArgumentNullException("songs");
 
-            this.Songs = songs.Select(x => new LocalSongViewModel(x)).ToList();
+            this.Songs = songs.Order().Select(x => new LocalSongViewModel(x)).ToList();
 
             this.AddToPlaylistCommand = ReactiveCommand.CreateAsyncTask(x => this.QueueSong(this.SelectedSong));
 

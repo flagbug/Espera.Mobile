@@ -18,7 +18,7 @@ namespace Espera.Mobile.Core.ViewModels
             if (songs == null)
                 throw new ArgumentNullException("songs");
 
-            this.Songs = songs;
+            this.Songs = songs.Order().ToList();
 
             this.PlaySongsCommand = ReactiveCommand.CreateAsyncTask(x => NetworkMessenger.Instance.PlaySongsAsync(
                 this.Songs.SkipWhile(song => song.Guid == this.SelectedSong.Guid).Select(y => y.Guid).ToList()));

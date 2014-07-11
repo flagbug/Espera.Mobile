@@ -129,11 +129,14 @@ namespace Espera.Android
 			// aapt resource value: 0x7f070011
 			public const int Image = 2131165201;
 			
+			// aapt resource value: 0x7f070008
+			public const int LoadLocalArtistsButton = 2131165192;
+			
 			// aapt resource value: 0x7f070006
-			public const int LoadArtistsButton = 2131165190;
+			public const int LoadPlaylistButton = 2131165190;
 			
 			// aapt resource value: 0x7f070007
-			public const int LoadCurrentPlaylistButton = 2131165191;
+			public const int LoadRemoteArtistsButton = 2131165191;
 			
 			// aapt resource value: 0x7f070002
 			public const int LocalSongAlbum = 2131165186;
@@ -143,9 +146,6 @@ namespace Espera.Android
 			
 			// aapt resource value: 0x7f070003
 			public const int LocalSongTransferProgress = 2131165187;
-			
-			// aapt resource value: 0x7f070008
-			public const int LocalSongsButton = 2131165192;
 			
 			// aapt resource value: 0x7f070010
 			public const int NextButton = 2131165200;

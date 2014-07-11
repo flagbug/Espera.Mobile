@@ -10,16 +10,16 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/LoadArtistsButton"
-        android:text="Artists" />
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/LoadCurrentPlaylistButton"
+        android:id="@+id/LoadPlaylistButton"
         android:text="Playlist" />
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/LocalSongsButton"
+        android:id="@+id/LoadRemoteArtistsButton"
+        android:text="Songs on the computer" />
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/LoadLocalArtistsButton"
         android:text="Songs on this device" />
 </LinearLayout>

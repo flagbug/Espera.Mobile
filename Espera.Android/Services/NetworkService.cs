@@ -2,6 +2,8 @@ using System;
 using System.Reactive.Linq;
 using Android.App;
 using Android.Content;
+using Android.Net;
+using Android.Net.Wifi;
 using Android.OS;
 using Espera.Android.Analytics;
 using Espera.Android.Views;
@@ -18,6 +20,9 @@ namespace Espera.Android.Services
     internal class NetworkService : Service
     {
         private INetworkMessenger keepAlive;
+
+        private PowerManager.WakeLock wakeLock;
+        private WifiManager.WifiLock wifiLock;
 
         public override IBinder OnBind(Intent intent)
         {
@@ -72,16 +77,23 @@ namespace Espera.Android.Services
 
         private void NotifyNetworkMessengerConnected()
         {
+            this.wakeLock = PowerManager.FromContext(this).NewWakeLock(WakeLockFlags.Partial, "espera-wake-lock");
+            this.wifiLock = WifiManager.FromContext(this).CreateWifiLock(WifiMode.Full, "espera-wifi-lock");
+
             var notification = new Notification(Resource.Drawable.Play, "Espera is connected");
             var intent = new Intent(this, typeof(MainActivity)).SetAction(Intent.ActionMain).AddCategory(Intent.CategoryLauncher);
             var pendingIntent = PendingIntent.GetActivity(this, 0, intent, 0);
             notification.SetLatestEventInfo(this, "Espera Network", "Espera is connected", pendingIntent);
+            notification.Flags |= NotificationFlags.OngoingEvent;
 
-            this.StartForeground((int)NotificationFlags.ForegroundService, notification);
+            this.StartForeground(6947, notification);
         }
 
         private void NotifyNetworkMessengerDisconnected()
         {
+            this.wakeLock.Release();
+            this.wifiLock.Release();
+
             this.StopForeground(true);
 
             var intent = new Intent(this, typeof(MainActivity));

@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-					   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-					   x:Class="Espera.Mobile.Core.UI.LocalArtistsPage">
-    <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
-        <Label x:Name="EmptyIndicator" Text="Found no music on your phone" VerticalOptions="Center" HorizontalOptions="Center" />
-        <ListView x:Name="ArtistsListView" Grid.Row="0" SelectedItem="{Binding SelectedArtist}" />
-    </Grid>
-</ContentPage>

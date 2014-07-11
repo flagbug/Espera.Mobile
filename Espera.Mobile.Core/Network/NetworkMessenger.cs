@@ -23,13 +23,13 @@ namespace Espera.Mobile.Core.Network
     {
         private static Lazy<INetworkMessenger> instance;
         private readonly Subject<NetworkAccessPermission> accessPermission;
+        private readonly IAnalytics analytics;
         private readonly Subject<ITcpClient> client;
         private readonly Subject<Unit> connectionEstablished;
         private readonly Subject<Unit> disconnected;
         private readonly SemaphoreSlim gate;
         private readonly IObservable<NetworkMessage> messagePipeline;
         private readonly IDisposable messagePipelineConnection;
-        private IAnalytics analytics;
         private ITcpClient currentClient;
         private ITcpClient currentFileTransferClient;
 
@@ -45,6 +45,8 @@ namespace Espera.Mobile.Core.Network
             this.disconnected = new Subject<Unit>();
             this.connectionEstablished = new Subject<Unit>();
             this.accessPermission = new Subject<NetworkAccessPermission>();
+
+            this.analytics = Locator.Current.GetService<IAnalytics>();
 
             this.client = new Subject<ITcpClient>();
 
@@ -247,6 +249,13 @@ namespace Espera.Mobile.Core.Network
             return response.Content["songs"].ToObject<List<NetworkSong>>();
         }
 
+        public async Task<float> GetVolume()
+        {
+            ResponseInfo response = await this.SendRequest(RequestAction.GetVolume);
+
+            return response.Content["volume"].ToObject<float>();
+        }
+
         public Task<ResponseInfo> MovePlaylistSongDownAsync(Guid entryGuid)
         {
             var parameters = new
@@ -334,18 +343,6 @@ namespace Espera.Mobile.Core.Network
             return status;
         }
 
-        /// <summary>
-        /// Registers an analytics provider ton measure network timings
-        /// </summary>
-        /// <param name="analytics"></param>
-        public void RegisterAnalytics(IAnalytics analytics)
-        {
-            if (analytics == null)
-                throw new ArgumentNullException("analytics");
-
-            this.analytics = analytics;
-        }
-
         public Task<ResponseInfo> RemovePlaylistSongAsync(Guid entryGuid)
         {
             var parameters = new
@@ -364,6 +361,19 @@ namespace Espera.Mobile.Core.Network
             };
 
             return this.SendRequest(RequestAction.SetCurrentTime, parameters);
+        }
+
+        public Task<ResponseInfo> SetVolume(float volume)
+        {
+            if (volume < 0 || volume > 1)
+                throw new ArgumentOutOfRangeException("volume");
+
+            var parameters = new
+            {
+                volume
+            };
+
+            return this.SendRequest(RequestAction.SetVolume, parameters);
         }
 
         public Task<ResponseInfo> VoteAsync(Guid entryGuid)

@@ -7,7 +7,7 @@ using Espera.Network;
 
 namespace Espera.Mobile.Core.Network
 {
-    public interface INetworkMessenger
+    public interface INetworkMessenger : IDisposable
     {
         IObservable<NetworkAccessPermission> AccessPermission { get; }
 
@@ -32,8 +32,6 @@ namespace Espera.Mobile.Core.Network
         void Disconnect();
 
         IObservable<string> DiscoverServerAsync(string localAddress, int port);
-
-        void Dispose();
 
         Task<NetworkPlaylist> GetCurrentPlaylistAsync();
 

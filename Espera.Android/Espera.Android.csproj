@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\xamstore-xamarin.inappbilling.1.5\build\monoandroid\xamstore-xamarin.inappbilling.props" Condition="Exists('..\packages\xamstore-xamarin.inappbilling.1.5\build\monoandroid\xamstore-xamarin.inappbilling.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -21,7 +22,7 @@
     <AndroidStoreUncompressedFileExtensions />
     <JavaMaximumHeapSize />
     <JavaOptions />
-    <NuGetPackageImportStamp>64ca9a69</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>b1d699cd</NuGetPackageImportStamp>
     <AndroidLinkSkip />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -117,6 +118,9 @@
     <Reference Include="System.Xml" />
     <Reference Include="GoogleAnalytics.Android">
       <HintPath>..\Components\googleanalytics-3.0.3\lib\android\GoogleAnalytics.Android.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.InAppBilling">
+      <HintPath>..\Components\xamarin.inappbilling-1.5\lib\android\Xamarin.InAppBilling.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -222,6 +226,12 @@
   <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
     <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
     <Error Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
+  </Target>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\xamstore-xamarin.inappbilling.1.5\build\monoandroid\xamstore-xamarin.inappbilling.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xamstore-xamarin.inappbilling.1.5\build\monoandroid\xamstore-xamarin.inappbilling.props'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
      Other similar extension points exist, see Microsoft.Common.targets.

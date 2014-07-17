@@ -33,7 +33,7 @@ namespace Espera.Android
             base.OnCreate();
 
             this.suspendHelper = new AutoSuspendHelper(this);
-            //RxApp.SuspensionHost.SetupDefaultSuspendResume();
+
             Locator.CurrentMutable.Register(() => new AndroidWifiService(), typeof(IWifiService));
             Locator.CurrentMutable.Register(() =>
                 new AndroidSongFetcher(x =>

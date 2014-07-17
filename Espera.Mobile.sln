@@ -5,7 +5,7 @@ VisualStudioVersion = 12.0.30626.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Espera.Android", "Espera.Android\Espera.Android.csproj", "{CFD4C74D-2653-458C-ACC0-A138B1AC0611}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Espera.Android.Tests", "Espera.Android.Tests\Espera.Android.Tests.csproj", "{A4836C66-A13A-4BA7-824D-B81D24991B2B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Espera.Mobile.Tests", "Espera.Mobile.Tests\Espera.Mobile.Tests.csproj", "{A4836C66-A13A-4BA7-824D-B81D24991B2B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Espera.Mobile.Core", "Espera.Mobile.Core\Espera.Mobile.Core.csproj", "{A66F5A81-780D-4B29-9A62-B8B37D2C8976}"
 EndProject

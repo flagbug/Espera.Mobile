@@ -19,7 +19,7 @@ using Splat;
 
 namespace Espera.Mobile.Core.Network
 {
-    public class NetworkMessenger : IDisposable, INetworkMessenger
+    public class NetworkMessenger : INetworkMessenger
     {
         private static Lazy<INetworkMessenger> instance;
         private readonly Subject<NetworkAccessPermission> accessPermission;

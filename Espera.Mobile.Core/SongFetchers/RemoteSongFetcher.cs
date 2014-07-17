@@ -1,6 +1,5 @@
 ﻿using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Songs;
-using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +13,7 @@ namespace Espera.Mobile.Core.SongFetchers
         public IObservable<IReadOnlyList<RemoteSong>> GetSongsAsync()
         {
             return NetworkMessenger.Instance.GetSongsAsync().ToObservable()
-                .Select(x => x.Select(RemoteSong.FromNetworkSong).ToList())
-                .Timeout(TimeSpan.FromSeconds(15), RxApp.TaskpoolScheduler);
+                .Select(x => x.Select(RemoteSong.FromNetworkSong).ToList());
         }
     }
 }

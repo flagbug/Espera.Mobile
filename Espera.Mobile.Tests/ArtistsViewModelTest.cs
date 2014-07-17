@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
@@ -52,8 +51,7 @@ namespace Espera.Android.Tests
             public void TimeoutTriggersMessages()
             {
                 var songFetcher = Substitute.For<ISongFetcher<Song>>();
-                songFetcher.GetSongsAsync().Returns(Observable.Never<IReadOnlyList<Song>>()
-                    .Timeout(TimeSpan.FromSeconds(10)));
+                songFetcher.GetSongsAsync().Returns(Observable.Never<IReadOnlyList<Song>>());
 
                 var vm = new ArtistsViewModel<Song>(songFetcher, "AnyKey");
 

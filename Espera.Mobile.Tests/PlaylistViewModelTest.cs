@@ -2,6 +2,7 @@
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
+using System.Threading.Tasks;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.ViewModels;
 using Espera.Network;
@@ -16,25 +17,38 @@ namespace Espera.Android.Tests
     public class PlaylistViewModelTest
     {
         [Fact]
-        public void PlaylistChangeUpdatesPlaylist()
+        public async Task PlaylistChangeUpdatesPlaylist()
         {
-            var songs = Helpers.SetupSongs(2);
             var playlist = new NetworkPlaylist
             {
                 Name = "A",
+                Songs = new List<NetworkSong>().AsReadOnly()
+            };
+
+            var messenger = CreateDefaultPlaylistMessenger();
+            messenger.GetCurrentPlaylistAsync().Returns(playlist.ToTaskResult());
+
+            var songs = Helpers.SetupSongs(2);
+            var changedPlaylist = new NetworkPlaylist
+            {
+                Name = "B",
                 Songs = songs,
                 CurrentIndex = 1
             };
 
-            var messenger = CreateDefaultPlaylistMessenger();
-            messenger.PlaylistChanged.Returns(Observable.Return(playlist));
+            var playlistChanged = new Subject<NetworkPlaylist>();
+            messenger.PlaylistChanged.Returns(playlistChanged);
 
             var vm = new PlaylistViewModel();
             vm.Activator.Activate();
 
-            Assert.True(vm.Entries[playlist.CurrentIndex.Value].IsPlaying);
+            await vm.LoadPlaylistCommand.ExecuteAsync();
+
+            playlistChanged.OnNext(changedPlaylist);
+
+            Assert.Equal(1, changedPlaylist.CurrentIndex);
             //Assert.Equal(playlist.Name, vm.Name);
-            Assert.Equal(playlist.Songs.Count, vm.Entries.Count);
+            Assert.Equal(changedPlaylist.Songs.Count, vm.Entries.Count);
         }
 
         private static INetworkMessenger CreateDefaultPlaylistMessenger()
@@ -219,7 +233,7 @@ namespace Espera.Android.Tests
         public class ThePlayPlaylistSongCommand
         {
             [Fact]
-            public void SmokeTest()
+            public async Task SmokeTest()
             {
                 var songs = Helpers.SetupSongs(2);
                 var playlist = new NetworkPlaylist
@@ -238,9 +252,11 @@ namespace Espera.Android.Tests
                 vm.Activator.Activate();
                 var coll = vm.Message.CreateCollection();
 
-                vm.LoadPlaylistCommand.Execute(null);
+                await vm.LoadPlaylistCommand.ExecuteAsync();
 
-                vm.PlayPlaylistSongCommand.Execute(1);
+                vm.SelectedEntry = vm.Entries[1];
+
+                await vm.PlayPlaylistSongCommand.ExecuteAsync();
 
                 messenger.Received(1).PlayPlaylistSongAsync(songs[1].Guid);
                 Assert.Equal(1, coll.Count);

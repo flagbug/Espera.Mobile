@@ -20,7 +20,8 @@ namespace Espera.Mobile.Core.ViewModels
             if (songFetcher == null)
                 throw new ArgumentNullException("songFetcher");
 
-            this.LoadCommand = ReactiveCommand.CreateAsyncObservable(_ => songFetcher.GetSongsAsync());
+            this.LoadCommand = ReactiveCommand.CreateAsyncObservable(_ => songFetcher.GetSongsAsync()
+                .Timeout(TimeSpan.FromSeconds(15), RxApp.TaskpoolScheduler));
             this.artists = this.LoadCommand
                .Do(x => this.songs = x)
                .Select(GetArtists)

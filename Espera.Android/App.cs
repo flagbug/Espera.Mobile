@@ -1,6 +1,5 @@
 using System;
 using Android.App;
-using Android.Provider;
 using Android.Runtime;
 using Espera.Android.Analytics;
 using Espera.Mobile.Core;
@@ -35,10 +34,7 @@ namespace Espera.Android
             this.suspendHelper = new AutoSuspendHelper(this);
             //RxApp.SuspensionHost.SetupDefaultSuspendResume();
             Locator.CurrentMutable.Register(() => new AndroidWifiService(), typeof(IWifiService));
-            Locator.CurrentMutable.Register(() =>
-                new AndroidSongFetcher(x =>
-                    this.ContentResolver.Query(MediaStore.Audio.Media.ExternalContentUri, x,
-                        MediaStore.Audio.Media.InterfaceConsts.IsMusic + " != 0", null, null)), typeof(ISongFetcher<LocalSong>));
+            Locator.CurrentMutable.Register(() => new AndroidSongFetcher(), typeof(ISongFetcher<LocalSong>));
             Locator.CurrentMutable.Register(() => new File(), typeof(IFile));
             Locator.CurrentMutable.Register(() => new AndroidTcpClient(), typeof(ITcpClient));
             Locator.CurrentMutable.Register(() => new AndroidUdpClient(), typeof(IUdpClient));

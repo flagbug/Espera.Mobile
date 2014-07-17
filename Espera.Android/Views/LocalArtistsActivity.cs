@@ -1,10 +1,11 @@
 using Android.App;
 using Android.Content.PM;
-using Android.Provider;
 using Espera.Mobile.Core;
+using Espera.Mobile.Core.SongFetchers;
 using Espera.Mobile.Core.Songs;
 using Espera.Mobile.Core.ViewModels;
 using Google.Analytics.Tracking;
+using Splat;
 
 namespace Espera.Android.Views
 {
@@ -13,8 +14,7 @@ namespace Espera.Android.Views
     {
         protected override ArtistsViewModel<LocalSong> ConstructViewModel()
         {
-            return new ArtistsViewModel<LocalSong>(new AndroidSongFetcher(x =>
-                this.ContentResolver.Query(MediaStore.Audio.Media.ExternalContentUri, x, MediaStore.Audio.Media.InterfaceConsts.IsMusic + " != 0", null, null)), BlobCacheKeys.SelectedLocalSongs);
+            return new ArtistsViewModel<LocalSong>(Locator.Current.GetService<ISongFetcher<LocalSong>>(), BlobCacheKeys.SelectedLocalSongs);
         }
 
         protected override void OnStart()

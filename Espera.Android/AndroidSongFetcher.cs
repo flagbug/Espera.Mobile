@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Android.App;
 using Android.Database;
 using Android.Provider;
 using Espera.Mobile.Core.SongFetchers;
@@ -9,13 +10,6 @@ namespace Espera.Android
 {
     public class AndroidSongFetcher : ISongFetcher<LocalSong>
     {
-        private readonly Func<string[], ICursor> query;
-
-        public AndroidSongFetcher(Func<string[], ICursor> query)
-        {
-            this.query = query;
-        }
-
         public IObservable<IReadOnlyList<LocalSong>> GetSongsAsync()
         {
             string[] projection = {
@@ -27,9 +21,12 @@ namespace Espera.Android
                 MediaStore.Audio.Media.InterfaceConsts.Data
             };
 
+            ICursor cursor = Application.Context.ContentResolver.Query(MediaStore.Audio.Media.ExternalContentUri, projection,
+                MediaStore.Audio.Media.InterfaceConsts.IsMusic + " != 0", null, null);
+
             var list = new List<LocalSong>();
 
-            using (ICursor cursor = query(projection))
+            using (cursor)
             {
                 while (cursor.MoveToNext())
                 {

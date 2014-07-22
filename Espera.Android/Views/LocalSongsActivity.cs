@@ -23,7 +23,7 @@ namespace Espera.Android.Views
     {
         public LocalSongsActivity()
         {
-            var songs = BlobCache.InMemory.GetObjectAsync<IEnumerable<LocalSong>>(BlobCacheKeys.SelectedLocalSongs).Wait().ToList();
+            var songs = BlobCache.InMemory.GetObject<IEnumerable<LocalSong>>(BlobCacheKeys.SelectedLocalSongs).Wait().ToList();
             this.ViewModel = new LocalSongsViewModel(songs);
             this.Title = songs.First().Artist;
 

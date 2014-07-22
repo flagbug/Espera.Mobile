@@ -23,7 +23,7 @@ namespace Espera.Android.Views
     {
         public RemoteSongsActivity()
         {
-            var songs = BlobCache.InMemory.GetObjectAsync<IEnumerable<RemoteSong>>(BlobCacheKeys.SelectedRemoteSongs).Wait().ToList();
+            var songs = BlobCache.InMemory.GetObject<IEnumerable<RemoteSong>>(BlobCacheKeys.SelectedRemoteSongs).Wait().ToList();
 
             this.Title = songs.First().Artist;
             this.ViewModel = new RemoteSongsViewModel(songs);

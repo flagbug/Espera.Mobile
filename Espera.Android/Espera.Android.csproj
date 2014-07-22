@@ -47,8 +47,13 @@
     <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Akavache">
+      <HintPath>..\packages\akavache.core.3.99.2-beta\lib\MonoAndroid\Akavache.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Akavache.Sqlite3">
-      <HintPath>..\packages\akavache.sqlite3.3.99.1-beta\lib\MonoAndroid\Akavache.Sqlite3.dll</HintPath>
+      <HintPath>..\packages\akavache.sqlite3.3.99.2-beta\lib\Portable-Net45+Win8+WP8+Wpa81\Akavache.Sqlite3.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Espera.Network, Version=1.0.20.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -78,6 +83,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\reactiveui-events.6.0.1\lib\Monoandroid\ReactiveUI.Events.dll</HintPath>
     </Reference>
+    <Reference Include="SQLitePCL.raw">
+      <HintPath>..\packages\SQLitePCL.raw_basic.0.4.0-alpha\lib\MonoAndroid\SQLitePCL.raw.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Linq.Expressions" />
@@ -99,9 +108,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="GoogleAnalytics.Android">
       <HintPath>..\Components\googleanalytics-3.0.3\lib\android\GoogleAnalytics.Android.dll</HintPath>
-    </Reference>
-    <Reference Include="Akavache">
-      <HintPath>..\packages\akavache.core.3.99.1-beta\lib\MonoAndroid\Akavache.dll</HintPath>
     </Reference>
     <Reference Include="Splat">
       <HintPath>..\packages\Splat.1.3.3\lib\monoandroid\Splat.dll</HintPath>

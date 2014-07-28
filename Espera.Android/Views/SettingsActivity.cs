@@ -66,6 +66,7 @@ namespace Espera.Android.Views
                 {
                     ipAddressPref.EditText.Error = this.GetString(Resource.String.preference_ipaddress_validation_error);
                 });
+
             ipAddressPref.BindToSetting(UserSettings.Instance, x => x.ServerAddress, x => x.Text, x => (string)x, x => x, IsValidIpAddress);
 
             var saveEnergyPref = (SwitchPreference)this.FindPreference(this.GetString(Resource.String.preference_save_energy));
@@ -76,13 +77,13 @@ namespace Espera.Android.Views
 
             var passwordPreference = (EditTextPreference)this.FindPreference(this.GetString(Resource.String.preference_administrator_password));
             passwordPreference.BindToSetting(UserSettings.Instance, x => x.AdministratorPassword, x => x.Text, x => (string)x);
-            UserSettings.Instance.WhenAnyValue(x => x.EnableAdministratorMode).BindTo(passwordPreference, x => x.Enabled);
+            UserSettings.Instance.WhenAnyValue(x => x.IsPremium).BindTo(passwordPreference, x => x.Enabled);
 
             var defaultLibraryActionPreference = (ListPreference)this.FindPreference(this.GetString(Resource.String.preference_default_library_action));
             defaultLibraryActionPreference.SetEntryValues(Enum.GetNames(typeof(DefaultLibraryAction)));
             defaultLibraryActionPreference.BindToSetting(UserSettings.Instance, x => x.DefaultLibraryAction,
                 x => x.Value, x => Enum.Parse(typeof(DefaultLibraryAction), (string)x), x => x.ToString());
-            UserSettings.Instance.WhenAnyValue(x => x.EnableAdministratorMode).BindTo(defaultLibraryActionPreference, x => x.Enabled);
+            UserSettings.Instance.WhenAnyValue(x => x.IsPremium).BindTo(defaultLibraryActionPreference, x => x.Enabled);
 
             Preference premiumButton = this.FindPreference("premium_button");
             premiumButton.Events().PreferenceClick.Subscribe(async _ => await this.PurchasePremium());

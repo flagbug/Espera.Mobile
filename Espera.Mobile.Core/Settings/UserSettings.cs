@@ -36,12 +36,6 @@ namespace Espera.Mobile.Core.Settings
             set { this.SetOrCreate(value); }
         }
 
-        public bool EnableAdministratorMode
-        {
-            get { return this.GetOrCreate(false); }
-            set { this.SetOrCreate(value); }
-        }
-
         public bool IsPremium
         {
             get { return this.GetOrCreate(false); }

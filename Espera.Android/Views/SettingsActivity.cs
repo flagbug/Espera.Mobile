@@ -17,6 +17,7 @@ using Espera.Network;
 using Google.Analytics.Tracking;
 using Lager.Android;
 using ReactiveUI;
+using System.Reactive.Threading.Tasks;
 using Xamarin.InAppBilling;
 
 namespace Espera.Android.Views
@@ -86,7 +87,9 @@ namespace Espera.Android.Views
             UserSettings.Instance.WhenAnyValue(x => x.IsPremium).BindTo(defaultLibraryActionPreference, x => x.Enabled);
 
             Preference premiumButton = this.FindPreference("premium_button");
-            premiumButton.Events().PreferenceClick.Subscribe(async _ => await this.PurchasePremium());
+            premiumButton.Events().PreferenceClick.Select(_ => this.PurchasePremium().ToObservable())
+                .Concat()
+                .Subscribe();
         }
 
         protected override void OnStart()

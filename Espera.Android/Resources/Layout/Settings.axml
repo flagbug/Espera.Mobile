@@ -20,11 +20,6 @@
     </PreferenceCategory>
     <PreferenceCategory
         android:title="Administrator">
-        <SwitchPreference
-            android:key="@string/preference_administrator_mode"
-            android:title="@string/preference_administrator_mode_title"
-            android:summary="@string/preference_administrator_mode_summary"
-            android:defaultValue="false" />
         <EditTextPreference
             android:key="preference_administrator_password"
             android:summary="The administrator password"
@@ -41,7 +36,7 @@
         android:title="Premium">
         <Preference
             android:key="premium_button"
-            android:summary="Premium"
-            android:title="Premium" />
+            android:summary="Premium allows you to enter the administrator mode."
+            android:title="Purchase Premium" />
     </PreferenceCategory>
 </PreferenceScreen>

@@ -115,6 +115,12 @@ namespace Espera.Android.Views
 
         private async Task PurchasePremium()
         {
+            if (UserSettings.Instance.IsPremium)
+            {
+                Toast.MakeText(this, "You already have purchased premium", ToastLength.Long).Show();
+                return;
+            }
+
             var service = new InAppBillingServiceConnection(this, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAh32oezB4EXDKOOSHGgH+H4P9mgKdXqx5ji1ndAhdw9gvSp3uPthav07MZTlQPjRq62+0eUgddosWjgMedMAs7Ov4QeOsmKsR40SOpICGDM0JBDXA7OE9HeJdr+yTeyC4yf7OsTZi6YKf8nFI68VkejLqv9Ell36aK/MczlTy5yJJhmgYUcLaZndYeUg4AVEhF7dK40TvPu/F7wuxVDqRYcoT1loiMNvYIt+/Wi3N7UAU07Uav+apwOnQHfkcWwb9PgZcpKuF7R2U3yWECoRgwAaXHoFmtBy9FomQ4uBEJlWIlg7TTAuK8Y3Ytlgnf02uFS4W1j0QjkErriEEWjm5TwIDAQAB");
 
             var connectedAwaiter = new TaskCompletionSource<Unit>();

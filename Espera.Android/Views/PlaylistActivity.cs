@@ -32,7 +32,7 @@ namespace Espera.Android.Views
                 var adapter = new ReactiveListAdapter<PlaylistEntryViewModel>(this.ViewModel.Entries, (vm, parent) => new PlaylistEntryView(this, vm, parent))
                     .DisposeWith(disposable);
                 this.Playlist.Adapter = adapter;
-
+                this.Playlist.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty);
                 this.Playlist.Events().ItemClick.Select(x => x.Position)
                     .Subscribe(x =>
                     {
@@ -95,7 +95,6 @@ namespace Espera.Android.Views
                             builder.Create().Show();
                         }
                     }).DisposeWith(disposable);
-                this.Playlist.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty);
 
                 this.ViewModel.WhenAnyValue(x => x.CanModify).Select(x => x ? ViewStates.Visible : ViewStates.Gone)
                     .BindTo(this.PlaybackControlPanel, x => x.Visibility)

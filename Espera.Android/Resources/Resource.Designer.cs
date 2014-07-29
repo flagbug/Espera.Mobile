@@ -233,29 +233,41 @@ namespace Espera.Android
 			// aapt resource value: 0x7f040000
 			public const int library_name = 2130968576;
 			
-			// aapt resource value: 0x7f04000e
-			public const int preference_administrator_default_library_action_summary = 2130968590;
+			// aapt resource value: 0x7f040012
+			public const int preference_administrator_default_library_action_summary = 2130968594;
 			
-			// aapt resource value: 0x7f04000d
-			public const int preference_administrator_default_library_action_title = 2130968589;
-			
-			// aapt resource value: 0x7f040007
-			public const int preference_administrator_mode = 2130968583;
-			
-			// aapt resource value: 0x7f040009
-			public const int preference_administrator_mode_summary = 2130968585;
-			
-			// aapt resource value: 0x7f040008
-			public const int preference_administrator_mode_title = 2130968584;
-			
-			// aapt resource value: 0x7f04000a
-			public const int preference_administrator_password = 2130968586;
+			// aapt resource value: 0x7f040011
+			public const int preference_administrator_default_library_action_title = 2130968593;
 			
 			// aapt resource value: 0x7f04000b
-			public const int preference_administrator_password_title = 2130968587;
+			public const int preference_administrator_mode = 2130968587;
+			
+			// aapt resource value: 0x7f04000d
+			public const int preference_administrator_mode_summary = 2130968589;
 			
 			// aapt resource value: 0x7f04000c
-			public const int preference_default_library_action = 2130968588;
+			public const int preference_administrator_mode_title = 2130968588;
+			
+			// aapt resource value: 0x7f04000e
+			public const int preference_administrator_password = 2130968590;
+			
+			// aapt resource value: 0x7f04000f
+			public const int preference_administrator_password_title = 2130968591;
+			
+			// aapt resource value: 0x7f040010
+			public const int preference_default_library_action = 2130968592;
+			
+			// aapt resource value: 0x7f040007
+			public const int preference_ipaddress = 2130968583;
+			
+			// aapt resource value: 0x7f040009
+			public const int preference_ipaddress_summary = 2130968585;
+			
+			// aapt resource value: 0x7f040008
+			public const int preference_ipaddress_title = 2130968584;
+			
+			// aapt resource value: 0x7f04000a
+			public const int preference_ipaddress_validation_error = 2130968586;
 			
 			// aapt resource value: 0x7f040003
 			public const int preference_port = 2130968579;

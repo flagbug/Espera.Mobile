@@ -47,6 +47,15 @@ namespace Espera.Mobile.Core.Settings
             set { this.SetOrCreate(value); }
         }
 
+        /// <summary>
+        /// If set, override the auto-detection of the server's address.
+        /// </summary>
+        public string ServerAddress
+        {
+            get { return this.GetOrCreate((string)null); }
+            set { this.SetOrCreate(value); }
+        }
+
         public string UniqueIdentifier
         {
             get { return this.GetOrCreate(Guid.NewGuid().ToString()); }

@@ -64,13 +64,17 @@ namespace Espera.Mobile.Core.ViewModels
             if (localAddress == null)
                 throw new Exception("You have to enable WiFi!");
 
-            return NetworkMessenger.Instance.DiscoverServerAsync(localAddress, port)
+            bool hasCustomIpAddress = !string.IsNullOrWhiteSpace(UserSettings.Instance.ServerAddress);
+
+            return Observable.If(() => hasCustomIpAddress,
+                    Observable.Return(UserSettings.Instance.ServerAddress),
+                    NetworkMessenger.Instance.DiscoverServerAsync(localAddress, port))
                 .SelectMany(async address =>
                 {
                     string password = UserSettings.Instance.EnableAdministratorMode ? UserSettings.Instance.AdministratorPassword : null;
 
                     Tuple<ResponseStatus, ConnectionInfo> response = await NetworkMessenger.Instance
-                        .ConnectAsync(address, port, new Guid(UserSettings.Instance.UniqueIdentifier), password);
+                        .ConnectAsync(address, port, UserSettings.Instance.UniqueIdentifier, password);
 
                     if (response.Item1 == ResponseStatus.WrongPassword)
                     {

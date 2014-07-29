@@ -2,6 +2,7 @@
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
+using System.Threading.Tasks;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
 using Espera.Mobile.Core.ViewModels;
@@ -42,6 +43,59 @@ namespace Espera.Android.Tests
                 vm.ConnectCommand.Execute(null);
 
                 Assert.Equal(1, thrown.Count);
+            }
+
+            [Fact]
+            public async Task ConnectsWithCustomIpAddressIfSet()
+            {
+                UserSettings.Instance.ServerAddress = "192.168.1.3";
+
+                var messenger = Substitute.For<INetworkMessenger>();
+                messenger.ConnectAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<Guid>(), Arg.Any<string>())
+                    .Returns(Tuple.Create(ResponseStatus.Success,
+                        new ConnectionInfo
+                        {
+                            AccessPermission = NetworkAccessPermission.Admin,
+                            ServerVersion = new Version("99.99.99")
+                        }).ToTaskResult());
+
+                NetworkMessenger.Override(messenger);
+
+                var vm = new MainViewModel(() => "192.168.1.2");
+                vm.Activator.Activate();
+
+                await vm.ConnectCommand.ExecuteAsync();
+
+                messenger.Received(1).ConnectAsync(UserSettings.Instance.ServerAddress, NetworkConstants.DefaultPort,
+                    UserSettings.Instance.UniqueIdentifier, null);
+            }
+
+            [Fact]
+            public async Task DoesntTryToDiscoverServerWithCustomIpAddressIfSet()
+            {
+                UserSettings.Instance.ServerAddress = "192.168.1.3";
+
+                bool discoverServerSubscribed = false;
+
+                var messenger = Substitute.For<INetworkMessenger>();
+                messenger.DiscoverServerAsync(Arg.Any<string>(), Arg.Any<int>())
+                    .Returns(Observable.Defer(() => Observable.Start(() => discoverServerSubscribed = true).Select(_ => string.Empty)));
+                messenger.ConnectAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<Guid>(), Arg.Any<string>())
+                    .Returns(Tuple.Create(ResponseStatus.Success,
+                        new ConnectionInfo
+                        {
+                            AccessPermission = NetworkAccessPermission.Admin,
+                            ServerVersion = new Version("99.99.99")
+                        }).ToTaskResult());
+
+                NetworkMessenger.Override(messenger);
+
+                var vm = new MainViewModel(() => "192.168.1.2");
+                vm.Activator.Activate();
+
+                await vm.ConnectCommand.ExecuteAsync();
+
+                Assert.False(discoverServerSubscribed);
             }
 
             [Fact]

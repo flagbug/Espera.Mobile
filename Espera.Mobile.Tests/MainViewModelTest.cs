@@ -20,7 +20,7 @@ namespace Espera.Android.Tests
         public class TheConnectCommand
         {
             [Fact]
-            public void ChecksMinimumServerVersion()
+            public async Task ChecksMinimumServerVersion()
             {
                 var messenger = Substitute.For<INetworkMessenger>();
                 messenger.IsConnected.Returns(Observable.Return(true));
@@ -40,7 +40,7 @@ namespace Espera.Android.Tests
 
                 var thrown = vm.ConnectionFailed.CreateCollection();
 
-                vm.ConnectCommand.Execute(null);
+                await vm.ConnectCommand.ExecuteAsync();
 
                 Assert.Equal(1, thrown.Count);
             }
@@ -99,7 +99,7 @@ namespace Espera.Android.Tests
             }
 
             [Fact]
-            public void SmokeTest()
+            public async Task SmokeTest()
             {
                 var isConnected = new BehaviorSubject<bool>(false);
                 var messenger = Substitute.For<INetworkMessenger>();
@@ -119,7 +119,7 @@ namespace Espera.Android.Tests
 
                 Assert.True(vm.ConnectCommand.CanExecute(null));
 
-                vm.ConnectCommand.Execute(null);
+                await vm.ConnectCommand.ExecuteAsync();
                 isConnected.OnNext(true);
 
                 Assert.False(vm.ConnectCommand.CanExecute(null));
@@ -172,6 +172,7 @@ namespace Espera.Android.Tests
 
                 var coll = vm.ConnectionFailed.CreateCollection();
 
+                // Making this ExecuteAsync is blocked by a ReactiveUI bug, see https://github.com/reactiveui/ReactiveUI/issues/685
                 vm.ConnectCommand.Execute(null);
 
                 Assert.Equal(1, coll.Count);
@@ -181,7 +182,7 @@ namespace Espera.Android.Tests
         public class TheDisconnectCommand
         {
             [Fact]
-            public void SmokeTest()
+            public async Task SmokeTest()
             {
                 var isConnected = new BehaviorSubject<bool>(true);
                 var messenger = Substitute.For<INetworkMessenger>();
@@ -194,7 +195,7 @@ namespace Espera.Android.Tests
 
                 Assert.True(vm.DisconnectCommand.CanExecute(true));
 
-                vm.DisconnectCommand.Execute(null);
+                await vm.DisconnectCommand.ExecuteAsync();
                 isConnected.OnNext(false);
 
                 Assert.False(vm.DisconnectCommand.CanExecute(null));
@@ -206,7 +207,7 @@ namespace Espera.Android.Tests
         public class TheIsConnectedProperty
         {
             [Fact]
-            public void IsFalseWhileConnectCommandExecutesWithPassword()
+            public async Task IsFalseWhileConnectCommandExecutesWithPassword()
             {
                 var isConnected = new BehaviorSubject<bool>(false);
                 var messenger = Substitute.For<INetworkMessenger>();
@@ -233,9 +234,11 @@ namespace Espera.Android.Tests
                 var vm = new MainViewModel(() => "192.168.1.2");
                 vm.Activator.Activate();
 
-                isConnected.FirstAsync(x => x).Subscribe(_ => Assert.False(vm.IsConnected));
+                var coll = isConnected.CreateCollection();
 
-                vm.ConnectCommand.Execute(null);
+                await vm.ConnectCommand.ExecuteAsync();
+
+                Assert.Equal(new[] { false, true }, coll);
             }
         }
     }

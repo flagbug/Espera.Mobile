@@ -14,9 +14,17 @@ namespace Espera.Android
             this.client = new TcpClient();
         }
 
-        public Task ConnectAsync(string ipAddress, int port)
+        public async Task ConnectAsync(string ipAddress, int port)
         {
-            return this.client.ConnectAsync(ipAddress, port);
+            try
+            {
+                await this.client.ConnectAsync(ipAddress, port);
+            }
+
+            catch (SocketException ex)
+            {
+                throw new NetworkException("Failed to connect to the host.", ex);
+            }
         }
 
         public void Dispose()

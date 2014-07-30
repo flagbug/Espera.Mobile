@@ -33,7 +33,8 @@ namespace Espera.Mobile.Core.ViewModels
                 var canConnect = this.WhenAnyValue(x => x.IsConnected, x => !x);
                 this.ConnectCommand = ReactiveCommand.CreateAsyncObservable(canConnect, _ => ConnectAsync(ipAddress(), UserSettings.Instance.Port)
                     .Timeout(TimeSpan.FromSeconds(10), RxApp.TaskpoolScheduler)
-                    .Catch<Unit, TimeoutException>(ex => Observable.Throw<Unit>(new Exception("Connection failed"))));
+                    .Catch<Unit, TimeoutException>(ex => Observable.Throw<Unit>(new Exception("Connection timeout")))
+                    .Catch<Unit, NetworkException>(ex => Observable.Throw<Unit>(new Exception("Connection failed"))));
 
                 this.DisconnectCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.IsConnected));
                 this.DisconnectCommand.Subscribe(x => NetworkMessenger.Instance.Disconnect());
@@ -64,13 +65,17 @@ namespace Espera.Mobile.Core.ViewModels
             if (localAddress == null)
                 throw new Exception("You have to enable WiFi!");
 
-            return NetworkMessenger.Instance.DiscoverServerAsync(localAddress, port)
+            bool hasCustomIpAddress = !string.IsNullOrWhiteSpace(UserSettings.Instance.ServerAddress);
+
+            return Observable.If(() => hasCustomIpAddress,
+                    Observable.Return(UserSettings.Instance.ServerAddress),
+                    NetworkMessenger.Instance.DiscoverServerAsync(localAddress, port))
                 .SelectMany(async address =>
                 {
                     string password = UserSettings.Instance.EnableAdministratorMode ? UserSettings.Instance.AdministratorPassword : null;
 
                     Tuple<ResponseStatus, ConnectionInfo> response = await NetworkMessenger.Instance
-                        .ConnectAsync(address, port, new Guid(UserSettings.Instance.UniqueIdentifier), password);
+                        .ConnectAsync(address, port, UserSettings.Instance.UniqueIdentifier, password);
 
                     if (response.Item1 == ResponseStatus.WrongPassword)
                     {

@@ -5,6 +5,10 @@
   <string name="preference_port_title">Port</string>
   <string name="preference_port_summary">The port of the server</string>
   <string name="preference_port_validation_error">Port must be between 49152 and 65535</string>
+  <string name="preference_ipaddress">preference_ipaddress</string>
+  <string name="preference_ipaddress_title">IP Address</string>
+  <string name="preference_ipaddress_summary">The IP address of the server\nLeave empty to auto-detect</string>
+  <string name="preference_ipaddress_validation_error">Not a valid IP address</string>
   <string name="preference_administrator_mode">preference_administrator_mode</string>
   <string name="preference_administrator_mode_title">Administrator mode</string>
   <string name="preference_administrator_mode_summary">Gives you more rights than the standard guest mode. Requires the password to be set.</string>

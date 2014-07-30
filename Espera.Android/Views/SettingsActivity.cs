@@ -42,24 +42,15 @@ namespace Espera.Android.Views
             portPref.BindToSetting(UserSettings.Instance, x => x.Port, x => x.Text, x => int.Parse(x.ToString()), x => x.ToString(), NetworkHelpers.IsPortValid);
 
             var ipAddressPref = (EditTextPreference)this.FindPreference(this.GetString(Resource.String.preference_ipaddress));
-            ipAddressPref.EditText.InputType = InputTypes.ClassPhone; // Number also contains a dot
+            ipAddressPref.EditText.InputType = InputTypes.ClassPhone;
             ipAddressPref.EditText.Events().TextChanged
                 .Select(x => new string(x.Text.ToArray()))
-                .Where(x =>
-                {
-                    IPAddress dontCare;
-                    return !IPAddress.TryParse(x, out dontCare);
-                })
+                .Where(x => !IsValidIpAddress(x))
                 .Subscribe(x =>
                 {
                     ipAddressPref.EditText.Error = this.GetString(Resource.String.preference_ipaddress_validation_error);
                 });
-            ipAddressPref.BindToSetting(UserSettings.Instance, x => x.ServerAddress, x => x.Text, x => (string)x, x => x,
-                address =>
-                {
-                    IPAddress dontCare;
-                    return IPAddress.TryParse(address, out dontCare);
-                });
+            ipAddressPref.BindToSetting(UserSettings.Instance, x => x.ServerAddress, x => x.Text, x => (string)x, x => x, IsValidIpAddress);
 
             var adminEnabledPref = (SwitchPreference)this.FindPreference(this.GetString(Resource.String.preference_administrator_mode));
             adminEnabledPref.BindToSetting(UserSettings.Instance, x => x.EnableAdministratorMode, x => x.Checked, x => bool.Parse(x.ToString()));
@@ -87,6 +78,13 @@ namespace Espera.Android.Views
             base.OnStop();
 
             EasyTracker.GetInstance(this).ActivityStop(this);
+        }
+
+        private static bool IsValidIpAddress(string address)
+        {
+            IPAddress dontCare;
+            return String.IsNullOrEmpty(address) // An empty address indicates that we should auto-detect the server.
+                || IPAddress.TryParse(address, out dontCare);
         }
     }
 }

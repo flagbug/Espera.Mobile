@@ -12,6 +12,7 @@ namespace Espera.Mobile.Core.ViewModels
 {
     public class MainViewModel : ReactiveObject, ISupportsActivation
     {
+        public static readonly TimeSpan ConnectCommandTimeout = TimeSpan.FromSeconds(10);
         private ObservableAsPropertyHelper<bool> isConnected;
 
         public MainViewModel(Func<string> ipAddress)
@@ -32,7 +33,7 @@ namespace Espera.Mobile.Core.ViewModels
 
                 var canConnect = this.WhenAnyValue(x => x.IsConnected, x => !x);
                 this.ConnectCommand = ReactiveCommand.CreateAsyncObservable(canConnect, _ => ConnectAsync(ipAddress(), UserSettings.Instance.Port)
-                    .Timeout(TimeSpan.FromSeconds(10), RxApp.TaskpoolScheduler)
+                    .Timeout(ConnectCommandTimeout, RxApp.TaskpoolScheduler)
                     .Catch<Unit, TimeoutException>(ex => Observable.Throw<Unit>(new Exception("Connection timeout")))
                     .Catch<Unit, NetworkException>(ex => Observable.Throw<Unit>(new Exception("Connection failed"))));
 

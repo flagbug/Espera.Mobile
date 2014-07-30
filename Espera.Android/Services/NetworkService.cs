@@ -75,7 +75,10 @@ namespace Espera.Android.Services
         private void NotifyNetworkMessengerConnected()
         {
             this.wakeLock = PowerManager.FromContext(this).NewWakeLock(WakeLockFlags.Partial, "espera-wake-lock");
+            this.wakeLock.Acquire();
+
             this.wifiLock = WifiManager.FromContext(this).CreateWifiLock(WifiMode.Full, "espera-wifi-lock");
+            this.wifiLock.Acquire();
 
             var notification = new Notification(Resource.Drawable.Play, "Espera is connected");
             var intent = new Intent(this, typeof(MainActivity)).SetAction(Intent.ActionMain).AddCategory(Intent.CategoryLauncher);

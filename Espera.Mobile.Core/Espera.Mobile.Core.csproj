@@ -44,6 +44,7 @@
     <Compile Include="Network\ITcpClient.cs" />
     <Compile Include="Network\IUdpClient.cs" />
     <Compile Include="Network\IWifiService.cs" />
+    <Compile Include="Network\NetworkException.cs" />
     <Compile Include="Network\NetworkMessenger.cs" />
     <Compile Include="Songs\LocalSong.cs" />
     <Compile Include="SongFetchers\ISongFetcher.cs" />

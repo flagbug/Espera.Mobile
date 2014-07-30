@@ -142,6 +142,9 @@ namespace Espera.Mobile.Core.Network
         /// <param name="password">
         /// The optional administrator password. <c>null</c>, if guest rights are requested.
         /// </param>
+        /// <exception cref="NetworkException">
+        /// Something went wrong while connecting to the server.
+        /// </exception>
         public async Task<Tuple<ResponseStatus, ConnectionInfo>> ConnectAsync(string ipAddress, int port, Guid deviceId, string password)
         {
             if (ipAddress == null)

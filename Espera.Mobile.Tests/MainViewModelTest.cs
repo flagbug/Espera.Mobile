@@ -20,6 +20,31 @@ namespace Espera.Android.Tests
         public class TheConnectCommand
         {
             [Fact]
+            public void AppDoeNotDieWhenDeactivatingViewModelBeforeCommandThrows()
+            {
+                UserSettings.Instance.ServerAddress = "192.168.1.1";
+
+                var messenger = Substitute.For<INetworkMessenger>();
+                messenger.ConnectAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<Guid>(), Arg.Any<string>())
+                    .Returns(Observable.Never<Tuple<ResponseStatus, ConnectionInfo>>().ToTask());
+                messenger.IsConnected.Returns(Observable.Return(false));
+
+                NetworkMessenger.Override(messenger);
+
+                new TestScheduler().With(sched =>
+                {
+                    var vm = new MainViewModel(() => "192.168.1.2");
+                    vm.Activator.Activate();
+
+                    vm.ConnectCommand.Execute(null);
+
+                    vm.Activator.Deactivate();
+
+                    sched.AdvanceByMs(MainViewModel.ConnectCommandTimeout.TotalMilliseconds + 10);
+                });
+            }
+
+            [Fact]
             public async Task ChecksMinimumServerVersion()
             {
                 var messenger = Substitute.For<INetworkMessenger>();

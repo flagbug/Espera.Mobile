@@ -33,7 +33,8 @@ namespace Espera.Mobile.Core.ViewModels
                 var canConnect = this.WhenAnyValue(x => x.IsConnected, x => !x);
                 this.ConnectCommand = ReactiveCommand.CreateAsyncObservable(canConnect, _ => ConnectAsync(ipAddress(), UserSettings.Instance.Port)
                     .Timeout(TimeSpan.FromSeconds(10), RxApp.TaskpoolScheduler)
-                    .Catch<Unit, TimeoutException>(ex => Observable.Throw<Unit>(new Exception("Connection failed"))));
+                    .Catch<Unit, TimeoutException>(ex => Observable.Throw<Unit>(new Exception("Connection timeout")))
+                    .Catch<Unit, NetworkException>(ex => Observable.Throw<Unit>(new Exception("Connection failed"))));
 
                 this.DisconnectCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.IsConnected));
                 this.DisconnectCommand.Subscribe(x => NetworkMessenger.Instance.Disconnect());

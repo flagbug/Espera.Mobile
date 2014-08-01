@@ -127,7 +127,7 @@ namespace Espera.Mobile.Core.Network
         {
             var parameters = new
             {
-                songGuid
+                guids = new[] { songGuid } // The server expects an enumeration of songs
             };
 
             return this.SendRequest(RequestAction.AddPlaylistSongs, parameters);

@@ -37,6 +37,7 @@ namespace Espera.Mobile.Core.ViewModels
 
                 this.canModify = NetworkMessenger.Instance.AccessPermission
                     .Select(x => x == NetworkAccessPermission.Admin)
+                    .ObserveOn(RxApp.MainThreadScheduler)
                     .ToProperty(this, x => x.CanModify);
                 var temp = this.CanModify;
                 this.canModify.DisposeWith(disposable);

@@ -75,13 +75,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\ReactiveMarrow.0.5.0\lib\portable-net45+wp8+win8+monoandroid+monotouch\ReactiveMarrow.dll</HintPath>
     </Reference>
-    <Reference Include="ReactiveUI, Version=6.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ReactiveUI, Version=6.0.3.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\reactiveui-core.6.0.2\lib\Monoandroid\ReactiveUI.dll</HintPath>
+      <HintPath>..\packages\reactiveui-core.6.0.3\lib\Monoandroid\ReactiveUI.dll</HintPath>
     </Reference>
-    <Reference Include="ReactiveUI.Events">
-      <HintPath>..\packages\reactiveui-events.6.0.2.1\lib\Monoandroid\ReactiveUI.Events.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="ReactiveUI.Events, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\reactiveui-events.6.0.3\lib\Monoandroid\ReactiveUI.Events.dll</HintPath>
     </Reference>
     <Reference Include="Splat">
       <HintPath>..\packages\Splat.1.4.0\lib\monoandroid\Splat.dll</HintPath>

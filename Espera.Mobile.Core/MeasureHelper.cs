@@ -14,7 +14,7 @@ namespace Espera.Mobile.Core
             return Disposable.Create(() =>
             {
                 stopWatch.Stop();
-                Debug.WriteLine("Measured in {0}: {1}", caller, stopWatch.Elapsed);
+                Debug.WriteLine("Measured in {0}: {1} milliseconds", caller, stopWatch.ElapsedMilliseconds);
             });
         }
     }

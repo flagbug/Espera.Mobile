@@ -2,6 +2,7 @@ using System;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
 using Espera.Network;
@@ -33,15 +34,23 @@ namespace Espera.Mobile.Core.ViewModels
                     .ToProperty(this, x => x.IsConnected)
                     .DisposeWith(disposable);
 
+                // We use this interrupt to make sure the application doesn't die if the ViewModel
+                // is deactivated but the connect command throws an exception after that.
+                //
+                // We can't simply dispose the ReactiveCommand, as this only disposes the CanExecute subscription
+                var connectionInterrupt = new AsyncSubject<Unit>();
+                Disposable.Create(() =>
+                {
+                    connectionInterrupt.OnNext(Unit.Default);
+                    connectionInterrupt.OnCompleted();
+                }).DisposeWith(disposable);
+
                 var canConnect = this.WhenAnyValue(x => x.IsConnected, x => !x);
                 this.ConnectCommand = ReactiveCommand.CreateAsyncObservable(canConnect, _ => ConnectAsync(ipAddress(), UserSettings.Instance.Port)
                     .Timeout(ConnectCommandTimeout, RxApp.TaskpoolScheduler)
                     .Catch<Unit, TimeoutException>(ex => Observable.Throw<Unit>(new Exception("Connection timeout")))
-                    .Catch<Unit, NetworkException>(ex => Observable.Throw<Unit>(new Exception("Connection failed"))));
-
-                // Dispose this command, so we don't throw if the viewmodel is deactivated but the
-                // command throws an exception after that.
-                this.ConnectCommand.DisposeWith(disposable);
+                    .Catch<Unit, NetworkException>(ex => Observable.Throw<Unit>(new Exception("Connection failed")))
+                    .Amb(connectionInterrupt));
 
                 this.DisconnectCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.IsConnected));
                 this.DisconnectCommand.Subscribe(x => NetworkMessenger.Instance.Disconnect());

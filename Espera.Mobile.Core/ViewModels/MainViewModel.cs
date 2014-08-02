@@ -50,7 +50,7 @@ namespace Espera.Mobile.Core.ViewModels
                     .Timeout(ConnectCommandTimeout, RxApp.TaskpoolScheduler)
                     .Catch<Unit, TimeoutException>(ex => Observable.Throw<Unit>(new Exception("Connection timeout")))
                     .Catch<Unit, NetworkException>(ex => Observable.Throw<Unit>(new Exception("Connection failed")))
-                    .Amb(connectionInterrupt));
+                    .TakeUntil(connectionInterrupt));
 
                 this.DisconnectCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.IsConnected));
                 this.DisconnectCommand.Subscribe(x => NetworkMessenger.Instance.Disconnect());

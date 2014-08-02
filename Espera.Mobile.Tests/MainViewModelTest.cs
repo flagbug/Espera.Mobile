@@ -201,7 +201,6 @@ namespace Espera.Android.Tests
                 await AssertEx.ThrowsAsync<WrongPasswordException>(async () => await vm.ConnectCommand.ExecuteAsync());
 
                 Assert.Equal(1, coll.Count);
-                Assert.IsType<WrongPasswordException>(coll[0]);
             }
         }
 

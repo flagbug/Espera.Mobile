@@ -55,7 +55,6 @@ namespace Espera.Mobile.Core.ViewModels
                 this.ConnectCommand.ThrownExceptions.CombineLatest(NetworkMessenger.Instance.IsConnected, (_, connected) => connected)
                     .Where(x => x)
                     .Subscribe(_ => NetworkMessenger.Instance.Disconnect());
-                NetworkMessenger.Instance.Disconnect();
 
                 this.DisconnectCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.IsConnected));
                 this.DisconnectCommand.Subscribe(x => NetworkMessenger.Instance.Disconnect());

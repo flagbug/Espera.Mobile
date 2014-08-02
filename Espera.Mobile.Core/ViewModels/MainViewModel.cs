@@ -14,6 +14,8 @@ namespace Espera.Mobile.Core.ViewModels
     public class MainViewModel : ReactiveObject, ISupportsActivation
     {
         public static readonly TimeSpan ConnectCommandTimeout = TimeSpan.FromSeconds(10);
+        public static readonly Version MinimumServerVersion = new Version("2.4.0");
+
         private ObservableAsPropertyHelper<bool> isConnected;
 
         public MainViewModel(Func<string> ipAddress)
@@ -49,6 +51,11 @@ namespace Espera.Mobile.Core.ViewModels
                     .Catch<Unit, TimeoutException>(ex => Observable.Throw<Unit>(new Exception("Connection timeout")))
                     .Catch<Unit, NetworkException>(ex => Observable.Throw<Unit>(new Exception("Connection failed")))
                     .Amb(connectionInterrupt));
+
+                this.ConnectCommand.ThrownExceptions.CombineLatest(NetworkMessenger.Instance.IsConnected, (_, connected) => connected)
+                    .Where(x => x)
+                    .Subscribe(_ => NetworkMessenger.Instance.Disconnect());
+                NetworkMessenger.Instance.Disconnect();
 
                 this.DisconnectCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.IsConnected));
                 this.DisconnectCommand.Subscribe(x => NetworkMessenger.Instance.Disconnect());
@@ -96,11 +103,9 @@ namespace Espera.Mobile.Core.ViewModels
                         throw new WrongPasswordException("Password incorrect");
                     }
 
-                    var minimumVersion = new Version("2.0.0");
-                    if (response.Item2.ServerVersion < minimumVersion)
+                    if (response.Item2.ServerVersion < MinimumServerVersion)
                     {
-                        NetworkMessenger.Instance.Disconnect();
-                        throw new Exception(string.Format("Espera version {0} required", minimumVersion.ToString(3)));
+                        throw new ServerVersionException(string.Format("Espera version {0} required", MinimumServerVersion.ToString(3)));
                     }
 
                     return Unit.Default;

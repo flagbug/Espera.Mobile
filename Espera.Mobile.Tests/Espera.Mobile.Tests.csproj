@@ -110,6 +110,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ArtistsViewModelTest.cs" />
+    <Compile Include="AssertEx.cs" />
     <Compile Include="MainViewModelTest.cs" />
     <Compile Include="PlaylistViewModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -3,6 +3,7 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
+using Espera.Mobile.Core;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
 using Espera.Mobile.Core.ViewModels;
@@ -178,7 +179,7 @@ namespace Espera.Android.Tests
             }
 
             [Fact]
-            public void WrongPasswordTriggersConnectionFailed()
+            public async Task WrongPasswordTriggersConnectionFailed()
             {
                 var messenger = Substitute.For<INetworkMessenger>();
                 messenger.IsConnected.Returns(Observable.Return(false));
@@ -197,10 +198,10 @@ namespace Espera.Android.Tests
 
                 var coll = vm.ConnectionFailed.CreateCollection();
 
-                // Making this ExecuteAsync is blocked by a ReactiveUI bug, see https://github.com/reactiveui/ReactiveUI/issues/685
-                vm.ConnectCommand.Execute(null);
+                await AssertEx.ThrowsAsync<WrongPasswordException>(async () => await vm.ConnectCommand.ExecuteAsync());
 
                 Assert.Equal(1, coll.Count);
+                Assert.IsType<WrongPasswordException>(coll[0]);
             }
         }
 

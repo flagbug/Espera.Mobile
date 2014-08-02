@@ -66,6 +66,7 @@
     <Compile Include="ViewModels\PlaylistEntryViewModel.cs" />
     <Compile Include="ViewModels\PlaylistViewModel.cs" />
     <Compile Include="ViewModels\RemoteSongsViewModel.cs" />
+    <Compile Include="WrongPasswordException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

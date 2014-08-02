@@ -93,7 +93,7 @@ namespace Espera.Mobile.Core.ViewModels
 
                     if (response.Item1 == ResponseStatus.WrongPassword)
                     {
-                        throw new Exception("Password incorrect");
+                        throw new WrongPasswordException("Password incorrect");
                     }
 
                     var minimumVersion = new Version("2.0.0");

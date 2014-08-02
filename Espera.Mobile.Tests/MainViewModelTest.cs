@@ -66,7 +66,7 @@ namespace Espera.Android.Tests
 
                 var thrown = vm.ConnectionFailed.CreateCollection();
 
-                await vm.ConnectCommand.ExecuteAsync();
+                await AssertEx.ThrowsAsync<ServerVersionException>(async () => await vm.ConnectCommand.ExecuteAsync());
 
                 Assert.Equal(1, thrown.Count);
             }

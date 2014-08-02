@@ -249,7 +249,11 @@ namespace Espera.Mobile.Core.Network
         {
             ResponseInfo response = await this.SendRequest(RequestAction.GetLibraryContent);
 
-            return response.Content["songs"].ToObject<List<NetworkSong>>();
+            using (MeasureHelper.Measure("Deserialization in GetSongsAsync"))
+            {
+                // In a big library, deserializing can take a longer time, so we do this in its own thread
+                return await Task.Run(() => response.Content["songs"].ToObject<List<NetworkSong>>());
+            }
         }
 
         public async Task<float> GetVolume()

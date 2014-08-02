@@ -52,12 +52,10 @@ namespace Espera.Mobile.Core.ViewModels
                     .Catch<Unit, NetworkException>(ex => Observable.Throw<Unit>(new Exception("Connection failed")))
                     .Amb(connectionInterrupt));
 
-                this.ConnectCommand.ThrownExceptions.CombineLatest(NetworkMessenger.Instance.IsConnected, (_, connected) => connected)
-                    .Where(x => x)
-                    .Subscribe(_ => NetworkMessenger.Instance.Disconnect());
-
                 this.DisconnectCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.IsConnected));
                 this.DisconnectCommand.Subscribe(x => NetworkMessenger.Instance.Disconnect());
+
+                this.ConnectCommand.ThrownExceptions.InvokeCommand(this.DisconnectCommand);
 
                 this.ConnectionFailed = this.ConnectCommand.ThrownExceptions
                     .ObserveOn(RxApp.MainThreadScheduler)

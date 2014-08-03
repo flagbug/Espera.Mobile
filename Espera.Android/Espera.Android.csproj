@@ -47,13 +47,13 @@
     <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Akavache, Version=3.99.3.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Akavache, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\akavache.core.3.99.3-beta\lib\MonoAndroid\Akavache.dll</HintPath>
+      <HintPath>..\packages\akavache.core.4.0.0\lib\MonoAndroid\Akavache.dll</HintPath>
     </Reference>
-    <Reference Include="Akavache.Sqlite3, Version=3.99.3.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Akavache.Sqlite3, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\akavache.sqlite3.3.99.3-beta\lib\Portable-Net45+Win8+WP8+Wpa81\Akavache.Sqlite3.dll</HintPath>
+      <HintPath>..\packages\akavache.sqlite3.4.0.0\lib\Portable-Net45+Win8+WP8+Wpa81\Akavache.Sqlite3.dll</HintPath>
     </Reference>
     <Reference Include="Espera.Network, Version=1.0.20.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -87,9 +87,9 @@
       <HintPath>..\packages\Splat.1.4.0\lib\monoandroid\Splat.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SQLitePCL.raw">
-      <HintPath>..\packages\SQLitePCL.raw_basic.0.4.0-alpha\lib\MonoAndroid\SQLitePCL.raw.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="SQLitePCL.raw, Version=0.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SQLitePCL.raw_basic.0.5.0\lib\MonoAndroid\SQLitePCL.raw.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -119,6 +119,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AkavacheSqliteLinkerOverride.cs" />
     <Compile Include="Analytics\AndroidAnalytics.cs" />
     <Compile Include="AndroidSongFetcher.cs" />
     <Compile Include="AndroidTcpClient.cs" />

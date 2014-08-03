@@ -38,5 +38,9 @@
             android:key="premium_button"
             android:summary="Premium allows you to enter the administrator mode."
             android:title="Purchase Premium" />
+        <Preference
+            android:key="restore_premium"
+            android:summary="Restore your premium purchase."
+            android:title="Restore Premium" />
     </PreferenceCategory>
 </PreferenceScreen>

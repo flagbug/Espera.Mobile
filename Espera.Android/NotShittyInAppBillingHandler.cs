@@ -61,9 +61,19 @@ namespace Espera.Android
             }).FirstAsync();
         }
 
+        public IReadOnlyList<Purchase> GetPurchases(string itemType)
+        {
+            IList<Purchase> purchases = this.serviceConnection.BillingHandler.GetPurchases(itemType);
+
+            return purchases.ToList();
+        }
+
         public void HandleActivityResult(int requestCode, Result resultCode, Intent data)
         {
-            this.serviceConnection.BillingHandler.HandleActivityResult(requestCode, resultCode, data);
+            if (this.serviceConnection.BillingHandler != null)
+            {
+                this.serviceConnection.BillingHandler.HandleActivityResult(requestCode, resultCode, data);
+            }
         }
 
         public async Task<IReadOnlyList<Product>> QueryInventoryAsync(IEnumerable<string> skuList, string itemType)

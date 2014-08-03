@@ -2,6 +2,7 @@ using System;
 using Akavache;
 using Espera.Network;
 using Lager;
+using Splat;
 
 namespace Espera.Mobile.Core.Settings
 {
@@ -61,8 +62,25 @@ namespace Espera.Mobile.Core.Settings
         /// </summary>
         public Guid UniqueIdentifier
         {
-            get { return this.GetOrCreate(Guid.NewGuid()); }
+            get { return this.GetOrCreate(GetUniqueId()); }
             set { this.SetOrCreate(value); }
+        }
+
+        private Guid GetUniqueId()
+        {
+            var service = Locator.Current.GetService<IDeviceIdFactory>();
+
+            if (service == null && ModeDetector.InUnitTestRunner())
+            {
+                return new Guid();
+            }
+
+            if (service == null)
+            {
+                throw new InvalidOperationException("There isn't a device ID factory registered!");
+            }
+
+            return service.GetDeviceId();
         }
     }
 }

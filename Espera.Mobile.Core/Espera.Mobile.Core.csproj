@@ -38,6 +38,7 @@
     <Compile Include="Analytics\AnalyticsMixin.cs" />
     <Compile Include="Analytics\IAnalytics.cs" />
     <Compile Include="BlobCacheKeys.cs" />
+    <Compile Include="IDeviceIdFactory.cs" />
     <Compile Include="IFile.cs" />
     <Compile Include="IVolumeRequests.cs" />
     <Compile Include="MeasureHelper.cs" />

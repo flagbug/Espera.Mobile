@@ -39,6 +39,7 @@ namespace Espera.Android
             Locator.CurrentMutable.Register(() => new AndroidTcpClient(), typeof(ITcpClient));
             Locator.CurrentMutable.Register(() => new AndroidUdpClient(), typeof(IUdpClient));
             Locator.CurrentMutable.RegisterConstant(new AndroidAnalytics(this), typeof(IAnalytics));
+            Locator.CurrentMutable.Register(() => new AndroidDeviceIdFactory(this), typeof(IDeviceIdFactory));
         }
     }
 }

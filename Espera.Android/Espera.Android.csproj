@@ -59,12 +59,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Espera-Network.1.0.20\lib\portable-net45+monoandroid\Espera.Network.dll</HintPath>
     </Reference>
-    <Reference Include="Lager, Version=0.3.99.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Lager, Version=0.4.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Lager.0.3.101-beta\lib\portable-net45+wp8+win8+monoandroid+monotouch\Lager.dll</HintPath>
+      <HintPath>..\packages\Lager.0.4.1\lib\portable-net45+wp8+win8+monoandroid+monotouch\Lager.dll</HintPath>
     </Reference>
-    <Reference Include="Lager.Android">
-      <HintPath>..\packages\Lager.Android.0.3.101-beta\lib\monoandroid\Lager.Android.dll</HintPath>
+    <Reference Include="Lager.Android, Version=0.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Lager.Android.0.4.1\lib\monoandroid\Lager.Android.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Android" />
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">

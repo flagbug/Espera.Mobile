@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Android.App;
@@ -25,7 +24,7 @@ namespace Espera.Android.Views
     [Activity(Label = "Settings")]
     public class SettingsActivity : PreferenceActivity
     {
-        private IInAppBillingHandler currentBillingHandler;
+        private NotShittyInAppBillingHandler billingHandler;
 
         public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
         {
@@ -35,9 +34,9 @@ namespace Espera.Android.Views
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
         {
             // Xamarin.InAppBilling requires the codes to be passed to its handler
-            if (this.currentBillingHandler != null)
+            if (this.billingHandler != null)
             {
-                this.currentBillingHandler.HandleActivityResult(requestCode, resultCode, data);
+                this.billingHandler.HandleActivityResult(requestCode, resultCode, data);
             }
         }
 
@@ -121,28 +120,23 @@ namespace Espera.Android.Views
                 return;
             }
 
-            var service = new InAppBillingServiceConnection(this, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAh32oezB4EXDKOOSHGgH+H4P9mgKdXqx5ji1ndAhdw9gvSp3uPthav07MZTlQPjRq62+0eUgddosWjgMedMAs7Ov4QeOsmKsR40SOpICGDM0JBDXA7OE9HeJdr+yTeyC4yf7OsTZi6YKf8nFI68VkejLqv9Ell36aK/MczlTy5yJJhmgYUcLaZndYeUg4AVEhF7dK40TvPu/F7wuxVDqRYcoT1loiMNvYIt+/Wi3N7UAU07Uav+apwOnQHfkcWwb9PgZcpKuF7R2U3yWECoRgwAaXHoFmtBy9FomQ4uBEJlWIlg7TTAuK8Y3Ytlgnf02uFS4W1j0QjkErriEEWjm5TwIDAQAB");
+            this.billingHandler = new NotShittyInAppBillingHandler(this, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAh32oezB4EXDKOOSHGgH+H4P9mgKdXqx5ji1ndAhdw9gvSp3uPthav07MZTlQPjRq62+0eUgddosWjgMedMAs7Ov4QeOsmKsR40SOpICGDM0JBDXA7OE9HeJdr+yTeyC4yf7OsTZi6YKf8nFI68VkejLqv9Ell36aK/MczlTy5yJJhmgYUcLaZndYeUg4AVEhF7dK40TvPu/F7wuxVDqRYcoT1loiMNvYIt+/Wi3N7UAU07Uav+apwOnQHfkcWwb9PgZcpKuF7R2U3yWECoRgwAaXHoFmtBy9FomQ4uBEJlWIlg7TTAuK8Y3Ytlgnf02uFS4W1j0QjkErriEEWjm5TwIDAQAB");
 
-            var connectedAwaiter = new TaskCompletionSource<Unit>();
-            service.OnConnected += () => connectedAwaiter.SetResult(Unit.Default);
+            try
+            {
+                await this.billingHandler.Connect().Timeout(TimeSpan.FromSeconds(30));
+            }
 
-            service.Connect();
+            catch (TimeoutException)
+            {
+                Toast.MakeText(this, "Connection timeout!", ToastLength.Long).Show();
+                return;
+            }
 
-            await connectedAwaiter.Task;
-
-            // We have to wait until the service is connected, otherwise the billing handler is null
-            this.currentBillingHandler = service.BillingHandler;
-
-            IList<Product> products = await service.BillingHandler.QueryInventoryAsync(new List<string> { "premium" }, ItemType.Product);
-
-            var buyAwaiter = new TaskCompletionSource<int>();
-
-            service.BillingHandler.OnProductPurchaseCompleted += (response, purchase) => buyAwaiter.SetResult(response);
-
+            IReadOnlyList<Product> products = await this.billingHandler.QueryInventoryAsync(new List<string> { "premium" }, ItemType.Product);
             Product premium = products.Single(x => x.ProductId == "premium");
-            service.BillingHandler.BuyProduct(premium);
 
-            int billingResult = await buyAwaiter.Task;
+            int billingResult = await this.billingHandler.BuyProduct(premium);
 
             if (billingResult == BillingResult.OK)
             {
@@ -155,12 +149,9 @@ namespace Espera.Android.Views
                 Toast.MakeText(this, "Purchase failed!", ToastLength.Long).Show();
             }
 
-            var disconnectAwaiter = new TaskCompletionSource<Unit>();
-            service.OnDisconnected += () => disconnectAwaiter.SetResult(Unit.Default);
+            await this.billingHandler.Disconnect();
 
-            service.Disconnect();
-
-            await disconnectAwaiter.Task;
+            this.billingHandler = null;
         }
     }
 }

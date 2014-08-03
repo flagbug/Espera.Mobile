@@ -24,6 +24,12 @@ namespace Espera.Android.Views
     [Activity(Label = "Settings")]
     public class SettingsActivity : PreferenceActivity
     {
+#if DEBUG
+        private static readonly string PremiumId = ReservedTestProductIDs.Purchased;
+#else
+        private static readonly string PremiumId = "premium";
+#endif
+
         private NotShittyInAppBillingHandler billingHandler;
 
         public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
@@ -89,6 +95,11 @@ namespace Espera.Android.Views
             premiumButton.Events().PreferenceClick.Select(_ => this.PurchasePremium().ToObservable())
                 .Concat()
                 .Subscribe();
+
+            Preference restorePremiumButton = this.FindPreference("restore_premium");
+            restorePremiumButton.Events().PreferenceClick.Select(_ => this.RestorePremium().ToObservable())
+                .Concat()
+                .Subscribe();
         }
 
         protected override void OnStart()
@@ -133,8 +144,8 @@ namespace Espera.Android.Views
                 return;
             }
 
-            IReadOnlyList<Product> products = await this.billingHandler.QueryInventoryAsync(new List<string> { "premium" }, ItemType.Product);
-            Product premium = products.Single(x => x.ProductId == "premium");
+            IReadOnlyList<Product> products = await this.billingHandler.QueryInventoryAsync(new List<string> { PremiumId }, ItemType.Product);
+            Product premium = products.Single(x => x.ProductId == PremiumId);
 
             int billingResult = await this.billingHandler.BuyProduct(premium);
 
@@ -147,6 +158,46 @@ namespace Espera.Android.Views
             else
             {
                 Toast.MakeText(this, "Purchase failed!", ToastLength.Long).Show();
+            }
+
+            await this.billingHandler.Disconnect();
+
+            this.billingHandler = null;
+        }
+
+        private async Task RestorePremium()
+        {
+            if (UserSettings.Instance.IsPremium)
+            {
+                Toast.MakeText(this, "You already have purchased premium", ToastLength.Long).Show();
+                return;
+            }
+
+            this.billingHandler = new NotShittyInAppBillingHandler(this, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAh32oezB4EXDKOOSHGgH+H4P9mgKdXqx5ji1ndAhdw9gvSp3uPthav07MZTlQPjRq62+0eUgddosWjgMedMAs7Ov4QeOsmKsR40SOpICGDM0JBDXA7OE9HeJdr+yTeyC4yf7OsTZi6YKf8nFI68VkejLqv9Ell36aK/MczlTy5yJJhmgYUcLaZndYeUg4AVEhF7dK40TvPu/F7wuxVDqRYcoT1loiMNvYIt+/Wi3N7UAU07Uav+apwOnQHfkcWwb9PgZcpKuF7R2U3yWECoRgwAaXHoFmtBy9FomQ4uBEJlWIlg7TTAuK8Y3Ytlgnf02uFS4W1j0QjkErriEEWjm5TwIDAQAB");
+
+            try
+            {
+                await this.billingHandler.Connect().Timeout(TimeSpan.FromSeconds(30));
+            }
+
+            catch (TimeoutException)
+            {
+                Toast.MakeText(this, "Connection timeout!", ToastLength.Long).Show();
+                return;
+            }
+
+            IReadOnlyList<Purchase> products = this.billingHandler.GetPurchases(ItemType.Product);
+            Purchase premium = products.SingleOrDefault(x => x.ProductId == PremiumId);
+
+            if (premium == null || premium.PurchaseState != 0)
+            {
+                Toast.MakeText(this, "Purchase restore failed!", ToastLength.Long).Show();
+            }
+
+            else
+            {
+                UserSettings.Instance.IsPremium = true;
+                Toast.MakeText(this, "Purchase restored!", ToastLength.Long).Show();
             }
 
             await this.billingHandler.Disconnect();

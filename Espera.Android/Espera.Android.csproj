@@ -136,6 +136,7 @@
     <Compile Include="App.cs" />
     <Compile Include="File.cs" />
     <Compile Include="LinkerOverrides.cs" />
+    <Compile Include="NotShittyInAppBillingHandler.cs" />
     <Compile Include="Services\NetworkService.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

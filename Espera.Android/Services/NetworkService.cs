@@ -2,6 +2,7 @@ using System;
 using System.Reactive.Linq;
 using Android.App;
 using Android.Content;
+using Android.Graphics;
 using Android.Net;
 using Android.Net.Wifi;
 using Android.OS;
@@ -80,11 +81,18 @@ namespace Espera.Android.Services
             this.wifiLock = WifiManager.FromContext(this).CreateWifiLock(WifiMode.Full, "espera-wifi-lock");
             this.wifiLock.Acquire();
 
-            var notification = new Notification(Resource.Drawable.Play, "Espera is connected");
             var intent = new Intent(this, typeof(MainActivity)).SetAction(Intent.ActionMain).AddCategory(Intent.CategoryLauncher);
             var pendingIntent = PendingIntent.GetActivity(this, 0, intent, 0);
-            notification.SetLatestEventInfo(this, "Espera Network", "Espera is connected", pendingIntent);
-            notification.Flags |= NotificationFlags.OngoingEvent;
+
+            Notification notification = new Notification.Builder(this)
+                .SetContentTitle("Espera Network")
+                .SetContentText("Espera is connected")
+                .SetTicker("Espera is connected")
+                .SetSmallIcon(Resource.Drawable.Play)
+                .SetLargeIcon(BitmapFactory.DecodeResource(this.Resources, Resource.Drawable.Play))
+                .SetContentIntent(pendingIntent)
+                .SetOngoing(true)
+                .Notification;
 
             this.StartForeground(6947, notification);
         }

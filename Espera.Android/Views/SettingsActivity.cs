@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Android.App;
@@ -18,6 +19,9 @@ using Lager.Android;
 using ReactiveUI;
 using System.Reactive.Threading.Tasks;
 using Xamarin.InAppBilling;
+using Enum = System.Enum;
+using Exception = System.Exception;
+using String = System.String;
 
 namespace Espera.Android.Views
 {
@@ -92,12 +96,14 @@ namespace Espera.Android.Views
             UserSettings.Instance.WhenAnyValue(x => x.IsPremium).BindTo(defaultLibraryActionPreference, x => x.Enabled);
 
             Preference premiumButton = this.FindPreference("premium_button");
-            premiumButton.Events().PreferenceClick.Select(_ => this.PurchasePremium().ToObservable())
+            premiumButton.Events().PreferenceClick.Select(_ => this.PurchasePremium().ToObservable()
+                    .Catch<Unit, Exception>(ex => Observable.Start(() => this.TrackInAppPurchaseException(ex))))
                 .Concat()
                 .Subscribe();
 
             Preference restorePremiumButton = this.FindPreference("restore_premium");
-            restorePremiumButton.Events().PreferenceClick.Select(_ => this.RestorePremium().ToObservable())
+            restorePremiumButton.Events().PreferenceClick.Select(_ => this.RestorePremium().ToObservable()
+                    .Catch<Unit, Exception>(ex => Observable.Start(() => this.TrackInAppPurchaseException(ex))))
                 .Concat()
                 .Subscribe();
         }
@@ -203,6 +209,11 @@ namespace Espera.Android.Views
             await this.billingHandler.Disconnect();
 
             this.billingHandler = null;
+        }
+
+        private void TrackInAppPurchaseException(Exception ex)
+        {
+            EasyTracker.GetInstance(this).Send(MapBuilder.CreateException(ex.StackTrace, Java.Lang.Boolean.False).Build());
         }
     }
 }

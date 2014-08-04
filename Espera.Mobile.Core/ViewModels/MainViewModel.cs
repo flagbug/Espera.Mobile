@@ -58,8 +58,11 @@ namespace Espera.Mobile.Core.ViewModels
                 this.ConnectCommand.ThrownExceptions.InvokeCommand(this.DisconnectCommand);
 
                 this.ConnectionFailed = this.ConnectCommand.ThrownExceptions
-                    .ObserveOn(RxApp.MainThreadScheduler)
-                    .Select(x => x.Message);
+                    .Select(x => x.Message)
+                    .Merge(this.WhenAnyValue(x => x.IsConnected).Where(x => x).CombineLatest(NetworkMessenger.Instance.AccessPermission,
+                        (connected, permission) => permission == NetworkAccessPermission.Admin ? "Connected as administrator" : "Connected as guest")
+                        .TakeUntil(connectionInterrupt))
+                    .ObserveOn(RxApp.MainThreadScheduler);
 
                 return disposable;
             });

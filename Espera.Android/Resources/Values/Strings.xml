@@ -12,9 +12,6 @@
   <string name="preference_save_energy">preference_save_energy</string>
   <string name="preference_save_energy_title">Save Energy</string>
   <string name="preference_save_energy_summary">Saves energy, but the connection may drop when the screen is turned off.</string>
-  <string name="preference_administrator_mode">preference_administrator_mode</string>
-  <string name="preference_administrator_mode_title">Administrator mode</string>
-  <string name="preference_administrator_mode_summary">Gives you more rights than the standard guest mode. Requires the password to be set.</string>
   <string name="preference_administrator_password">preference_administrator_password</string>
   <string name="preference_administrator_password_title">Password</string>
   <string name="preference_default_library_action">preference_default_library_action</string>

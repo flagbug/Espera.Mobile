@@ -1,8 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Android.App;
+using Android.Content;
 using Android.OS;
 using Android.Preferences;
 using Android.Text;
@@ -13,15 +17,37 @@ using Espera.Network;
 using Google.Analytics.Tracking;
 using Lager.Android;
 using ReactiveUI;
+using System.Reactive.Threading.Tasks;
+using Xamarin.InAppBilling;
+using Enum = System.Enum;
+using Exception = System.Exception;
+using String = System.String;
 
 namespace Espera.Android.Views
 {
     [Activity(Label = "Settings")]
     public class SettingsActivity : PreferenceActivity
     {
+#if DEBUG
+        private static readonly string PremiumId = ReservedTestProductIDs.Purchased;
+#else
+        private static readonly string PremiumId = "premium";
+#endif
+
+        private NotShittyInAppBillingHandler billingHandler;
+
         public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
         {
             return AndroidVolumeRequests.Instance.HandleKeyCode(keyCode) || base.OnKeyDown(keyCode, e);
+        }
+
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        {
+            // Xamarin.InAppBilling requires the codes to be passed to its handler
+            if (this.billingHandler != null)
+            {
+                this.billingHandler.HandleActivityResult(requestCode, resultCode, data);
+            }
         }
 
         protected override void OnCreate(Bundle bundle)
@@ -55,18 +81,27 @@ namespace Espera.Android.Views
             var saveEnergyPref = (SwitchPreference)this.FindPreference(this.GetString(Resource.String.preference_save_energy));
             saveEnergyPref.BindToSetting(AndroidSettings.Instance, x => x.SaveEnergy, x => x.Checked, x => bool.Parse(x.ToString()));
 
-            var adminEnabledPref = (SwitchPreference)this.FindPreference(this.GetString(Resource.String.preference_administrator_mode));
-            adminEnabledPref.BindToSetting(UserSettings.Instance, x => x.EnableAdministratorMode, x => x.Checked, x => bool.Parse(x.ToString()));
-
             var passwordPreference = (EditTextPreference)this.FindPreference(this.GetString(Resource.String.preference_administrator_password));
             passwordPreference.BindToSetting(UserSettings.Instance, x => x.AdministratorPassword, x => x.Text, x => (string)x);
-            UserSettings.Instance.WhenAnyValue(x => x.EnableAdministratorMode).BindTo(passwordPreference, x => x.Enabled);
+            UserSettings.Instance.WhenAnyValue(x => x.IsPremium).BindTo(passwordPreference, x => x.Enabled);
 
             var defaultLibraryActionPreference = (ListPreference)this.FindPreference(this.GetString(Resource.String.preference_default_library_action));
             defaultLibraryActionPreference.SetEntryValues(Enum.GetNames(typeof(DefaultLibraryAction)));
             defaultLibraryActionPreference.BindToSetting(UserSettings.Instance, x => x.DefaultLibraryAction,
                 x => x.Value, x => Enum.Parse(typeof(DefaultLibraryAction), (string)x), x => x.ToString());
-            UserSettings.Instance.WhenAnyValue(x => x.EnableAdministratorMode).BindTo(defaultLibraryActionPreference, x => x.Enabled);
+            UserSettings.Instance.WhenAnyValue(x => x.IsPremium).BindTo(defaultLibraryActionPreference, x => x.Enabled);
+
+            Preference premiumButton = this.FindPreference("premium_button");
+            premiumButton.Events().PreferenceClick.Select(_ => this.PurchasePremium().ToObservable()
+                    .Catch<Unit, Exception>(ex => Observable.Start(() => this.TrackInAppPurchaseException(ex))))
+                .Concat()
+                .Subscribe();
+
+            Preference restorePremiumButton = this.FindPreference("restore_premium");
+            restorePremiumButton.Events().PreferenceClick.Select(_ => this.RestorePremium().ToObservable()
+                    .Catch<Unit, Exception>(ex => Observable.Start(() => this.TrackInAppPurchaseException(ex))))
+                .Concat()
+                .Subscribe();
         }
 
         protected override void OnStart()
@@ -88,6 +123,93 @@ namespace Espera.Android.Views
             IPAddress dontCare;
             return String.IsNullOrEmpty(address) // An empty address indicates that we should auto-detect the server.
                 || IPAddress.TryParse(address, out dontCare);
+        }
+
+        private async Task PurchasePremium()
+        {
+            if (UserSettings.Instance.IsPremium)
+            {
+                Toast.MakeText(this, "You already have purchased premium", ToastLength.Long).Show();
+                return;
+            }
+
+            this.billingHandler = new NotShittyInAppBillingHandler(this, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAh32oezB4EXDKOOSHGgH+H4P9mgKdXqx5ji1ndAhdw9gvSp3uPthav07MZTlQPjRq62+0eUgddosWjgMedMAs7Ov4QeOsmKsR40SOpICGDM0JBDXA7OE9HeJdr+yTeyC4yf7OsTZi6YKf8nFI68VkejLqv9Ell36aK/MczlTy5yJJhmgYUcLaZndYeUg4AVEhF7dK40TvPu/F7wuxVDqRYcoT1loiMNvYIt+/Wi3N7UAU07Uav+apwOnQHfkcWwb9PgZcpKuF7R2U3yWECoRgwAaXHoFmtBy9FomQ4uBEJlWIlg7TTAuK8Y3Ytlgnf02uFS4W1j0QjkErriEEWjm5TwIDAQAB");
+
+            try
+            {
+                await this.billingHandler.Connect().Timeout(TimeSpan.FromSeconds(30));
+            }
+
+            catch (TimeoutException)
+            {
+                Toast.MakeText(this, "Connection timeout!", ToastLength.Long).Show();
+                return;
+            }
+
+            IReadOnlyList<Product> products = await this.billingHandler.QueryInventoryAsync(new List<string> { PremiumId }, ItemType.Product);
+            Product premium = products.Single(x => x.ProductId == PremiumId);
+
+            int billingResult = await this.billingHandler.BuyProduct(premium);
+
+            if (billingResult == BillingResult.OK)
+            {
+                UserSettings.Instance.IsPremium = true;
+                Toast.MakeText(this, "Purchase successful!", ToastLength.Long).Show();
+            }
+
+            else
+            {
+                Toast.MakeText(this, "Purchase failed!", ToastLength.Long).Show();
+            }
+
+            await this.billingHandler.Disconnect();
+
+            this.billingHandler = null;
+        }
+
+        private async Task RestorePremium()
+        {
+            if (UserSettings.Instance.IsPremium)
+            {
+                Toast.MakeText(this, "You already have purchased premium", ToastLength.Long).Show();
+                return;
+            }
+
+            this.billingHandler = new NotShittyInAppBillingHandler(this, "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAh32oezB4EXDKOOSHGgH+H4P9mgKdXqx5ji1ndAhdw9gvSp3uPthav07MZTlQPjRq62+0eUgddosWjgMedMAs7Ov4QeOsmKsR40SOpICGDM0JBDXA7OE9HeJdr+yTeyC4yf7OsTZi6YKf8nFI68VkejLqv9Ell36aK/MczlTy5yJJhmgYUcLaZndYeUg4AVEhF7dK40TvPu/F7wuxVDqRYcoT1loiMNvYIt+/Wi3N7UAU07Uav+apwOnQHfkcWwb9PgZcpKuF7R2U3yWECoRgwAaXHoFmtBy9FomQ4uBEJlWIlg7TTAuK8Y3Ytlgnf02uFS4W1j0QjkErriEEWjm5TwIDAQAB");
+
+            try
+            {
+                await this.billingHandler.Connect().Timeout(TimeSpan.FromSeconds(30));
+            }
+
+            catch (TimeoutException)
+            {
+                Toast.MakeText(this, "Connection timeout!", ToastLength.Long).Show();
+                return;
+            }
+
+            IReadOnlyList<Purchase> products = this.billingHandler.GetPurchases(ItemType.Product);
+            Purchase premium = products.SingleOrDefault(x => x.ProductId == PremiumId);
+
+            if (premium == null || premium.PurchaseState != 0)
+            {
+                Toast.MakeText(this, "Purchase restore failed!", ToastLength.Long).Show();
+            }
+
+            else
+            {
+                UserSettings.Instance.IsPremium = true;
+                Toast.MakeText(this, "Purchase restored!", ToastLength.Long).Show();
+            }
+
+            await this.billingHandler.Disconnect();
+
+            this.billingHandler = null;
+        }
+
+        private void TrackInAppPurchaseException(Exception ex)
+        {
+            EasyTracker.GetInstance(this).Send(MapBuilder.CreateException(ex.StackTrace, Java.Lang.Boolean.False).Build());
         }
     }
 }

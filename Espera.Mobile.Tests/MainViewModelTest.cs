@@ -5,7 +5,7 @@ using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Espera.Mobile.Core;
 using Espera.Mobile.Core.Network;
-using Espera.Mobile.Core.Settings;
+﻿using Espera.Mobile.Core.Settings;
 using Espera.Mobile.Core.ViewModels;
 using Espera.Network;
 using Microsoft.Reactive.Testing;
@@ -190,7 +190,6 @@ namespace Espera.Android.Tests
 
                 NetworkMessenger.Override(messenger);
 
-                UserSettings.Instance.EnableAdministratorMode = true;
                 UserSettings.Instance.AdministratorPassword = "Bla";
 
                 var vm = new MainViewModel(() => "192.168.1.2");
@@ -253,7 +252,6 @@ namespace Espera.Android.Tests
 
                 NetworkMessenger.Override(messenger);
 
-                UserSettings.Instance.EnableAdministratorMode = true;
                 UserSettings.Instance.AdministratorPassword = "Bla";
 
                 var vm = new MainViewModel(() => "192.168.1.2");

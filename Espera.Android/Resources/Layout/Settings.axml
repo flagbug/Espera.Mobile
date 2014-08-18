@@ -20,11 +20,6 @@
     </PreferenceCategory>
     <PreferenceCategory
         android:title="Administrator">
-        <SwitchPreference
-            android:key="@string/preference_administrator_mode"
-            android:title="@string/preference_administrator_mode_title"
-            android:summary="@string/preference_administrator_mode_summary"
-            android:defaultValue="false" />
         <EditTextPreference
             android:key="preference_administrator_password"
             android:summary="The administrator password"
@@ -36,5 +31,16 @@
             android:title="@string/preference_administrator_default_library_action_title"
             android:dialogTitle="@string/preference_administrator_default_library_action_title"
             android:entries="@array/preference_administrator_default_library_action_entries" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Premium">
+        <Preference
+            android:key="premium_button"
+            android:summary="Premium allows you to enter the administrator mode."
+            android:title="Purchase Premium" />
+        <Preference
+            android:key="restore_premium"
+            android:summary="Restore your premium purchase."
+            android:title="Restore Premium" />
     </PreferenceCategory>
 </PreferenceScreen>

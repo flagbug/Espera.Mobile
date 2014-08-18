@@ -93,7 +93,8 @@ namespace Espera.Mobile.Core.ViewModels
                     NetworkMessenger.Instance.DiscoverServerAsync(localAddress, port))
                 .SelectMany(async address =>
                 {
-                    string password = UserSettings.Instance.EnableAdministratorMode ? UserSettings.Instance.AdministratorPassword : null;
+                    string password = string.IsNullOrWhiteSpace(UserSettings.Instance.AdministratorPassword) ?
+                        null : UserSettings.Instance.AdministratorPassword;
 
                     Tuple<ResponseStatus, ConnectionInfo> response = await NetworkMessenger.Instance
                         .ConnectAsync(address, port, UserSettings.Instance.UniqueIdentifier, password);

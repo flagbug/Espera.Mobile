@@ -1,12 +1,11 @@
 using Android.Preferences;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using System.ComponentModel;
 
 namespace Espera.Android
 {
-    [Preserve(AllMembers = true)]
+    [global::Android.Runtime.Preserve(AllMembers = true)]
     internal class LinkerOverrides
     {
         private void KeepMe()

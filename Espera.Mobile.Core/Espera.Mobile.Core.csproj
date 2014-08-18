@@ -84,7 +84,7 @@
   -->
   <ItemGroup>
     <Reference Include="Akavache">
-      <HintPath>..\packages\akavache.core.4.0.0\lib\Portable-Net45+Win8+WP8+Wpa81\Akavache.dll</HintPath>
+      <HintPath>..\packages\akavache.core.4.0.1\lib\Portable-Net45+Win8+WP8+Wpa81\Akavache.dll</HintPath>
     </Reference>
     <Reference Include="Espera.Network">
       <HintPath>..\packages\Espera-Network.1.0.20\lib\portable-net45+win+wp80\Espera.Network.dll</HintPath>
@@ -102,8 +102,7 @@
       <HintPath>..\packages\reactiveui-core.6.0.3\lib\Portable-Net45+Win8+WP8+WPA81\ReactiveUI.dll</HintPath>
     </Reference>
     <Reference Include="Splat">
-      <HintPath>..\packages\Splat.1.4.0\lib\Portable-net45+win+wpa81+wp80\Splat.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\Splat.1.4.2.1\lib\Portable-net45+win+wpa81+wp80\Splat.dll</HintPath>
     </Reference>
     <Reference Include="System.IO.Compression">
       <HintPath>..\packages\Microsoft.Bcl.Compression.3.9.83\lib\portable-net45+win8+wp8+wpa81\System.IO.Compression.dll</HintPath>

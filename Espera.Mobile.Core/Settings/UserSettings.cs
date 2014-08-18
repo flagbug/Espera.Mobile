@@ -16,7 +16,7 @@ namespace Espera.Mobile.Core.Settings
         }
 
         private UserSettings()
-            : base("__Settings__", BlobCache.LocalMachine)
+            : base("__Settings__", BlobCache.UserAccount)
         { }
 
         public static UserSettings Instance

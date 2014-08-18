@@ -75,11 +75,14 @@ namespace Espera.Android.Services
 
         private void NotifyNetworkMessengerConnected()
         {
-            this.wakeLock = PowerManager.FromContext(this).NewWakeLock(WakeLockFlags.Partial, "espera-wake-lock");
-            this.wakeLock.Acquire();
+            if (!AndroidSettings.Instance.SaveEnergy)
+            {
+                this.wakeLock = PowerManager.FromContext(this).NewWakeLock(WakeLockFlags.Partial, "espera-wake-lock");
+                this.wakeLock.Acquire();
 
-            this.wifiLock = WifiManager.FromContext(this).CreateWifiLock(WifiMode.Full, "espera-wifi-lock");
-            this.wifiLock.Acquire();
+                this.wifiLock = WifiManager.FromContext(this).CreateWifiLock(WifiMode.Full, "espera-wifi-lock");
+                this.wifiLock.Acquire();
+            }
 
             var intent = new Intent(this, typeof(MainActivity)).SetAction(Intent.ActionMain).AddCategory(Intent.CategoryLauncher);
             var pendingIntent = PendingIntent.GetActivity(this, 0, intent, 0);
@@ -99,8 +102,15 @@ namespace Espera.Android.Services
 
         private void NotifyNetworkMessengerDisconnected()
         {
-            this.wakeLock.Release();
-            this.wifiLock.Release();
+            if (this.wakeLock.IsHeld)
+            {
+                this.wakeLock.Release();
+            }
+
+            if (this.wifiLock.IsHeld)
+            {
+                this.wifiLock.Release();
+            }
 
             this.StopForeground(true);
 

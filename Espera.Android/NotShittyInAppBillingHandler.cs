@@ -23,42 +23,54 @@ namespace Espera.Android
         {
             return Observable.Create<int>(o =>
             {
-                InAppBillingHandler.OnProductPurchaseCompletedDelegate purchaseCompleted = (response, purchase) => o.OnNext(response);
+                InAppBillingHandler.OnProductPurchaseCompletedDelegate purchaseCompleted = (response, purchase) =>
+                {
+                    o.OnNext(response);
+                    o.OnCompleted();
+                };
 
                 this.serviceConnection.BillingHandler.OnProductPurchaseCompleted += purchaseCompleted;
 
                 this.serviceConnection.BillingHandler.BuyProduct(product);
 
                 return () => this.serviceConnection.BillingHandler.OnProductPurchaseCompleted -= purchaseCompleted;
-            }).FirstAsync();
+            });
         }
 
         public IObservable<Unit> Connect()
         {
             return Observable.Create<Unit>(o =>
             {
-                InAppBillingServiceConnection.OnConnectedDelegate connectedDelegate = () => o.OnNext(Unit.Default);
+                InAppBillingServiceConnection.OnConnectedDelegate connectedDelegate = () =>
+                {
+                    o.OnNext(Unit.Default);
+                    o.OnCompleted();
+                };
 
                 this.serviceConnection.OnConnected += connectedDelegate;
 
                 this.serviceConnection.Connect();
 
                 return () => this.serviceConnection.OnConnected -= connectedDelegate;
-            }).FirstAsync();
+            });
         }
 
         public IObservable<Unit> Disconnect()
         {
             return Observable.Create<Unit>(o =>
             {
-                InAppBillingServiceConnection.OnDisconnectedDelegate disconnectedDelegate = () => o.OnNext(Unit.Default);
+                InAppBillingServiceConnection.OnDisconnectedDelegate disconnectedDelegate = () =>
+                {
+                    o.OnNext(Unit.Default);
+                    o.OnCompleted();
+                };
 
                 this.serviceConnection.OnDisconnected += disconnectedDelegate;
 
                 this.serviceConnection.Disconnect();
 
                 return () => this.serviceConnection.OnDisconnected -= disconnectedDelegate;
-            }).FirstAsync();
+            });
         }
 
         public IReadOnlyList<Purchase> GetPurchases(string itemType)

@@ -123,6 +123,7 @@
     <Compile Include="AkavacheSqliteLinkerOverride.cs" />
     <Compile Include="Analytics\AndroidAnalytics.cs" />
     <Compile Include="AndroidDeviceIdFactory.cs" />
+    <Compile Include="AndroidSettings.cs" />
     <Compile Include="AndroidSongFetcher.cs" />
     <Compile Include="AndroidTcpClient.cs" />
     <Compile Include="AndroidUdpClient.cs" />

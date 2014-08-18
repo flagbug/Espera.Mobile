@@ -52,6 +52,9 @@ namespace Espera.Android.Views
                 });
             ipAddressPref.BindToSetting(UserSettings.Instance, x => x.ServerAddress, x => x.Text, x => (string)x, x => x, IsValidIpAddress);
 
+            var saveEnergyPref = (SwitchPreference)this.FindPreference(this.GetString(Resource.String.preference_save_energy));
+            saveEnergyPref.BindToSetting(AndroidSettings.Instance, x => x.SaveEnergy, x => x.Checked, x => bool.Parse(x.ToString()));
+
             var adminEnabledPref = (SwitchPreference)this.FindPreference(this.GetString(Resource.String.preference_administrator_mode));
             adminEnabledPref.BindToSetting(UserSettings.Instance, x => x.EnableAdministratorMode, x => x.Checked, x => bool.Parse(x.ToString()));
 

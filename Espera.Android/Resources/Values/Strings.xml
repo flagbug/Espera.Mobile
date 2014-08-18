@@ -9,6 +9,9 @@
   <string name="preference_ipaddress_title">IP Address</string>
   <string name="preference_ipaddress_summary">The IP address of the server\nLeave empty to auto-detect</string>
   <string name="preference_ipaddress_validation_error">Not a valid IP address</string>
+  <string name="preference_save_energy">preference_save_energy</string>
+  <string name="preference_save_energy_title">Save Energy</string>
+  <string name="preference_save_energy_summary">Saves energy, but the connection may drop when the screen is turned off.</string>
   <string name="preference_administrator_mode">preference_administrator_mode</string>
   <string name="preference_administrator_mode_title">Administrator mode</string>
   <string name="preference_administrator_mode_summary">Gives you more rights than the standard guest mode. Requires the password to be set.</string>

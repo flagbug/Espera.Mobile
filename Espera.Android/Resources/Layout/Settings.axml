@@ -15,8 +15,8 @@
             android:key="@string/preference_save_energy"
             android:title="@string/preference_save_energy_title"
             android:summary="@string/preference_save_energy_summary"
-            android:switchTextOff="YES"
-            android:switchTextOn="NO" />
+            android:switchTextOff="NO"
+            android:switchTextOn="YES" />
     </PreferenceCategory>
     <PreferenceCategory
         android:title="Administrator">

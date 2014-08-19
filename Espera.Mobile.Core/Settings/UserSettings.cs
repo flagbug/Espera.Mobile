@@ -38,7 +38,11 @@ namespace Espera.Mobile.Core.Settings
 
         public bool IsPremium
         {
+#if DEBUG || DEV
+            get { return true; }
+#else
             get { return this.GetOrCreate(false); }
+#endif
             set { this.SetOrCreate(value); }
         }
 

@@ -40,7 +40,6 @@ namespace Espera.Android.Tests
                 songFetcher.GetSongsAsync().Returns(Observable.Return(songs));
 
                 var vm = new ArtistsViewModel<Song>(songFetcher, "AnyKey");
-                var artists = vm.Artists;
 
                 await vm.LoadCommand.ExecuteAsync();
 

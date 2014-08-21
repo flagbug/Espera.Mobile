@@ -11,6 +11,7 @@ using Android.Widget;
 using Espera.Android.Services;
 using Espera.Mobile.Core.Analytics;
 using Espera.Mobile.Core.Network;
+using Espera.Mobile.Core.Settings;
 using Espera.Mobile.Core.ViewModels;
 using Google.Analytics.Tracking;
 using ReactiveMarrow;
@@ -26,8 +27,10 @@ namespace Espera.Android.Views
     {
         public MainActivity()
         {
+            var settings = Locator.Current.GetService<UserSettings>();
             var wifiService = Locator.Current.GetService<IWifiService>();
-            this.ViewModel = new MainViewModel(wifiService.GetIpAddress);
+
+            this.ViewModel = new MainViewModel(settings, wifiService.GetIpAddress);
 
             this.WhenActivated(() =>
             {

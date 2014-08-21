@@ -16,12 +16,18 @@ namespace Espera.Mobile.Core.ViewModels
         public static readonly TimeSpan ConnectCommandTimeout = TimeSpan.FromSeconds(10);
         public static readonly Version MinimumServerVersion = new Version("2.4.0");
 
+        private readonly UserSettings userSettings;
         private ObservableAsPropertyHelper<bool> isConnected;
 
-        public MainViewModel(Func<string> ipAddress)
+        public MainViewModel(UserSettings userSettings, Func<string> ipAddress)
         {
             if (ipAddress == null)
                 throw new ArgumentNullException("ipAddress");
+
+            if (userSettings == null)
+                throw new ArgumentNullException("userSettings");
+
+            this.userSettings = userSettings;
 
             this.Activator = new ViewModelActivator();
 
@@ -46,7 +52,7 @@ namespace Espera.Mobile.Core.ViewModels
                 }).DisposeWith(disposable);
 
                 var canConnect = this.WhenAnyValue(x => x.IsConnected, x => !x);
-                this.ConnectCommand = ReactiveCommand.CreateAsyncObservable(canConnect, _ => ConnectAsync(ipAddress(), UserSettings.Instance.Port)
+                this.ConnectCommand = ReactiveCommand.CreateAsyncObservable(canConnect, _ => ConnectAsync(ipAddress(), this.userSettings.Port)
                     .Timeout(ConnectCommandTimeout, RxApp.TaskpoolScheduler)
                     .Catch<Unit, TimeoutException>(ex => Observable.Throw<Unit>(new Exception("Connection timeout")))
                     .Catch<Unit, NetworkException>(ex => Observable.Throw<Unit>(new Exception("Connection failed")))
@@ -81,23 +87,23 @@ namespace Espera.Mobile.Core.ViewModels
             get { return this.isConnected.Value; }
         }
 
-        private static IObservable<Unit> ConnectAsync(string localAddress, int port)
+        private IObservable<Unit> ConnectAsync(string localAddress, int port)
         {
             if (localAddress == null)
                 throw new Exception("You have to enable WiFi!");
 
-            bool hasCustomIpAddress = !string.IsNullOrWhiteSpace(UserSettings.Instance.ServerAddress);
+            bool hasCustomIpAddress = !string.IsNullOrWhiteSpace(this.userSettings.ServerAddress);
 
             return Observable.If(() => hasCustomIpAddress,
-                    Observable.Return(UserSettings.Instance.ServerAddress),
+                    Observable.Return(this.userSettings.ServerAddress),
                     NetworkMessenger.Instance.DiscoverServerAsync(localAddress, port))
                 .SelectMany(async address =>
                 {
-                    string password = string.IsNullOrWhiteSpace(UserSettings.Instance.AdministratorPassword) ?
-                        null : UserSettings.Instance.AdministratorPassword;
+                    string password = string.IsNullOrWhiteSpace(this.userSettings.AdministratorPassword) ?
+                        null : this.userSettings.AdministratorPassword;
 
                     Tuple<ResponseStatus, ConnectionInfo> response = await NetworkMessenger.Instance
-                        .ConnectAsync(address, port, UserSettings.Instance.UniqueIdentifier, password);
+                        .ConnectAsync(address, port, this.userSettings.UniqueIdentifier, password);
 
                     if (response.Item1 == ResponseStatus.WrongPassword)
                     {

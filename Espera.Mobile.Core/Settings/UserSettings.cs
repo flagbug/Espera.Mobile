@@ -8,21 +8,9 @@ namespace Espera.Mobile.Core.Settings
 {
     public class UserSettings : SettingsStorage
     {
-        private static readonly Lazy<UserSettings> instance;
-
-        static UserSettings()
-        {
-            instance = new Lazy<UserSettings>(() => new UserSettings());
-        }
-
-        private UserSettings()
-            : base("__Settings__", BlobCache.UserAccount)
+        public UserSettings()
+            : base("__Settings__", ModeDetector.InUnitTestRunner() ? new InMemoryBlobCache() : BlobCache.UserAccount)
         { }
-
-        public static UserSettings Instance
-        {
-            get { return instance.Value; }
-        }
 
         public string AdministratorPassword
         {

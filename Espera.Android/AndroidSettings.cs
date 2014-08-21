@@ -1,26 +1,14 @@
-﻿using System;
-using Akavache;
+﻿using Akavache;
 using Lager;
+using Splat;
 
 namespace Espera.Android
 {
     public class AndroidSettings : SettingsStorage
     {
-        private static readonly Lazy<AndroidSettings> instance;
-
-        static AndroidSettings()
-        {
-            instance = new Lazy<AndroidSettings>(() => new AndroidSettings());
-        }
-
         public AndroidSettings()
-            : base("__AndroidSettings__", BlobCache.UserAccount)
+            : base("__AndroidSettings__", ModeDetector.InUnitTestRunner() ? new InMemoryBlobCache() : BlobCache.UserAccount)
         { }
-
-        public static AndroidSettings Instance
-        {
-            get { return instance.Value; }
-        }
 
         /// <summary>
         /// If this value is set to true, we don't aquire a wakelock.

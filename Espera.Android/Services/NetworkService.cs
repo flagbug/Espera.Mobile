@@ -13,6 +13,7 @@ using Espera.Mobile.Core.Settings;
 using Espera.Network;
 using ReactiveMarrow;
 using ReactiveUI;
+using Splat;
 using Notification = Android.App.Notification;
 
 namespace Espera.Android.Services
@@ -43,7 +44,9 @@ namespace Espera.Android.Services
 
             this.keepAlive.Disconnected.Subscribe(x => this.NotifyNetworkMessengerDisconnected());
 
-            NetworkMessenger.Instance.IsConnected.SampleAndCombineLatest(UserSettings.Instance
+            var userSettings = Locator.Current.GetService<UserSettings>();
+
+            NetworkMessenger.Instance.IsConnected.SampleAndCombineLatest(userSettings
                 .WhenAnyValue(x => x.Port).DistinctUntilChanged(), (connected, _) => connected)
                 .Where(x => x)
                 .Subscribe(x => NetworkMessenger.Instance.Disconnect());
@@ -68,7 +71,8 @@ namespace Espera.Android.Services
                 .Concat()
                 .Subscribe();
 
-            NetworkMessenger.Instance.IsConnected.CombineLatest(AndroidSettings.Instance.WhenAnyValue(x => x.SaveEnergy), (connected, saveEnergy) =>
+            var androidSettings = Locator.Current.GetService<AndroidSettings>();
+            NetworkMessenger.Instance.IsConnected.CombineLatest(androidSettings.WhenAnyValue(x => x.SaveEnergy), (connected, saveEnergy) =>
             {
                 if (connected && !saveEnergy)
                 {

@@ -18,6 +18,7 @@ using Google.Analytics.Tracking;
 using Lager.Android;
 using ReactiveUI;
 using System.Reactive.Threading.Tasks;
+using Splat;
 using Xamarin.InAppBilling;
 using Enum = System.Enum;
 using Exception = System.Exception;
@@ -34,7 +35,9 @@ namespace Espera.Android.Views
         private static readonly string PremiumId = "premium";
 #endif
 
+        private AndroidSettings androidSettings;
         private NotShittyInAppBillingHandler billingHandler;
+        private UserSettings userSettings;
 
         public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
         {
@@ -54,6 +57,9 @@ namespace Espera.Android.Views
         {
             base.OnCreate(bundle);
 
+            this.userSettings = Locator.Current.GetService<UserSettings>();
+            this.androidSettings = Locator.Current.GetService<AndroidSettings>();
+
             this.AddPreferencesFromResource(Resource.Layout.Settings);
 
             var portPref = (EditTextPreference)this.FindPreference(this.GetString(Resource.String.preference_port));
@@ -65,7 +71,7 @@ namespace Espera.Android.Views
                 {
                     portPref.EditText.Error = this.GetString(Resource.String.preference_port_validation_error);
                 });
-            portPref.BindToSetting(UserSettings.Instance, x => x.Port, x => x.Text, x => int.Parse(x.ToString()), x => x.ToString(), NetworkHelpers.IsPortValid);
+            portPref.BindToSetting(this.userSettings, x => x.Port, x => x.Text, x => int.Parse(x.ToString()), x => x.ToString(), NetworkHelpers.IsPortValid);
 
             var ipAddressPref = (EditTextPreference)this.FindPreference(this.GetString(Resource.String.preference_ipaddress));
             ipAddressPref.EditText.InputType = InputTypes.ClassPhone;
@@ -76,20 +82,20 @@ namespace Espera.Android.Views
                 {
                     ipAddressPref.EditText.Error = this.GetString(Resource.String.preference_ipaddress_validation_error);
                 });
-            ipAddressPref.BindToSetting(UserSettings.Instance, x => x.ServerAddress, x => x.Text, x => (string)x, x => x, IsValidIpAddress);
+            ipAddressPref.BindToSetting(this.userSettings, x => x.ServerAddress, x => x.Text, x => (string)x, x => x, IsValidIpAddress);
 
             var saveEnergyPref = (SwitchPreference)this.FindPreference(this.GetString(Resource.String.preference_save_energy));
-            saveEnergyPref.BindToSetting(AndroidSettings.Instance, x => x.SaveEnergy, x => x.Checked, x => bool.Parse(x.ToString()));
+            saveEnergyPref.BindToSetting(this.androidSettings, x => x.SaveEnergy, x => x.Checked, x => bool.Parse(x.ToString()));
 
             var passwordPreference = (EditTextPreference)this.FindPreference(this.GetString(Resource.String.preference_administrator_password));
-            passwordPreference.BindToSetting(UserSettings.Instance, x => x.AdministratorPassword, x => x.Text, x => (string)x);
-            UserSettings.Instance.WhenAnyValue(x => x.IsPremium).BindTo(passwordPreference, x => x.Enabled);
+            passwordPreference.BindToSetting(this.userSettings, x => x.AdministratorPassword, x => x.Text, x => (string)x);
+            this.userSettings.WhenAnyValue(x => x.IsPremium).BindTo(passwordPreference, x => x.Enabled);
 
             var defaultLibraryActionPreference = (ListPreference)this.FindPreference(this.GetString(Resource.String.preference_default_library_action));
             defaultLibraryActionPreference.SetEntryValues(Enum.GetNames(typeof(DefaultLibraryAction)));
-            defaultLibraryActionPreference.BindToSetting(UserSettings.Instance, x => x.DefaultLibraryAction,
+            defaultLibraryActionPreference.BindToSetting(this.userSettings, x => x.DefaultLibraryAction,
                 x => x.Value, x => Enum.Parse(typeof(DefaultLibraryAction), (string)x), x => x.ToString());
-            UserSettings.Instance.WhenAnyValue(x => x.IsPremium).BindTo(defaultLibraryActionPreference, x => x.Enabled);
+            this.userSettings.WhenAnyValue(x => x.IsPremium).BindTo(defaultLibraryActionPreference, x => x.Enabled);
 
             Preference premiumButton = this.FindPreference("premium_button");
             premiumButton.Events().PreferenceClick.Select(_ => this.PurchasePremium().ToObservable()
@@ -127,7 +133,7 @@ namespace Espera.Android.Views
 
         private async Task PurchasePremium()
         {
-            if (UserSettings.Instance.IsPremium)
+            if (this.userSettings.IsPremium)
             {
                 Toast.MakeText(this, "You already have purchased premium", ToastLength.Long).Show();
                 return;
@@ -153,7 +159,7 @@ namespace Espera.Android.Views
 
             if (billingResult == BillingResult.OK)
             {
-                UserSettings.Instance.IsPremium = true;
+                this.userSettings.IsPremium = true;
                 Toast.MakeText(this, "Purchase successful!", ToastLength.Long).Show();
             }
 
@@ -169,7 +175,7 @@ namespace Espera.Android.Views
 
         private async Task RestorePremium()
         {
-            if (UserSettings.Instance.IsPremium)
+            if (this.userSettings.IsPremium)
             {
                 Toast.MakeText(this, "You already have purchased premium", ToastLength.Long).Show();
                 return;
@@ -198,7 +204,7 @@ namespace Espera.Android.Views
 
             else
             {
-                UserSettings.Instance.IsPremium = true;
+                this.userSettings.IsPremium = true;
                 Toast.MakeText(this, "Purchase restored!", ToastLength.Long).Show();
             }
 

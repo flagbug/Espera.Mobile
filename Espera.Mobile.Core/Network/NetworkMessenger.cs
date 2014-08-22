@@ -187,8 +187,10 @@ namespace Espera.Mobile.Core.Network
 
             if (response.Status == ResponseStatus.Success)
             {
-                this.connectionEstablished.OnNext(Unit.Default);
                 this.accessPermissionReceived.OnNext(connectionInfo.AccessPermission);
+
+                // Notify the connection status at the very end or bad things happen
+                this.connectionEstablished.OnNext(Unit.Default);
             }
 
             return Tuple.Create(response.Status, connectionInfo);

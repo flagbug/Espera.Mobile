@@ -19,10 +19,9 @@ using Splat;
 
 namespace Espera.Mobile.Core.Network
 {
-    public class NetworkMessenger : INetworkMessenger
+    public class NetworkMessenger : ReactiveObject, INetworkMessenger
     {
         private static Lazy<INetworkMessenger> instance;
-        private readonly Subject<NetworkAccessPermission> accessPermission;
         private readonly IAnalytics analytics;
         private readonly Subject<ITcpClient> client;
         private readonly Subject<Unit> connectionEstablished;
@@ -30,6 +29,8 @@ namespace Espera.Mobile.Core.Network
         private readonly SemaphoreSlim gate;
         private readonly IObservable<NetworkMessage> messagePipeline;
         private readonly IDisposable messagePipelineConnection;
+        private ObservableAsPropertyHelper<NetworkAccessPermission> accessPermission;
+        private Subject<NetworkAccessPermission> accessPermissionReceived;
         private ITcpClient currentClient;
         private ITcpClient currentFileTransferClient;
 
@@ -44,7 +45,7 @@ namespace Espera.Mobile.Core.Network
             this.messagePipeline = new Subject<NetworkMessage>();
             this.disconnected = new Subject<Unit>();
             this.connectionEstablished = new Subject<Unit>();
-            this.accessPermission = new Subject<NetworkAccessPermission>();
+            this.accessPermissionReceived = new Subject<NetworkAccessPermission>();
 
             this.analytics = Locator.Current.GetService<IAnalytics>();
 
@@ -84,13 +85,12 @@ namespace Espera.Mobile.Core.Network
             this.RemainingVotesChanged = pushMessages.Where(x => x.PushAction == PushAction.UpdateRemainingVotes)
                 .Select(x => x.Content["remainingVotes"].ToObject<int?>());
 
-            var accessPermissionConn = pushMessages.Where(x => x.PushAction == PushAction.UpdateAccessPermission)
+            pushMessages.Where(x => x.PushAction == PushAction.UpdateAccessPermission)
                 .Select(x => x.Content["accessPermission"].ToObject<NetworkAccessPermission>())
-                .Merge(this.accessPermission)
-                .Publish(NetworkAccessPermission.Guest);
-            accessPermissionConn.Connect();
+                .Multicast(this.accessPermissionReceived)
+                .RefCount();
 
-            this.AccessPermission = accessPermissionConn;
+            this.accessPermission = this.accessPermissionReceived.ToProperty(this, x => x.AccessPermission);
         }
 
         public static INetworkMessenger Instance
@@ -98,7 +98,13 @@ namespace Espera.Mobile.Core.Network
             get { return instance.Value; }
         }
 
-        public IObservable<NetworkAccessPermission> AccessPermission { get; private set; }
+        /// <summary>
+        /// Gets the current access permission of the current user.
+        /// </summary>
+        public NetworkAccessPermission AccessPermission
+        {
+            get { return this.accessPermission.Value; }
+        }
 
         public IObservable<Unit> Disconnected
         {
@@ -140,7 +146,7 @@ namespace Espera.Mobile.Core.Network
         /// <param name="port">The server's port.</param>
         /// <param name="deviceId">A, to this device unique identifier.</param>
         /// <param name="password">
-        /// The optional administrator password. <c>null</c>, if guest rights are requested.
+        /// The optional administrator password. <c>null</c> , if guest rights are requested.
         /// </param>
         /// <exception cref="NetworkException">
         /// Something went wrong while connecting to the server.
@@ -182,7 +188,7 @@ namespace Espera.Mobile.Core.Network
             if (response.Status == ResponseStatus.Success)
             {
                 this.connectionEstablished.OnNext(Unit.Default);
-                this.accessPermission.OnNext(connectionInfo.AccessPermission);
+                this.accessPermissionReceived.OnNext(connectionInfo.AccessPermission);
             }
 
             return Tuple.Create(response.Status, connectionInfo);

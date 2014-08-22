@@ -56,7 +56,7 @@ namespace Espera.Android.Tests
             var messenger = Substitute.For<INetworkMessenger>();
             messenger.PlaybackStateChanged.Returns(Observable.Never<NetworkPlaybackState>());
             messenger.PlaylistChanged.Returns(Observable.Never<NetworkPlaylist>());
-            messenger.AccessPermission.Returns(Observable.Return(NetworkAccessPermission.Admin));
+            messenger.AccessPermission.Returns(NetworkAccessPermission.Admin);
 
             messenger.RemainingVotesChanged.Returns(Observable.Never<int?>());
 

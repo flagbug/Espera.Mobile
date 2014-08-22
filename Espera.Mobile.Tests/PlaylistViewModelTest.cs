@@ -65,6 +65,31 @@ namespace Espera.Android.Tests
             return messenger;
         }
 
+        public class TheCurrentSongProperty
+        {
+            [Fact]
+            public async Task IsCurrentPlaylingSong()
+            {
+                var song = new NetworkSong { Title = "A" };
+                var playlist = new NetworkPlaylist
+                {
+                    Name = "A",
+                    Songs = new List<NetworkSong> { song }.AsReadOnly(),
+                    CurrentIndex = 0
+                };
+
+                var messenger = CreateDefaultPlaylistMessenger();
+                messenger.GetCurrentPlaylistAsync().Returns(playlist.ToTaskResult());
+
+                var vm = new PlaylistViewModel();
+                vm.Activator.Activate();
+
+                await vm.LoadPlaylistCommand.ExecuteAsync();
+
+                Assert.Equal("A", vm.CurrentSong.Title);
+            }
+        }
+
         public class TheLoadPlaylistCommand
         {
             [Fact]

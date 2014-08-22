@@ -62,7 +62,7 @@ namespace Espera.Mobile.Core.ViewModels
                         }
                     });
 
-                this.currentSong = this.WhenAnyValue(x => x.Entries).Select(x => x.FirstOrDefault(y => y.IsPlaying))
+                this.currentSong = this.entries.Changed.Select(x => this.entries.FirstOrDefault(y => y.IsPlaying))
                     .ToProperty(this, x => x.CurrentSong);
 
                 this.remainingVotes = currentPlaylist.Select(x => x.RemainingVotes)

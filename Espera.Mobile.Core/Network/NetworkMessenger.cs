@@ -393,6 +393,13 @@ namespace Espera.Mobile.Core.Network
             return this.SendRequest(RequestAction.VoteForSong, parameters);
         }
 
+        private IObservable<ResponseInfo> GetResponsePipeline()
+        {
+            return this.messagePipeline
+                .Where(x => x.MessageType == NetworkMessageType.Response)
+                .Select(x => x.Payload.ToObject<ResponseInfo>());
+        }
+
         private async Task SendMessage(NetworkMessage message)
         {
             byte[] packedMessage = await NetworkHelpers.PackMessageAsync(message);
@@ -427,9 +434,7 @@ namespace Espera.Mobile.Core.Network
                 Payload = JObject.FromObject(requestInfo)
             };
 
-            var responseMessage = this.messagePipeline
-                .Where(x => x.MessageType == NetworkMessageType.Response)
-                .Select(x => x.Payload.ToObject<ResponseInfo>())
+            Task<ResponseInfo> responseMessage = this.GetResponsePipeline()
                 .FirstAsync(x => x.RequestId == id)
                 .ToTask();
 

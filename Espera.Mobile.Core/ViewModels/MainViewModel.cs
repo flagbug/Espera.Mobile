@@ -65,8 +65,8 @@ namespace Espera.Mobile.Core.ViewModels
 
                 this.ConnectionFailed = this.ConnectCommand.ThrownExceptions
                     .Select(x => x.Message)
-                    .Merge(this.WhenAnyValue(x => x.IsConnected).Skip(1).Where(x => x).CombineLatest(NetworkMessenger.Instance.AccessPermission,
-                        (connected, permission) => permission == NetworkAccessPermission.Admin ? "Connected as administrator" : "Connected as guest")
+                    .Merge(this.WhenAnyValue(x => x.IsConnected).Skip(1).Where(x => x)
+                        .Select(_ => NetworkMessenger.Instance.AccessPermission == NetworkAccessPermission.Admin ? "Connected as administrator" : "Connected as guest")
                         .TakeUntil(connectionInterrupt))
                     .ObserveOn(RxApp.MainThreadScheduler);
 

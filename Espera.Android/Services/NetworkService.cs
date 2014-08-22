@@ -51,7 +51,7 @@ namespace Espera.Android.Services
                 .Where(x => x)
                 .Subscribe(x => NetworkMessenger.Instance.Disconnect());
 
-            AndroidVolumeRequests.Instance.VolumeDown.CombineLatest(NetworkMessenger.Instance.IsConnected, NetworkMessenger.Instance.AccessPermission,
+            AndroidVolumeRequests.Instance.VolumeDown.CombineLatest(NetworkMessenger.Instance.IsConnected, NetworkMessenger.Instance.WhenAnyValue(x => x.AccessPermission),
                     (_, connected, permission) => connected && permission == NetworkAccessPermission.Admin)
                 .Where(x => x)
                 .SelectMany(async _ => await NetworkMessenger.Instance.GetVolume())
@@ -61,7 +61,7 @@ namespace Espera.Android.Services
                 .Concat()
                 .Subscribe();
 
-            AndroidVolumeRequests.Instance.VolumeUp.CombineLatest(NetworkMessenger.Instance.IsConnected, NetworkMessenger.Instance.AccessPermission,
+            AndroidVolumeRequests.Instance.VolumeUp.CombineLatest(NetworkMessenger.Instance.IsConnected, NetworkMessenger.Instance.WhenAnyValue(x => x.AccessPermission),
                     (_, connected, permission) => connected && permission == NetworkAccessPermission.Admin)
                 .Where(x => x)
                 .SelectMany(async _ => await NetworkMessenger.Instance.GetVolume())

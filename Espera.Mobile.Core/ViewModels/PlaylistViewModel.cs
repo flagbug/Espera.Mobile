@@ -35,11 +35,10 @@ namespace Espera.Mobile.Core.ViewModels
             {
                 var disposable = new CompositeDisposable();
 
-                this.canModify = NetworkMessenger.Instance.AccessPermission
+                this.canModify = NetworkMessenger.Instance.WhenAnyValue(x => x.AccessPermission)
                     .Select(x => x == NetworkAccessPermission.Admin)
                     .ObserveOn(RxApp.MainThreadScheduler)
                     .ToProperty(this, x => x.CanModify);
-                var temp = this.CanModify;
                 this.canModify.DisposeWith(disposable);
 
                 this.LoadPlaylistCommand = ReactiveCommand.CreateAsyncObservable(_ =>

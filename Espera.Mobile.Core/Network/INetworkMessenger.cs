@@ -9,7 +9,7 @@ namespace Espera.Mobile.Core.Network
 {
     public interface INetworkMessenger : IDisposable
     {
-        IObservable<NetworkAccessPermission> AccessPermission { get; }
+        NetworkAccessPermission AccessPermission { get; }
 
         IObservable<Unit> Disconnected { get; }
 

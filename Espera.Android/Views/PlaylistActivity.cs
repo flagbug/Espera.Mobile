@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Android.App;
@@ -97,6 +98,11 @@ namespace Espera.Android.Views
                             builder.Create().Show();
                         }
                     }).DisposeWith(disposable);
+                this.WhenAnyValue(x => x.ViewModel.CurrentSong).Subscribe(entry =>
+                {
+                    int targetIndex = this.ViewModel.Entries.TakeWhile(x => x != entry).Count(); // Omg
+                    this.Playlist.SmoothScrollToPosition(targetIndex);
+                });
 
                 this.ViewModel.WhenAnyValue(x => x.CanModify).Select(x => x ? ViewStates.Visible : ViewStates.Gone)
                     .BindTo(this.PlaybackControlPanel, x => x.Visibility)

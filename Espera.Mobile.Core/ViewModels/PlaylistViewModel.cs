@@ -14,11 +14,11 @@ namespace Espera.Mobile.Core.ViewModels
     public class PlaylistViewModel : ReactiveObject, ISupportsActivation
     {
         private readonly Subject<int> currentTimeSecondsUserChanged;
+        private readonly ReactiveList<PlaylistEntryViewModel> entries;
         private ObservableAsPropertyHelper<bool> canModify;
         private ObservableAsPropertyHelper<bool> canVoteOnSelectedEntry;
         private ObservableAsPropertyHelper<PlaylistEntryViewModel> currentSong;
         private ObservableAsPropertyHelper<int> currentTimeSeconds;
-        private ReactiveList<PlaylistEntryViewModel> entries;
         private ObservableAsPropertyHelper<bool> isPlaying;
         private ObservableAsPropertyHelper<NetworkPlaybackState> playbackState;
         private ObservableAsPropertyHelper<int?> remainingVotes;

@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using Android.App;
 using Android.Content.PM;
 using Android.OS;
@@ -98,11 +100,26 @@ namespace Espera.Android.Views
                             builder.Create().Show();
                         }
                     }).DisposeWith(disposable);
-                this.WhenAnyValue(x => x.ViewModel.CurrentSong).Subscribe(entry =>
-                {
-                    int targetIndex = this.ViewModel.Entries.TakeWhile(x => x != entry).Count(); // Omg
-                    this.Playlist.SmoothScrollToPosition(targetIndex);
-                });
+
+                bool skipScrollEvents = false; // We use this flag to determine whether the scroll event was user or code induced
+                this.WhenAnyValue(x => x.ViewModel.CurrentSong)
+                    .ThrottleWhenIncoming(this.Playlist.Events().ScrollStateChanged.Where(_ => !skipScrollEvents)
+                        .Where(x => x.ScrollState == ScrollState.Idle), TimeSpan.FromSeconds(10), RxApp.TaskpoolScheduler)
+                    .Select(entry => this.ViewModel.Entries.TakeWhile(x => x != entry).Count())
+                    .ObserveOn(RxApp.MainThreadScheduler)
+                    .SelectMany(async targetIndex =>
+                    {
+                        var scrollFinishedAwaiter = this.Playlist.Events().ScrollStateChanged.FirstAsync(x => x.ScrollState == ScrollState.Idle).ToTask();
+
+                        skipScrollEvents = true;
+                        this.Playlist.SmoothScrollToPosition(targetIndex);
+
+                        await scrollFinishedAwaiter;
+
+                        skipScrollEvents = false;
+
+                        return Unit.Default;
+                    }).Subscribe();
 
                 this.ViewModel.WhenAnyValue(x => x.CanModify).Select(x => x ? ViewStates.Visible : ViewStates.Gone)
                     .BindTo(this.PlaybackControlPanel, x => x.Visibility)

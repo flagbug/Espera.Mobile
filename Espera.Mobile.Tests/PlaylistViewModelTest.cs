@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
@@ -63,6 +64,26 @@ namespace Espera.Android.Tests
             NetworkMessenger.Override(messenger);
 
             return messenger;
+        }
+
+        public class TheCanModifyProperty
+        {
+            [Fact]
+            public void IsDeterminedByNetworkAccessPermission()
+            {
+                var messenger = CreateDefaultPlaylistMessenger();
+                messenger.AccessPermission.Returns(NetworkAccessPermission.Admin);
+
+                var vm = new PlaylistViewModel();
+                vm.Activator.Activate();
+
+                Assert.True(vm.CanModify);
+
+                messenger.AccessPermission.Returns(NetworkAccessPermission.Guest);
+                messenger.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(new PropertyChangedEventArgs("AccessPermission"));
+
+                Assert.False(vm.CanModify);
+            }
         }
 
         public class TheCurrentSongProperty

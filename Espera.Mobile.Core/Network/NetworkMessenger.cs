@@ -224,6 +224,7 @@ namespace Espera.Mobile.Core.Network
 
             return Observable.Using(locatorFunc, x => Observable.FromAsync(x.ReceiveAsync))
                 .Repeat()
+                .TakeWhile(x => x != null)
                 .FirstAsync(x => Encoding.Unicode.GetString(x.Item1, 0, x.Item1.Length) == NetworkConstants.DiscoveryMessage)
                 .Select(x => x.Item2);
         }

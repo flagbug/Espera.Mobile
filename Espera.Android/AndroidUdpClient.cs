@@ -22,7 +22,18 @@ namespace Espera.Android
 
         public async Task<Tuple<byte[], string>> ReceiveAsync()
         {
-            UdpReceiveResult result = await this.client.ReceiveAsync();
+            UdpReceiveResult result;
+
+            try
+            {
+                result = await this.client.ReceiveAsync();
+            }
+
+            // This happens when we dispose the UdpClient, but are still trying to receive a message
+            catch (ObjectDisposedException)
+            {
+                return null;
+            }
 
             return Tuple.Create(result.Buffer, result.RemoteEndPoint.Address.ToString());
         }

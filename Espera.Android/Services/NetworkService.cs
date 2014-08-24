@@ -24,7 +24,6 @@ namespace Espera.Android.Services
     {
         public static readonly string ConnectionLostString = "connectionLost";
         private CompositeDisposable disposable;
-        private INetworkMessenger keepAlive;
 
         private PowerManager.WakeLock wakeLock;
         private WifiManager.WifiLock wifiLock;
@@ -43,12 +42,11 @@ namespace Espera.Android.Services
             this.wakeLock = PowerManager.FromContext(this).NewWakeLock(WakeLockFlags.Partial, "espera-wake-lock");
             this.wifiLock = WifiManager.FromContext(this).CreateWifiLock(WifiMode.Full, "espera-wifi-lock");
 
-            this.keepAlive = NetworkMessenger.Instance;
             NetworkMessenger.Instance.WhenAnyValue(x => x.IsConnected).Where(x => x)
                 .Subscribe(x => this.NotifyNetworkMessengerConnected())
                 .DisposeWith(this.disposable);
 
-            this.keepAlive.Disconnected.Subscribe(x => this.NotifyNetworkMessengerDisconnected())
+            NetworkMessenger.Instance.Disconnected.Subscribe(x => this.NotifyNetworkMessengerDisconnected())
                 .DisposeWith(this.disposable);
 
             var userSettings = Locator.Current.GetService<UserSettings>();
@@ -115,10 +113,10 @@ namespace Espera.Android.Services
         {
             if (NetworkMessenger.Instance.IsConnected)
             {
-                keepAlive.Disconnect();
+                NetworkMessenger.Instance.Disconnect();
             }
 
-            keepAlive.Dispose();
+            NetworkMessenger.Instance.Dispose();
 
             this.disposable.Dispose();
 

@@ -22,6 +22,7 @@ namespace Espera.Android.Services
     [Service]
     internal class NetworkService : Service
     {
+        public static readonly string ConnectionLostString = "connectionLost";
         private CompositeDisposable disposable;
         private INetworkMessenger keepAlive;
 
@@ -144,7 +145,7 @@ namespace Espera.Android.Services
 
             var intent = new Intent(this, typeof(MainActivity));
             intent.SetFlags(ActivityFlags.ClearTop | ActivityFlags.NewTask);
-            intent.PutExtra("connectionLost", true);
+            intent.PutExtra(ConnectionLostString, true);
 
             this.StartActivity(intent);
         }

@@ -22,6 +22,8 @@ namespace Espera.Mobile.Core.Network
     public class NetworkMessenger : ReactiveObject, INetworkMessenger
     {
         private static Lazy<INetworkMessenger> instance;
+        private readonly ObservableAsPropertyHelper<NetworkAccessPermission> accessPermission;
+        private readonly Subject<NetworkAccessPermission> accessPermissionReceived;
         private readonly IAnalytics analytics;
         private readonly Subject<ITcpClient> client;
         private readonly Subject<Unit> connectionEstablished;
@@ -29,8 +31,6 @@ namespace Espera.Mobile.Core.Network
         private readonly SemaphoreSlim gate;
         private readonly IObservable<NetworkMessage> messagePipeline;
         private readonly IDisposable messagePipelineConnection;
-        private ObservableAsPropertyHelper<NetworkAccessPermission> accessPermission;
-        private Subject<NetworkAccessPermission> accessPermissionReceived;
         private ITcpClient currentClient;
         private ITcpClient currentFileTransferClient;
 

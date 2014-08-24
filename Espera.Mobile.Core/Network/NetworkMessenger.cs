@@ -89,7 +89,7 @@ namespace Espera.Mobile.Core.Network
             pushMessages.Where(x => x.PushAction == PushAction.UpdateAccessPermission)
                 .Select(x => x.Content["accessPermission"].ToObject<NetworkAccessPermission>())
                 .Multicast(this.accessPermissionReceived)
-                .RefCount();
+                .PermaRef();
 
             this.accessPermission = this.accessPermissionReceived.ToProperty(this, x => x.AccessPermission);
         }

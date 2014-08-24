@@ -62,8 +62,9 @@ namespace Espera.Mobile.Core.Network
                     .ToObservable())
                     .Repeat()
                     .TakeWhile(m => m != null)
-                    .Finally(() => this.disconnected.OnNext(Unit.Default))
-                    .Catch(Observable.Never<NetworkMessage>()))
+                    .Finally(this.Disconnect)
+                    .Catch(Observable.Never<NetworkMessage>())
+                    .TakeUntil(this.Disconnected))
                 .Switch()
                 .Publish();
 
@@ -211,6 +212,8 @@ namespace Espera.Mobile.Core.Network
 
             this.currentFileTransferClient.Dispose();
             this.currentFileTransferClient = null;
+
+            this.disconnected.OnNext(Unit.Default);
         }
 
         public IObservable<string> DiscoverServerAsync(string localAddress, int port)
@@ -472,7 +475,7 @@ namespace Espera.Mobile.Core.Network
             {
                 stopwatch.Stop();
 
-                this.disconnected.OnNext(Unit.Default);
+                this.Disconnect();
 
                 return new ResponseInfo
                 {

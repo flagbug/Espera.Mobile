@@ -92,15 +92,7 @@ namespace Espera.Android.Services
 
                 else if (!connected)
                 {
-                    if (this.wakeLock.IsHeld)
-                    {
-                        this.wakeLock.Release();
-                    }
-
-                    if (this.wifiLock.IsHeld)
-                    {
-                        this.wifiLock.Release();
-                    }
+                    this.ReleaseWakeLocks();
                 }
 
                 return Unit.Default;
@@ -111,14 +103,14 @@ namespace Espera.Android.Services
 
         public override void OnDestroy()
         {
+            this.disposable.Dispose();
+
             if (NetworkMessenger.Instance.IsConnected)
             {
                 NetworkMessenger.Instance.Disconnect();
             }
 
-            NetworkMessenger.Instance.Dispose();
-
-            this.disposable.Dispose();
+            this.ReleaseWakeLocks();
 
             base.OnDestroy();
         }
@@ -150,6 +142,19 @@ namespace Espera.Android.Services
             intent.PutExtra(ConnectionLostString, true);
 
             this.StartActivity(intent);
+        }
+
+        private void ReleaseWakeLocks()
+        {
+            if (this.wakeLock.IsHeld)
+            {
+                this.wakeLock.Release();
+            }
+
+            if (this.wifiLock.IsHeld)
+            {
+                this.wifiLock.Release();
+            }
         }
     }
 }

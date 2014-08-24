@@ -112,8 +112,6 @@ namespace Espera.Android.Views
 
             this.SetContentView(Resource.Layout.Main);
             this.WireUpControls();
-
-            this.StartService(new Intent(this, typeof(NetworkService)));
         }
 
         protected override void OnNewIntent(Intent intent)
@@ -151,6 +149,8 @@ namespace Espera.Android.Views
             base.OnStart();
 
             EasyTracker.GetInstance(this).ActivityStart(this);
+
+            this.StartService(new Intent(this, typeof(NetworkService)));
         }
 
         protected override void OnStop()
@@ -158,6 +158,11 @@ namespace Espera.Android.Views
             base.OnStop();
 
             EasyTracker.GetInstance(this).ActivityStop(this);
+
+            if (!NetworkMessenger.Instance.IsConnected)
+            {
+                this.StopService(new Intent(this, typeof(NetworkService)));
+            }
         }
 
         private void ShowWifiPrompt()

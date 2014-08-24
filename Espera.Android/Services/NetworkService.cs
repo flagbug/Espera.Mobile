@@ -113,7 +113,11 @@ namespace Espera.Android.Services
 
         public override void OnDestroy()
         {
-            keepAlive.Disconnect();
+            if (NetworkMessenger.Instance.IsConnected)
+            {
+                keepAlive.Disconnect();
+            }
+
             keepAlive.Dispose();
 
             this.disposable.Dispose();

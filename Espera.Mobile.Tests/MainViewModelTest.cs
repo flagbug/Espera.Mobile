@@ -1,6 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Espera.Mobile.Core;
@@ -28,7 +28,7 @@ namespace Espera.Android.Tests
                 var messenger = Substitute.For<INetworkMessenger>();
                 messenger.ConnectAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<Guid>(), Arg.Any<string>())
                     .Returns(Observable.Never<Tuple<ResponseStatus, ConnectionInfo>>().ToTask());
-                messenger.IsConnected.Returns(Observable.Return(false));
+                messenger.IsConnected.Returns(false);
 
                 NetworkMessenger.Override(messenger);
 
@@ -49,7 +49,7 @@ namespace Espera.Android.Tests
             public async Task ChecksMinimumServerVersion()
             {
                 var messenger = Substitute.For<INetworkMessenger>();
-                messenger.IsConnected.Returns(Observable.Return(true));
+                messenger.IsConnected.Returns(true);
                 messenger.ConnectAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<Guid>(), Arg.Any<string>())
                     .Returns(Tuple.Create(ResponseStatus.Success,
                         new ConnectionInfo
@@ -127,9 +127,8 @@ namespace Espera.Android.Tests
             [Fact]
             public async Task SmokeTest()
             {
-                var isConnected = new BehaviorSubject<bool>(false);
                 var messenger = Substitute.For<INetworkMessenger>();
-                messenger.IsConnected.Returns(isConnected);
+                messenger.IsConnected.Returns(false);
                 messenger.ConnectAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<Guid>(), Arg.Any<string>())
                     .Returns(Tuple.Create(ResponseStatus.Success,
                         new ConnectionInfo
@@ -146,7 +145,8 @@ namespace Espera.Android.Tests
                 Assert.True(vm.ConnectCommand.CanExecute(null));
 
                 await vm.ConnectCommand.ExecuteAsync();
-                isConnected.OnNext(true);
+                messenger.IsConnected.Returns(true);
+                messenger.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(messenger, new PropertyChangedEventArgs("IsConnected"));
 
                 Assert.False(vm.ConnectCommand.CanExecute(null));
 
@@ -159,7 +159,7 @@ namespace Espera.Android.Tests
                 var messenger = Substitute.For<INetworkMessenger>();
                 messenger.ConnectAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<Guid>(), Arg.Any<string>())
                     .Returns(Observable.Never<Tuple<ResponseStatus, ConnectionInfo>>().ToTask());
-                messenger.IsConnected.Returns(Observable.Return(false));
+                messenger.IsConnected.Returns(false);
                 messenger.DiscoverServerAsync(Arg.Any<string>(), Arg.Any<int>()).Returns(Observable.Return("192.168.1.1"));
 
                 NetworkMessenger.Override(messenger);
@@ -182,7 +182,7 @@ namespace Espera.Android.Tests
             public async Task WrongPasswordTriggersConnectionFailed()
             {
                 var messenger = Substitute.For<INetworkMessenger>();
-                messenger.IsConnected.Returns(Observable.Return(false));
+                messenger.IsConnected.Returns(false);
                 messenger.ConnectAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<Guid>(), Arg.Any<string>())
                     .Returns(Tuple.Create(ResponseStatus.WrongPassword,
                         new ConnectionInfo { AccessPermission = NetworkAccessPermission.Admin, ServerVersion = new Version(99, 99) }).ToTaskResult());
@@ -208,9 +208,8 @@ namespace Espera.Android.Tests
             [Fact]
             public async Task SmokeTest()
             {
-                var isConnected = new BehaviorSubject<bool>(true);
                 var messenger = Substitute.For<INetworkMessenger>();
-                messenger.IsConnected.Returns(isConnected);
+                messenger.IsConnected.Returns(true);
 
                 NetworkMessenger.Override(messenger);
 
@@ -220,7 +219,8 @@ namespace Espera.Android.Tests
                 Assert.True(vm.DisconnectCommand.CanExecute(true));
 
                 await vm.DisconnectCommand.ExecuteAsync();
-                isConnected.OnNext(false);
+                messenger.IsConnected.Returns(false);
+                messenger.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(messenger, new PropertyChangedEventArgs("IsConnected"));
 
                 Assert.False(vm.DisconnectCommand.CanExecute(null));
 
@@ -233,12 +233,12 @@ namespace Espera.Android.Tests
             [Fact]
             public async Task IsFalseWhileConnectCommandExecutesWithPassword()
             {
-                var isConnected = new BehaviorSubject<bool>(false);
                 var messenger = Substitute.For<INetworkMessenger>();
                 messenger.ConnectAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<Guid>(), Arg.Any<string>())
                     .Returns(x =>
                     {
-                        isConnected.OnNext(true);
+                        messenger.IsConnected.Returns(true);
+                        messenger.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(messenger, new PropertyChangedEventArgs("IsConnected"));
                         return Tuple.Create(ResponseStatus.Success,
                             new ConnectionInfo
                             {
@@ -247,7 +247,7 @@ namespace Espera.Android.Tests
                             })
                         .ToTaskResult();
                     });
-                messenger.IsConnected.Returns(isConnected);
+                messenger.IsConnected.Returns(false);
                 messenger.DiscoverServerAsync(Arg.Any<string>(), Arg.Any<int>()).Returns(Observable.Return("192.168.1.1"));
 
                 NetworkMessenger.Override(messenger);
@@ -257,7 +257,7 @@ namespace Espera.Android.Tests
                 var vm = new MainViewModel(settings, () => "192.168.1.2");
                 vm.Activator.Activate();
 
-                var coll = isConnected.CreateCollection();
+                var coll = messenger.WhenAnyValue(x => x.IsConnected).CreateCollection();
 
                 await vm.ConnectCommand.ExecuteAsync();
 

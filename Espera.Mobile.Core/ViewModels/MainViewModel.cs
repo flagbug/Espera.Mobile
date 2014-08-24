@@ -35,7 +35,7 @@ namespace Espera.Mobile.Core.ViewModels
             {
                 var disposable = new CompositeDisposable();
 
-                this.isConnected = NetworkMessenger.Instance.IsConnected
+                this.isConnected = NetworkMessenger.Instance.WhenAnyValue(x => x.IsConnected)
                     .ObserveOn(RxApp.MainThreadScheduler)
                     .ToProperty(this, x => x.IsConnected)
                     .DisposeWith(disposable);

@@ -1,5 +1,6 @@
 using System;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Android.App;
 using Android.Content;
@@ -21,6 +22,7 @@ namespace Espera.Android.Services
     [Service]
     internal class NetworkService : Service
     {
+        private CompositeDisposable disposable;
         private INetworkMessenger keepAlive;
 
         private PowerManager.WakeLock wakeLock;
@@ -35,21 +37,26 @@ namespace Espera.Android.Services
         {
             base.OnCreate();
 
+            this.disposable = new CompositeDisposable();
+
             this.wakeLock = PowerManager.FromContext(this).NewWakeLock(WakeLockFlags.Partial, "espera-wake-lock");
             this.wifiLock = WifiManager.FromContext(this).CreateWifiLock(WifiMode.Full, "espera-wifi-lock");
 
             this.keepAlive = NetworkMessenger.Instance;
-            this.keepAlive.IsConnected.Where(x => x)
-                .Subscribe(x => this.NotifyNetworkMessengerConnected());
+            NetworkMessenger.Instance.IsConnected.Where(x => x)
+                .Subscribe(x => this.NotifyNetworkMessengerConnected())
+                .DisposeWith(this.disposable);
 
-            this.keepAlive.Disconnected.Subscribe(x => this.NotifyNetworkMessengerDisconnected());
+            this.keepAlive.Disconnected.Subscribe(x => this.NotifyNetworkMessengerDisconnected())
+                .DisposeWith(this.disposable);
 
             var userSettings = Locator.Current.GetService<UserSettings>();
 
             NetworkMessenger.Instance.IsConnected.SampleAndCombineLatest(userSettings
                 .WhenAnyValue(x => x.Port).DistinctUntilChanged(), (connected, _) => connected)
                 .Where(x => x)
-                .Subscribe(x => NetworkMessenger.Instance.Disconnect());
+                .Subscribe(x => NetworkMessenger.Instance.Disconnect())
+                .DisposeWith(this.disposable);
 
             AndroidVolumeRequests.Instance.VolumeDown.CombineLatest(NetworkMessenger.Instance.IsConnected, NetworkMessenger.Instance.WhenAnyValue(x => x.AccessPermission),
                     (_, connected, permission) => connected && permission == NetworkAccessPermission.Admin)
@@ -59,7 +66,8 @@ namespace Espera.Android.Services
                 .Select(currentVolume => Math.Max(currentVolume - 0.1f, 0))
                 .Select(async volume => await NetworkMessenger.Instance.SetVolume(volume))
                 .Concat()
-                .Subscribe();
+                .Subscribe()
+                .DisposeWith(this.disposable);
 
             AndroidVolumeRequests.Instance.VolumeUp.CombineLatest(NetworkMessenger.Instance.IsConnected, NetworkMessenger.Instance.WhenAnyValue(x => x.AccessPermission),
                     (_, connected, permission) => connected && permission == NetworkAccessPermission.Admin)
@@ -69,7 +77,8 @@ namespace Espera.Android.Services
                 .Select(currentVolume => Math.Min(currentVolume + 0.1f, 1))
                 .Select(async volume => await NetworkMessenger.Instance.SetVolume(volume))
                 .Concat()
-                .Subscribe();
+                .Subscribe()
+                .DisposeWith(this.disposable);
 
             var androidSettings = Locator.Current.GetService<AndroidSettings>();
             NetworkMessenger.Instance.IsConnected.CombineLatest(androidSettings.WhenAnyValue(x => x.SaveEnergy), (connected, saveEnergy) =>
@@ -94,13 +103,17 @@ namespace Espera.Android.Services
                 }
 
                 return Unit.Default;
-            }).Subscribe();
+            })
+            .Subscribe()
+            .DisposeWith(this.disposable);
         }
 
         public override void OnDestroy()
         {
             keepAlive.Disconnect();
             keepAlive.Dispose();
+
+            this.disposable.Dispose();
 
             base.OnDestroy();
         }

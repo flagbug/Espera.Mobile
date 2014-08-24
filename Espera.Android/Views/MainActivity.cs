@@ -126,10 +126,10 @@ namespace Espera.Android.Views
         {
             base.OnResume();
 
-            if (this.Intent.HasExtra("connectionLost"))
+            if (this.Intent.HasExtra(NetworkService.ConnectionLostString))
             {
                 Toast.MakeText(this, "Connection lost", ToastLength.Long).Show();
-                this.Intent.RemoveExtra("connectionLost");
+                this.Intent.RemoveExtra(NetworkService.ConnectionLostString);
             }
 
             var wifiService = Locator.Current.GetService<IWifiService>();

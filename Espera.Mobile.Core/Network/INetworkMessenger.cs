@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reactive;
 using System.Threading.Tasks;
 using Espera.Mobile.Core.Songs;
@@ -7,13 +8,13 @@ using Espera.Network;
 
 namespace Espera.Mobile.Core.Network
 {
-    public interface INetworkMessenger : IDisposable
+    public interface INetworkMessenger : IDisposable, INotifyPropertyChanged
     {
         NetworkAccessPermission AccessPermission { get; }
 
         IObservable<Unit> Disconnected { get; }
 
-        IObservable<bool> IsConnected { get; }
+        bool IsConnected { get; }
 
         IObservable<NetworkPlaybackState> PlaybackStateChanged { get; }
 

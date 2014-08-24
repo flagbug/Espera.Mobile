@@ -29,6 +29,7 @@ namespace Espera.Mobile.Core.Network
         private readonly Subject<Unit> connectionEstablished;
         private readonly Subject<Unit> disconnected;
         private readonly SemaphoreSlim gate;
+        private readonly ObservableAsPropertyHelper<bool> isConnected;
         private readonly IObservable<NetworkMessage> messagePipeline;
         private readonly IDisposable messagePipelineConnection;
         private ITcpClient currentClient;
@@ -51,12 +52,11 @@ namespace Espera.Mobile.Core.Network
 
             this.client = new Subject<ITcpClient>();
 
-            var isConnected = this.Disconnected.Select(_ => false)
+            this.isConnected = this.Disconnected.Select(_ => false)
                 .Merge(this.connectionEstablished.Select(_ => true))
                 .DistinctUntilChanged()
-                .Publish(false);
-            isConnected.Connect();
-            this.IsConnected = isConnected;
+                .StartWith(false)
+                .ToProperty(this, x => x.IsConnected);
 
             var pipeline = this.client.Select(x => Observable.Defer(() => x.GetStream().ReadNextMessageAsync()
                     .ToObservable())
@@ -111,7 +111,10 @@ namespace Espera.Mobile.Core.Network
             get { return this.disconnected.AsObservable(); }
         }
 
-        public IObservable<bool> IsConnected { get; private set; }
+        public bool IsConnected
+        {
+            get { return this.isConnected.Value; }
+        }
 
         public IObservable<NetworkPlaybackState> PlaybackStateChanged { get; private set; }
 

@@ -21,4 +21,8 @@
     <item>Play all</item>
     <item>Add to playlist</item>
   </string-array>
+  <string-array name="tips">
+    <item>Control the playback volume with the volume buttons on your phone.</item>
+    <item>You can vote for a song and with enough votes, it will play next.</item>
+  </string-array>
 </resources>

@@ -35,6 +35,9 @@ namespace Espera.Android
 			// aapt resource value: 0x7f060000
 			public const int preference_administrator_default_library_action_entries = 2131099648;
 			
+			// aapt resource value: 0x7f060001
+			public const int tips = 2131099649;
+			
 			static Array()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
@@ -120,14 +123,14 @@ namespace Espera.Android
 			// aapt resource value: 0x7f070005
 			public const int ConnectButton = 2131165189;
 			
-			// aapt resource value: 0x7f07000b
-			public const int CurrentTimeTextView = 2131165195;
-			
 			// aapt resource value: 0x7f07000c
-			public const int DurationSeekBar = 2131165196;
+			public const int CurrentTimeTextView = 2131165196;
 			
-			// aapt resource value: 0x7f070011
-			public const int Image = 2131165201;
+			// aapt resource value: 0x7f07000d
+			public const int DurationSeekBar = 2131165197;
+			
+			// aapt resource value: 0x7f070012
+			public const int Image = 2131165202;
 			
 			// aapt resource value: 0x7f070008
 			public const int LoadLocalArtistsButton = 2131165192;
@@ -147,32 +150,35 @@ namespace Espera.Android
 			// aapt resource value: 0x7f070003
 			public const int LocalSongTransferProgress = 2131165187;
 			
-			// aapt resource value: 0x7f070010
-			public const int NextButton = 2131165200;
-			
-			// aapt resource value: 0x7f070009
-			public const int PlayList = 2131165193;
-			
-			// aapt resource value: 0x7f07000f
-			public const int PlayPauseButton = 2131165199;
+			// aapt resource value: 0x7f070011
+			public const int NextButton = 2131165201;
 			
 			// aapt resource value: 0x7f07000a
-			public const int PlaybackControlPanel = 2131165194;
+			public const int PlayList = 2131165194;
+			
+			// aapt resource value: 0x7f070010
+			public const int PlayPauseButton = 2131165200;
+			
+			// aapt resource value: 0x7f07000b
+			public const int PlaybackControlPanel = 2131165195;
+			
+			// aapt resource value: 0x7f070014
+			public const int PlaylistEntryArtist = 2131165204;
 			
 			// aapt resource value: 0x7f070013
-			public const int PlaylistEntryArtist = 2131165203;
+			public const int PlaylistEntryTitle = 2131165203;
 			
-			// aapt resource value: 0x7f070012
-			public const int PlaylistEntryTitle = 2131165202;
-			
-			// aapt resource value: 0x7f07000e
-			public const int PreviousButton = 2131165198;
+			// aapt resource value: 0x7f07000f
+			public const int PreviousButton = 2131165199;
 			
 			// aapt resource value: 0x7f070004
 			public const int SongsList = 2131165188;
 			
-			// aapt resource value: 0x7f07000d
-			public const int TotalTimeTextView = 2131165197;
+			// aapt resource value: 0x7f070009
+			public const int TipTextView = 2131165193;
+			
+			// aapt resource value: 0x7f07000e
+			public const int TotalTimeTextView = 2131165198;
 			
 			static Id()
 			{

@@ -70,7 +70,9 @@ namespace Espera.Android.Views
 
                 this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadLocalArtistsButton.Enabled);
                 this.LoadLocalArtistsButton.Events().Click.Subscribe(x => this.StartActivity(typeof(LocalArtistsActivity)))
-                    .DisposeWith(disposable); ;
+                    .DisposeWith(disposable);
+
+                this.AssignTipText();
 
                 return disposable;
             });
@@ -83,6 +85,8 @@ namespace Espera.Android.Views
         public Button LoadPlaylistButton { get; private set; }
 
         public Button LoadRemoteArtistsButton { get; private set; }
+
+        public TextView TipTextView { get; private set; }
 
         public override bool OnCreateOptionsMenu(IMenu menu)
         {
@@ -163,6 +167,16 @@ namespace Espera.Android.Views
             {
                 this.StopService(new Intent(this, typeof(NetworkService)));
             }
+        }
+
+        private void AssignTipText()
+        {
+            string[] tipStrings = Resources.GetStringArray(Resource.Array.tips);
+
+            var random = new Random();
+            int index = random.Next(tipStrings.Length);
+
+            this.TipTextView.Text = string.Format("Tip: {0}", tipStrings[index]);
         }
 
         private void ShowWifiPrompt()

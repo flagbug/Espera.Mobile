@@ -78,6 +78,13 @@ namespace Espera.Android.Views
             this.WireUpControls();
         }
 
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            BlobCache.InMemory.InvalidateObject<IEnumerable<LocalSong>>(BlobCacheKeys.SelectedRemoteSongs).Wait();
+        }
+
         protected override void OnStart()
         {
             base.OnStart();

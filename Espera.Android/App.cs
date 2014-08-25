@@ -43,6 +43,7 @@ namespace Espera.Android
             Locator.CurrentMutable.Register(() => new AndroidDeviceIdFactory(this), typeof(IDeviceIdFactory));
             Locator.CurrentMutable.RegisterConstant(new UserSettings(), typeof(UserSettings));
             Locator.CurrentMutable.RegisterConstant(new AndroidSettings(), typeof(AndroidSettings));
+            Locator.CurrentMutable.Register(() => new AndroidInstallationDateFetcher(), typeof(IInstallationDateFetcher));
         }
     }
 }

@@ -120,12 +120,17 @@ namespace Espera.Android.Tests
                 var messenger = Substitute.For<INetworkMessenger>();
                 NetworkMessenger.Override(messenger);
 
-                var vm = new PlaylistViewModel();
-                vm.Activator.Activate();
+                new TestScheduler().With(sched =>
+                {
+                    var vm = new PlaylistViewModel();
+                    vm.Activator.Activate();
 
-                vm.CurrentTimeSeconds = 60;
+                    vm.CurrentTimeSeconds = 60;
 
-                messenger.Received().SetCurrentTime(TimeSpan.FromSeconds(60));
+                    sched.AdvanceByMs(PlaylistViewModel.TimeThrottleDuration.TotalMilliseconds + 1);
+
+                    messenger.Received().SetCurrentTime(TimeSpan.FromSeconds(60));
+                });
             }
 
             [Fact]

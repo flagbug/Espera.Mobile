@@ -5,6 +5,7 @@
     <item name="android:actionBarStyle">@style/Theme.MahApps.ActionBar</item>
     <item name="android:windowBackground">@color/dark</item>
     <item name="android:buttonStyle">@style/Theme.MahApps.Widget.Button</item>
+    <item name="android:textViewStyle">@style/Theme.MahApps.Widget.TextView</item>
   </style>
   <style name="Theme.MahApps.ActionBar"
          parent="@android:style/Widget.Holo.ActionBar">
@@ -13,6 +14,9 @@
   <style name="Theme.MahApps.Widget.Button" parent="@android:style/Widget.Button">
     <item name="android:textColor">@drawable/mahapps_button_text</item>
     <item name="android:background">@drawable/mahapps_button</item>
+  </style>
+  <style name="Theme.MahApps.Widget.TextView" parent="@android:style/Widget.TextView">
+    <item name="android:textColor">@color/white</item>
   </style>
   <color name="dark">#FF252525</color>
   <color name="black">#000000</color>

@@ -346,6 +346,9 @@ namespace Espera.Android
 			// aapt resource value: 0x7f070002
 			public const int Theme_MahApps_Widget_Button = 2131165186;
 			
+			// aapt resource value: 0x7f070003
+			public const int Theme_MahApps_Widget_TextView = 2131165187;
+			
 			static Style()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();

@@ -89,7 +89,8 @@ namespace Espera.Mobile.Core.ViewModels
 
                 this.currentTimeSecondsUserChanged
                     .DistinctUntilChanged()
-                    .Subscribe(x => NetworkMessenger.Instance.SetCurrentTime(TimeSpan.FromSeconds(x)));
+                    .SelectMany(x => NetworkMessenger.Instance.SetCurrentTime(TimeSpan.FromSeconds(x)))
+                    .Subscribe();
 
                 this.totalTime = currentPlaylist.Select(x => x.TotalTime)
                     .ToProperty(this, x => x.TotalTime);

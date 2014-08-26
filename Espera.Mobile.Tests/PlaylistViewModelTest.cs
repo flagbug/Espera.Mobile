@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -108,6 +109,38 @@ namespace Espera.Android.Tests
                 await vm.LoadPlaylistCommand.ExecuteAsync();
 
                 Assert.Equal("A", vm.CurrentSong.Title);
+            }
+        }
+
+        public class TheCurrentTimeSecondsProperty
+        {
+            [Fact]
+            public void SendsTimeToNetwork()
+            {
+                var messenger = Substitute.For<INetworkMessenger>();
+                NetworkMessenger.Override(messenger);
+
+                var vm = new PlaylistViewModel();
+                vm.Activator.Activate();
+
+                vm.CurrentTimeSeconds = 60;
+
+                messenger.Received().SetCurrentTime(TimeSpan.FromSeconds(60));
+            }
+
+            [Fact]
+            public void SendsTimeToNetworkOnlyifChanged()
+            {
+                var messenger = Substitute.For<INetworkMessenger>();
+                NetworkMessenger.Override(messenger);
+
+                var vm = new PlaylistViewModel();
+                vm.Activator.Activate();
+
+                vm.CurrentTimeSeconds = 60;
+                vm.CurrentTimeSeconds = 60;
+
+                messenger.Received(1).SetCurrentTime(TimeSpan.FromSeconds(60));
             }
         }
 

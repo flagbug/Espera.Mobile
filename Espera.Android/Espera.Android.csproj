@@ -70,13 +70,13 @@
     <MonoDroidExtraArgs />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Akavache, Version=4.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Akavache, Version=4.0.2.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\akavache.core.4.0.2\lib\MonoAndroid\Akavache.dll</HintPath>
+      <HintPath>..\packages\akavache.core.4.0.2.1\lib\MonoAndroid\Akavache.dll</HintPath>
     </Reference>
-    <Reference Include="Akavache.Sqlite3, Version=4.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Akavache.Sqlite3, Version=4.0.2.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\akavache.sqlite3.4.0.2\lib\Portable-Net45+Win8+WP8+Wpa81\Akavache.Sqlite3.dll</HintPath>
+      <HintPath>..\packages\akavache.sqlite3.4.0.2.1\lib\Portable-Net45+Win8+WP8+Wpa81\Akavache.Sqlite3.dll</HintPath>
     </Reference>
     <Reference Include="Espera.Network, Version=1.0.21.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

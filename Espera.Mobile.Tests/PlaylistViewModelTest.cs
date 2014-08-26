@@ -134,13 +134,63 @@ namespace Espera.Android.Tests
                 var messenger = Substitute.For<INetworkMessenger>();
                 NetworkMessenger.Override(messenger);
 
+                new TestScheduler().With(sched =>
+                {
+                    var vm = new PlaylistViewModel();
+                    vm.Activator.Activate();
+
+                    vm.CurrentTimeSeconds = 60;
+
+                    sched.AdvanceByMs(PlaylistViewModel.TimeThrottleDuration.TotalMilliseconds + 1);
+
+                    vm.CurrentTimeSeconds = 60;
+
+                    sched.AdvanceByMs(PlaylistViewModel.TimeThrottleDuration.TotalMilliseconds + 1);
+
+                    messenger.Received(1).SetCurrentTime(TimeSpan.FromSeconds(60));
+                });
+            }
+
+            [Fact]
+            public void ThrottlesTimeChangesToNetworkByCount()
+            {
+                var messenger = Substitute.For<INetworkMessenger>();
+                NetworkMessenger.Override(messenger);
+
                 var vm = new PlaylistViewModel();
                 vm.Activator.Activate();
 
-                vm.CurrentTimeSeconds = 60;
-                vm.CurrentTimeSeconds = 60;
+                for (int i = 1; i < PlaylistViewModel.TimeThrottleCount + 1; i++)
+                {
+                    vm.CurrentTimeSeconds = i;
+                }
 
-                messenger.Received(1).SetCurrentTime(TimeSpan.FromSeconds(60));
+                messenger.ReceivedWithAnyArgs(1).SetCurrentTime(Arg.Any<TimeSpan>());
+                messenger.Received(1).SetCurrentTime(TimeSpan.FromSeconds(PlaylistViewModel.TimeThrottleCount));
+            }
+
+            [Fact]
+            public void ThrottlesTimeChangesToNetworkByTime()
+            {
+                var messenger = Substitute.For<INetworkMessenger>();
+                NetworkMessenger.Override(messenger);
+
+                new TestScheduler().With(sched =>
+                {
+                    var vm = new PlaylistViewModel();
+                    vm.Activator.Activate();
+
+                    vm.CurrentTimeSeconds = 10;
+
+                    sched.AdvanceByMs(1);
+
+                    vm.CurrentTimeSeconds = 20;
+
+                    sched.AdvanceByMs(PlaylistViewModel.TimeThrottleDuration.TotalMilliseconds + 1);
+
+                    messenger.ReceivedWithAnyArgs(1).SetCurrentTime(Arg.Any<TimeSpan>());
+                    messenger.Received(1).SetCurrentTime(TimeSpan.FromSeconds(20));
+                });
             }
         }
 

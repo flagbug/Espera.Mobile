@@ -23,11 +23,6 @@ namespace Espera.Android.Views
     {
         public RemoteSongsActivity()
         {
-            var songs = BlobCache.InMemory.GetObject<IEnumerable<RemoteSong>>(BlobCacheKeys.SelectedRemoteSongs).Wait().ToList();
-
-            this.Title = songs.First().Artist;
-            this.ViewModel = new RemoteSongsViewModel(songs);
-
             this.WhenActivated(() =>
             {
                 var disposable = new CompositeDisposable();
@@ -76,6 +71,10 @@ namespace Espera.Android.Views
 
             this.SetContentView(Resource.Layout.RemoteSongs);
             this.WireUpControls();
+
+            var songs = BlobCache.InMemory.GetObject<IEnumerable<RemoteSong>>(BlobCacheKeys.SelectedRemoteSongs).Wait().ToList();
+            this.Title = songs.First().Artist;
+            this.ViewModel = new RemoteSongsViewModel(songs);
         }
 
         protected override void OnDestroy()

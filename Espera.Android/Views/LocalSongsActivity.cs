@@ -23,10 +23,6 @@ namespace Espera.Android.Views
     {
         public LocalSongsActivity()
         {
-            var songs = BlobCache.InMemory.GetObject<IEnumerable<LocalSong>>(BlobCacheKeys.SelectedLocalSongs).Wait().ToList();
-            this.ViewModel = new LocalSongsViewModel(songs);
-            this.Title = songs.First().Artist;
-
             this.WhenActivated(() =>
             {
                 var disposable = new CompositeDisposable();
@@ -75,6 +71,10 @@ namespace Espera.Android.Views
 
             this.SetContentView(Resource.Layout.LocalSongs);
             this.WireUpControls();
+
+            var songs = BlobCache.InMemory.GetObject<IEnumerable<LocalSong>>(BlobCacheKeys.SelectedLocalSongs).Wait().ToList();
+            this.Title = songs.First().Artist;
+            this.ViewModel = new LocalSongsViewModel(songs);
         }
 
         protected override void OnDestroy()

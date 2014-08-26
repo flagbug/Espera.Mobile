@@ -13,6 +13,9 @@ namespace Espera.Mobile.Core.ViewModels
 {
     public class PlaylistViewModel : ReactiveObject, ISupportsActivation
     {
+        public static readonly int TimeThrottleCount = 10;
+        public static readonly TimeSpan TimeThrottleDuration = TimeSpan.FromMilliseconds(100);
+
         private readonly Subject<int> currentTimeSecondsUserChanged;
         private readonly ReactiveList<PlaylistEntryViewModel> entries;
         private ObservableAsPropertyHelper<bool> canModify;
@@ -89,8 +92,12 @@ namespace Espera.Mobile.Core.ViewModels
 
                 this.currentTimeSecondsUserChanged
                     .DistinctUntilChanged()
+                    .Buffer(TimeThrottleDuration, TimeThrottleCount, RxApp.TaskpoolScheduler)
+                    .Where(x => x.Any())
+                    .Select(x => x.Last())
                     .SelectMany(x => NetworkMessenger.Instance.SetCurrentTime(TimeSpan.FromSeconds(x)))
-                    .Subscribe();
+                    .Subscribe()
+                    .DisposeWith(disposable);
 
                 this.totalTime = currentPlaylist.Select(x => x.TotalTime)
                     .ToProperty(this, x => x.TotalTime);

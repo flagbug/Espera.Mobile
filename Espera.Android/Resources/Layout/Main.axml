@@ -6,22 +6,26 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/ConnectButton" />
+        android:id="@+id/ConnectButton"
+        android:layout_margin="10dp" />
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/LoadPlaylistButton"
-        android:text="Playlist" />
+        android:text="Playlist"
+        android:layout_margin="10dp" />
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/LoadRemoteArtistsButton"
-        android:text="Songs on the computer" />
+        android:text="Songs on the computer"
+        android:layout_margin="10dp" />
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/LoadLocalArtistsButton"
-        android:text="Songs on this device" />
+        android:text="Songs on this device"
+        android:layout_margin="10dp" />
     <TextView
         android:id="@+id/TrialExpirationTextView"
         android:gravity="center_horizontal"

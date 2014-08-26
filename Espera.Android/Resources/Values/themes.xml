@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+  <style name="Theme.MahApps"
+         parent="@android:style/Theme.Holo">
+    <item name="android:actionBarStyle">@style/Theme.MahApps.ActionBar</item>
+    <item name="android:windowBackground">@color/dark</item>
+    <item name="android:buttonStyle">@style/Theme.MahApps.Widget.Button</item>
+  </style>
+  <style name="Theme.MahApps.ActionBar"
+         parent="@android:style/Widget.Holo.ActionBar">
+    <item name="android:background">@color/accent</item>
+  </style>
+  <style name="Theme.MahApps.Widget.Button" parent="@android:style/Widget.Button">
+    <item name="android:textColor">@drawable/mahapps_button_text</item>
+    <item name="android:background">@drawable/mahapps_button</item>
+  </style>
+  <color name="dark">#FF252525</color>
+  <color name="black">#000000</color>
+  <color name="gray">#A5FFFFFF</color>
+  <color name="white">#FFFFFF</color>
+  <color name="accent">#CC119EDA</color>
+</resources>

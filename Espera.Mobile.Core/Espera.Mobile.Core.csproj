@@ -93,7 +93,7 @@
   -->
   <ItemGroup>
     <Reference Include="Akavache">
-      <HintPath>..\packages\akavache.core.4.0.2\lib\Portable-Net45+Win8+WP8+Wpa81\Akavache.dll</HintPath>
+      <HintPath>..\packages\akavache.core.4.0.2.1\lib\Portable-Net45+Win8+WP8+Wpa81\Akavache.dll</HintPath>
     </Reference>
     <Reference Include="Espera.Network">
       <HintPath>..\packages\Espera-Network.1.0.21\lib\portable-net45+win+wp80\Espera.Network.dll</HintPath>

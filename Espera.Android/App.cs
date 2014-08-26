@@ -13,7 +13,7 @@ using Splat;
 
 namespace Espera.Android
 {
-    [Application(Label = "Espera Remote Control", Icon = "@drawable/Icon",
+    [Application(Label = "Espera Remote Control", Icon = "@drawable/Icon", Theme = "@style/Theme.MahApps",
 #if DEBUG
  Debuggable = true
 #else

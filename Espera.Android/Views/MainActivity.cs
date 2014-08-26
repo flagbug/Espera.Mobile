@@ -75,11 +75,10 @@ namespace Espera.Android.Views
                 this.LoadLocalArtistsButton.Events().Click.Subscribe(x => this.StartActivity(typeof(LocalArtistsActivity)))
                     .DisposeWith(disposable);
 
-                bool isinTrialPeriod = TrialHelpers.IsInTrialPeriod(AppConstants.TrialTime);
-                this.TrialExpirationTextView.Visibility = TrialHelpers.IsInTrialPeriod(AppConstants.TrialTime)
-                    ? ViewStates.Visible : ViewStates.Gone;
+                bool displayTrialPeriod = TrialHelpers.IsInTrialPeriod(AppConstants.TrialTime) && !settings.IsPremium;
+                this.TrialExpirationTextView.Visibility = displayTrialPeriod ? ViewStates.Visible : ViewStates.Gone;
 
-                if (isinTrialPeriod)
+                if (displayTrialPeriod)
                 {
                     TimeSpan remainingTrialTime = TrialHelpers.GetRemainingTrialTime(AppConstants.TrialTime);
                     this.TrialExpirationTextView.Text = string.Format("{0} {1}", Resources.GetString(Resource.String.trial_expiration),

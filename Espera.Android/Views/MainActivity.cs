@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Android.App;
@@ -9,11 +10,13 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 using Espera.Android.Services;
+using Espera.Mobile.Core;
 using Espera.Mobile.Core.Analytics;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
 using Espera.Mobile.Core.ViewModels;
 using Google.Analytics.Tracking;
+using Humanizer;
 using ReactiveMarrow;
 using ReactiveUI;
 using Splat;
@@ -70,7 +73,11 @@ namespace Espera.Android.Views
 
                 this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadLocalArtistsButton.Enabled);
                 this.LoadLocalArtistsButton.Events().Click.Subscribe(x => this.StartActivity(typeof(LocalArtistsActivity)))
-                    .DisposeWith(disposable); ;
+                    .DisposeWith(disposable);
+
+                TimeSpan remainingTrialTime = TrialHelpers.GetRemainingTrialTime(AppConstants.TrialTime);
+                this.TrialExpirationTextView.Text = string.Format("{0} {1}", Resources.GetString(Resource.String.trial_expiration),
+                    remainingTrialTime.Humanize(culture: new CultureInfo("en-US")));
 
                 return disposable;
             });
@@ -83,6 +90,8 @@ namespace Espera.Android.Views
         public Button LoadPlaylistButton { get; private set; }
 
         public Button LoadRemoteArtistsButton { get; private set; }
+
+        public TextView TrialExpirationTextView { get; private set; }
 
         public override bool OnCreateOptionsMenu(IMenu menu)
         {

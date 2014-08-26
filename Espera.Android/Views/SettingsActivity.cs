@@ -12,6 +12,7 @@ using Android.Preferences;
 using Android.Text;
 using Android.Views;
 using Android.Widget;
+using Espera.Mobile.Core;
 using Espera.Mobile.Core.Settings;
 using Espera.Network;
 using Google.Analytics.Tracking;
@@ -89,13 +90,15 @@ namespace Espera.Android.Views
 
             var passwordPreference = (EditTextPreference)this.FindPreference(this.GetString(Resource.String.preference_administrator_password));
             passwordPreference.BindToSetting(this.userSettings, x => x.AdministratorPassword, x => x.Text, x => (string)x);
-            this.userSettings.WhenAnyValue(x => x.IsPremium).BindTo(passwordPreference, x => x.Enabled);
+            this.userSettings.WhenAnyValue(x => x.IsPremium, x => x || TrialHelpers.IsInTrialPeriod(AppConstants.TrialTime))
+                .BindTo(passwordPreference, x => x.Enabled);
 
             var defaultLibraryActionPreference = (ListPreference)this.FindPreference(this.GetString(Resource.String.preference_default_library_action));
             defaultLibraryActionPreference.SetEntryValues(Enum.GetNames(typeof(DefaultLibraryAction)));
             defaultLibraryActionPreference.BindToSetting(this.userSettings, x => x.DefaultLibraryAction,
                 x => x.Value, x => Enum.Parse(typeof(DefaultLibraryAction), (string)x), x => x.ToString());
-            this.userSettings.WhenAnyValue(x => x.IsPremium).BindTo(defaultLibraryActionPreference, x => x.Enabled);
+            this.userSettings.WhenAnyValue(x => x.IsPremium, x => x || TrialHelpers.IsInTrialPeriod(AppConstants.TrialTime))
+                .BindTo(defaultLibraryActionPreference, x => x.Enabled);
 
             Preference premiumButton = this.FindPreference("premium_button");
             premiumButton.Events().PreferenceClick.Select(_ => this.PurchasePremium().ToObservable()

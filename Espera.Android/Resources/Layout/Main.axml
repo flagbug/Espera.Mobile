@@ -22,4 +22,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/LoadLocalArtistsButton"
         android:text="Songs on this device" />
+    <TextView
+        android:id="@+id/TrialExpirationTextView"
+        android:gravity="center_horizontal"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp" />
 </LinearLayout>

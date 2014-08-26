@@ -83,6 +83,9 @@ namespace Espera.Android
 			// aapt resource value: 0x7f080004
 			public const int accent = 2131230724;
 			
+			// aapt resource value: 0x7f080005
+			public const int accent4 = 2131230725;
+			
 			// aapt resource value: 0x7f080001
 			public const int black = 2131230721;
 			

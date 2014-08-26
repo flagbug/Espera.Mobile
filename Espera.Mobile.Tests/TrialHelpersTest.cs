@@ -7,28 +7,58 @@ namespace Espera.Android.Tests
 {
     public class TrialHelpersTest
     {
-        [Fact]
-        public void ExpirationIsOnExactSameTicks()
+        public class TheGetRemainingTrialTimeMethod
         {
-            var clock = Substitute.For<IClock>();
-            clock.Now.Returns(DateTime.MinValue + AppConstants.TrialTime);
+            [Fact]
+            public void ReturnsNegativeValueForExpiredTime()
+            {
+                var clock = Substitute.For<IClock>();
+                clock.Now.Returns(DateTime.MinValue + TimeSpan.FromDays(8));
 
-            var installationDateFetcher = Substitute.For<IInstallationDateFetcher>();
-            installationDateFetcher.GetInstallationDate().Returns(DateTime.MinValue);
+                var installationDateFetcher = Substitute.For<IInstallationDateFetcher>();
+                installationDateFetcher.GetInstallationDate().Returns(DateTime.MinValue);
 
-            Assert.False(TrialHelpers.IsInTrialPeriod(AppConstants.TrialTime, clock, installationDateFetcher));
+                Assert.Equal(TimeSpan.FromDays(-1), TrialHelpers.GetRemainingTrialTime(TimeSpan.FromDays(7), clock, installationDateFetcher));
+            }
+
+            [Fact]
+            public void SmokeTest()
+            {
+                var clock = Substitute.For<IClock>();
+                clock.Now.Returns(DateTime.MinValue + TimeSpan.FromDays(2));
+
+                var installationDateFetcher = Substitute.For<IInstallationDateFetcher>();
+                installationDateFetcher.GetInstallationDate().Returns(DateTime.MinValue + TimeSpan.FromDays(1));
+
+                Assert.Equal(TimeSpan.FromDays(6), TrialHelpers.GetRemainingTrialTime(TimeSpan.FromDays(7), clock, installationDateFetcher));
+            }
         }
 
-        [Fact]
-        public void OneTickBeforeExpirationIsInTrialPeriod()
+        public class TheIsInTrialPeriodMethod
         {
-            var clock = Substitute.For<IClock>();
-            clock.Now.Returns(DateTime.MinValue + AppConstants.TrialTime - TimeSpan.FromTicks(1));
+            [Fact]
+            public void ExpirationIsOnExactSameTicks()
+            {
+                var clock = Substitute.For<IClock>();
+                clock.Now.Returns(DateTime.MinValue + AppConstants.TrialTime);
 
-            var installationDateFetcher = Substitute.For<IInstallationDateFetcher>();
-            installationDateFetcher.GetInstallationDate().Returns(DateTime.MinValue);
+                var installationDateFetcher = Substitute.For<IInstallationDateFetcher>();
+                installationDateFetcher.GetInstallationDate().Returns(DateTime.MinValue);
 
-            Assert.True(TrialHelpers.IsInTrialPeriod(AppConstants.TrialTime, clock, installationDateFetcher));
+                Assert.False(TrialHelpers.IsInTrialPeriod(AppConstants.TrialTime, clock, installationDateFetcher));
+            }
+
+            [Fact]
+            public void OneTickBeforeExpirationIsInTrialPeriod()
+            {
+                var clock = Substitute.For<IClock>();
+                clock.Now.Returns(DateTime.MinValue + AppConstants.TrialTime - TimeSpan.FromTicks(1));
+
+                var installationDateFetcher = Substitute.For<IInstallationDateFetcher>();
+                installationDateFetcher.GetInstallationDate().Returns(DateTime.MinValue);
+
+                Assert.True(TrialHelpers.IsInTrialPeriod(AppConstants.TrialTime, clock, installationDateFetcher));
+            }
         }
     }
 }

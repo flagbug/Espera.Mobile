@@ -46,9 +46,12 @@
   <ItemGroup>
     <Compile Include="Analytics\AnalyticsMixin.cs" />
     <Compile Include="Analytics\IAnalytics.cs" />
+    <Compile Include="AppConstants.cs" />
     <Compile Include="BlobCacheKeys.cs" />
+    <Compile Include="IClock.cs" />
     <Compile Include="IDeviceIdFactory.cs" />
     <Compile Include="IFile.cs" />
+    <Compile Include="IInstallationDateFetcher.cs" />
     <Compile Include="IVolumeRequests.cs" />
     <Compile Include="MeasureHelper.cs" />
     <Compile Include="Network\ITcpClient.cs" />
@@ -70,6 +73,7 @@
     <Compile Include="Songs\Song.cs" />
     <Compile Include="SortHelpers.cs" />
     <Compile Include="TimeSpanHelper.cs" />
+    <Compile Include="TrialHelpers.cs" />
     <Compile Include="ViewModels\ArtistsViewModel.cs" />
     <Compile Include="ViewModels\LocalSongsViewModel.cs" />
     <Compile Include="ViewModels\LocalSongViewModel.cs" />

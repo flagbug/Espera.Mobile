@@ -21,4 +21,5 @@
     <item>Play all</item>
     <item>Add to playlist</item>
   </string-array>
+  <string name="trial_expiration">Trial expires in</string>
 </resources>

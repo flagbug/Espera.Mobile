@@ -115,6 +115,7 @@
     <Compile Include="Helpers.cs" />
     <Compile Include="ReactiveHelperTest.cs" />
     <Compile Include="RemoteSongsViewModelTest.cs" />
+    <Compile Include="TrialHelpersTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

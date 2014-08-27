@@ -1,5 +1,6 @@
 ﻿using System;
 using Espera.Mobile.Core;
+using Espera.Network;
 using NSubstitute;
 using Xunit;
 
@@ -7,6 +8,37 @@ namespace Espera.Android.Tests
 {
     public class TrialHelpersTest
     {
+        public class TheGetAccessPermissionForPremiumStateMethod
+        {
+            [Fact]
+            public void NotPremiumAndAdminReturnsGuest()
+            {
+                Assert.Equal(NetworkAccessPermission.Guest,
+                    TrialHelpers.GetAccessPermissionForPremiumState(NetworkAccessPermission.Admin, false));
+            }
+
+            [Fact]
+            public void NotPremiumAndGuestReturnsGuest()
+            {
+                Assert.Equal(NetworkAccessPermission.Guest,
+                    TrialHelpers.GetAccessPermissionForPremiumState(NetworkAccessPermission.Guest, false));
+            }
+
+            [Fact]
+            public void PremiumAndAdminReturnsAdmin()
+            {
+                Assert.Equal(NetworkAccessPermission.Admin,
+                    TrialHelpers.GetAccessPermissionForPremiumState(NetworkAccessPermission.Admin, true));
+            }
+
+            [Fact]
+            public void PremiumAndGuestReturnsGuest()
+            {
+                Assert.Equal(NetworkAccessPermission.Guest,
+                    TrialHelpers.GetAccessPermissionForPremiumState(NetworkAccessPermission.Guest, true));
+            }
+        }
+
         public class TheGetRemainingTrialTimeMethod
         {
             [Fact]

@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Espera.Mobile.Core.Analytics;
+using Espera.Mobile.Core.Settings;
 using Espera.Mobile.Core.Songs;
 using Espera.Network;
 using Newtonsoft.Json.Linq;
@@ -85,12 +86,22 @@ namespace Espera.Mobile.Core.Network
             this.RemainingVotesChanged = pushMessages.Where(x => x.PushAction == PushAction.UpdateRemainingVotes)
                 .Select(x => x.Content["remainingVotes"].ToObject<int?>());
 
+            var settings = Locator.Current.GetService<UserSettings>();
+
+            if (settings == null)
+            {
+                throw new InvalidOperationException("No user settings registered!");
+            }
+
             pushMessages.Where(x => x.PushAction == PushAction.UpdateAccessPermission)
                 .Select(x => x.Content["accessPermission"].ToObject<NetworkAccessPermission>())
                 .Multicast(this.accessPermissionReceived)
                 .PermaRef();
 
-            this.accessPermission = this.accessPermissionReceived.ToProperty(this, x => x.AccessPermission);
+            this.accessPermission = this.accessPermissionReceived
+                .Select(x => TrialHelpers.GetAccessPermissionForPremiumState(x, settings.IsPremium ||
+                    TrialHelpers.IsInTrialPeriod(AppConstants.TrialTime)))
+                .ToProperty(this, x => x.AccessPermission);
         }
 
         public static INetworkMessenger Instance

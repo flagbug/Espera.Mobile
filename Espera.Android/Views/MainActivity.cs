@@ -76,13 +76,17 @@ namespace Espera.Android.Views
                     .DisposeWith(disposable);
 
                 bool displayTrialPeriod = TrialHelpers.IsInTrialPeriod(AppConstants.TrialTime) && !settings.IsPremium;
-                this.TrialExpirationTextView.Visibility = displayTrialPeriod ? ViewStates.Visible : ViewStates.Gone;
+                this.TrialExpirationTextView.Visibility = this.TrialExpirationExplanationTextview.Visibility =
+                    displayTrialPeriod ? ViewStates.Visible : ViewStates.Gone;
 
                 if (displayTrialPeriod)
                 {
                     TimeSpan remainingTrialTime = TrialHelpers.GetRemainingTrialTime(AppConstants.TrialTime);
-                    this.TrialExpirationTextView.Text = string.Format("{0} {1}", Resources.GetString(Resource.String.trial_expiration),
+                    this.TrialExpirationTextView.Text = string.Format("{0} {1}",
+                        Resources.GetString(Resource.String.trial_expiration),
                         remainingTrialTime.Humanize(culture: new CultureInfo("en-US")));
+
+                    this.TrialExpirationExplanationTextview.Text = Resources.GetString(Resource.String.trial_expiration_explanation);
                 }
 
                 return disposable;
@@ -96,6 +100,8 @@ namespace Espera.Android.Views
         public Button LoadPlaylistButton { get; private set; }
 
         public Button LoadRemoteArtistsButton { get; private set; }
+
+        public TextView TrialExpirationExplanationTextview { get; private set; }
 
         public TextView TrialExpirationTextView { get; private set; }
 

@@ -62,7 +62,6 @@ namespace Espera.Mobile.Core.Network
                     .ToObservable())
                     .Repeat()
                     .TakeWhile(m => m != null)
-                    .Finally(this.Disconnect)
                     .Catch(Observable.Never<NetworkMessage>())
                     .TakeUntil(this.Disconnected))
                 .Switch()
@@ -160,14 +159,9 @@ namespace Espera.Mobile.Core.Network
             if (ipAddress == null)
                 throw new ArgumentNullException("ipAddress");
 
-            if (this.currentClient != null)
+            if (this.IsConnected)
             {
-                this.currentClient.Dispose();
-            }
-
-            if (this.currentFileTransferClient != null)
-            {
-                this.currentFileTransferClient.Dispose();
+                this.Disconnect();
             }
 
             Func<ITcpClient> clientLocator = () => Locator.Current.GetService<ITcpClient>();

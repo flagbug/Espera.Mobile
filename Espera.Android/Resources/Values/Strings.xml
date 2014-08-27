@@ -22,4 +22,7 @@
     <item>Add to playlist</item>
   </string-array>
   <string name="trial_expiration">Trial expires in</string>
+  <string name="trial_expiration_explanation">
+    After the trial expires, you\'ll only have standard \"guest\" rights and can\'t control the playback anymore.\nYou\'ll still be able to vote on songs and add them to the playlist.
+  </string>
 </resources>

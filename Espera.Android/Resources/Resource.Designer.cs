@@ -157,14 +157,14 @@ namespace Espera.Android
 			// aapt resource value: 0x7f090005
 			public const int ConnectButton = 2131296261;
 			
-			// aapt resource value: 0x7f09000c
-			public const int CurrentTimeTextView = 2131296268;
+			// aapt resource value: 0x7f09000e
+			public const int CurrentTimeTextView = 2131296270;
 			
-			// aapt resource value: 0x7f09000d
-			public const int DurationSeekBar = 2131296269;
+			// aapt resource value: 0x7f09000f
+			public const int DurationSeekBar = 2131296271;
 			
-			// aapt resource value: 0x7f090012
-			public const int Image = 2131296274;
+			// aapt resource value: 0x7f090014
+			public const int Image = 2131296276;
 			
 			// aapt resource value: 0x7f090008
 			public const int LoadLocalArtistsButton = 2131296264;
@@ -184,35 +184,41 @@ namespace Espera.Android
 			// aapt resource value: 0x7f090003
 			public const int LocalSongTransferProgress = 2131296259;
 			
-			// aapt resource value: 0x7f090011
-			public const int NextButton = 2131296273;
-			
-			// aapt resource value: 0x7f09000a
-			public const int PlayList = 2131296266;
-			
-			// aapt resource value: 0x7f090010
-			public const int PlayPauseButton = 2131296272;
-			
-			// aapt resource value: 0x7f09000b
-			public const int PlaybackControlPanel = 2131296267;
-			
-			// aapt resource value: 0x7f090014
-			public const int PlaylistEntryArtist = 2131296276;
-			
 			// aapt resource value: 0x7f090013
-			public const int PlaylistEntryTitle = 2131296275;
+			public const int NextButton = 2131296275;
 			
-			// aapt resource value: 0x7f09000f
-			public const int PreviousButton = 2131296271;
+			// aapt resource value: 0x7f09000c
+			public const int PlayList = 2131296268;
+			
+			// aapt resource value: 0x7f090012
+			public const int PlayPauseButton = 2131296274;
+			
+			// aapt resource value: 0x7f09000d
+			public const int PlaybackControlPanel = 2131296269;
+			
+			// aapt resource value: 0x7f090016
+			public const int PlaylistEntryArtist = 2131296278;
+			
+			// aapt resource value: 0x7f090015
+			public const int PlaylistEntryTitle = 2131296277;
+			
+			// aapt resource value: 0x7f090011
+			public const int PreviousButton = 2131296273;
 			
 			// aapt resource value: 0x7f090004
 			public const int SongsList = 2131296260;
 			
-			// aapt resource value: 0x7f09000e
-			public const int TotalTimeTextView = 2131296270;
+			// aapt resource value: 0x7f090010
+			public const int TotalTimeTextView = 2131296272;
 			
 			// aapt resource value: 0x7f090009
-			public const int TrialExpirationTextView = 2131296265;
+			public const int TrialContainer = 2131296265;
+			
+			// aapt resource value: 0x7f09000b
+			public const int TrialExpirationExplanationTextView = 2131296267;
+			
+			// aapt resource value: 0x7f09000a
+			public const int TrialExpirationTextView = 2131296266;
 			
 			static Id()
 			{
@@ -323,6 +329,9 @@ namespace Espera.Android
 			
 			// aapt resource value: 0x7f040013
 			public const int trial_expiration = 2130968595;
+			
+			// aapt resource value: 0x7f040014
+			public const int trial_expiration_explanation = 2130968596;
 			
 			static String()
 			{

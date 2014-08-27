@@ -187,6 +187,11 @@ namespace Espera.Mobile.Core.Network
 
             ResponseInfo response = await this.SendRequest(RequestAction.GetConnectionInfo, parameters);
 
+            if (response.Status == ResponseStatus.WrongPassword)
+            {
+                return Tuple.Create(response.Status, (ConnectionInfo)null);
+            }
+
             var connectionInfo = response.Content.ToObject<ConnectionInfo>();
 
             if (response.Status == ResponseStatus.Success)

@@ -70,13 +70,13 @@
     <MonoDroidExtraArgs />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Akavache, Version=4.0.2.1, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\akavache.core.4.0.2.1\lib\MonoAndroid\Akavache.dll</HintPath>
+    <Reference Include="Akavache">
+      <HintPath>..\packages\akavache.core.4.0.3\lib\MonoAndroid\Akavache.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Akavache.Sqlite3, Version=4.0.2.1, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\akavache.sqlite3.4.0.2.1\lib\Portable-Net45+Win8+WP8+Wpa81\Akavache.Sqlite3.dll</HintPath>
+    <Reference Include="Akavache.Sqlite3">
+      <HintPath>..\packages\akavache.sqlite3.4.0.3\lib\Portable-Net45+Win8+WP8+Wpa81\Akavache.Sqlite3.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Espera.Network, Version=1.0.21.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -103,10 +103,12 @@
       <HintPath>..\packages\ReactiveMarrow.0.5.0\lib\portable-net45+wp8+win8+monoandroid+monotouch\ReactiveMarrow.dll</HintPath>
     </Reference>
     <Reference Include="ReactiveUI">
-      <HintPath>..\packages\reactiveui-core.6.0.5\lib\Monoandroid\ReactiveUI.dll</HintPath>
+      <HintPath>..\packages\reactiveui-core.6.0.6\lib\Monoandroid\ReactiveUI.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="ReactiveUI.Events">
-      <HintPath>..\packages\reactiveui-events.6.0.5\lib\Monoandroid\ReactiveUI.Events.dll</HintPath>
+      <HintPath>..\packages\reactiveui-events.6.0.6\lib\Monoandroid\ReactiveUI.Events.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Splat, Version=1.4.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

@@ -165,6 +165,12 @@ namespace Espera.Mobile.Core.Network
         /// <exception cref="NetworkException">
         /// Something went wrong while connecting to the server.
         /// </exception>
+        /// <returns>
+        /// A <see cref="Tuple"/> of a <see cref="ResponseStatus" /> and <see cref="ConnectionInfo" />.
+        ///
+        /// If there was an error on the server side (e.g a wrong password), the
+        /// <see cref="ConnectionInfo" /> is null.
+        /// </returns>
         public async Task<Tuple<ResponseStatus, ConnectionInfo>> ConnectAsync(string ipAddress, int port, Guid deviceId, string password)
         {
             if (ipAddress == null)

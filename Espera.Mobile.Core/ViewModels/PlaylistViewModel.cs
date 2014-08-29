@@ -91,10 +91,10 @@ namespace Espera.Mobile.Core.ViewModels
                     .DisposeWith(disposable);
 
                 this.currentTimeSecondsUserChanged
-                    .DistinctUntilChanged()
-                    .Buffer(TimeThrottleDuration, TimeThrottleCount, RxApp.TaskpoolScheduler)
-                    .Where(x => x.Any())
-                    .Select(x => x.Last())
+                    .Window(TimeThrottleDuration, TimeThrottleCount, RxApp.TaskpoolScheduler)
+                    .Select(x => x.DistinctUntilChanged())
+                    .Select(x => x.Take(1).Concat(x.Skip(1).TakeLast(1)))
+                    .Switch()
                     .SelectMany(x => NetworkMessenger.Instance.SetCurrentTime(TimeSpan.FromSeconds(x)))
                     .Subscribe()
                     .DisposeWith(disposable);

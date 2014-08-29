@@ -25,4 +25,6 @@
   <string name="trial_expiration_explanation">
     After the trial expires, you\'ll only have standard \"guest\" rights and can\'t control the playback anymore.\nYou\'ll still be able to vote on songs and add them to the playlist.
   </string>
+  <string name="guest_functions">Guest functions</string>
+  <string name="administrator_functions">Admin functions</string>
 </resources>

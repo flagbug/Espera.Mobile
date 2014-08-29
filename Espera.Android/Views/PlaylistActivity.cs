@@ -48,6 +48,8 @@ namespace Espera.Android.Views
                         if (this.ViewModel.CanModify)
                         {
                             var builder = new AlertDialog.Builder(this);
+                            builder.SetTitle(Resource.String.administrator_functions);
+
                             var items = new List<string> { "Play", "Remove", "Move Up", "Move Down" };
 
                             if (this.ViewModel.CanVoteOnSelectedEntry)
@@ -89,6 +91,8 @@ namespace Espera.Android.Views
                         else if (this.ViewModel.CanVoteOnSelectedEntry)
                         {
                             var builder = new AlertDialog.Builder(this);
+                            builder.SetTitle(Resource.String.guest_functions);
+
                             builder.SetItems(new[] { voteString }, async (sender, args) =>
                             {
                                 if (hasVotesLeft)

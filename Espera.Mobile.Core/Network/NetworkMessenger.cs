@@ -24,12 +24,13 @@ namespace Espera.Mobile.Core.Network
     {
         private static Lazy<INetworkMessenger> instance;
         private readonly ObservableAsPropertyHelper<NetworkAccessPermission> accessPermission;
-        private readonly Subject<NetworkAccessPermission> accessPermissionReceived;
         private readonly IAnalytics analytics;
         private readonly Subject<ITcpClient> client;
         private readonly Subject<Unit> connectionEstablished;
+        private readonly Subject<ConnectionInfo> connectionInfoReceived;
         private readonly Subject<Unit> disconnected;
         private readonly SemaphoreSlim gate;
+        private readonly ObservableAsPropertyHelper<GuestSystemInfo> guestSystemInfo;
         private readonly ObservableAsPropertyHelper<bool> isConnected;
         private readonly IObservable<NetworkMessage> messagePipeline;
         private readonly IDisposable messagePipelineConnection;
@@ -47,7 +48,7 @@ namespace Espera.Mobile.Core.Network
             this.messagePipeline = new Subject<NetworkMessage>();
             this.disconnected = new Subject<Unit>();
             this.connectionEstablished = new Subject<Unit>();
-            this.accessPermissionReceived = new Subject<NetworkAccessPermission>();
+            this.connectionInfoReceived = new Subject<ConnectionInfo>();
 
             this.analytics = Locator.Current.GetService<IAnalytics>();
 
@@ -83,9 +84,6 @@ namespace Espera.Mobile.Core.Network
             this.PlaybackTimeChanged = pushMessages.Where(x => x.PushAction == PushAction.UpdateCurrentPlaybackTime)
                 .Select(x => x.Content["currentPlaybackTime"].ToObject<TimeSpan>());
 
-            this.GuestSystemInfoChanged = pushMessages.Where(x => x.PushAction == PushAction.UpdateGuestSystemInfo)
-                .Select(x => x.Content.ToObject<GuestSystemInfo>());
-
             var settings = Locator.Current.GetService<UserSettings>();
 
             if (settings == null)
@@ -93,15 +91,19 @@ namespace Espera.Mobile.Core.Network
                 throw new InvalidOperationException("No user settings registered!");
             }
 
-            pushMessages.Where(x => x.PushAction == PushAction.UpdateAccessPermission)
+            this.accessPermission = pushMessages.Where(x => x.PushAction == PushAction.UpdateAccessPermission)
                 .Select(x => x.Content["accessPermission"].ToObject<NetworkAccessPermission>())
-                .Multicast(this.accessPermissionReceived)
-                .PermaRef();
-
-            this.accessPermission = this.accessPermissionReceived
+                .Merge(this.connectionInfoReceived.Select(x => x.AccessPermission))
                 .Select(x => TrialHelpers.GetAccessPermissionForPremiumState(x, settings.IsPremium ||
                     TrialHelpers.IsInTrialPeriod(AppConstants.TrialTime)))
                 .ToProperty(this, x => x.AccessPermission);
+            var connectAccessPermission = this.AccessPermission;
+
+            this.guestSystemInfo = pushMessages.Where(x => x.PushAction == PushAction.UpdateGuestSystemInfo)
+                .Select(x => x.Content.ToObject<GuestSystemInfo>())
+                .Merge(this.connectionInfoReceived.Select(x => x.GuestSystemInfo))
+                .ToProperty(this, x => x.GuestSystemInfo);
+            var connectGuestSystemInfo = this.GuestSystemInfo;
         }
 
         public static INetworkMessenger Instance
@@ -122,7 +124,10 @@ namespace Espera.Mobile.Core.Network
             get { return this.disconnected.AsObservable(); }
         }
 
-        public IObservable<GuestSystemInfo> GuestSystemInfoChanged { get; private set; }
+        public GuestSystemInfo GuestSystemInfo
+        {
+            get { return this.guestSystemInfo.Value; }
+        }
 
         public bool IsConnected
         {
@@ -207,7 +212,7 @@ namespace Espera.Mobile.Core.Network
 
             if (response.Status == ResponseStatus.Success)
             {
-                this.accessPermissionReceived.OnNext(connectionInfo.AccessPermission);
+                this.connectionInfoReceived.OnNext(connectionInfo);
 
                 // Notify the connection status at the very end or bad things happen
                 this.connectionEstablished.OnNext(Unit.Default);
@@ -274,15 +279,6 @@ namespace Espera.Mobile.Core.Network
             ResponseInfo response = await this.SendRequest(RequestAction.GetCurrentPlaylist);
 
             return response.Content.ToObject<NetworkPlaylist>();
-        }
-
-        public async Task<GuestSystemInfo> GetGuestSystemInfo()
-        {
-            ResponseInfo response = await this.SendRequest(RequestAction.GetGuestSystemInfo);
-
-            var info = response.Content.ToObject<GuestSystemInfo>();
-
-            return info;
         }
 
         public async Task<IReadOnlyList<NetworkSong>> GetSongsAsync()

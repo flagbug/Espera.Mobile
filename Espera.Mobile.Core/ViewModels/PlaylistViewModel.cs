@@ -44,14 +44,9 @@ namespace Espera.Mobile.Core.ViewModels
                     .ToProperty(this, x => x.CanModify);
                 this.canModify.DisposeWith(disposable);
 
-                this.GetGuestSystemInfoCommad = ReactiveCommand.CreateAsyncTask(_ => NetworkMessenger.Instance.GetGuestSystemInfo());
-
-                this.LoadPlaylistCommand = ReactiveCommand.CreateAsyncTask(async _ =>
-                {
-                    await this.GetGuestSystemInfoCommad.ExecuteAsync();
-                    return await NetworkMessenger.Instance.GetCurrentPlaylistAsync().ToObservable()
-                        .Timeout(TimeSpan.FromSeconds(15), RxApp.TaskpoolScheduler);
-                });
+                this.LoadPlaylistCommand = ReactiveCommand.CreateAsyncObservable(_ =>
+                    NetworkMessenger.Instance.GetCurrentPlaylistAsync().ToObservable()
+                        .Timeout(TimeSpan.FromSeconds(15), RxApp.TaskpoolScheduler));
 
                 var currentPlaylist = this.LoadPlaylistCommand
                     .FirstAsync()
@@ -73,9 +68,7 @@ namespace Espera.Mobile.Core.ViewModels
                 this.currentSong = this.entries.Changed.Select(x => this.entries.FirstOrDefault(y => y.IsPlaying))
                     .ToProperty(this, x => x.CurrentSong);
 
-                this.remainingVotes = this.GetGuestSystemInfoCommad
-                    .FirstAsync()
-                    .Concat(NetworkMessenger.Instance.GuestSystemInfoChanged)
+                this.remainingVotes = NetworkMessenger.Instance.WhenAnyValue(x => x.GuestSystemInfo)
                     .Select(x => x.IsEnabled ? new int?(x.RemainingVotes) : null)
                     .ObserveOn(RxApp.MainThreadScheduler)
                     .ToProperty(this, x => x.RemainingVotes)
@@ -245,7 +238,5 @@ namespace Espera.Mobile.Core.ViewModels
         }
 
         public ReactiveCommand<ResponseInfo> VoteCommand { get; private set; }
-
-        private ReactiveCommand<GuestSystemInfo> GetGuestSystemInfoCommad { get; set; }
     }
 }

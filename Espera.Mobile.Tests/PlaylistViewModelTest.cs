@@ -57,12 +57,11 @@ namespace Espera.Android.Tests
         {
             var messenger = Substitute.For<INetworkMessenger>();
 
-            messenger.GetGuestSystemInfo().Returns(Task.FromResult(new GuestSystemInfo { IsEnabled = false }));
+            messenger.GuestSystemInfo.Returns(new GuestSystemInfo { IsEnabled = false });
 
             messenger.PlaybackStateChanged.Returns(Observable.Never<NetworkPlaybackState>());
             messenger.PlaylistChanged.Returns(Observable.Never<NetworkPlaylist>());
             messenger.AccessPermission.Returns(NetworkAccessPermission.Admin);
-            messenger.GuestSystemInfoChanged.Returns(Observable.Never<GuestSystemInfo>());
 
             NetworkMessenger.Override(messenger);
 
@@ -247,30 +246,6 @@ namespace Espera.Android.Tests
                 });
 
                 Assert.Equal(1, thrown.Count);
-            }
-
-            [Fact]
-            public async Task LoadsGuestSystemInfo()
-            {
-                var playlist = new NetworkPlaylist
-                {
-                    Name = "A",
-                    Songs = new List<NetworkSong>().AsReadOnly(),
-                    CurrentIndex = 0
-                };
-
-                var messenger = CreateDefaultPlaylistMessenger();
-                messenger.GetCurrentPlaylistAsync().Returns(playlist.ToTaskResult());
-                messenger.GetGuestSystemInfo().Returns(Task.FromResult(new GuestSystemInfo { IsEnabled = true, RemainingVotes = 5 }));
-
-                var vm = new PlaylistViewModel();
-                vm.Activator.Activate();
-
-                Assert.Null(vm.RemainingVotes);
-
-                await vm.LoadPlaylistCommand.ExecuteAsync();
-
-                Assert.Equal(5, vm.RemainingVotes);
             }
 
             [Fact]

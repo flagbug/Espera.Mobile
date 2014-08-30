@@ -44,9 +44,14 @@ namespace Espera.Mobile.Core.ViewModels
                     .ToProperty(this, x => x.CanModify);
                 this.canModify.DisposeWith(disposable);
 
-                this.LoadPlaylistCommand = ReactiveCommand.CreateAsyncObservable(_ =>
-                    NetworkMessenger.Instance.GetCurrentPlaylistAsync().ToObservable()
-                        .Timeout(TimeSpan.FromSeconds(15), RxApp.TaskpoolScheduler));
+                this.GetGuestSystemInfoCommad = ReactiveCommand.CreateAsyncTask(_ => NetworkMessenger.Instance.GetGuestSystemInfo());
+
+                this.LoadPlaylistCommand = ReactiveCommand.CreateAsyncTask(async _ =>
+                {
+                    await this.GetGuestSystemInfoCommad.ExecuteAsync();
+                    return await NetworkMessenger.Instance.GetCurrentPlaylistAsync().ToObservable()
+                        .Timeout(TimeSpan.FromSeconds(15), RxApp.TaskpoolScheduler);
+                });
 
                 var currentPlaylist = this.LoadPlaylistCommand
                     .FirstAsync()
@@ -68,13 +73,14 @@ namespace Espera.Mobile.Core.ViewModels
                 this.currentSong = this.entries.Changed.Select(x => this.entries.FirstOrDefault(y => y.IsPlaying))
                     .ToProperty(this, x => x.CurrentSong);
 
-                this.remainingVotes = NetworkMessenger.Instance.GetGuestSystemInfo()
-                    .ToObservable()
+                this.remainingVotes = this.GetGuestSystemInfoCommad
+                    .FirstAsync()
                     .Concat(NetworkMessenger.Instance.GuestSystemInfoChanged)
                     .Select(x => x.IsEnabled ? new int?(x.RemainingVotes) : null)
                     .ObserveOn(RxApp.MainThreadScheduler)
                     .ToProperty(this, x => x.RemainingVotes)
                     .DisposeWith(disposable);
+                int? remainingVotesConnector = this.RemainingVotes;
 
                 this.playbackState = currentPlaylist.Select(x => x.PlaybackState)
                     .Merge(NetworkMessenger.Instance.PlaybackStateChanged.ObserveOn(RxApp.MainThreadScheduler))
@@ -239,5 +245,7 @@ namespace Espera.Mobile.Core.ViewModels
         }
 
         public ReactiveCommand<ResponseInfo> VoteCommand { get; private set; }
+
+        private ReactiveCommand<GuestSystemInfo> GetGuestSystemInfoCommad { get; set; }
     }
 }

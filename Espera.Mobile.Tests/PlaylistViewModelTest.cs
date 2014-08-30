@@ -250,6 +250,30 @@ namespace Espera.Android.Tests
             }
 
             [Fact]
+            public async Task LoadsGuestSystemInfo()
+            {
+                var playlist = new NetworkPlaylist
+                {
+                    Name = "A",
+                    Songs = new List<NetworkSong>().AsReadOnly(),
+                    CurrentIndex = 0
+                };
+
+                var messenger = CreateDefaultPlaylistMessenger();
+                messenger.GetCurrentPlaylistAsync().Returns(playlist.ToTaskResult());
+                messenger.GetGuestSystemInfo().Returns(Task.FromResult(new GuestSystemInfo { IsEnabled = true, RemainingVotes = 5 }));
+
+                var vm = new PlaylistViewModel();
+                vm.Activator.Activate();
+
+                Assert.Null(vm.RemainingVotes);
+
+                await vm.LoadPlaylistCommand.ExecuteAsync();
+
+                Assert.Equal(5, vm.RemainingVotes);
+            }
+
+            [Fact]
             public void SmokeTest()
             {
                 var songs = Helpers.SetupSongs(2);

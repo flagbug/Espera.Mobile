@@ -68,8 +68,11 @@ namespace Espera.Mobile.Core.ViewModels
                 this.currentSong = this.entries.Changed.Select(x => this.entries.FirstOrDefault(y => y.IsPlaying))
                     .ToProperty(this, x => x.CurrentSong);
 
-                this.remainingVotes = currentPlaylist.Select(x => x.RemainingVotes)
-                    .Merge(NetworkMessenger.Instance.RemainingVotesChanged.ObserveOn(RxApp.MainThreadScheduler))
+                this.remainingVotes = NetworkMessenger.Instance.GetGuestSystemInfo()
+                    .ToObservable()
+                    .Concat(NetworkMessenger.Instance.GuestSystemInfoChanged)
+                    .Select(x => x.IsEnabled ? new int?(x.RemainingVotes) : null)
+                    .ObserveOn(RxApp.MainThreadScheduler)
                     .ToProperty(this, x => x.RemainingVotes)
                     .DisposeWith(disposable);
 

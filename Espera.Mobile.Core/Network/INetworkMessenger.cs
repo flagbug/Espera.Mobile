@@ -14,6 +14,8 @@ namespace Espera.Mobile.Core.Network
 
         IObservable<Unit> Disconnected { get; }
 
+        IObservable<GuestSystemInfo> GuestSystemInfoChanged { get; }
+
         bool IsConnected { get; }
 
         IObservable<NetworkPlaybackState> PlaybackStateChanged { get; }
@@ -21,8 +23,6 @@ namespace Espera.Mobile.Core.Network
         IObservable<TimeSpan> PlaybackTimeChanged { get; }
 
         IObservable<NetworkPlaylist> PlaylistChanged { get; }
-
-        IObservable<int?> RemainingVotesChanged { get; }
 
         Task<ResponseInfo> AddSongToPlaylistAsync(Guid songGuid);
 
@@ -35,6 +35,8 @@ namespace Espera.Mobile.Core.Network
         IObservable<string> DiscoverServerAsync(string localAddress, int port);
 
         Task<NetworkPlaylist> GetCurrentPlaylistAsync();
+
+        Task<GuestSystemInfo> GetGuestSystemInfo();
 
         Task<IReadOnlyList<NetworkSong>> GetSongsAsync();
 

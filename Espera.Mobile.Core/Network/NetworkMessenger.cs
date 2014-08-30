@@ -83,8 +83,8 @@ namespace Espera.Mobile.Core.Network
             this.PlaybackTimeChanged = pushMessages.Where(x => x.PushAction == PushAction.UpdateCurrentPlaybackTime)
                 .Select(x => x.Content["currentPlaybackTime"].ToObject<TimeSpan>());
 
-            this.RemainingVotesChanged = pushMessages.Where(x => x.PushAction == PushAction.UpdateRemainingVotes)
-                .Select(x => x.Content["remainingVotes"].ToObject<int?>());
+            this.GuestSystemInfoChanged = pushMessages.Where(x => x.PushAction == PushAction.UpdateGuestSystemInfo)
+                .Select(x => x.Content.ToObject<GuestSystemInfo>());
 
             var settings = Locator.Current.GetService<UserSettings>();
 
@@ -122,6 +122,8 @@ namespace Espera.Mobile.Core.Network
             get { return this.disconnected.AsObservable(); }
         }
 
+        public IObservable<GuestSystemInfo> GuestSystemInfoChanged { get; private set; }
+
         public bool IsConnected
         {
             get { return this.isConnected.Value; }
@@ -132,8 +134,6 @@ namespace Espera.Mobile.Core.Network
         public IObservable<TimeSpan> PlaybackTimeChanged { get; private set; }
 
         public IObservable<NetworkPlaylist> PlaylistChanged { get; private set; }
-
-        public IObservable<int?> RemainingVotesChanged { get; private set; }
 
         /// <summary>
         /// Overrides the instance for unit testing.
@@ -274,6 +274,15 @@ namespace Espera.Mobile.Core.Network
             ResponseInfo response = await this.SendRequest(RequestAction.GetCurrentPlaylist);
 
             return response.Content.ToObject<NetworkPlaylist>();
+        }
+
+        public async Task<GuestSystemInfo> GetGuestSystemInfo()
+        {
+            ResponseInfo response = await this.SendRequest(RequestAction.GetGuestSystemInfo);
+
+            var info = response.Content.ToObject<GuestSystemInfo>();
+
+            return info;
         }
 
         public async Task<IReadOnlyList<NetworkSong>> GetSongsAsync()

@@ -56,11 +56,13 @@ namespace Espera.Android.Tests
         private static INetworkMessenger CreateDefaultPlaylistMessenger()
         {
             var messenger = Substitute.For<INetworkMessenger>();
+
+            messenger.GetGuestSystemInfo().Returns(Task.FromResult(new GuestSystemInfo { IsEnabled = false }));
+
             messenger.PlaybackStateChanged.Returns(Observable.Never<NetworkPlaybackState>());
             messenger.PlaylistChanged.Returns(Observable.Never<NetworkPlaylist>());
             messenger.AccessPermission.Returns(NetworkAccessPermission.Admin);
-
-            messenger.RemainingVotesChanged.Returns(Observable.Never<int?>());
+            messenger.GuestSystemInfoChanged.Returns(Observable.Never<GuestSystemInfo>());
 
             NetworkMessenger.Override(messenger);
 
@@ -117,7 +119,7 @@ namespace Espera.Android.Tests
             [Fact]
             public void DoesNotDistinctTimeOutOfWindow()
             {
-                var messenger = Substitute.For<INetworkMessenger>();
+                var messenger = CreateDefaultPlaylistMessenger();
                 NetworkMessenger.Override(messenger);
 
                 new TestScheduler().With(sched =>
@@ -140,7 +142,7 @@ namespace Espera.Android.Tests
             [Fact]
             public void SendsFirstTimeImmediatelyToNetwork()
             {
-                var messenger = Substitute.For<INetworkMessenger>();
+                var messenger = CreateDefaultPlaylistMessenger();
                 NetworkMessenger.Override(messenger);
 
                 new TestScheduler().With(sched =>
@@ -159,7 +161,7 @@ namespace Espera.Android.Tests
             [Fact]
             public void SendsTimeToNetworkOnlyIfChangedInWindow()
             {
-                var messenger = Substitute.For<INetworkMessenger>();
+                var messenger = CreateDefaultPlaylistMessenger();
                 NetworkMessenger.Override(messenger);
 
                 new TestScheduler().With(sched =>
@@ -179,7 +181,7 @@ namespace Espera.Android.Tests
             [Fact]
             public void ThrottlesTimeChangesToNetworkByCount()
             {
-                var messenger = Substitute.For<INetworkMessenger>();
+                var messenger = CreateDefaultPlaylistMessenger();
                 NetworkMessenger.Override(messenger);
 
                 var vm = new PlaylistViewModel();
@@ -198,7 +200,7 @@ namespace Espera.Android.Tests
             [Fact]
             public void ThrottlesTimeChangesToNetworkByTime()
             {
-                var messenger = Substitute.For<INetworkMessenger>();
+                var messenger = CreateDefaultPlaylistMessenger();
                 NetworkMessenger.Override(messenger);
 
                 new TestScheduler().With(sched =>

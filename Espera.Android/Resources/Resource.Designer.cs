@@ -273,6 +273,9 @@ namespace Espera.Android
 			// aapt resource value: 0x7f040002
 			public const int ApplicationName = 2130968578;
 			
+			// aapt resource value: 0x7f040019
+			public const int add_to_playlist = 2130968601;
+			
 			// aapt resource value: 0x7f040016
 			public const int administrator_functions = 2130968598;
 			
@@ -284,6 +287,12 @@ namespace Espera.Android
 			
 			// aapt resource value: 0x7f040000
 			public const int library_name = 2130968576;
+			
+			// aapt resource value: 0x7f040017
+			public const int no_votes_left = 2130968599;
+			
+			// aapt resource value: 0x7f040018
+			public const int play = 2130968600;
 			
 			// aapt resource value: 0x7f040012
 			public const int preference_administrator_default_library_action_summary = 2130968594;

@@ -43,7 +43,7 @@ namespace Espera.Android.Views
                         bool hasVotesLeft = this.ViewModel.RemainingVotes > 0;
                         string voteString = hasVotesLeft ?
                             string.Format("Vote ({0} {1} left)", this.ViewModel.RemainingVotes, this.ViewModel.RemainingVotes == 1 ? "vote" : "votes") :
-                            "No votes left";
+                            Resources.GetString(Resource.String.no_votes_left);
 
                         if (this.ViewModel.CanModify)
                         {

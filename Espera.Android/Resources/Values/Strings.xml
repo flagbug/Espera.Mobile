@@ -27,4 +27,7 @@
   </string>
   <string name="guest_functions">Guest functions</string>
   <string name="administrator_functions">Admin functions</string>
+  <string name="no_votes_left">No votes left</string>
+  <string name="play">Play</string>
+  <string name="add_to_playlist">Add to playlist</string>
 </resources>

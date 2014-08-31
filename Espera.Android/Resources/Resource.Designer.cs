@@ -118,25 +118,28 @@ namespace Espera.Android
 			public const int Icon = 2130837505;
 			
 			// aapt resource value: 0x7f020002
-			public const int mahapps_button = 2130837506;
+			public const int Logo = 2130837506;
 			
 			// aapt resource value: 0x7f020003
-			public const int mahapps_button_text = 2130837507;
+			public const int mahapps_button = 2130837507;
 			
 			// aapt resource value: 0x7f020004
-			public const int Next = 2130837508;
+			public const int mahapps_button_text = 2130837508;
 			
 			// aapt resource value: 0x7f020005
-			public const int Pause = 2130837509;
+			public const int Next = 2130837509;
 			
 			// aapt resource value: 0x7f020006
-			public const int Play = 2130837510;
+			public const int Pause = 2130837510;
 			
 			// aapt resource value: 0x7f020007
-			public const int Previous = 2130837511;
+			public const int Play = 2130837511;
 			
 			// aapt resource value: 0x7f020008
-			public const int Settings = 2130837512;
+			public const int Previous = 2130837512;
+			
+			// aapt resource value: 0x7f020009
+			public const int Settings = 2130837513;
 			
 			static Drawable()
 			{

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Akavache;
@@ -36,17 +37,29 @@ namespace Espera.Android.Views
                     {
                         this.ViewModel.SelectedSong = this.ViewModel.Songs[x];
 
-                        var builder = new AlertDialog.Builder(this);
-                        builder.SetItems(new[] { "Add to playlist" }, async (o, eventArgs) =>
-                        {
-                            switch (eventArgs.Which)
-                            {
-                                case 0:
-                                    await this.ViewModel.AddToPlaylistCommand.ExecuteAsync();
-                                    break;
-                            }
-                        });
+                        var items = new List<Tuple<string, IObservable<Unit>>>();
 
+                        if (this.ViewModel.IsAdmin)
+                        {
+                            items.Add(Tuple.Create(Resources.GetString(Resource.String.add_to_playlist), this.ViewModel.AddToPlaylistCommand.ExecuteAsync().ToUnit()));
+                        }
+
+                        else if (this.ViewModel.RemainingVotes > 0)
+                        {
+                            string voteString = string.Format(" (Costs 1 vote out of {0}", this.ViewModel.RemainingVotes);
+                            items.Add(Tuple.Create(Resources.GetString(Resource.String.add_to_playlist) + voteString, this.ViewModel.AddToPlaylistCommand.ExecuteAsync().ToUnit()));
+                        }
+
+                        else
+                        {
+                            items.Add(Tuple.Create(Resources.GetString(Resource.String.no_votes_left), Observable.Return(Unit.Default)));
+                        }
+
+                        var builder = new AlertDialog.Builder(this);
+                        builder.SetItems(items.Select(y => y.Item1).ToArray(), async (o, eventArgs) =>
+                        {
+                            await items[eventArgs.Which].Item2;
+                        });
                         builder.Create().Show();
                     })
                     .DisposeWith(disposable);

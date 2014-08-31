@@ -236,6 +236,10 @@
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\Drawable\mahapps_button_text.xml" />
+    <AndroidResource Include="Resources\drawable-hdpi\Logo.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\Logo.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\Logo.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\Logo.png" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="googleanalytics">

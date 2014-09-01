@@ -18,12 +18,6 @@ namespace Espera.Mobile.Core.Settings
             set { this.SetOrCreate(value); }
         }
 
-        public DefaultLibraryAction DefaultLibraryAction
-        {
-            get { return this.GetOrCreate(DefaultLibraryAction.PlayAll); }
-            set { this.SetOrCreate(value); }
-        }
-
         public bool IsPremium
         {
 #if DEBUG || DEV

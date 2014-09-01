@@ -228,11 +228,17 @@ namespace Espera.Mobile.Core.Network
 
         public void Disconnect()
         {
-            this.currentClient.Dispose();
-            this.currentClient = null;
+            if (this.currentClient != null)
+            {
+                this.currentClient.Dispose();
+                this.currentClient = null;
+            }
 
-            this.currentFileTransferClient.Dispose();
-            this.currentFileTransferClient = null;
+            if (this.currentFileTransferClient != null)
+            {
+                this.currentFileTransferClient.Dispose();
+                this.currentClient = null;
+            }
 
             this.disconnected.OnNext(Unit.Default);
         }
@@ -258,15 +264,7 @@ namespace Espera.Mobile.Core.Network
 
         public void Dispose()
         {
-            if (this.currentClient != null)
-            {
-                this.currentClient.Dispose();
-            }
-
-            if (this.currentFileTransferClient != null)
-            {
-                this.currentFileTransferClient.Dispose();
-            }
+            this.Disconnect();
 
             if (this.messagePipelineConnection != null)
             {

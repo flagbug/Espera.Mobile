@@ -14,7 +14,6 @@ namespace Espera.Mobile.Core.ViewModels
     public class MainViewModel : ReactiveObject, ISupportsActivation
     {
         public static readonly TimeSpan ConnectCommandTimeout = TimeSpan.FromSeconds(10);
-        public static readonly Version MinimumServerVersion = new Version("2.4.0");
 
         private readonly UserSettings userSettings;
         private ObservableAsPropertyHelper<bool> isConnected;
@@ -110,9 +109,9 @@ namespace Espera.Mobile.Core.ViewModels
                         throw new WrongPasswordException("Password incorrect");
                     }
 
-                    if (response.Item2.ServerVersion < MinimumServerVersion)
+                    if (response.Item2.ServerVersion < AppConstants.MinimumServerVersion)
                     {
-                        throw new ServerVersionException(string.Format("Espera version {0} required", MinimumServerVersion.ToString(3)));
+                        throw new ServerVersionException(string.Format("Espera version {0} required", AppConstants.MinimumServerVersion.ToString(3)));
                     }
 
                     return Unit.Default;

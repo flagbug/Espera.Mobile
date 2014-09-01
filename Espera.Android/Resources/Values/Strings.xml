@@ -14,7 +14,6 @@
   <string name="preference_save_energy_summary">Saves energy, but the connection may drop when the screen is turned off.</string>
   <string name="preference_administrator_password">preference_administrator_password</string>
   <string name="preference_administrator_password_title">Password</string>
-  <string name="preference_default_library_action">preference_default_library_action</string>
   <string name="preference_administrator_default_library_action_title">Default library action</string>
   <string name="preference_administrator_default_library_action_summary">The default action when tapping on a song in the library</string>
   <string-array name="preference_administrator_default_library_action_entries">

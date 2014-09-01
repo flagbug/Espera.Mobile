@@ -93,13 +93,6 @@ namespace Espera.Android.Views
             this.userSettings.WhenAnyValue(x => x.IsPremium, x => x || TrialHelpers.IsInTrialPeriod(AppConstants.TrialTime))
                 .BindTo(passwordPreference, x => x.Enabled);
 
-            var defaultLibraryActionPreference = (ListPreference)this.FindPreference(this.GetString(Resource.String.preference_default_library_action));
-            defaultLibraryActionPreference.SetEntryValues(Enum.GetNames(typeof(DefaultLibraryAction)));
-            defaultLibraryActionPreference.BindToSetting(this.userSettings, x => x.DefaultLibraryAction,
-                x => x.Value, x => Enum.Parse(typeof(DefaultLibraryAction), (string)x), x => x.ToString());
-            this.userSettings.WhenAnyValue(x => x.IsPremium, x => x || TrialHelpers.IsInTrialPeriod(AppConstants.TrialTime))
-                .BindTo(defaultLibraryActionPreference, x => x.Enabled);
-
             Preference premiumButton = this.FindPreference("premium_button");
             premiumButton.Events().PreferenceClick.Select(_ => this.PurchasePremium().ToObservable()
                     .Catch<Unit, Exception>(ex => Observable.Start(() => this.TrackInAppPurchaseException(ex))))

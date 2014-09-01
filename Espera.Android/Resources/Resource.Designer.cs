@@ -276,41 +276,38 @@ namespace Espera.Android
 			// aapt resource value: 0x7f040002
 			public const int ApplicationName = 2130968578;
 			
-			// aapt resource value: 0x7f040019
-			public const int add_to_playlist = 2130968601;
+			// aapt resource value: 0x7f040018
+			public const int add_to_playlist = 2130968600;
 			
-			// aapt resource value: 0x7f040016
-			public const int administrator_functions = 2130968598;
+			// aapt resource value: 0x7f040015
+			public const int administrator_functions = 2130968597;
 			
 			// aapt resource value: 0x7f040001
 			public const int ga_trackingId = 2130968577;
 			
-			// aapt resource value: 0x7f040015
-			public const int guest_functions = 2130968597;
+			// aapt resource value: 0x7f040014
+			public const int guest_functions = 2130968596;
 			
 			// aapt resource value: 0x7f040000
 			public const int library_name = 2130968576;
 			
+			// aapt resource value: 0x7f040016
+			public const int no_votes_left = 2130968598;
+			
 			// aapt resource value: 0x7f040017
-			public const int no_votes_left = 2130968599;
-			
-			// aapt resource value: 0x7f040018
-			public const int play = 2130968600;
-			
-			// aapt resource value: 0x7f040012
-			public const int preference_administrator_default_library_action_summary = 2130968594;
+			public const int play = 2130968599;
 			
 			// aapt resource value: 0x7f040011
-			public const int preference_administrator_default_library_action_title = 2130968593;
+			public const int preference_administrator_default_library_action_summary = 2130968593;
+			
+			// aapt resource value: 0x7f040010
+			public const int preference_administrator_default_library_action_title = 2130968592;
 			
 			// aapt resource value: 0x7f04000e
 			public const int preference_administrator_password = 2130968590;
 			
 			// aapt resource value: 0x7f04000f
 			public const int preference_administrator_password_title = 2130968591;
-			
-			// aapt resource value: 0x7f040010
-			public const int preference_default_library_action = 2130968592;
 			
 			// aapt resource value: 0x7f040007
 			public const int preference_ipaddress = 2130968583;
@@ -345,11 +342,11 @@ namespace Espera.Android
 			// aapt resource value: 0x7f04000c
 			public const int preference_save_energy_title = 2130968588;
 			
-			// aapt resource value: 0x7f040013
-			public const int trial_expiration = 2130968595;
+			// aapt resource value: 0x7f040012
+			public const int trial_expiration = 2130968594;
 			
-			// aapt resource value: 0x7f040014
-			public const int trial_expiration_explanation = 2130968596;
+			// aapt resource value: 0x7f040013
+			public const int trial_expiration_explanation = 2130968595;
 			
 			static String()
 			{

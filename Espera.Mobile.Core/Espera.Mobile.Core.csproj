@@ -66,7 +66,6 @@
     <Compile Include="Network\INetworkMessenger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReactiveHelpers.cs" />
-    <Compile Include="Settings\DefaultLibraryAction.cs" />
     <Compile Include="Settings\UserSettings.cs" />
     <Compile Include="SongFetchers\RemoteSongFetcher.cs" />
     <Compile Include="Songs\RemoteSong.cs" />

@@ -3,10 +3,11 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Espera.Mobile.Core.Network;
+using Splat;
 
 namespace Espera.Android
 {
-    internal class AndroidUdpClient : IUdpClient
+    internal class AndroidUdpClient : IUdpClient, IEnableLogger
     {
         private UdpClient client;
 
@@ -32,6 +33,8 @@ namespace Espera.Android
             // This happens when we dispose the UdpClient, but are still trying to receive a message
             catch (ObjectDisposedException)
             {
+                this.Log().Error("Encountered an ObjectDisposedException, but this is probably okay since " +
+                                 "we disposed the UdpClient manually and the UDP receive was interrupted.");
                 return null;
             }
 

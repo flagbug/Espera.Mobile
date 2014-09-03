@@ -152,7 +152,7 @@ namespace Espera.Android.Tests
                 (new TestScheduler()).With(scheduler =>
                 {
                     var connectTask = vm.ConnectCommand.ExecuteAsyncTask();
-                    scheduler.AdvanceByMs(10000);
+                    scheduler.AdvanceByMs(MainViewModel.ConnectCommandTimeout.TotalMilliseconds + 1);
 
                     Assert.Equal(ConnectionResult.Timeout, connectTask.Result.ConnectionResult);
                 });

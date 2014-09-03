@@ -63,8 +63,8 @@ namespace Espera.Mobile.Core.Network
             var pipeline = this.client.Select(x => Observable.Defer(() => x.GetStream().ReadNextMessageAsync()
                     .ToObservable())
                     .Repeat()
+                    .LoggedCatch(this, null, "Error while reading the next network message")
                     .TakeWhile(m => m != null)
-                    .Catch(Observable.Never<NetworkMessage>())
                     .TakeUntil(this.Disconnected))
                 .Switch()
                 .Publish();
@@ -228,6 +228,8 @@ namespace Espera.Mobile.Core.Network
 
         public void Disconnect()
         {
+            this.Log().Info("Disconnecting from the network");
+
             if (this.currentClient != null)
             {
                 this.currentClient.Dispose();

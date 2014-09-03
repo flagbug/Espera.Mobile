@@ -15,6 +15,7 @@ using Espera.Mobile.Core.Analytics;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
 using Espera.Mobile.Core.ViewModels;
+using Espera.Network;
 using Google.Analytics.Tracking;
 using Humanizer;
 using ReactiveMarrow;
@@ -57,9 +58,41 @@ namespace Espera.Android.Views
                     .BindTo(this.ConnectButton, x => x.Text)
                     .DisposeWith(disposable);
 
-                this.ViewModel.ConnectionFailed
-                    .Subscribe(x => Toast.MakeText(this, x, ToastLength.Long).Show())
-                    .DisposeWith(disposable);
+                this.ViewModel.ConnectCommand.Select(result =>
+                {
+                    switch (result.ConnectionResult)
+                    {
+                        case ConnectionResult.Failed:
+                            return Resources.GetString(Resource.String.connection_failed);
+
+                        case ConnectionResult.ServerVersionToLow:
+                            return string.Format(Resources.GetString(Resource.String.required_server_version), result.ServerVersion.ToString(3));
+
+                        case ConnectionResult.Successful:
+                            {
+                                switch (result.AccessPermission)
+                                {
+                                    case NetworkAccessPermission.Admin:
+                                        return Resources.GetString(Resource.String.connected_as_admin);
+
+                                    case NetworkAccessPermission.Guest:
+                                        return Resources.GetString(Resource.String.connected_as_guest);
+                                }
+                                break;
+                            }
+
+                        case ConnectionResult.Timeout:
+                            return Resources.GetString(Resource.String.connection_timeout);
+
+                        case ConnectionResult.WrongPassword:
+                            return Resources.GetString(Resource.String.wrong_password);
+                    }
+
+                    throw new InvalidOperationException("This shouldn't happen");
+                })
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(x => Toast.MakeText(this, x, ToastLength.Long).Show())
+                .DisposeWith(disposable);
 
                 this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadPlaylistButton.Enabled)
                     .DisposeWith(disposable);

@@ -282,6 +282,15 @@ namespace Espera.Android
 			// aapt resource value: 0x7f040015
 			public const int administrator_functions = 2130968597;
 			
+			// aapt resource value: 0x7f040026
+			public const int connected_as_admin = 2130968614;
+			
+			// aapt resource value: 0x7f040027
+			public const int connected_as_guest = 2130968615;
+			
+			// aapt resource value: 0x7f040025
+			public const int connection_failed = 2130968613;
+			
 			// aapt resource value: 0x7f040020
 			public const int connection_timeout = 2130968608;
 			
@@ -375,6 +384,9 @@ namespace Espera.Android
 			// aapt resource value: 0x7f04001a
 			public const int remove = 2130968602;
 			
+			// aapt resource value: 0x7f040028
+			public const int required_server_version = 2130968616;
+			
 			// aapt resource value: 0x7f040012
 			public const int trial_expiration = 2130968594;
 			
@@ -383,6 +395,9 @@ namespace Espera.Android
 			
 			// aapt resource value: 0x7f04001e
 			public const int uses_vote = 2130968606;
+			
+			// aapt resource value: 0x7f040029
+			public const int wrong_password = 2130968617;
 			
 			static String()
 			{

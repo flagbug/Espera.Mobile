@@ -50,7 +50,13 @@ namespace Espera.Android.Views
                             var builder = new AlertDialog.Builder(this);
                             builder.SetTitle(Resource.String.administrator_functions);
 
-                            var items = new List<string> { "Play", "Remove", "Move Up", "Move Down" };
+                            var items = new List<string>
+                            {
+                                Resources.GetString(Resource.String.play),
+                                Resources.GetString(Resource.String.remove),
+                                Resources.GetString(Resource.String.move_up),
+                                Resources.GetString(Resource.String.move_down),
+                            };
 
                             if (this.ViewModel.CanVoteOnSelectedEntry)
                             {
@@ -165,7 +171,7 @@ namespace Espera.Android.Views
                     .DisposeWith(disposable);
 
                 this.progressDialog = new ProgressDialog(this);
-                this.progressDialog.SetMessage("Loading playlist");
+                this.progressDialog.SetMessage(Resources.GetString(Resource.String.loading_playlist));
                 this.progressDialog.Indeterminate = true;
                 this.progressDialog.SetCancelable(false);
 

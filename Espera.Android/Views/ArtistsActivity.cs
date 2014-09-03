@@ -41,7 +41,7 @@ namespace Espera.Android.Views
             });
 
             this.progressDialog = new ProgressDialog(this);
-            this.progressDialog.SetMessage("Loading artists");
+            this.progressDialog.SetMessage(Resources.GetString(Resource.String.loading_artists));
             this.progressDialog.Indeterminate = true;
             this.progressDialog.SetCancelable(false);
 

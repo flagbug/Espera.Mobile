@@ -282,6 +282,9 @@ namespace Espera.Android
 			// aapt resource value: 0x7f040015
 			public const int administrator_functions = 2130968597;
 			
+			// aapt resource value: 0x7f040020
+			public const int connection_timeout = 2130968608;
+			
 			// aapt resource value: 0x7f040001
 			public const int ga_trackingId = 2130968577;
 			
@@ -290,6 +293,18 @@ namespace Espera.Android
 			
 			// aapt resource value: 0x7f040000
 			public const int library_name = 2130968576;
+			
+			// aapt resource value: 0x7f04001d
+			public const int loading_artists = 2130968605;
+			
+			// aapt resource value: 0x7f040019
+			public const int loading_playlist = 2130968601;
+			
+			// aapt resource value: 0x7f04001c
+			public const int move_down = 2130968604;
+			
+			// aapt resource value: 0x7f04001b
+			public const int move_up = 2130968603;
 			
 			// aapt resource value: 0x7f040016
 			public const int no_votes_left = 2130968598;
@@ -342,11 +357,32 @@ namespace Espera.Android
 			// aapt resource value: 0x7f04000c
 			public const int preference_save_energy_title = 2130968588;
 			
+			// aapt resource value: 0x7f04001f
+			public const int premium_already_purchased = 2130968607;
+			
+			// aapt resource value: 0x7f040022
+			public const int purchase_failed = 2130968610;
+			
+			// aapt resource value: 0x7f040024
+			public const int purchase_restore_failed = 2130968612;
+			
+			// aapt resource value: 0x7f040023
+			public const int purchase_restored = 2130968611;
+			
+			// aapt resource value: 0x7f040021
+			public const int purchase_successful = 2130968609;
+			
+			// aapt resource value: 0x7f04001a
+			public const int remove = 2130968602;
+			
 			// aapt resource value: 0x7f040012
 			public const int trial_expiration = 2130968594;
 			
 			// aapt resource value: 0x7f040013
 			public const int trial_expiration_explanation = 2130968595;
+			
+			// aapt resource value: 0x7f04001e
+			public const int uses_vote = 2130968606;
 			
 			static String()
 			{

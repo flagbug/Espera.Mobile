@@ -176,7 +176,7 @@ namespace Espera.Mobile.Core.Network
         /// If there was an error on the server side (e.g a wrong password), the
         /// <see cref="ConnectionInfo" /> is null.
         /// </returns>
-        public async Task<Tuple<ResponseStatus, ConnectionInfo>> ConnectAsync(string ipAddress, int port, Guid deviceId, string password)
+        public async Task<ConnectionResultContainer> ConnectAsync(string ipAddress, int port, Guid deviceId, string password)
         {
             if (ipAddress == null)
                 throw new ArgumentNullException("ipAddress");
@@ -210,10 +210,19 @@ namespace Espera.Mobile.Core.Network
 
             if (response.Status == ResponseStatus.WrongPassword)
             {
-                return Tuple.Create(response.Status, (ConnectionInfo)null);
+                this.Log().Error("Server said: wrong password");
+
+                return new ConnectionResultContainer(ConnectionResult.WrongPassword);
             }
 
             var connectionInfo = response.Content.ToObject<ConnectionInfo>();
+
+            if (connectionInfo.ServerVersion < AppConstants.MinimumServerVersion)
+            {
+                this.Log().Error("Server has version {0}, but version {1} is required", connectionInfo.ServerVersion, AppConstants.MinimumServerVersion);
+
+                return new ConnectionResultContainer(ConnectionResult.ServerVersionToLow, null, connectionInfo.ServerVersion);
+            }
 
             if (response.Status == ResponseStatus.Success)
             {
@@ -221,9 +230,11 @@ namespace Espera.Mobile.Core.Network
 
                 // Notify the connection status at the very end or bad things happen
                 this.connectionEstablished.OnNext(Unit.Default);
+
+                return new ConnectionResultContainer(ConnectionResult.Successful, connectionInfo.AccessPermission, connectionInfo.ServerVersion);
             }
 
-            return Tuple.Create(response.Status, connectionInfo);
+            throw new InvalidOperationException("We shouldn't reach this code");
         }
 
         public Task<ResponseInfo> ContinueSongAsync()

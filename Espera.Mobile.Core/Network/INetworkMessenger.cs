@@ -26,7 +26,7 @@ namespace Espera.Mobile.Core.Network
 
         Task<ResponseInfo> AddSongToPlaylistAsync(Guid songGuid);
 
-        Task<Tuple<ResponseStatus, ConnectionInfo>> ConnectAsync(string address, int port, Guid deviceId, string password);
+        Task<ConnectionResultContainer> ConnectAsync(string address, int port, Guid deviceId, string password);
 
         Task<ResponseInfo> ContinueSongAsync();
 

@@ -41,4 +41,9 @@
   <string name="purchase_failed">Purchase failed!</string>
   <string name="purchase_restored">Purchase restored!</string>
   <string name="purchase_restore_failed">Purchase restore failed!</string>
+  <string name="connection_failed">Connection failed</string>
+  <string name="connected_as_admin">Connected as administrator"</string>
+  <string name="connected_as_guest">Connected as guest</string>
+  <string name="required_server_version">Espera version {0} required"</string>
+  <string name="wrong_password">Wrong password</string>
 </resources>

@@ -53,21 +53,14 @@ namespace Espera.Mobile.Core.ViewModels
                 var canConnect = this.WhenAnyValue(x => x.IsConnected, x => !x);
                 this.ConnectCommand = ReactiveCommand.CreateAsyncObservable(canConnect, _ => ConnectAsync(ipAddress(), this.userSettings.Port)
                     .Timeout(ConnectCommandTimeout, RxApp.TaskpoolScheduler)
-                    .Catch<Unit, TimeoutException>(ex => Observable.Throw<Unit>(new Exception("Connection timeout")))
-                    .Catch<Unit, NetworkException>(ex => Observable.Throw<Unit>(new Exception("Connection failed")))
+                    .Catch<ConnectionResultContainer, TimeoutException>(ex => Observable.Return(new ConnectionResultContainer(ConnectionResult.Timeout)))
+                    .Catch<ConnectionResultContainer, NetworkException>(ex => Observable.Return(new ConnectionResultContainer(ConnectionResult.Failed)))
                     .TakeUntil(connectionInterrupt));
 
                 this.DisconnectCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.IsConnected));
                 this.DisconnectCommand.Subscribe(x => NetworkMessenger.Instance.Disconnect());
 
-                this.ConnectCommand.ThrownExceptions.InvokeCommand(this.DisconnectCommand);
-
-                this.ConnectionFailed = this.ConnectCommand.ThrownExceptions
-                    .Select(x => x.Message)
-                    .Merge(this.WhenAnyValue(x => x.IsConnected).Skip(1).Where(x => x)
-                        .Select(_ => NetworkMessenger.Instance.AccessPermission == NetworkAccessPermission.Admin ? "Connected as administrator" : "Connected as guest")
-                        .TakeUntil(connectionInterrupt))
-                    .ObserveOn(RxApp.MainThreadScheduler);
+                this.ConnectCommand.Where(x => x.ConnectionResult != ConnectionResult.Successful).InvokeCommand(this.DisconnectCommand);
 
                 return disposable;
             });
@@ -75,9 +68,7 @@ namespace Espera.Mobile.Core.ViewModels
 
         public ViewModelActivator Activator { get; private set; }
 
-        public ReactiveCommand<Unit> ConnectCommand { get; private set; }
-
-        public IObservable<string> ConnectionFailed { get; private set; }
+        public ReactiveCommand<ConnectionResultContainer> ConnectCommand { get; private set; }
 
         public ReactiveCommand<object> DisconnectCommand { get; private set; }
 
@@ -86,7 +77,7 @@ namespace Espera.Mobile.Core.ViewModels
             get { return this.isConnected.Value; }
         }
 
-        private IObservable<Unit> ConnectAsync(string localAddress, int port)
+        private IObservable<ConnectionResultContainer> ConnectAsync(string localAddress, int port)
         {
             if (localAddress == null)
                 throw new Exception("You have to enable WiFi!");
@@ -96,25 +87,12 @@ namespace Espera.Mobile.Core.ViewModels
             return Observable.If(() => hasCustomIpAddress,
                     Observable.Return(this.userSettings.ServerAddress),
                     NetworkMessenger.Instance.DiscoverServerAsync(localAddress, port))
-                .SelectMany(async address =>
+                .SelectMany(address =>
                 {
                     string password = string.IsNullOrWhiteSpace(this.userSettings.AdministratorPassword) ?
                         null : this.userSettings.AdministratorPassword;
 
-                    Tuple<ResponseStatus, ConnectionInfo> response = await NetworkMessenger.Instance
-                        .ConnectAsync(address, port, this.userSettings.UniqueIdentifier, password);
-
-                    if (response.Item1 == ResponseStatus.WrongPassword)
-                    {
-                        throw new WrongPasswordException("Password incorrect");
-                    }
-
-                    if (response.Item2.ServerVersion < AppConstants.MinimumServerVersion)
-                    {
-                        throw new ServerVersionException(string.Format("Espera version {0} required", AppConstants.MinimumServerVersion.ToString(3)));
-                    }
-
-                    return Unit.Default;
+                    return NetworkMessenger.Instance.ConnectAsync(address, port, this.userSettings.UniqueIdentifier, password);
                 });
         }
     }

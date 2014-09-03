@@ -54,6 +54,7 @@
     <Compile Include="IInstallationDateFetcher.cs" />
     <Compile Include="IVolumeRequests.cs" />
     <Compile Include="MeasureHelper.cs" />
+    <Compile Include="Network\ConnectionResult.cs" />
     <Compile Include="Network\ITcpClient.cs" />
     <Compile Include="Network\IUdpClient.cs" />
     <Compile Include="Network\IWifiService.cs" />

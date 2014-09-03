@@ -29,4 +29,16 @@
   <string name="no_votes_left">No votes left</string>
   <string name="play">Play</string>
   <string name="add_to_playlist">Add to playlist</string>
+  <string name="loading_playlist">Loading playlist</string>
+  <string name="remove">Remove</string>
+  <string name="move_up">Move Up</string>
+  <string name="move_down">Move Down</string>
+  <string name="loading_artists">Loading artists</string>
+  <string name="uses_vote">Uses 1 vote out of {0}</string>
+  <string name="premium_already_purchased">You already have purchased premium</string>
+  <string name="connection_timeout">Connection timeout!</string>
+  <string name="purchase_successful">Purchase successful!</string>
+  <string name="purchase_failed">Purchase failed!</string>
+  <string name="purchase_restored">Purchase restored!</string>
+  <string name="purchase_restore_failed">Purchase restore failed!</string>
 </resources>

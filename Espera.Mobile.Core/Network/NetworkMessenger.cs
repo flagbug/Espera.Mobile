@@ -191,7 +191,12 @@ namespace Espera.Mobile.Core.Network
             this.currentClient = clientLocator();
             this.currentFileTransferClient = clientLocator();
 
+            this.Log().Info("Connecting to the Espera host at {0}", ipAddress);
+
+            this.Log().Info("Connecting the message client at port {0}", port);
             await this.currentClient.ConnectAsync(ipAddress, port);
+
+            this.Log().Info("Connecting the file transfer client at port {0}", port);
             await this.currentFileTransferClient.ConnectAsync(ipAddress, port + 1);
             this.client.OnNext(this.currentClient);
 
@@ -496,6 +501,8 @@ namespace Espera.Mobile.Core.Network
             {
                 stopwatch.Stop();
 
+                this.Log().ErrorException("Fatal error while sending or receiving a network response", ex);
+
                 this.Disconnect();
 
                 return new ResponseInfo
@@ -517,6 +524,8 @@ namespace Espera.Mobile.Core.Network
 
             Task.Run(async () =>
             {
+                this.Log().Info("Starting a file transfer with ID: {0} and a size of {1} bytes", message.TransferId, message.Data.Length);
+
                 byte[] data = await NetworkHelpers.PackFileTransferMessageAsync(message);
 
                 using (var dataStream = new MemoryStream(data))

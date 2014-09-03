@@ -153,6 +153,7 @@
     <Compile Include="Analytics\AndroidAnalytics.cs" />
     <Compile Include="AndroidDeviceIdFactory.cs" />
     <Compile Include="AndroidInstallationDateFetcher.cs" />
+    <Compile Include="AndroidLogger.cs" />
     <Compile Include="AndroidSettings.cs" />
     <Compile Include="AndroidSongFetcher.cs" />
     <Compile Include="AndroidTcpClient.cs" />

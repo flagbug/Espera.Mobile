@@ -46,4 +46,13 @@
   <string name="connected_as_guest">Connected as guest</string>
   <string name="required_server_version">Espera version {0} required"</string>
   <string name="wrong_password">Wrong password</string>
+  <string name="settings">Settings</string>
+  <string name="connection_lost">Connection lost</string>
+  <string name="enable_wifi">You have to enable Wifi.</string>
+  <string name="enable">Enable</string>
+  <string name="error">Error</string>
+  <string name="exit">Exit</string>
+  <string name="disconnect">Disconnect</string>
+  <string name="connecting">Connecting...</string>
+  <string name="connect">Connect</string>
 </resources>

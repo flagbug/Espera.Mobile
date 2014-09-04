@@ -282,17 +282,41 @@ namespace Espera.Android
 			// aapt resource value: 0x7f040015
 			public const int administrator_functions = 2130968597;
 			
+			// aapt resource value: 0x7f040032
+			public const int connect = 2130968626;
+			
 			// aapt resource value: 0x7f040026
 			public const int connected_as_admin = 2130968614;
 			
 			// aapt resource value: 0x7f040027
 			public const int connected_as_guest = 2130968615;
 			
+			// aapt resource value: 0x7f040031
+			public const int connecting = 2130968625;
+			
 			// aapt resource value: 0x7f040025
 			public const int connection_failed = 2130968613;
 			
+			// aapt resource value: 0x7f04002b
+			public const int connection_lost = 2130968619;
+			
 			// aapt resource value: 0x7f040020
 			public const int connection_timeout = 2130968608;
+			
+			// aapt resource value: 0x7f040030
+			public const int disconnect = 2130968624;
+			
+			// aapt resource value: 0x7f04002d
+			public const int enable = 2130968621;
+			
+			// aapt resource value: 0x7f04002c
+			public const int enable_wifi = 2130968620;
+			
+			// aapt resource value: 0x7f04002e
+			public const int error = 2130968622;
+			
+			// aapt resource value: 0x7f04002f
+			public const int exit = 2130968623;
 			
 			// aapt resource value: 0x7f040001
 			public const int ga_trackingId = 2130968577;
@@ -386,6 +410,9 @@ namespace Espera.Android
 			
 			// aapt resource value: 0x7f040028
 			public const int required_server_version = 2130968616;
+			
+			// aapt resource value: 0x7f04002a
+			public const int settings = 2130968618;
 			
 			// aapt resource value: 0x7f040012
 			public const int trial_expiration = 2130968594;

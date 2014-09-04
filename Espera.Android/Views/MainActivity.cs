@@ -54,7 +54,8 @@ namespace Espera.Android.Views
 
                 this.ViewModel.ConnectCommand.IsExecuting
                     .CombineLatest(this.ViewModel.WhenAnyValue(x => x.IsConnected), (connecting, connected) =>
-                        connected ? "Disconnect" : connecting ? "Connecting..." : "Connect")
+                        connected ? Resource.String.disconnect : connecting ? Resource.String.connecting : Resource.String.connect)
+                    .Select(Resources.GetString)
                     .BindTo(this.ConnectButton, x => x.Text)
                     .DisposeWith(disposable);
 
@@ -140,7 +141,8 @@ namespace Espera.Android.Views
 
         public override bool OnCreateOptionsMenu(IMenu menu)
         {
-            menu.Add("Settings").SetIcon(Resource.Drawable.Settings)
+            menu.Add(Resources.GetString(Resource.String.settings))
+                .SetIcon(Resource.Drawable.Settings)
                 .SetShowAsAction(ShowAsAction.Always);
 
             return true;
@@ -180,7 +182,7 @@ namespace Espera.Android.Views
 
             if (this.Intent.HasExtra(NetworkService.ConnectionLostString))
             {
-                Toast.MakeText(this, "Connection lost", ToastLength.Long).Show();
+                Toast.MakeText(this, Resource.String.connection_lost, ToastLength.Long).Show();
                 this.Intent.RemoveExtra(NetworkService.ConnectionLostString);
             }
 
@@ -223,10 +225,10 @@ namespace Espera.Android.Views
         {
             var wifiManager = WifiManager.FromContext(this);
             var builder = new AlertDialog.Builder(this);
-            builder.SetTitle("Error");
-            builder.SetMessage("You have to enable Wifi.");
-            builder.SetPositiveButton("Enable", (sender, args) => wifiManager.SetWifiEnabled(true));
-            builder.SetNegativeButton("Exit", (sender, args) => this.Finish());
+            builder.SetTitle(Resource.String.error);
+            builder.SetMessage(Resource.String.enable_wifi);
+            builder.SetPositiveButton(Resource.String.enable, (sender, args) => wifiManager.SetWifiEnabled(true));
+            builder.SetNegativeButton(Resource.String.exit, (sender, args) => this.Finish());
 
             builder.Show();
         }

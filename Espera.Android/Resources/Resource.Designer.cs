@@ -279,14 +279,14 @@ namespace Espera.Android
 			// aapt resource value: 0x7f040024
 			public const int add_to_playlist = 2130968612;
 			
-			// aapt resource value: 0x7f04004c
-			public const int added_to_playlist = 2130968652;
+			// aapt resource value: 0x7f04004d
+			public const int added_to_playlist = 2130968653;
 			
 			// aapt resource value: 0x7f040021
 			public const int administrator_functions = 2130968609;
 			
-			// aapt resource value: 0x7f04003e
-			public const int connect = 2130968638;
+			// aapt resource value: 0x7f04003f
+			public const int connect = 2130968639;
 			
 			// aapt resource value: 0x7f040032
 			public const int connected_as_admin = 2130968626;
@@ -294,8 +294,8 @@ namespace Espera.Android
 			// aapt resource value: 0x7f040033
 			public const int connected_as_guest = 2130968627;
 			
-			// aapt resource value: 0x7f04003d
-			public const int connecting = 2130968637;
+			// aapt resource value: 0x7f04003e
+			public const int connecting = 2130968638;
 			
 			// aapt resource value: 0x7f040031
 			public const int connection_failed = 2130968625;
@@ -306,29 +306,17 @@ namespace Espera.Android
 			// aapt resource value: 0x7f04002c
 			public const int connection_timeout = 2130968620;
 			
-			// aapt resource value: 0x7f040049
-			public const int current_playlist = 2130968649;
+			// aapt resource value: 0x7f04004a
+			public const int current_playlist = 2130968650;
 			
-			// aapt resource value: 0x7f04003c
-			public const int disconnect = 2130968636;
+			// aapt resource value: 0x7f04003d
+			public const int disconnect = 2130968637;
 			
-			// aapt resource value: 0x7f040039
-			public const int enable = 2130968633;
+			// aapt resource value: 0x7f04004e
+			public const int error_adding_song = 2130968654;
 			
-			// aapt resource value: 0x7f040038
-			public const int enable_wifi = 2130968632;
-			
-			// aapt resource value: 0x7f04003a
-			public const int error = 2130968634;
-			
-			// aapt resource value: 0x7f04004d
-			public const int error_adding_song = 2130968653;
-			
-			// aapt resource value: 0x7f04004b
-			public const int error_adding_songs = 2130968651;
-			
-			// aapt resource value: 0x7f04003b
-			public const int exit = 2130968635;
+			// aapt resource value: 0x7f04004c
+			public const int error_adding_songs = 2130968652;
 			
 			// aapt resource value: 0x7f040001
 			public const int ga_trackingId = 2130968577;
@@ -342,17 +330,17 @@ namespace Espera.Android
 			// aapt resource value: 0x7f040029
 			public const int loading_artists = 2130968617;
 			
-			// aapt resource value: 0x7f04003f
-			public const int loading_artists_failed = 2130968639;
+			// aapt resource value: 0x7f040040
+			public const int loading_artists_failed = 2130968640;
 			
 			// aapt resource value: 0x7f040025
 			public const int loading_playlist = 2130968613;
 			
-			// aapt resource value: 0x7f040043
-			public const int loading_playlist_failed = 2130968643;
+			// aapt resource value: 0x7f040044
+			public const int loading_playlist_failed = 2130968644;
 			
-			// aapt resource value: 0x7f040047
-			public const int local_artists = 2130968647;
+			// aapt resource value: 0x7f040048
+			public const int local_artists = 2130968648;
 			
 			// aapt resource value: 0x7f040028
 			public const int move_down = 2130968616;
@@ -366,14 +354,14 @@ namespace Espera.Android
 			// aapt resource value: 0x7f040023
 			public const int play = 2130968611;
 			
+			// aapt resource value: 0x7f040043
+			public const int playback_failed = 2130968643;
+			
 			// aapt resource value: 0x7f040042
-			public const int playback_failed = 2130968642;
+			public const int playing_song = 2130968642;
 			
-			// aapt resource value: 0x7f040041
-			public const int playing_song = 2130968641;
-			
-			// aapt resource value: 0x7f04004a
-			public const int playing_songs = 2130968650;
+			// aapt resource value: 0x7f04004b
+			public const int playing_songs = 2130968651;
 			
 			// aapt resource value: 0x7f040012
 			public const int preference_administrator_default_library_action_summary = 2130968594;
@@ -471,8 +459,8 @@ namespace Espera.Android
 			// aapt resource value: 0x7f04002d
 			public const int purchase_successful = 2130968621;
 			
-			// aapt resource value: 0x7f040048
-			public const int remote_artists = 2130968648;
+			// aapt resource value: 0x7f040049
+			public const int remote_artists = 2130968649;
 			
 			// aapt resource value: 0x7f040026
 			public const int remove = 2130968614;
@@ -483,8 +471,8 @@ namespace Espera.Android
 			// aapt resource value: 0x7f040036
 			public const int settings = 2130968630;
 			
-			// aapt resource value: 0x7f040040
-			public const int something_went_wrong = 2130968640;
+			// aapt resource value: 0x7f040041
+			public const int something_went_wrong = 2130968641;
 			
 			// aapt resource value: 0x7f04001e
 			public const int trial_expiration = 2130968606;
@@ -495,14 +483,29 @@ namespace Espera.Android
 			// aapt resource value: 0x7f04002a
 			public const int uses_vote = 2130968618;
 			
-			// aapt resource value: 0x7f040045
-			public const int vote = 2130968645;
-			
-			// aapt resource value: 0x7f040044
-			public const int vote_failed = 2130968644;
-			
 			// aapt resource value: 0x7f040046
-			public const int votes_and_votes_left = 2130968646;
+			public const int vote = 2130968646;
+			
+			// aapt resource value: 0x7f040045
+			public const int vote_failed = 2130968645;
+			
+			// aapt resource value: 0x7f040047
+			public const int votes_and_votes_left = 2130968647;
+			
+			// aapt resource value: 0x7f04003c
+			public const int wifi_enable_error = 2130968636;
+			
+			// aapt resource value: 0x7f04003b
+			public const int wifi_enable_later = 2130968635;
+			
+			// aapt resource value: 0x7f04003a
+			public const int wifi_enable_now = 2130968634;
+			
+			// aapt resource value: 0x7f040039
+			public const int wifi_reminder_message = 2130968633;
+			
+			// aapt resource value: 0x7f040038
+			public const int wifi_reminder_title = 2130968632;
 			
 			// aapt resource value: 0x7f040035
 			public const int wrong_password = 2130968629;

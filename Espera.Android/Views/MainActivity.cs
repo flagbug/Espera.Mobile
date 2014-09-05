@@ -89,7 +89,7 @@ namespace Espera.Android.Views
                             return Resources.GetString(Resource.String.wrong_password);
 
                         case ConnectionResult.WifiDisabled:
-                            return Resources.GetString(Resource.String.enable_wifi);
+                            return Resources.GetString(Resource.String.wifi_enable_error);
                     }
 
                     throw new InvalidOperationException("This shouldn't happen");
@@ -228,10 +228,10 @@ namespace Espera.Android.Views
         {
             var wifiManager = WifiManager.FromContext(this);
             var builder = new AlertDialog.Builder(this);
-            builder.SetTitle(Resource.String.error);
-            builder.SetMessage(Resource.String.enable_wifi);
-            builder.SetPositiveButton(Resource.String.enable, (sender, args) => wifiManager.SetWifiEnabled(true));
-            builder.SetNegativeButton(Resource.String.exit, (sender, args) => this.Finish());
+            builder.SetTitle(Resource.String.wifi_reminder_title);
+            builder.SetMessage(Resource.String.wifi_reminder_message);
+            builder.SetPositiveButton(Resource.String.wifi_enable_now, (sender, args) => wifiManager.SetWifiEnabled(true));
+            builder.SetNegativeButton(Resource.String.wifi_enable_later, (sender, args) => { });
 
             builder.Show();
         }

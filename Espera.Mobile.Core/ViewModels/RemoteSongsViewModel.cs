@@ -29,6 +29,8 @@ namespace Espera.Mobile.Core.ViewModels
             this.PlaySongsCommand = ReactiveCommand.CreateAsyncTask(x => NetworkMessenger.Instance.PlaySongsAsync(
                 this.Songs.SkipWhile(song => song.Guid != this.SelectedSong.Guid).Select(y => y.Guid).ToList()));
 
+            this.AddToPlaylistCommand = ReactiveCommand.CreateAsyncTask(x => NetworkMessenger.Instance.AddSongToPlaylistAsync(this.SelectedSong.Guid));
+
             this.WhenActivated(() =>
             {
                 var disposable = new CompositeDisposable();

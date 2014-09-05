@@ -47,7 +47,8 @@ namespace Espera.Android.Views
                         else if (this.ViewModel.RemainingVotes > 0)
                         {
                             string voteString = string.Format(Resources.GetString(Resource.String.uses_vote), this.ViewModel.RemainingVotes);
-                            items.Add(Tuple.Create(Resources.GetString(Resource.String.add_to_playlist) + voteString, this.ViewModel.AddToPlaylistCommand.ExecuteAsync().ToUnit()));
+                            items.Add(Tuple.Create(string.Format("{0} \n({1})", Resources.GetString(Resource.String.add_to_playlist), voteString),
+                                this.ViewModel.AddToPlaylistCommand.ExecuteAsync().ToUnit()));
                         }
 
                         else

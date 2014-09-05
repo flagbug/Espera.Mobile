@@ -13,9 +13,9 @@ namespace Espera.Mobile.Core.ViewModels
 {
     public class PlaylistViewModel : ReactiveObject, ISupportsActivation
     {
+        public static readonly TimeSpan LoadPlaylistCommandTimeout = TimeSpan.FromSeconds(15);
         public static readonly int TimeThrottleCount = 10;
         public static readonly TimeSpan TimeThrottleDuration = TimeSpan.FromMilliseconds(100);
-
         private readonly Subject<int> currentTimeSecondsUserChanged;
         private readonly ReactiveList<PlaylistEntryViewModel> entries;
         private ObservableAsPropertyHelper<bool> canModify;
@@ -46,7 +46,7 @@ namespace Espera.Mobile.Core.ViewModels
 
                 this.LoadPlaylistCommand = ReactiveCommand.CreateAsyncObservable(_ =>
                     NetworkMessenger.Instance.GetCurrentPlaylistAsync().ToObservable()
-                        .Timeout(TimeSpan.FromSeconds(15), RxApp.TaskpoolScheduler));
+                        .Timeout(LoadPlaylistCommandTimeout, RxApp.TaskpoolScheduler));
 
                 var currentPlaylist = this.LoadPlaylistCommand
                     .FirstAsync()

@@ -242,7 +242,7 @@ namespace Espera.Android.Tests
                 (new TestScheduler()).With(scheduler =>
                 {
                     vm.LoadPlaylistCommand.Execute(null);
-                    scheduler.AdvanceByMs(15000);
+                    scheduler.AdvanceByMs(PlaylistViewModel.LoadPlaylistCommandTimeout.TotalMilliseconds + 1);
                 });
 
                 Assert.Equal(1, thrown.Count);

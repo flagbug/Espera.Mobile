@@ -27,8 +27,6 @@ namespace Espera.Mobile.Core.ViewModels
                .Select(GetArtists)
                .ToProperty(this, x => x.Artists, new List<string>());
 
-            this.Messages = this.LoadCommand.ThrownExceptions.Select(_ => "Loading artists failed");
-
             this.WhenAnyValue(x => x.SelectedArtist).Where(x => x != null)
                 .Select(FilterSongsByArtist)
                 .Select(x => BlobCache.InMemory.InsertObject(serializationKey, x))
@@ -42,8 +40,6 @@ namespace Espera.Mobile.Core.ViewModels
         }
 
         public ReactiveCommand<IReadOnlyList<T>> LoadCommand { get; private set; }
-
-        public IObservable<string> Messages { get; private set; }
 
         public string SelectedArtist
         {

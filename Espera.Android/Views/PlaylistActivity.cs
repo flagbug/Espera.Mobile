@@ -12,7 +12,9 @@ using Android.Views;
 using Android.Widget;
 using Espera.Mobile.Core;
 using Espera.Mobile.Core.ViewModels;
+using Espera.Network;
 using Google.Analytics.Tracking;
+using Humanizer;
 using ReactiveMarrow;
 using ReactiveUI;
 
@@ -29,7 +31,11 @@ namespace Espera.Android.Views
             {
                 var disposable = new CompositeDisposable();
 
-                this.ViewModel.Message.Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show())
+                this.ViewModel.PlayPlaylistSongCommand
+                    .Select(x => x.Status == ResponseStatus.Success ? Resource.String.playing_song : Resource.String.playback_failed)
+                    .Merge(this.ViewModel.LoadPlaylistCommand.ThrownExceptions.Select(_ => Resource.String.loading_playlist_failed))
+                    .Merge(this.ViewModel.VoteCommand.ThrownExceptions.Select(_ => Resource.String.vote_failed))
+                    .Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show())
                     .DisposeWith(disposable);
 
                 var adapter = new ReactiveListAdapter<PlaylistEntryViewModel>(this.ViewModel.Entries, (vm, parent) => new PlaylistEntryView(this, vm, parent));
@@ -42,7 +48,8 @@ namespace Espera.Android.Views
 
                         bool hasVotesLeft = this.ViewModel.RemainingVotes > 0;
                         string voteString = hasVotesLeft ?
-                            string.Format("Vote ({0} {1} left)", this.ViewModel.RemainingVotes, this.ViewModel.RemainingVotes == 1 ? "vote" : "votes") :
+                            string.Format(Resources.GetString(Resource.String.votes_and_votes_left),
+                                Resources.GetString(Resource.String.vote).ToQuantity(this.ViewModel.RemainingVotes.Value)) :
                             Resources.GetString(Resource.String.no_votes_left);
 
                         if (this.ViewModel.CanModify)
@@ -220,6 +227,8 @@ namespace Espera.Android.Views
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
+
+            this.ActionBar.SetTitle(Resource.String.current_playlist);
 
             this.SetContentView(Resource.Layout.Playlist);
             this.WireUpControls();

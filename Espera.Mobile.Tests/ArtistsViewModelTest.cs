@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
@@ -47,14 +48,14 @@ namespace Espera.Android.Tests
             }
 
             [Fact]
-            public void TimeoutTriggersMessages()
+            public void TimeoutTriggersthrownExceptions()
             {
                 var songFetcher = Substitute.For<ISongFetcher<Song>>();
                 songFetcher.GetSongsAsync().Returns(Observable.Never<IReadOnlyList<Song>>());
 
                 var vm = new ArtistsViewModel<Song>(songFetcher, "AnyKey");
 
-                var coll = vm.Messages.CreateCollection();
+                var coll = vm.LoadCommand.ThrownExceptions.CreateCollection();
 
                 (new TestScheduler()).With(scheduler =>
                 {
@@ -63,6 +64,7 @@ namespace Espera.Android.Tests
                 });
 
                 Assert.Equal(1, coll.Count);
+                Assert.IsType<TimeoutException>(coll[0]);
             }
         }
     }

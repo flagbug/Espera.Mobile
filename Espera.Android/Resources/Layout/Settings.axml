@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
-        android:title="Network">
+        android:title="@string/preference_category_network">
         <EditTextPreference
             android:key="@string/preference_port"
             android:summary="@string/preference_port_summary"
@@ -14,26 +14,26 @@
             android:key="@string/preference_save_energy"
             android:title="@string/preference_save_energy_title"
             android:summary="@string/preference_save_energy_summary"
-            android:switchTextOff="NO"
-            android:switchTextOn="YES" />
+            android:switchTextOff="@string/preference_switch_no"
+            android:switchTextOn="@string/preference_switch_yes" />
     </PreferenceCategory>
     <PreferenceCategory
-        android:title="Administrator">
+        android:title="@string/preference_category_administrator">
         <EditTextPreference
             android:key="preference_administrator_password"
-            android:summary="The administrator password"
-            android:title="Password"
+            android:summary="@string/preference_administrator_password_summary"
+            android:title="@string/preference_administrator_password_title"
             android:password="true" />
     </PreferenceCategory>
     <PreferenceCategory
-        android:title="Premium">
+        android:title="@string/preference_category_premium">
         <Preference
-            android:key="premium_button"
-            android:summary="Premium allows you to enter the administrator mode."
-            android:title="Purchase Premium" />
+            android:key="@string/preference_purchase_premium"
+            android:summary="@string/preference_purchase_premium_summary"
+            android:title="@string/preference_purchase_premium_title" />
         <Preference
-            android:key="restore_premium"
-            android:summary="Restore your premium purchase."
-            android:title="Restore Premium" />
+            android:key="@string/preference_restore_premium"
+            android:summary="@string/preference_restore_premium_summary"
+            android:title="@string/preference_restore_premium_title" />
     </PreferenceCategory>
 </PreferenceScreen>

@@ -115,10 +115,6 @@ namespace Espera.Mobile.Core.ViewModels
 
                 this.PlayPlaylistSongCommand = ReactiveCommand.CreateAsyncTask(this.WhenAnyValue(x => x.CanModify), _ => NetworkMessenger.Instance
                     .PlayPlaylistSongAsync(this.SelectedEntry.Guid));
-                this.Message = this.PlayPlaylistSongCommand
-                    .Select(x => x.Status == ResponseStatus.Success ? "Playing song" : "Playback failed")
-                    .Merge(this.LoadPlaylistCommand.ThrownExceptions.Select(_ => "Loading playlist failed")
-                    .Merge(this.VoteCommand.ThrownExceptions.Select(_ => "Vote failed")));
 
                 var canPlayNextSong = this.entries.Changed.Select(_ => this.entries)
                     .StartWith(this.entries)
@@ -199,8 +195,6 @@ namespace Espera.Mobile.Core.ViewModels
         }
 
         public ReactiveCommand<NetworkPlaylist> LoadPlaylistCommand { get; private set; }
-
-        public IObservable<string> Message { get; private set; }
 
         public ReactiveCommand<ResponseInfo> MoveSongDownCommand { get; private set; }
 

@@ -14,12 +14,24 @@
   <string name="preference_save_energy_summary">Saves energy, but the connection may drop when the screen is turned off.</string>
   <string name="preference_administrator_password">preference_administrator_password</string>
   <string name="preference_administrator_password_title">Password</string>
+  <string name="preference_administrator_password_summary">The administrator password</string>
   <string name="preference_administrator_default_library_action_title">Default library action</string>
   <string name="preference_administrator_default_library_action_summary">The default action when tapping on a song in the library</string>
   <string-array name="preference_administrator_default_library_action_entries">
     <item>Play all</item>
     <item>Add to playlist</item>
   </string-array>
+  <string name="preference_switch_yes">YES</string>
+  <string name="preference_switch_no">NO</string>
+  <string name="preference_purchase_premium">purchase_premium</string>
+  <string name="preference_purchase_premium_title">Purchase Premium</string>
+  <string name="preference_purchase_premium_summary">Premium allows you to enter the administrator mode.</string>
+  <string name="preference_restore_premium">restore_premium</string>
+  <string name="preference_restore_premium_title">Restore Premium</string>
+  <string name="preference_restore_premium_summary">Restore your premium purchase.</string>
+  <string name="preference_category_network">Network</string>
+  <string name="preference_category_administrator">Administrator</string>
+  <string name="preference_category_premium">Premium</string>
   <string name="trial_expiration">Trial expires in</string>
   <string name="trial_expiration_explanation">
     After the trial expires, you\'ll only have standard \"guest\" rights and can\'t control the playback anymore.\nYou\'ll still be able to vote on songs and add them to the playlist.
@@ -55,4 +67,16 @@
   <string name="disconnect">Disconnect</string>
   <string name="connecting">Connecting...</string>
   <string name="connect">Connect</string>
+  <string name="loading_artists_failed">Loading artists failed</string>
+  <string name="something_went_wrong">Something went wrong</string>
+  <string name="playing_song">Playing song</string>
+  <string name="playback_failed">Playback failed</string>
+  <string name="loading_playlist_failed">Loading playlist failed</string>
+  <string name="vote_failed">Vote failed</string>
+  <string name="vote">vote</string>
+  <string name="votes_and_votes_left">"Vote ({0} left)"</string>
+  <string name="local_artists">Local Artists</string>
+  <string name="remote_artists">Remote Artists</string>
+  <string name="current_playlist">Current Playlist</string>
+  <string name="settings">Settings</string>
 </resources>

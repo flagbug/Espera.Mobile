@@ -35,6 +35,7 @@ namespace Espera.Android.Views
                     .Select(x => x.Status == ResponseStatus.Success ? Resource.String.playing_song : Resource.String.playback_failed)
                     .Merge(this.ViewModel.LoadPlaylistCommand.ThrownExceptions.Select(_ => Resource.String.loading_playlist_failed))
                     .Merge(this.ViewModel.VoteCommand.ThrownExceptions.Select(_ => Resource.String.vote_failed))
+                    .ObserveOn(RxApp.MainThreadScheduler)
                     .Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show())
                     .DisposeWith(disposable);
 

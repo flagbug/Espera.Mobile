@@ -1,3 +1,7 @@
+# v1.0.2
+- Fixed a crash when opening a remote artist
+- New WiFi reminder dialog
+
 # v1.0.1
 
 - New application icon

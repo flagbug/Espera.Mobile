@@ -79,4 +79,8 @@
   <string name="remote_artists">Remote Artists</string>
   <string name="current_playlist">Current Playlist</string>
   <string name="settings">Settings</string>
+  <string name="playing_songs">Playing songs</string>
+  <string name="error_adding_songs">Playback failed</string>
+  <string name="added_to_playlist">Song added to playlist</string>
+  <string name="error_adding_song">Failed to add song</string>
 </resources>

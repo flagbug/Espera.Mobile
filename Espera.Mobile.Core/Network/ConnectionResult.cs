@@ -9,7 +9,8 @@ namespace Espera.Mobile.Core.Network
         Timeout,
         ServerVersionToLow,
         Successful,
-        Failed
+        Failed,
+        WifiDisabled
     }
 
     public class ConnectionResultContainer

@@ -276,86 +276,116 @@ namespace Espera.Android
 			// aapt resource value: 0x7f040002
 			public const int ApplicationName = 2130968578;
 			
-			// aapt resource value: 0x7f040018
-			public const int add_to_playlist = 2130968600;
+			// aapt resource value: 0x7f040024
+			public const int add_to_playlist = 2130968612;
 			
-			// aapt resource value: 0x7f040015
-			public const int administrator_functions = 2130968597;
+			// aapt resource value: 0x7f040021
+			public const int administrator_functions = 2130968609;
+			
+			// aapt resource value: 0x7f04003e
+			public const int connect = 2130968638;
 			
 			// aapt resource value: 0x7f040032
-			public const int connect = 2130968626;
+			public const int connected_as_admin = 2130968626;
 			
-			// aapt resource value: 0x7f040026
-			public const int connected_as_admin = 2130968614;
+			// aapt resource value: 0x7f040033
+			public const int connected_as_guest = 2130968627;
 			
-			// aapt resource value: 0x7f040027
-			public const int connected_as_guest = 2130968615;
+			// aapt resource value: 0x7f04003d
+			public const int connecting = 2130968637;
 			
 			// aapt resource value: 0x7f040031
-			public const int connecting = 2130968625;
+			public const int connection_failed = 2130968625;
 			
-			// aapt resource value: 0x7f040025
-			public const int connection_failed = 2130968613;
-			
-			// aapt resource value: 0x7f04002b
-			public const int connection_lost = 2130968619;
-			
-			// aapt resource value: 0x7f040020
-			public const int connection_timeout = 2130968608;
-			
-			// aapt resource value: 0x7f040030
-			public const int disconnect = 2130968624;
-			
-			// aapt resource value: 0x7f04002d
-			public const int enable = 2130968621;
+			// aapt resource value: 0x7f040037
+			public const int connection_lost = 2130968631;
 			
 			// aapt resource value: 0x7f04002c
-			public const int enable_wifi = 2130968620;
+			public const int connection_timeout = 2130968620;
 			
-			// aapt resource value: 0x7f04002e
-			public const int error = 2130968622;
+			// aapt resource value: 0x7f040049
+			public const int current_playlist = 2130968649;
 			
-			// aapt resource value: 0x7f04002f
-			public const int exit = 2130968623;
+			// aapt resource value: 0x7f04003c
+			public const int disconnect = 2130968636;
+			
+			// aapt resource value: 0x7f040039
+			public const int enable = 2130968633;
+			
+			// aapt resource value: 0x7f040038
+			public const int enable_wifi = 2130968632;
+			
+			// aapt resource value: 0x7f04003a
+			public const int error = 2130968634;
+			
+			// aapt resource value: 0x7f04003b
+			public const int exit = 2130968635;
 			
 			// aapt resource value: 0x7f040001
 			public const int ga_trackingId = 2130968577;
 			
-			// aapt resource value: 0x7f040014
-			public const int guest_functions = 2130968596;
+			// aapt resource value: 0x7f040020
+			public const int guest_functions = 2130968608;
 			
 			// aapt resource value: 0x7f040000
 			public const int library_name = 2130968576;
 			
-			// aapt resource value: 0x7f04001d
-			public const int loading_artists = 2130968605;
+			// aapt resource value: 0x7f040029
+			public const int loading_artists = 2130968617;
 			
-			// aapt resource value: 0x7f040019
-			public const int loading_playlist = 2130968601;
+			// aapt resource value: 0x7f04003f
+			public const int loading_artists_failed = 2130968639;
 			
-			// aapt resource value: 0x7f04001c
-			public const int move_down = 2130968604;
+			// aapt resource value: 0x7f040025
+			public const int loading_playlist = 2130968613;
 			
-			// aapt resource value: 0x7f04001b
-			public const int move_up = 2130968603;
+			// aapt resource value: 0x7f040043
+			public const int loading_playlist_failed = 2130968643;
 			
-			// aapt resource value: 0x7f040016
-			public const int no_votes_left = 2130968598;
+			// aapt resource value: 0x7f040047
+			public const int local_artists = 2130968647;
 			
-			// aapt resource value: 0x7f040017
-			public const int play = 2130968599;
+			// aapt resource value: 0x7f040028
+			public const int move_down = 2130968616;
+			
+			// aapt resource value: 0x7f040027
+			public const int move_up = 2130968615;
+			
+			// aapt resource value: 0x7f040022
+			public const int no_votes_left = 2130968610;
+			
+			// aapt resource value: 0x7f040023
+			public const int play = 2130968611;
+			
+			// aapt resource value: 0x7f040042
+			public const int playback_failed = 2130968642;
+			
+			// aapt resource value: 0x7f040041
+			public const int playing_song = 2130968641;
+			
+			// aapt resource value: 0x7f040012
+			public const int preference_administrator_default_library_action_summary = 2130968594;
 			
 			// aapt resource value: 0x7f040011
-			public const int preference_administrator_default_library_action_summary = 2130968593;
-			
-			// aapt resource value: 0x7f040010
-			public const int preference_administrator_default_library_action_title = 2130968592;
+			public const int preference_administrator_default_library_action_title = 2130968593;
 			
 			// aapt resource value: 0x7f04000e
 			public const int preference_administrator_password = 2130968590;
 			
+			// aapt resource value: 0x7f040010
+			public const int preference_administrator_password_summary = 2130968592;
+			
 			// aapt resource value: 0x7f04000f
 			public const int preference_administrator_password_title = 2130968591;
+			
+			// aapt resource value: 0x7f04001c
+			public const int preference_category_administrator = 2130968604;
+			
+			// aapt resource value: 0x7f04001b
+			public const int preference_category_network = 2130968603;
+			
+			// aapt resource value: 0x7f04001d
+			public const int preference_category_premium = 2130968605;
 			
 			// aapt resource value: 0x7f040007
 			public const int preference_ipaddress = 2130968583;
@@ -381,6 +411,24 @@ namespace Espera.Android
 			// aapt resource value: 0x7f040006
 			public const int preference_port_validation_error = 2130968582;
 			
+			// aapt resource value: 0x7f040015
+			public const int preference_purchase_premium = 2130968597;
+			
+			// aapt resource value: 0x7f040017
+			public const int preference_purchase_premium_summary = 2130968599;
+			
+			// aapt resource value: 0x7f040016
+			public const int preference_purchase_premium_title = 2130968598;
+			
+			// aapt resource value: 0x7f040018
+			public const int preference_restore_premium = 2130968600;
+			
+			// aapt resource value: 0x7f04001a
+			public const int preference_restore_premium_summary = 2130968602;
+			
+			// aapt resource value: 0x7f040019
+			public const int preference_restore_premium_title = 2130968601;
+			
 			// aapt resource value: 0x7f04000b
 			public const int preference_save_energy = 2130968587;
 			
@@ -390,41 +438,62 @@ namespace Espera.Android
 			// aapt resource value: 0x7f04000c
 			public const int preference_save_energy_title = 2130968588;
 			
-			// aapt resource value: 0x7f04001f
-			public const int premium_already_purchased = 2130968607;
-			
-			// aapt resource value: 0x7f040022
-			public const int purchase_failed = 2130968610;
-			
-			// aapt resource value: 0x7f040024
-			public const int purchase_restore_failed = 2130968612;
-			
-			// aapt resource value: 0x7f040023
-			public const int purchase_restored = 2130968611;
-			
-			// aapt resource value: 0x7f040021
-			public const int purchase_successful = 2130968609;
-			
-			// aapt resource value: 0x7f04001a
-			public const int remove = 2130968602;
-			
-			// aapt resource value: 0x7f040028
-			public const int required_server_version = 2130968616;
-			
-			// aapt resource value: 0x7f04002a
-			public const int settings = 2130968618;
-			
-			// aapt resource value: 0x7f040012
-			public const int trial_expiration = 2130968594;
+			// aapt resource value: 0x7f040014
+			public const int preference_switch_no = 2130968596;
 			
 			// aapt resource value: 0x7f040013
-			public const int trial_expiration_explanation = 2130968595;
+			public const int preference_switch_yes = 2130968595;
+			
+			// aapt resource value: 0x7f04002b
+			public const int premium_already_purchased = 2130968619;
+			
+			// aapt resource value: 0x7f04002e
+			public const int purchase_failed = 2130968622;
+			
+			// aapt resource value: 0x7f040030
+			public const int purchase_restore_failed = 2130968624;
+			
+			// aapt resource value: 0x7f04002f
+			public const int purchase_restored = 2130968623;
+			
+			// aapt resource value: 0x7f04002d
+			public const int purchase_successful = 2130968621;
+			
+			// aapt resource value: 0x7f040048
+			public const int remote_artists = 2130968648;
+			
+			// aapt resource value: 0x7f040026
+			public const int remove = 2130968614;
+			
+			// aapt resource value: 0x7f040034
+			public const int required_server_version = 2130968628;
+			
+			// aapt resource value: 0x7f040036
+			public const int settings = 2130968630;
+			
+			// aapt resource value: 0x7f040040
+			public const int something_went_wrong = 2130968640;
 			
 			// aapt resource value: 0x7f04001e
-			public const int uses_vote = 2130968606;
+			public const int trial_expiration = 2130968606;
 			
-			// aapt resource value: 0x7f040029
-			public const int wrong_password = 2130968617;
+			// aapt resource value: 0x7f04001f
+			public const int trial_expiration_explanation = 2130968607;
+			
+			// aapt resource value: 0x7f04002a
+			public const int uses_vote = 2130968618;
+			
+			// aapt resource value: 0x7f040045
+			public const int vote = 2130968645;
+			
+			// aapt resource value: 0x7f040044
+			public const int vote_failed = 2130968644;
+			
+			// aapt resource value: 0x7f040046
+			public const int votes_and_votes_left = 2130968646;
+			
+			// aapt resource value: 0x7f040035
+			public const int wrong_password = 2130968629;
 			
 			static String()
 			{

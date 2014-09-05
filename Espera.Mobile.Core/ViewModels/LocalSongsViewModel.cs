@@ -31,10 +31,6 @@ namespace Espera.Mobile.Core.ViewModels
 
             this.AddToPlaylistCommand = ReactiveCommand.CreateAsyncTask(x => this.QueueSong(this.SelectedSong));
 
-            this.Messages = this.AddToPlaylistCommand.ThrownExceptions
-                .Select(_ => "Something went wrong")
-                .ObserveOn(RxApp.MainThreadScheduler);
-
             this.WhenActivated(() =>
             {
                 var disposable = new CompositeDisposable();
@@ -60,8 +56,6 @@ namespace Espera.Mobile.Core.ViewModels
         {
             get { return this.isAdmin.Value; }
         }
-
-        public IObservable<string> Messages { get; private set; }
 
         public int? RemainingVotes
         {

@@ -21,13 +21,12 @@ using ReactiveUI;
 using System.Reactive.Threading.Tasks;
 using Splat;
 using Xamarin.InAppBilling;
-using Enum = System.Enum;
 using Exception = System.Exception;
 using String = System.String;
 
 namespace Espera.Android.Views
 {
-    [Activity(Label = "Settings")]
+    [Activity]
     public class SettingsActivity : PreferenceActivity
     {
 #if DEBUG
@@ -57,6 +56,8 @@ namespace Espera.Android.Views
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
+
+            this.ActionBar.SetTitle(Resource.String.settings);
 
             this.userSettings = Locator.Current.GetService<UserSettings>();
             this.androidSettings = Locator.Current.GetService<AndroidSettings>();
@@ -93,13 +94,13 @@ namespace Espera.Android.Views
             this.userSettings.WhenAnyValue(x => x.IsPremium, x => x || TrialHelpers.IsInTrialPeriod(AppConstants.TrialTime))
                 .BindTo(passwordPreference, x => x.Enabled);
 
-            Preference premiumButton = this.FindPreference("premium_button");
+            Preference premiumButton = this.FindPreference(this.GetString(Resource.String.preference_purchase_premium));
             premiumButton.Events().PreferenceClick.Select(_ => this.PurchasePremium().ToObservable()
                     .Catch<Unit, Exception>(ex => Observable.Start(() => this.TrackInAppPurchaseException(ex))))
                 .Concat()
                 .Subscribe();
 
-            Preference restorePremiumButton = this.FindPreference("restore_premium");
+            Preference restorePremiumButton = this.FindPreference(this.GetString(Resource.String.preference_restore_premium));
             restorePremiumButton.Events().PreferenceClick.Select(_ => this.RestorePremium().ToObservable()
                     .Catch<Unit, Exception>(ex => Observable.Start(() => this.TrackInAppPurchaseException(ex))))
                 .Concat()

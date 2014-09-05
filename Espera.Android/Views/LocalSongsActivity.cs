@@ -64,7 +64,8 @@ namespace Espera.Android.Views
                     })
                     .DisposeWith(disposable);
 
-                this.ViewModel.Messages.Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show())
+                this.ViewModel.AddToPlaylistCommand.ThrownExceptions
+                    .Subscribe(_ => Toast.MakeText(this, Resource.String.something_went_wrong, ToastLength.Short).Show())
                     .DisposeWith(disposable);
 
                 return disposable;

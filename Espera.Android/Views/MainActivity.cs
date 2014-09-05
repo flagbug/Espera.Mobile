@@ -87,6 +87,9 @@ namespace Espera.Android.Views
 
                         case ConnectionResult.WrongPassword:
                             return Resources.GetString(Resource.String.wrong_password);
+
+                        case ConnectionResult.WifiDisabled:
+                            return Resources.GetString(Resource.String.enable_wifi);
                     }
 
                     throw new InvalidOperationException("This shouldn't happen");

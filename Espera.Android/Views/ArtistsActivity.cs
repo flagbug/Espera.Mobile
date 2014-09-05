@@ -60,7 +60,8 @@ namespace Espera.Android.Views
                     }
                 });
 
-            this.ViewModel.Messages.Subscribe(x => Toast.MakeText(this, x, ToastLength.Long).Show());
+            this.ViewModel.LoadCommand.ThrownExceptions
+                .Subscribe(x => Toast.MakeText(this, Resource.String.loading_artists_failed, ToastLength.Long).Show());
 
             this.ViewModel.LoadCommand.Execute(null);
         }

@@ -411,7 +411,6 @@ namespace Espera.Android.Tests
 
                 var vm = new PlaylistViewModel();
                 vm.Activator.Activate();
-                var coll = vm.Message.CreateCollection();
 
                 await vm.LoadPlaylistCommand.ExecuteAsync();
 
@@ -420,7 +419,6 @@ namespace Espera.Android.Tests
                 await vm.PlayPlaylistSongCommand.ExecuteAsync();
 
                 messenger.Received(1).PlayPlaylistSongAsync(songs[1].Guid);
-                Assert.Equal(1, coll.Count);
             }
         }
 

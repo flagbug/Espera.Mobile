@@ -80,7 +80,7 @@ namespace Espera.Mobile.Core.ViewModels
         private IObservable<ConnectionResultContainer> ConnectAsync(string localAddress, int port)
         {
             if (localAddress == null)
-                throw new Exception("You have to enable WiFi!");
+                return Observable.Return(new ConnectionResultContainer(ConnectionResult.WifiDisabled));
 
             bool hasCustomIpAddress = !string.IsNullOrWhiteSpace(this.userSettings.ServerAddress);
 

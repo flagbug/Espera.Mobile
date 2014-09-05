@@ -11,6 +11,8 @@ namespace Espera.Mobile.Core.ViewModels
 {
     public class ArtistsViewModel<T> : ReactiveObject where T : Song
     {
+        public static readonly TimeSpan LoadCommandTimeout = TimeSpan.FromSeconds(15);
+
         private readonly ObservableAsPropertyHelper<IReadOnlyList<string>> artists;
         private string selectedArtist;
         private IReadOnlyList<T> songs;
@@ -21,7 +23,7 @@ namespace Espera.Mobile.Core.ViewModels
                 throw new ArgumentNullException("songFetcher");
 
             this.LoadCommand = ReactiveCommand.CreateAsyncObservable(_ => songFetcher.GetSongsAsync()
-                .Timeout(TimeSpan.FromSeconds(15), RxApp.TaskpoolScheduler));
+                .Timeout(LoadCommandTimeout, RxApp.TaskpoolScheduler));
             this.artists = this.LoadCommand
                .Do(x => this.songs = x)
                .Select(GetArtists)

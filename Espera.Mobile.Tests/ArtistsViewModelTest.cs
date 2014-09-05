@@ -60,7 +60,7 @@ namespace Espera.Android.Tests
                 (new TestScheduler()).With(scheduler =>
                 {
                     vm.LoadCommand.Execute(null);
-                    scheduler.AdvanceByMs(15000);
+                    scheduler.AdvanceByMs(ArtistsViewModel<Song>.LoadCommandTimeout.TotalMilliseconds + 1);
                 });
 
                 Assert.Equal(1, coll.Count);

@@ -56,7 +56,6 @@ namespace Espera.Mobile.Core.Network
 
             this.isConnected = this.Disconnected.Select(_ => false)
                 .Merge(this.connectionEstablished.Select(_ => true))
-                .DistinctUntilChanged()
                 .StartWith(false)
                 .ToProperty(this, x => x.IsConnected);
 

@@ -160,14 +160,18 @@ namespace Espera.Android.Views
                 this.BindCommand(this.ViewModel, x => x.PlayPauseCommand, x => x.PlayPauseButton)
                     .DisposeWith(disposable);
 
-                this.ViewModel.WhenAnyValue(x => x.IsPlaying).Select(x => x ? Resource.Drawable.Pause : Resource.Drawable.Play)
-                    .Subscribe(x => this.PlayPauseButton.SetBackgroundResource(x))
-                    .DisposeWith(disposable);
-
                 Func<bool, int> alphaSelector = x => x ? 255 : 100;
 
-                this.ViewModel.PlayPauseCommand.CanExecuteObservable.Select(alphaSelector)
-                    .Subscribe(x => this.PlayPauseButton.Background.SetAlpha(x))
+                // If we're setting a different background and alpha for the same button, we have to
+                // do this when either of those change, or else there is a race condition where the
+                // alpha is set before the background resource is changed, and therefore discarded
+                this.ViewModel.WhenAnyValue(x => x.IsPlaying).Select(x => x ? Resource.Drawable.Pause : Resource.Drawable.Play)
+                    .CombineLatest(this.ViewModel.PlayPauseCommand.CanExecuteObservable.Select(alphaSelector), Tuple.Create)
+                    .Subscribe(x =>
+                    {
+                        this.PlayPauseButton.SetBackgroundResource(x.Item1);
+                        this.PlayPauseButton.Background.SetAlpha(x.Item2);
+                    })
                     .DisposeWith(disposable);
 
                 this.ViewModel.PlayPreviousSongCommand.CanExecuteObservable.Select(alphaSelector)

@@ -57,7 +57,9 @@ namespace Espera.Mobile.Core.Network
             this.isConnected = this.Disconnected.Select(_ => false)
                 .Merge(this.connectionEstablished.Select(_ => true))
                 .StartWith(false)
+                .Do(x => this.Log().Info("Connection status: {0}", x ? "Connected" : "Disconnected"))
                 .ToProperty(this, x => x.IsConnected);
+            var connectConn = this.IsConnected;
 
             var pipeline = this.client.Select(x => Observable.Defer(() => x.GetStream().ReadNextMessageAsync()
                     .ToObservable())
@@ -257,7 +259,11 @@ namespace Espera.Mobile.Core.Network
                 this.currentClient = null;
             }
 
-            this.disconnected.OnNext(Unit.Default);
+            if (this.IsConnected)
+            {
+                this.Log().Info("Notifying of disconnection");
+                this.disconnected.OnNext(Unit.Default);
+            }
         }
 
         public IObservable<string> DiscoverServerAsync(string localAddress, int port)

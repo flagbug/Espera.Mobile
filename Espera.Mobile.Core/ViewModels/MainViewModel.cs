@@ -60,7 +60,12 @@ namespace Espera.Mobile.Core.ViewModels
                 this.DisconnectCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.IsConnected));
                 this.DisconnectCommand.Subscribe(x => NetworkMessenger.Instance.Disconnect());
 
-                this.ConnectCommand.Where(x => x.ConnectionResult != ConnectionResult.Successful).InvokeCommand(this.DisconnectCommand);
+                // We don't simply use InvokeCommand here, it results in a wierd infinite loop where
+                // DisconnectCommand is executed infinitely
+                this.ConnectCommand.Where(x => x.ConnectionResult != ConnectionResult.Successful)
+                    .SelectMany(x => this.DisconnectCommand.CanExecute(null) ? this.DisconnectCommand.ExecuteAsync() : Observable.Return((object)null))
+                    .Subscribe()
+                    .DisposeWith(disposable);
 
                 return disposable;
             });

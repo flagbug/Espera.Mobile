@@ -65,6 +65,7 @@ namespace Espera.Android.Views
                     .DisposeWith(disposable);
 
                 this.ViewModel.AddToPlaylistCommand.ThrownExceptions
+                    .ObserveOn(RxApp.MainThreadScheduler)
                     .Subscribe(_ => Toast.MakeText(this, Resource.String.something_went_wrong, ToastLength.Short).Show())
                     .DisposeWith(disposable);
 

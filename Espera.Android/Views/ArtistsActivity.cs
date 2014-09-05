@@ -61,6 +61,7 @@ namespace Espera.Android.Views
                 });
 
             this.ViewModel.LoadCommand.ThrownExceptions
+                .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(x => Toast.MakeText(this, Resource.String.loading_artists_failed, ToastLength.Long).Show());
 
             this.ViewModel.LoadCommand.Execute(null);

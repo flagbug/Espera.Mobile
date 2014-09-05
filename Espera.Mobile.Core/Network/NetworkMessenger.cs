@@ -196,7 +196,7 @@ namespace Espera.Mobile.Core.Network
             this.Log().Info("Connecting the message client at port {0}", port);
             await this.currentClient.ConnectAsync(ipAddress, port);
 
-            this.Log().Info("Connecting the file transfer client at port {0}", port);
+            this.Log().Info("Connecting the file transfer client at port {0}", port + 1);
             await this.currentFileTransferClient.ConnectAsync(ipAddress, port + 1);
             this.client.OnNext(this.currentClient);
 

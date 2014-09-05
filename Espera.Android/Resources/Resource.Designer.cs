@@ -279,6 +279,9 @@ namespace Espera.Android
 			// aapt resource value: 0x7f040024
 			public const int add_to_playlist = 2130968612;
 			
+			// aapt resource value: 0x7f04004c
+			public const int added_to_playlist = 2130968652;
+			
 			// aapt resource value: 0x7f040021
 			public const int administrator_functions = 2130968609;
 			
@@ -317,6 +320,12 @@ namespace Espera.Android
 			
 			// aapt resource value: 0x7f04003a
 			public const int error = 2130968634;
+			
+			// aapt resource value: 0x7f04004d
+			public const int error_adding_song = 2130968653;
+			
+			// aapt resource value: 0x7f04004b
+			public const int error_adding_songs = 2130968651;
 			
 			// aapt resource value: 0x7f04003b
 			public const int exit = 2130968635;
@@ -362,6 +371,9 @@ namespace Espera.Android
 			
 			// aapt resource value: 0x7f040041
 			public const int playing_song = 2130968641;
+			
+			// aapt resource value: 0x7f04004a
+			public const int playing_songs = 2130968650;
 			
 			// aapt resource value: 0x7f040012
 			public const int preference_administrator_default_library_action_summary = 2130968594;

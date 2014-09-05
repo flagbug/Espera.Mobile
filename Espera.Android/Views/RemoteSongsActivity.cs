@@ -13,6 +13,7 @@ using Android.Widget;
 using Espera.Mobile.Core;
 using Espera.Mobile.Core.Songs;
 using Espera.Mobile.Core.ViewModels;
+using Espera.Network;
 using Google.Analytics.Tracking;
 using ReactiveMarrow;
 using ReactiveUI;
@@ -62,7 +63,10 @@ namespace Espera.Android.Views
                     })
                     .DisposeWith(disposable);
 
-                this.ViewModel.Messages.Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show())
+                this.ViewModel.PlaySongsCommand.Select(x => x.Status == ResponseStatus.Success ? Resource.String.playing_songs : Resource.String.error_adding_songs)
+                    .Merge(this.ViewModel.AddToPlaylistCommand.Select(x => x.Status == ResponseStatus.Success ? Resource.String.added_to_playlist : Resource.String.error_adding_song))
+                    .ObserveOn(RxApp.MainThreadScheduler)
+                    .Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show())
                     .DisposeWith(disposable);
 
                 return disposable;

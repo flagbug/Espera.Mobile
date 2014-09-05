@@ -28,15 +28,6 @@ namespace Espera.Mobile.Core.ViewModels
 
             this.PlaySongsCommand = ReactiveCommand.CreateAsyncTask(x => NetworkMessenger.Instance.PlaySongsAsync(
                 this.Songs.SkipWhile(song => song.Guid != this.SelectedSong.Guid).Select(y => y.Guid).ToList()));
-            var playSongsMessage = this.PlaySongsCommand
-                .Select(x => x.Status == ResponseStatus.Success ? "Playing songs" : "Error adding songs");
-
-            this.AddToPlaylistCommand = ReactiveCommand.CreateAsyncTask(x => NetworkMessenger.Instance.AddSongToPlaylistAsync(this.SelectedSong.Guid));
-            var addToPlaylistMessage = this.AddToPlaylistCommand
-                .Select(x => x.Status == ResponseStatus.Success ? "Song added to playlist" : "Error adding song");
-
-            this.Messages = playSongsMessage.Merge(addToPlaylistMessage)
-                .ObserveOn(RxApp.MainThreadScheduler);
 
             this.WhenActivated(() =>
             {
@@ -63,8 +54,6 @@ namespace Espera.Mobile.Core.ViewModels
         {
             get { return this.isAdmin.Value; }
         }
-
-        public IObservable<string> Messages { get; private set; }
 
         public ReactiveCommand<ResponseInfo> PlaySongsCommand { get; private set; }
 

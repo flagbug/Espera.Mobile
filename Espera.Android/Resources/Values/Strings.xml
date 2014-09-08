@@ -29,6 +29,8 @@
   <string name="preference_restore_premium">restore_premium</string>
   <string name="preference_restore_premium_title">Restore Premium</string>
   <string name="preference_restore_premium_summary">Restore your premium purchase.</string>
+  <string name="preference_feedback">preference_feedback</string>
+  <string name="preference_feedback_title">Send Feedback</string>
   <string name="preference_version">preference_version</string>
   <string name="preference_version_title">Version</string>
   <string name="preference_category_network">Network</string>

@@ -105,6 +105,9 @@ namespace Espera.Android.Views
                     .Catch<Unit, Exception>(ex => Observable.Start(() => this.TrackInAppPurchaseException(ex))))
                 .Concat()
                 .Subscribe();
+
+            Preference versionPreference = this.FindPreference(this.GetString(Resource.String.preference_version));
+            versionPreference.Summary = this.PackageManager.GetPackageInfo(this.PackageName, 0).VersionName;
         }
 
         protected override void OnStart()

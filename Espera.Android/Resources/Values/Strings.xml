@@ -29,9 +29,12 @@
   <string name="preference_restore_premium">restore_premium</string>
   <string name="preference_restore_premium_title">Restore Premium</string>
   <string name="preference_restore_premium_summary">Restore your premium purchase.</string>
+  <string name="preference_version">preference_version</string>
+  <string name="preference_version_title">Version</string>
   <string name="preference_category_network">Network</string>
   <string name="preference_category_administrator">Administrator</string>
   <string name="preference_category_premium">Premium</string>
+  <string name="preference_category_about">About</string>
   <string name="trial_expiration">Trial expires in</string>
   <string name="trial_expiration_explanation">
     After the trial expires, you\'ll only have standard \"guest\" rights and can\'t control the playback anymore.\nYou\'ll still be able to vote on songs and add them to the playlist.

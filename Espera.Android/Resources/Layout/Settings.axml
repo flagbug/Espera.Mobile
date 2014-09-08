@@ -36,4 +36,10 @@
             android:summary="@string/preference_restore_premium_summary"
             android:title="@string/preference_restore_premium_title" />
     </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/preference_category_about">
+        <Preference
+            android:key="@string/preference_version"
+            android:title="@string/preference_version_title" />
+    </PreferenceCategory>
 </PreferenceScreen>

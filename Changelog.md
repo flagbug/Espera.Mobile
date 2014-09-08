@@ -1,3 +1,7 @@
+# v1.0.3
+- Added a feedback button and version info
+- Fixed the formatting in some context menus
+
 # v1.0.2
 - Fixed a crash when opening a remote artist
 - New WiFi reminder dialog

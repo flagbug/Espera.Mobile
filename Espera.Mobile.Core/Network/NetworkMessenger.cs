@@ -207,6 +207,8 @@ namespace Espera.Mobile.Core.Network
                 password
             };
 
+            this.Log().Info("Everything connected, requesting the connection info");
+
             ResponseInfo response = await this.SendRequest(RequestAction.GetConnectionInfo, parameters);
 
             if (response.Status == ResponseStatus.WrongPassword)
@@ -231,6 +233,8 @@ namespace Espera.Mobile.Core.Network
 
                 // Notify the connection status at the very end or bad things happen
                 this.connectionEstablished.OnNext(Unit.Default);
+
+                this.Log().Info("Connection to server established");
 
                 return new ConnectionResultContainer(ConnectionResult.Successful, connectionInfo.AccessPermission, connectionInfo.ServerVersion);
             }
@@ -278,11 +282,14 @@ namespace Espera.Mobile.Core.Network
                 return udpClient;
             };
 
+            this.Log().Info("Starting server discovery at port {0}...", port);
+
             return Observable.Using(locatorFunc, x => Observable.FromAsync(x.ReceiveAsync))
                 .Repeat()
                 .TakeWhile(x => x != null)
                 .FirstAsync(x => Encoding.Unicode.GetString(x.Item1, 0, x.Item1.Length) == NetworkConstants.DiscoveryMessage)
-                .Select(x => x.Item2);
+                .Select(x => x.Item2)
+                .Do(x => this.Log().Info("Detected server at IP address {0}", x));
         }
 
         public void Dispose()

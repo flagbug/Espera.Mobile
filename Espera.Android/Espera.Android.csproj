@@ -249,6 +249,9 @@
     <AndroidResource Include="Resources\drawable-mdpi\Logo.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\Logo.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\Logo.png" />
+    <AndroidResource Include="Resources\Menu\options_menu.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="googleanalytics">

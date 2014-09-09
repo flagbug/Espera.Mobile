@@ -179,6 +179,8 @@
     <Compile Include="Views\RemoteSongsActivity.cs" />
     <Compile Include="Views\RemoteSongsAdapter.cs" />
     <Compile Include="Views\SettingsActivity.cs" />
+    <Compile Include="Views\SoundCloudActivity.cs" />
+    <Compile Include="Views\SoundCloudSongsAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -195,6 +197,12 @@
     <AndroidResource Include="Resources\Layout\Artists.axml" />
     <AndroidResource Include="Resources\Layout\LocalSongItem.axml" />
     <AndroidResource Include="Resources\Layout\LocalSongs.axml" />
+    <AndroidResource Include="Resources\Layout\SoundCloudSongItem.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\Layout\SoundCloudSongs.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\Values\Strings.xml">

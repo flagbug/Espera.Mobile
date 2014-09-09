@@ -29,6 +29,12 @@
         android:id="@+id/LoadLocalArtistsButton"
         android:text="Songs on this device"
         android:layout_margin="10dp" />
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/LoadSoundCloudButton"
+        android:text="SoundCloud"
+        android:layout_margin="10dp" />
     <LinearLayout
         android:id="@+id/TrialContainer"
         android:orientation="vertical"

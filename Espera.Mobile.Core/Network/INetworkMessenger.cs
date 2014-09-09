@@ -38,6 +38,8 @@ namespace Espera.Mobile.Core.Network
 
         Task<IReadOnlyList<NetworkSong>> GetSongsAsync();
 
+        Task<IReadOnlyList<NetworkSong>> GetSoundCloudSongsAsync(string searchTerm);
+
         Task<float> GetVolume();
 
         Task<ResponseInfo> MovePlaylistSongDownAsync(Guid entryGuid);

@@ -82,6 +82,7 @@
     <Compile Include="ViewModels\PlaylistViewModel.cs" />
     <Compile Include="ViewModels\RemoteSongsViewModel.cs" />
     <Compile Include="ViewModels\SongsViewModelBase.cs" />
+    <Compile Include="ViewModels\SoundCloudViewModel.cs" />
     <Compile Include="WrongPasswordException.cs" />
   </ItemGroup>
   <ItemGroup>

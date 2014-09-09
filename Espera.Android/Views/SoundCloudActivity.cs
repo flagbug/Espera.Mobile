@@ -8,7 +8,6 @@ using Android.App;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
-using Espera.Mobile.Core.Songs;
 using Espera.Mobile.Core.ViewModels;
 using Espera.Network;
 using Google.Analytics.Tracking;
@@ -17,7 +16,7 @@ using ReactiveUI;
 
 namespace Espera.Android.Views
 {
-    [Activity]
+    [Activity(Label = "SoundCloud")]
     public class SoundCloudActivity : ReactiveActivity<SoundCloudViewModel>
     {
         private ProgressDialog progressDialog;

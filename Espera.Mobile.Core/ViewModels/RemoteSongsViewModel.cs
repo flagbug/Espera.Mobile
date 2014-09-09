@@ -1,5 +1,8 @@
 using System.Collections.Generic;
+using System.Reactive;
 using System.Reactive.Disposables;
+using System.Reactive.Threading.Tasks;
+using System.Threading.Tasks;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Songs;
 using Espera.Network;
@@ -11,11 +14,9 @@ using System.Reactive.Linq;
 
 namespace Espera.Mobile.Core.ViewModels
 {
-    public class RemoteSongsViewModel : ReactiveObject, ISupportsActivation
+    public class RemoteSongsViewModel : SongsViewModelBase<RemoteSong>
     {
-        private ObservableAsPropertyHelper<bool> isAdmin;
-        private ObservableAsPropertyHelper<int?> remainingVotes;
-        private RemoteSong selectedSong;
+        private readonly ReactiveCommand<ResponseInfo> addToPlaylistCommand;
 
         public RemoteSongsViewModel(IReadOnlyList<RemoteSong> songs)
         {
@@ -24,52 +25,17 @@ namespace Espera.Mobile.Core.ViewModels
 
             this.Songs = songs.Order().ToList();
 
-            this.Activator = new ViewModelActivator();
-
             this.PlaySongsCommand = ReactiveCommand.CreateAsyncTask(x => NetworkMessenger.Instance.PlaySongsAsync(
                 this.Songs.SkipWhile(song => song.Guid != this.SelectedSong.Guid).Select(y => y.Guid).ToList()));
 
-            this.AddToPlaylistCommand = ReactiveCommand.CreateAsyncTask(x => NetworkMessenger.Instance.AddSongToPlaylistAsync(this.SelectedSong.Guid));
-
-            this.WhenActivated(() =>
-            {
-                var disposable = new CompositeDisposable();
-
-                this.remainingVotes = NetworkMessenger.Instance.WhenAnyValue(x => x.GuestSystemInfo)
-                    .Select(x => x.IsEnabled ? new int?(x.RemainingVotes) : null)
-                    .ToProperty(this, x => x.RemainingVotes)
-                    .DisposeWith(disposable);
-
-                this.isAdmin = NetworkMessenger.Instance.WhenAnyValue(x => x.AccessPermission, x => x == NetworkAccessPermission.Admin)
-                    .ToProperty(this, x => x.IsAdmin)
-                    .DisposeWith(disposable);
-
-                return disposable;
-            });
+            this.addToPlaylistCommand = ReactiveCommand.CreateAsyncTask(x => NetworkMessenger.Instance.AddSongToPlaylistAsync(this.SelectedSong.Guid));
         }
 
-        public ViewModelActivator Activator { get; private set; }
-
-        public ReactiveCommand<ResponseInfo> AddToPlaylistCommand { get; private set; }
-
-        public bool IsAdmin
+        public override ReactiveCommand<ResponseInfo> AddToPlaylistCommand
         {
-            get { return this.isAdmin.Value; }
+            get { return this.addToPlaylistCommand; }
         }
 
         public ReactiveCommand<ResponseInfo> PlaySongsCommand { get; private set; }
-
-        public int? RemainingVotes
-        {
-            get { return this.remainingVotes.Value; }
-        }
-
-        public RemoteSong SelectedSong
-        {
-            get { return this.selectedSong; }
-            set { this.RaiseAndSetIfChanged(ref this.selectedSong, value); }
-        }
-
-        public IReadOnlyList<RemoteSong> Songs { get; private set; }
     }
 }

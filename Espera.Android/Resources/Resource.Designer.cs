@@ -154,86 +154,89 @@ namespace Espera.Android
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f090000
-			public const int ArtistList = 2131296256;
+			// aapt resource value: 0x7f0a0000
+			public const int ArtistList = 2131361792;
 			
-			// aapt resource value: 0x7f090005
-			public const int ConnectButton = 2131296261;
+			// aapt resource value: 0x7f0a0005
+			public const int ConnectButton = 2131361797;
 			
-			// aapt resource value: 0x7f09000f
-			public const int CurrentTimeTextView = 2131296271;
+			// aapt resource value: 0x7f0a000f
+			public const int CurrentTimeTextView = 2131361807;
 			
-			// aapt resource value: 0x7f090010
-			public const int DurationSeekBar = 2131296272;
+			// aapt resource value: 0x7f0a0010
+			public const int DurationSeekBar = 2131361808;
 			
-			// aapt resource value: 0x7f090015
-			public const int Image = 2131296277;
+			// aapt resource value: 0x7f0a0015
+			public const int Image = 2131361813;
 			
-			// aapt resource value: 0x7f090008
-			public const int LoadLocalArtistsButton = 2131296264;
+			// aapt resource value: 0x7f0a0008
+			public const int LoadLocalArtistsButton = 2131361800;
 			
-			// aapt resource value: 0x7f090006
-			public const int LoadPlaylistButton = 2131296262;
+			// aapt resource value: 0x7f0a0006
+			public const int LoadPlaylistButton = 2131361798;
 			
-			// aapt resource value: 0x7f090007
-			public const int LoadRemoteArtistsButton = 2131296263;
+			// aapt resource value: 0x7f0a0007
+			public const int LoadRemoteArtistsButton = 2131361799;
 			
-			// aapt resource value: 0x7f090009
-			public const int LoadSoundCloudButton = 2131296265;
+			// aapt resource value: 0x7f0a0009
+			public const int LoadSoundCloudButton = 2131361801;
 			
-			// aapt resource value: 0x7f090002
-			public const int LocalSongAlbum = 2131296258;
+			// aapt resource value: 0x7f0a0002
+			public const int LocalSongAlbum = 2131361794;
 			
-			// aapt resource value: 0x7f090001
-			public const int LocalSongTitle = 2131296257;
+			// aapt resource value: 0x7f0a0001
+			public const int LocalSongTitle = 2131361793;
 			
-			// aapt resource value: 0x7f090003
-			public const int LocalSongTransferProgress = 2131296259;
+			// aapt resource value: 0x7f0a0003
+			public const int LocalSongTransferProgress = 2131361795;
 			
-			// aapt resource value: 0x7f090014
-			public const int NextButton = 2131296276;
+			// aapt resource value: 0x7f0a0014
+			public const int NextButton = 2131361812;
 			
-			// aapt resource value: 0x7f09000d
-			public const int PlayList = 2131296269;
+			// aapt resource value: 0x7f0a000d
+			public const int PlayList = 2131361805;
 			
-			// aapt resource value: 0x7f090013
-			public const int PlayPauseButton = 2131296275;
+			// aapt resource value: 0x7f0a0013
+			public const int PlayPauseButton = 2131361811;
 			
-			// aapt resource value: 0x7f09000e
-			public const int PlaybackControlPanel = 2131296270;
+			// aapt resource value: 0x7f0a000e
+			public const int PlaybackControlPanel = 2131361806;
 			
-			// aapt resource value: 0x7f090017
-			public const int PlaylistEntryArtist = 2131296279;
+			// aapt resource value: 0x7f0a0017
+			public const int PlaylistEntryArtist = 2131361815;
 			
-			// aapt resource value: 0x7f090016
-			public const int PlaylistEntryTitle = 2131296278;
+			// aapt resource value: 0x7f0a0016
+			public const int PlaylistEntryTitle = 2131361814;
 			
-			// aapt resource value: 0x7f090012
-			public const int PreviousButton = 2131296274;
+			// aapt resource value: 0x7f0a0012
+			public const int PreviousButton = 2131361810;
 			
-			// aapt resource value: 0x7f090004
-			public const int SongsList = 2131296260;
+			// aapt resource value: 0x7f0a0004
+			public const int SongsList = 2131361796;
 			
-			// aapt resource value: 0x7f090019
-			public const int SoundCloudSongArtist = 2131296281;
+			// aapt resource value: 0x7f0a0019
+			public const int SoundCloudSongArtist = 2131361817;
 			
-			// aapt resource value: 0x7f090018
-			public const int SoundCloudSongTitle = 2131296280;
+			// aapt resource value: 0x7f0a0018
+			public const int SoundCloudSongTitle = 2131361816;
 			
-			// aapt resource value: 0x7f09001a
-			public const int SoundCloudSongsList = 2131296282;
+			// aapt resource value: 0x7f0a001a
+			public const int SoundCloudSongsList = 2131361818;
 			
-			// aapt resource value: 0x7f090011
-			public const int TotalTimeTextView = 2131296273;
+			// aapt resource value: 0x7f0a0011
+			public const int TotalTimeTextView = 2131361809;
 			
-			// aapt resource value: 0x7f09000a
-			public const int TrialContainer = 2131296266;
+			// aapt resource value: 0x7f0a000a
+			public const int TrialContainer = 2131361802;
 			
-			// aapt resource value: 0x7f09000c
-			public const int TrialExpirationExplanationTextView = 2131296268;
+			// aapt resource value: 0x7f0a000c
+			public const int TrialExpirationExplanationTextView = 2131361804;
 			
-			// aapt resource value: 0x7f09000b
-			public const int TrialExpirationTextView = 2131296267;
+			// aapt resource value: 0x7f0a000b
+			public const int TrialExpirationTextView = 2131361803;
+			
+			// aapt resource value: 0x7f0a001b
+			public const int search = 2131361819;
 			
 			static Id()
 			{
@@ -284,6 +287,22 @@ namespace Espera.Android
 			}
 			
 			private Layout()
+			{
+			}
+		}
+		
+		public partial class Menu
+		{
+			
+			// aapt resource value: 0x7f090000
+			public const int options_menu = 2131296256;
+			
+			static Menu()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Menu()
 			{
 			}
 		}
@@ -503,6 +522,9 @@ namespace Espera.Android
 			
 			// aapt resource value: 0x7f040039
 			public const int required_server_version = 2130968633;
+			
+			// aapt resource value: 0x7f040055
+			public const int search = 2130968661;
 			
 			// aapt resource value: 0x7f04003b
 			public const int settings = 2130968635;

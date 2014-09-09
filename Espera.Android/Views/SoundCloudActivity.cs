@@ -5,6 +5,7 @@ using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Android.App;
+using Android.Content;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
@@ -104,6 +105,27 @@ namespace Espera.Android.Views
         }
 
         public ListView SoundCloudSongsList { get; private set; }
+
+        public override bool OnCreateOptionsMenu(IMenu menu)
+        {
+            base.OnCreateOptionsMenu(menu);
+
+            this.MenuInflater.Inflate(Resource.Menu.options_menu, menu);
+
+            var searchView = (SearchView)menu.FindItem(Resource.Id.search).ActionView;
+
+            searchView.Events().QueryTextSubmit
+                .SelectMany(async x =>
+                {
+                    this.ViewModel.SearchTerm = x.Query;
+                    await this.ViewModel.LoadCommand.ExecuteAsync();
+                    x.Handled = false;
+                    searchView.ClearFocus();
+                    return Unit.Default;
+                }).Subscribe();
+
+            return true;
+        }
 
         public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
         {

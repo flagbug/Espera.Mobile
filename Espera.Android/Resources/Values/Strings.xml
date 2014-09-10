@@ -90,5 +90,6 @@
   <string name="added_to_playlist">Song added to playlist</string>
   <string name="error_adding_song">Failed to add song</string>
   <string name="loading_soundcloud">Loading SoundCloud...</string>
+  <string name="soundcloud_no_songs">No songs found</string>
   <string name="search">Search</string>
 </resources>

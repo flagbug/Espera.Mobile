@@ -40,6 +40,7 @@ namespace Espera.Android.Views
                     }).DisposeWith(disposable);
 
                 this.SoundCloudSongsList.Adapter = new SoundCloudSongsAdapter(this, reactiveList);
+                this.SoundCloudSongsList.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty);
                 this.SoundCloudSongsList.Events().ItemClick.Select(x => x.Position)
                     .Subscribe(x =>
                     {

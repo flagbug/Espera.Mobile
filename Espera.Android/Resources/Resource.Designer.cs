@@ -26,6 +26,7 @@ namespace Espera.Android
 		
 		public static void UpdateIdValues()
 		{
+			global::ModernHttpClient.Resource.String.library_name = global::Espera.Android.Resource.String.library_name;
 			global::Splat.Resource.String.library_name = global::Espera.Android.Resource.String.library_name;
 		}
 		
@@ -157,6 +158,9 @@ namespace Espera.Android
 			// aapt resource value: 0x7f0a0000
 			public const int ArtistList = 2131361792;
 			
+			// aapt resource value: 0x7f0a0018
+			public const int Artwork = 2131361816;
+			
 			// aapt resource value: 0x7f0a0005
 			public const int ConnectButton = 2131361797;
 			
@@ -214,14 +218,14 @@ namespace Espera.Android
 			// aapt resource value: 0x7f0a0004
 			public const int SongsList = 2131361796;
 			
-			// aapt resource value: 0x7f0a0019
-			public const int SoundCloudSongArtist = 2131361817;
-			
-			// aapt resource value: 0x7f0a0018
-			public const int SoundCloudSongTitle = 2131361816;
-			
 			// aapt resource value: 0x7f0a001a
-			public const int SoundCloudSongsList = 2131361818;
+			public const int SoundCloudSongArtist = 2131361818;
+			
+			// aapt resource value: 0x7f0a0019
+			public const int SoundCloudSongTitle = 2131361817;
+			
+			// aapt resource value: 0x7f0a001b
+			public const int SoundCloudSongsList = 2131361819;
 			
 			// aapt resource value: 0x7f0a0011
 			public const int TotalTimeTextView = 2131361809;
@@ -235,8 +239,8 @@ namespace Espera.Android
 			// aapt resource value: 0x7f0a000b
 			public const int TrialExpirationTextView = 2131361803;
 			
-			// aapt resource value: 0x7f0a001b
-			public const int search = 2131361819;
+			// aapt resource value: 0x7f0a001c
+			public const int search = 2131361820;
 			
 			static Id()
 			{

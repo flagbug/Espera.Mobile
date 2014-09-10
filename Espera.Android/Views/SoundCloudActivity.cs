@@ -28,7 +28,7 @@ namespace Espera.Android.Views
             {
                 var disposable = new CompositeDisposable();
 
-                var reactiveList = new ReactiveList<NetworkSong>();
+                var reactiveList = new ReactiveList<SoundCloudSongViewModel>();
                 this.WhenAnyValue(x => x.ViewModel.Songs).Skip(1)
                     .Subscribe(x =>
                     {
@@ -38,8 +38,10 @@ namespace Espera.Android.Views
                             reactiveList.AddRange(x);
                         }
                     }).DisposeWith(disposable);
-
-                this.SoundCloudSongsList.Adapter = new SoundCloudSongsAdapter(this, reactiveList);
+                this.SoundCloudSongsList.Adapter = new ReactiveListAdapter<SoundCloudSongViewModel>(reactiveList, (vm, parent) => new SoundCloudSongView(this, vm, parent));
+                // Reset the artwork image when recycling, so old images don't appear when scrolling
+                //this.SoundCloudSongsList.Events().Recycler.Subscribe(x => x.View.FindViewById<ImageView>(Resource.Id.Artwork).SetImageDrawable(null))
+                //  .DisposeWith(disposable);
                 this.SoundCloudSongsList.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty);
                 this.SoundCloudSongsList.Events().ItemClick.Select(x => x.Position)
                     .Subscribe(x =>

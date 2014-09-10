@@ -8,7 +8,6 @@
         android:id="@+id/Image"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:padding="5dp"
         android:src="@drawable/CurrentSongIcon"
         android:layout_gravity="center_vertical" />
     <LinearLayout

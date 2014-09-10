@@ -78,9 +78,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\akavache.sqlite3.4.0.3.2\lib\Portable-Net45+Win8+WP8+Wpa81\Akavache.Sqlite3.dll</HintPath>
     </Reference>
-    <Reference Include="Espera.Network, Version=1.0.28.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Espera.Network, Version=1.0.29.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Espera-Network.1.0.28\lib\portable-net45+monoandroid\Espera.Network.dll</HintPath>
+      <HintPath>..\packages\Espera-Network.1.0.29\lib\portable-net45+monoandroid\Espera.Network.dll</HintPath>
     </Reference>
     <Reference Include="Humanizer">
       <HintPath>..\packages\Humanizer.1.28.0\lib\portable-win+net40+sl50+wp8+wpa81\Humanizer.dll</HintPath>
@@ -93,10 +93,16 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Lager.Android.0.4.1\lib\monoandroid\Lager.Android.dll</HintPath>
     </Reference>
+    <Reference Include="ModernHttpClient">
+      <HintPath>..\packages\modernhttpclient.2.0.1\lib\MonoAndroid\ModernHttpClient.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Android" />
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.5\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="OkHttp">
+      <HintPath>..\packages\modernhttpclient.2.0.1\lib\MonoAndroid\OkHttp.dll</HintPath>
     </Reference>
     <Reference Include="ReactiveMarrow, Version=0.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -121,6 +127,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Linq.Expressions" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.ObjectModel" />
     <Reference Include="System.Reactive.Core, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -180,7 +187,7 @@
     <Compile Include="Views\RemoteSongsAdapter.cs" />
     <Compile Include="Views\SettingsActivity.cs" />
     <Compile Include="Views\SoundCloudActivity.cs" />
-    <Compile Include="Views\SoundCloudSongsAdapter.cs" />
+    <Compile Include="Views\SoundCloudSongView.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -329,7 +329,12 @@ namespace Espera.Mobile.Core.Network
 
             ResponseInfo response = await this.SendRequest(RequestAction.GetSoundCloudSongs, parameters);
 
-            return response.Content["songs"].ToObject<List<NetworkSong>>();
+            if (response.Status == ResponseStatus.Success)
+            {
+                return response.Content["songs"].ToObject<List<NetworkSong>>();
+            }
+
+            return new List<NetworkSong>();
         }
 
         public async Task<float> GetVolume()

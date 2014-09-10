@@ -523,14 +523,17 @@ namespace Espera.Android
 			// aapt resource value: 0x7f040039
 			public const int required_server_version = 2130968633;
 			
-			// aapt resource value: 0x7f040055
-			public const int search = 2130968661;
+			// aapt resource value: 0x7f040056
+			public const int search = 2130968662;
 			
 			// aapt resource value: 0x7f04003b
 			public const int settings = 2130968635;
 			
 			// aapt resource value: 0x7f040046
 			public const int something_went_wrong = 2130968646;
+			
+			// aapt resource value: 0x7f040055
+			public const int soundcloud_no_songs = 2130968661;
 			
 			// aapt resource value: 0x7f040023
 			public const int trial_expiration = 2130968611;

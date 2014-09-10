@@ -37,7 +37,7 @@ namespace Espera.Android.Views
                             reactiveList.Clear();
                             reactiveList.AddRange(x);
                         }
-                    });
+                    }).DisposeWith(disposable);
 
                 this.SoundCloudSongsList.Adapter = new SoundCloudSongsAdapter(this, reactiveList);
                 this.SoundCloudSongsList.Events().ItemClick.Select(x => x.Position)

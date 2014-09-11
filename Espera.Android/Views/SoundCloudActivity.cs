@@ -39,36 +39,7 @@ namespace Espera.Android.Views
                 this.SoundCloudSongsList.Adapter = new ReactiveListAdapter<SoundCloudSongViewModel>(reactiveList, (vm, parent) => new SoundCloudSongView(this, vm, parent));
                 this.SoundCloudSongsList.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty);
                 this.SoundCloudSongsList.Events().ItemClick.Select(x => x.Position)
-                    .Subscribe(x =>
-                    {
-                        this.ViewModel.SelectedSong = this.ViewModel.Songs[x];
-
-                        var items = new List<Tuple<string, IObservable<Unit>>>();
-
-                        if (this.ViewModel.IsAdmin)
-                        {
-                            items.Add(Tuple.Create(Resources.GetString(Resource.String.add_to_playlist), this.ViewModel.AddToPlaylistCommand.ExecuteAsync().ToUnit()));
-                        }
-
-                        else if (this.ViewModel.RemainingVotes > 0)
-                        {
-                            string voteString = string.Format(Resources.GetString(Resource.String.uses_vote), this.ViewModel.RemainingVotes);
-                            items.Add(Tuple.Create(string.Format("{0} \n({1})", Resources.GetString(Resource.String.add_to_playlist), voteString),
-                                this.ViewModel.AddToPlaylistCommand.ExecuteAsync().ToUnit()));
-                        }
-
-                        else
-                        {
-                            items.Add(Tuple.Create(Resources.GetString(Resource.String.no_votes_left), Observable.Return(Unit.Default)));
-                        }
-
-                        var builder = new AlertDialog.Builder(this);
-                        builder.SetItems(items.Select(y => y.Item1).ToArray(), async (o, eventArgs) =>
-                        {
-                            await items[eventArgs.Which].Item2;
-                        });
-                        builder.Create().Show();
-                    })
+                    .Subscribe(this.DisplayAddToPlaylistDialog<SoundCloudViewModel, SoundCloudSongViewModel>)
                     .DisposeWith(disposable);
 
                 this.ViewModel.AddToPlaylistCommand.ThrownExceptions

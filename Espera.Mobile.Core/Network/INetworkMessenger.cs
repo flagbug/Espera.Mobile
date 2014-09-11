@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive;
 using System.Threading.Tasks;
-using Espera.Mobile.Core.Songs;
 using Espera.Network;
 
 namespace Espera.Mobile.Core.Network

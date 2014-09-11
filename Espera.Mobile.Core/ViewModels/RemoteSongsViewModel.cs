@@ -4,7 +4,6 @@ using System.Reactive.Disposables;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Espera.Mobile.Core.Network;
-using Espera.Mobile.Core.Songs;
 using Espera.Network;
 using ReactiveMarrow;
 using ReactiveUI;
@@ -14,11 +13,11 @@ using System.Reactive.Linq;
 
 namespace Espera.Mobile.Core.ViewModels
 {
-    public class RemoteSongsViewModel : SongsViewModelBase<RemoteSong>
+    public class RemoteSongsViewModel : SongsViewModelBase<NetworkSong>
     {
         private readonly ReactiveCommand<ResponseInfo> addToPlaylistCommand;
 
-        public RemoteSongsViewModel(IReadOnlyList<RemoteSong> songs)
+        public RemoteSongsViewModel(IReadOnlyList<NetworkSong> songs)
         {
             if (songs == null)
                 throw new ArgumentNullException("songs");

@@ -6,7 +6,6 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Espera.Mobile.Core.Network;
-using Espera.Mobile.Core.Songs;
 using Espera.Network;
 using ReactiveMarrow;
 using ReactiveUI;

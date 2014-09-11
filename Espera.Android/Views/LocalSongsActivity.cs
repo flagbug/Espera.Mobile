@@ -11,7 +11,6 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 using Espera.Mobile.Core;
-using Espera.Mobile.Core.Songs;
 using Espera.Mobile.Core.ViewModels;
 using Google.Analytics.Tracking;
 using ReactiveMarrow;

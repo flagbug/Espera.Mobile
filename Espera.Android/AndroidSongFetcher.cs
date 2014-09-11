@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using Android.App;
 using Android.Database;
 using Android.Provider;
+using Espera.Mobile.Core;
 using Espera.Mobile.Core.SongFetchers;
-using Espera.Mobile.Core.Songs;
 
 namespace Espera.Android
 {

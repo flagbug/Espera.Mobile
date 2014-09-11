@@ -16,20 +16,16 @@ namespace Espera.Android.Views
         {
             this.ViewModel = viewModel;
 
+            this.WhenAnyValue(x => x.ViewModel)
+                .Subscribe(x => this.Artwork.SetImageDrawable(null));
+
             this.OneWayBind(this.ViewModel, vm => vm.Title, v => v.SoundCloudSongTitle.Text);
             this.OneWayBind(this.ViewModel, vm => vm.Artist, v => v.SoundCloudSongArtist.Text);
-
-            this.Artwork.SetImageDrawable(null);
-            this.Artwork.Visibility = ViewStates.Invisible;
 
             this.WhenAnyValue(x => x.ViewModel.Artwork)
                 .Where(x => x != null)
                 .Select(x => x.ToNative())
-                .Subscribe(x =>
-                {
-                    this.Artwork.SetImageDrawable(x);
-                    this.Artwork.Visibility = ViewStates.Visible;
-                });
+                .Subscribe(x => this.Artwork.SetImageDrawable(x));
         }
 
         public ImageView Artwork { get; private set; }

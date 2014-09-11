@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Espera.Mobile.Core;
 using Espera.Mobile.Core.SongFetchers;
-using Espera.Mobile.Core.Songs;
 using Espera.Mobile.Core.ViewModels;
 using Espera.Network;
 using Microsoft.Reactive.Testing;
@@ -17,12 +17,12 @@ namespace Espera.Android.Tests
 {
     public class ArtistsViewModelTest
     {
-        private static IEnumerable<Song> SetupSongsWithArtist(params string[] artists)
+        private static IEnumerable<NetworkSong> SetupSongsWithArtist(params string[] artists)
         {
             return artists.Select(SetupSongWithArtist);
         }
 
-        private static Song SetupSongWithArtist(string artist)
+        private static NetworkSong SetupSongWithArtist(string artist)
         {
             NetworkSong song = Helpers.SetupSong();
             song.Artist = artist;
@@ -37,10 +37,10 @@ namespace Espera.Android.Tests
             {
                 var songs = SetupSongsWithArtist("B", "b", "C", "A").ToReadOnlyList();
 
-                var songFetcher = Substitute.For<ISongFetcher<Song>>();
+                var songFetcher = Substitute.For<ISongFetcher<NetworkSong>>();
                 songFetcher.GetSongsAsync().Returns(Observable.Return(songs));
 
-                var vm = new ArtistsViewModel<Song>(songFetcher, "AnyKey");
+                var vm = new ArtistsViewModel<NetworkSong>(songFetcher, "AnyKey");
 
                 await vm.LoadCommand.ExecuteAsync();
 
@@ -50,17 +50,17 @@ namespace Espera.Android.Tests
             [Fact]
             public void TimeoutTriggersthrownExceptions()
             {
-                var songFetcher = Substitute.For<ISongFetcher<Song>>();
-                songFetcher.GetSongsAsync().Returns(Observable.Never<IReadOnlyList<Song>>());
+                var songFetcher = Substitute.For<ISongFetcher<NetworkSong>>();
+                songFetcher.GetSongsAsync().Returns(Observable.Never<IReadOnlyList<NetworkSong>>());
 
-                var vm = new ArtistsViewModel<Song>(songFetcher, "AnyKey");
+                var vm = new ArtistsViewModel<NetworkSong>(songFetcher, "AnyKey");
 
                 var coll = vm.LoadCommand.ThrownExceptions.CreateCollection();
 
                 (new TestScheduler()).With(scheduler =>
                 {
                     vm.LoadCommand.Execute(null);
-                    scheduler.AdvanceByMs(ArtistsViewModel<Song>.LoadCommandTimeout.TotalMilliseconds + 1);
+                    scheduler.AdvanceByMs(ArtistsViewModel<NetworkSong>.LoadCommandTimeout.TotalMilliseconds + 1);
                 });
 
                 Assert.Equal(1, coll.Count);

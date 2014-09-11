@@ -5,7 +5,6 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
-using Espera.Network;
 using ReactiveMarrow;
 using ReactiveUI;
 

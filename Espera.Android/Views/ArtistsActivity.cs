@@ -4,13 +4,13 @@ using Android.App;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
-using Espera.Mobile.Core.Songs;
 using Espera.Mobile.Core.ViewModels;
+using Espera.Network;
 using ReactiveUI;
 
 namespace Espera.Android.Views
 {
-    public abstract class ArtistsActivity<T> : ReactiveActivity<ArtistsViewModel<T>> where T : Song
+    public abstract class ArtistsActivity<T> : ReactiveActivity<ArtistsViewModel<T>> where T : NetworkSong
     {
         private ProgressDialog progressDialog;
 

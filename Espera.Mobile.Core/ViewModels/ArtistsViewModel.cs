@@ -4,12 +4,12 @@ using System.Linq;
 using System.Reactive.Linq;
 using Akavache;
 using Espera.Mobile.Core.SongFetchers;
-using Espera.Mobile.Core.Songs;
+using Espera.Network;
 using ReactiveUI;
 
 namespace Espera.Mobile.Core.ViewModels
 {
-    public class ArtistsViewModel<T> : ReactiveObject where T : Song
+    public class ArtistsViewModel<T> : ReactiveObject where T : NetworkSong
     {
         public static readonly TimeSpan LoadCommandTimeout = TimeSpan.FromSeconds(15);
 

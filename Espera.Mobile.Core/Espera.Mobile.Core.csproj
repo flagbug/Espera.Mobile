@@ -61,7 +61,7 @@
     <Compile Include="Network\NetworkException.cs" />
     <Compile Include="Network\NetworkMessenger.cs" />
     <Compile Include="ServerVersionException.cs" />
-    <Compile Include="Songs\LocalSong.cs" />
+    <Compile Include="LocalSong.cs" />
     <Compile Include="SongFetchers\ISongFetcher.cs" />
     <Compile Include="Network\FileTransferStatus.cs" />
     <Compile Include="Network\INetworkMessenger.cs" />
@@ -69,8 +69,6 @@
     <Compile Include="ReactiveHelpers.cs" />
     <Compile Include="Settings\UserSettings.cs" />
     <Compile Include="SongFetchers\RemoteSongFetcher.cs" />
-    <Compile Include="Songs\RemoteSong.cs" />
-    <Compile Include="Songs\Song.cs" />
     <Compile Include="SortHelpers.cs" />
     <Compile Include="TimeSpanHelper.cs" />
     <Compile Include="TrialHelpers.cs" />

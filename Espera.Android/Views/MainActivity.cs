@@ -112,6 +112,10 @@ namespace Espera.Android.Views
                 this.LoadLocalArtistsButton.Events().Click.Subscribe(x => this.StartActivity(typeof(LocalArtistsActivity)))
                     .DisposeWith(disposable);
 
+                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadSoundCloudButton.Enabled);
+                this.LoadSoundCloudButton.Events().Click.Subscribe(x => this.StartActivity(typeof(SoundCloudActivity)))
+                    .DisposeWith(disposable);
+
                 bool displayTrialPeriod = TrialHelpers.IsInTrialPeriod(AppConstants.TrialTime) && !settings.IsPremium;
                 this.TrialExpirationTextView.Visibility = this.TrialExpirationExplanationTextview.Visibility =
                     displayTrialPeriod ? ViewStates.Visible : ViewStates.Gone;
@@ -137,6 +141,8 @@ namespace Espera.Android.Views
         public Button LoadPlaylistButton { get; private set; }
 
         public Button LoadRemoteArtistsButton { get; private set; }
+
+        public Button LoadSoundCloudButton { get; private set; }
 
         public TextView TrialExpirationExplanationTextview { get; private set; }
 

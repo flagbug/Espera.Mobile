@@ -62,9 +62,10 @@ namespace Espera.Mobile.Core.ViewModels
             {
                 try
                 {
-                    var stream = await client.GetStreamAsync(this.model.ArtworkKey);
-
-                    return await BitmapLoader.Current.Load(stream, null, null);
+                    using (var stream = await client.GetStreamAsync(this.model.ArtworkKey))
+                    {
+                        return await BitmapLoader.Current.Load(stream, null, null);
+                    }
                 }
 
                 catch (Exception ex)

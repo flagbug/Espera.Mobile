@@ -11,7 +11,6 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 using Espera.Mobile.Core;
-using Espera.Mobile.Core.Songs;
 using Espera.Mobile.Core.ViewModels;
 using Espera.Network;
 using Google.Analytics.Tracking;
@@ -29,7 +28,7 @@ namespace Espera.Android.Views
             {
                 var disposable = new CompositeDisposable();
 
-                this.SongsList.Adapter = new RemoteSongsAdapter(this, new ReactiveList<RemoteSong>(this.ViewModel.Songs));
+                this.SongsList.Adapter = new RemoteSongsAdapter(this, new ReactiveList<NetworkSong>(this.ViewModel.Songs));
                 this.SongsList.Events().ItemClick.Select(x => x.Position)
                     .Subscribe(x =>
                     {
@@ -88,7 +87,7 @@ namespace Espera.Android.Views
             this.SetContentView(Resource.Layout.RemoteSongs);
             this.WireUpControls();
 
-            var songs = BlobCache.InMemory.GetObject<IEnumerable<RemoteSong>>(BlobCacheKeys.SelectedRemoteSongs).Wait().ToList();
+            var songs = BlobCache.InMemory.GetObject<IEnumerable<NetworkSong>>(BlobCacheKeys.SelectedRemoteSongs).Wait().ToList();
             this.Title = songs.First().Artist;
             this.ViewModel = new RemoteSongsViewModel(songs);
         }

@@ -8,7 +8,6 @@ using Espera.Mobile.Core.Analytics;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
 using Espera.Mobile.Core.SongFetchers;
-using Espera.Mobile.Core.Songs;
 using ModernHttpClient;
 using ReactiveUI;
 using Splat;

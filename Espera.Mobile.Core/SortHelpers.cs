@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Espera.Mobile.Core.Songs;
+using Espera.Network;
 
 namespace Espera.Mobile.Core
 {
     public static class SortHelpers
     {
-        public static IEnumerable<T> Order<T>(this IEnumerable<T> songs) where T : Song
+        public static IEnumerable<T> Order<T>(this IEnumerable<T> songs) where T : NetworkSong
         {
             return songs
                 .OrderBy(song => song.Album)

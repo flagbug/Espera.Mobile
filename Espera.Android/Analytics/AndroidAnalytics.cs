@@ -13,7 +13,7 @@ namespace Espera.Android.Analytics
         {
             if (context == null)
                 throw new ArgumentNullException("context");
-            
+
             this.tracker = EasyTracker.GetInstance(context);
         }
 

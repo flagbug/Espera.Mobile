@@ -1,19 +1,16 @@
 ﻿using Espera.Mobile.Core.Network;
-using Espera.Mobile.Core.Songs;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
+using Espera.Network;
 
 namespace Espera.Mobile.Core.SongFetchers
 {
-    public class RemoteSongFetcher : ISongFetcher<RemoteSong>
+    public class RemoteSongFetcher : ISongFetcher<NetworkSong>
     {
-        public IObservable<IReadOnlyList<RemoteSong>> GetSongsAsync()
+        public IObservable<IReadOnlyList<NetworkSong>> GetSongsAsync()
         {
-            return NetworkMessenger.Instance.GetSongsAsync().ToObservable()
-                .Select(x => x.Select(RemoteSong.FromNetworkSong).ToList());
+            return NetworkMessenger.Instance.GetSongsAsync().ToObservable();
         }
     }
 }

@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Espera.Mobile.Core.Network;
-using Espera.Mobile.Core.Songs;
 using Espera.Network;
 using ReactiveMarrow;
 using ReactiveUI;

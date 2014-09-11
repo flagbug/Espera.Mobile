@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Configuration;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
+using Espera.Mobile.Core;
 using Espera.Mobile.Core.Network;
 ﻿using Espera.Mobile.Core.Settings;
 using Espera.Mobile.Core.ViewModels;

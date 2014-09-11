@@ -343,6 +343,23 @@ namespace Espera.Mobile.Core.Network
             return response.Content["volume"].ToObject<float>();
         }
 
+        public async Task<IReadOnlyList<NetworkSong>> GetYoutubeSongsAsync(string searchTerm)
+        {
+            var parameters = new
+            {
+                searchTerm
+            };
+
+            ResponseInfo response = await this.SendRequest(RequestAction.GetYoutubeSongs, parameters);
+
+            if (response.Status == ResponseStatus.Success)
+            {
+                return response.Content["songs"].ToObject<List<NetworkSong>>();
+            }
+
+            return new List<NetworkSong>();
+        }
+
         public Task<ResponseInfo> MovePlaylistSongDownAsync(Guid entryGuid)
         {
             var parameters = new

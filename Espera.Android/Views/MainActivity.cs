@@ -116,6 +116,10 @@ namespace Espera.Android.Views
                 this.LoadSoundCloudButton.Events().Click.Subscribe(x => this.StartActivity(typeof(SoundCloudActivity)))
                     .DisposeWith(disposable);
 
+                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadYoutubeButton.Enabled);
+                this.LoadYoutubeButton.Events().Click.Subscribe(x => this.StartActivity(typeof(YoutubeActivity)))
+                    .DisposeWith(disposable);
+
                 bool displayTrialPeriod = TrialHelpers.IsInTrialPeriod(AppConstants.TrialTime) && !settings.IsPremium;
                 this.TrialExpirationTextView.Visibility = this.TrialExpirationExplanationTextview.Visibility =
                     displayTrialPeriod ? ViewStates.Visible : ViewStates.Gone;
@@ -143,6 +147,8 @@ namespace Espera.Android.Views
         public Button LoadRemoteArtistsButton { get; private set; }
 
         public Button LoadSoundCloudButton { get; private set; }
+
+        public Button LoadYoutubeButton { get; private set; }
 
         public TextView TrialExpirationExplanationTextview { get; private set; }
 

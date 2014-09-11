@@ -246,10 +246,16 @@ namespace Espera.Android
 			public const int YoutubeSongTitle = 2131361821;
 			
 			// aapt resource value: 0x7f0a001e
-			public const int YoutubeSongsList = 2131361822;
+			public const int YoutubeSongUploader = 2131361822;
 			
 			// aapt resource value: 0x7f0a001f
-			public const int search = 2131361823;
+			public const int YoutubeSongViews = 2131361823;
+			
+			// aapt resource value: 0x7f0a0020
+			public const int YoutubeSongsList = 2131361824;
+			
+			// aapt resource value: 0x7f0a0021
+			public const int search = 2131361825;
 			
 			static Id()
 			{
@@ -565,6 +571,9 @@ namespace Espera.Android
 			
 			// aapt resource value: 0x7f04002f
 			public const int uses_vote = 2130968623;
+			
+			// aapt resource value: 0x7f040059
+			public const int view = 2130968665;
 			
 			// aapt resource value: 0x7f04004b
 			public const int vote = 2130968651;

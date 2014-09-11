@@ -43,6 +43,16 @@ namespace Espera.Mobile.Core.ViewModels
             get { return this.model.Title; }
         }
 
+        public string Uploader
+        {
+            get { return this.model.Artist; }
+        }
+
+        public int Views
+        {
+            get { return this.model.PlaybackCount; }
+        }
+
         private async Task<IBitmap> LoadArtwork()
         {
             if (this.model.ArtworkKey == null)

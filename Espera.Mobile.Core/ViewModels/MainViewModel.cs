@@ -15,10 +15,12 @@ namespace Espera.Mobile.Core.ViewModels
     {
         public static readonly TimeSpan ConnectCommandTimeout = TimeSpan.FromSeconds(10);
 
+        private readonly IClock clock;
+        private readonly IInstallationDateFetcher installationDateFetcher;
         private readonly UserSettings userSettings;
         private ObservableAsPropertyHelper<bool> isConnected;
 
-        public MainViewModel(UserSettings userSettings, Func<string> ipAddress)
+        public MainViewModel(UserSettings userSettings, Func<string> ipAddress, IInstallationDateFetcher installationDateFetcher = null, IClock clock = null)
         {
             if (ipAddress == null)
                 throw new ArgumentNullException("ipAddress");
@@ -27,6 +29,8 @@ namespace Espera.Mobile.Core.ViewModels
                 throw new ArgumentNullException("userSettings");
 
             this.userSettings = userSettings;
+            this.installationDateFetcher = installationDateFetcher;
+            this.clock = clock;
 
             this.Activator = new ViewModelActivator();
 
@@ -94,8 +98,15 @@ namespace Espera.Mobile.Core.ViewModels
                     NetworkMessenger.Instance.DiscoverServerAsync(localAddress, port))
                 .SelectMany(address =>
                 {
-                    string password = string.IsNullOrWhiteSpace(this.userSettings.AdministratorPassword) ?
-                        null : this.userSettings.AdministratorPassword;
+                    string password = null;
+
+                    // We don't want users that aren't premium or in the trial period to send any
+                    // existing password
+                    if (this.userSettings.IsPremium || TrialHelpers.IsInTrialPeriod(AppConstants.TrialTime, this.clock, this.installationDateFetcher))
+                    {
+                        password = string.IsNullOrWhiteSpace(this.userSettings.AdministratorPassword) ?
+                             null : this.userSettings.AdministratorPassword;
+                    }
 
                     return NetworkMessenger.Instance.ConnectAsync(address, port, this.userSettings.UniqueIdentifier, password);
                 });

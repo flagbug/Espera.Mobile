@@ -6,9 +6,8 @@
     android:padding="8dip">
     <ImageView
         android:id="@+id/Artwork"
-        android:layout_width="56dip"
-        android:layout_height="56dip"
-        android:layout_gravity="center_vertical" />
+        android:layout_height="90dip"
+        android:layout_width="120dip" />
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
@@ -18,7 +17,7 @@
             android:id="@+id/YoutubeSongTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16dip" />
+            android:textSize="14dip" />
         <TextView
             android:id="@+id/YoutubeSongUploader"
             android:layout_width="wrap_content"

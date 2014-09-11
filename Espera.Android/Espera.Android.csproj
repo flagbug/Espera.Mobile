@@ -93,16 +93,18 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Lager.Android.0.4.1\lib\monoandroid\Lager.Android.dll</HintPath>
     </Reference>
-    <Reference Include="ModernHttpClient">
-      <HintPath>..\packages\modernhttpclient.2.0.1\lib\MonoAndroid\ModernHttpClient.dll</HintPath>
+    <Reference Include="ModernHttpClient, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\modernhttpclient.2.1.0\lib\MonoAndroid\ModernHttpClient.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Android" />
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.5\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="OkHttp">
-      <HintPath>..\packages\modernhttpclient.2.0.1\lib\MonoAndroid\OkHttp.dll</HintPath>
+    <Reference Include="OkHttp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\modernhttpclient.2.1.0\lib\MonoAndroid\OkHttp.dll</HintPath>
     </Reference>
     <Reference Include="ReactiveMarrow, Version=0.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

@@ -1,5 +1,4 @@
 ﻿using System;
-using Espera.Mobile.Core.Songs;
 using ReactiveUI;
 
 namespace Espera.Mobile.Core.ViewModels

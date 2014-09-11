@@ -12,7 +12,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Espera.Mobile.Core.Analytics;
 using Espera.Mobile.Core.Settings;
-using Espera.Mobile.Core.Songs;
 using Espera.Network;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;

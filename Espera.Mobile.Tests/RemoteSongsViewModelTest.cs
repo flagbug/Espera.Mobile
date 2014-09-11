@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Espera.Mobile.Core.Network;
-using Espera.Mobile.Core.Songs;
 using Espera.Mobile.Core.ViewModels;
 using Espera.Network;
 using NSubstitute;
@@ -22,7 +21,7 @@ namespace Espera.Android.Tests
                 var messenger = Substitute.For<INetworkMessenger>();
                 messenger.AddSongToPlaylistAsync(Arg.Any<Guid>()).Returns(new ResponseInfo().ToTaskResult());
                 NetworkMessenger.Override(messenger);
-                var songs = Helpers.SetupSongs(4).Select(RemoteSong.FromNetworkSong).ToList();
+                var songs = Helpers.SetupSongs(4).ToList();
 
                 var vm = new RemoteSongsViewModel(songs) { SelectedSong = songs[2] };
 
@@ -39,7 +38,7 @@ namespace Espera.Android.Tests
             {
                 var messenger = Substitute.For<INetworkMessenger>();
                 NetworkMessenger.Override(messenger);
-                var songs = Helpers.SetupSongs(4).Select(RemoteSong.FromNetworkSong).ToList();
+                var songs = Helpers.SetupSongs(4).ToList();
 
                 var vm = new RemoteSongsViewModel(songs) { SelectedSong = songs[2] };
 

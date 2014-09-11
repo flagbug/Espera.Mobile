@@ -1,15 +1,9 @@
 using System.Collections.Generic;
-using System.Reactive;
-using System.Reactive.Disposables;
-using System.Reactive.Threading.Tasks;
-using System.Threading.Tasks;
 using Espera.Mobile.Core.Network;
 using Espera.Network;
-using ReactiveMarrow;
 using ReactiveUI;
 using System;
 using System.Linq;
-using System.Reactive.Linq;
 
 namespace Espera.Mobile.Core.ViewModels
 {

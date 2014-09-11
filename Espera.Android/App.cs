@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http;
 using Android.App;
 using Android.Runtime;
 using Espera.Android.Analytics;
@@ -8,6 +9,7 @@ using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
 using Espera.Mobile.Core.SongFetchers;
 using Espera.Mobile.Core.Songs;
+using ModernHttpClient;
 using ReactiveUI;
 using Splat;
 
@@ -45,6 +47,7 @@ namespace Espera.Android
             Locator.CurrentMutable.RegisterConstant(new AndroidSettings(), typeof(AndroidSettings));
             Locator.CurrentMutable.Register(() => new AndroidInstallationDateFetcher(), typeof(IInstallationDateFetcher));
             Locator.CurrentMutable.RegisterConstant(new AndroidLogger(), typeof(ILogger));
+            Locator.CurrentMutable.Register(() => new NativeMessageHandler(), typeof(HttpMessageHandler));
         }
     }
 }

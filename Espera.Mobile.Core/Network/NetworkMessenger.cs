@@ -320,6 +320,23 @@ namespace Espera.Mobile.Core.Network
             }
         }
 
+        public async Task<IReadOnlyList<NetworkSong>> GetSoundCloudSongsAsync(string searchTerm)
+        {
+            var parameters = new
+            {
+                searchTerm
+            };
+
+            ResponseInfo response = await this.SendRequest(RequestAction.GetSoundCloudSongs, parameters);
+
+            if (response.Status == ResponseStatus.Success)
+            {
+                return response.Content["songs"].ToObject<List<NetworkSong>>();
+            }
+
+            return new List<NetworkSong>();
+        }
+
         public async Task<float> GetVolume()
         {
             ResponseInfo response = await this.SendRequest(RequestAction.GetVolume);
@@ -404,12 +421,17 @@ namespace Espera.Mobile.Core.Network
 
             ResponseInfo response = await this.SendRequest(RequestAction.QueueRemoteSong, info);
 
+            if (response.Status != ResponseStatus.Success)
+            {
+                return new FileTransferStatus(response);
+            }
+
             var message = new SongTransferMessage { Data = songData, TransferId = transferId };
 
             var progress = this.TransferFileAsync(message).Publish(0);
             progress.Connect();
 
-            var status = new FileTransferStatus(progress);
+            var status = new FileTransferStatus(response, progress);
 
             return status;
         }

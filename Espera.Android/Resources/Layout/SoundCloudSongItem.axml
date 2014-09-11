@@ -3,12 +3,11 @@
     android:orientation="horizontal"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="8dp">
+    android:padding="8dip">
     <ImageView
-        android:id="@+id/Image"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:src="@drawable/CurrentSongIcon"
+        android:id="@+id/Artwork"
+        android:layout_width="48dip"
+        android:layout_height="48dip"
         android:layout_gravity="center_vertical" />
     <LinearLayout
         android:orientation="vertical"
@@ -16,14 +15,14 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dip">
         <TextView
-            android:id="@+id/PlaylistEntryTitle"
+            android:id="@+id/SoundCloudSongTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20dip" />
         <TextView
-            android:id="@+id/PlaylistEntryArtist"
+            android:id="@+id/SoundCloudSongArtist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12dip" />
+            android:textSize="16dip" />
     </LinearLayout>
 </LinearLayout>

@@ -6,7 +6,6 @@ using Espera.Mobile.Core.SongFetchers;
 using Espera.Mobile.Core.ViewModels;
 using Google.Analytics.Tracking;
 using Splat;
-using Resources = Android.Content.Res.Resources;
 
 namespace Espera.Android.Views
 {

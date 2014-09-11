@@ -41,6 +41,8 @@ namespace Espera.Mobile.Core.Network
 
         Task<float> GetVolume();
 
+        Task<IReadOnlyList<NetworkSong>> GetYoutubeSongsAsync(string searchTerm);
+
         Task<ResponseInfo> MovePlaylistSongDownAsync(Guid entryGuid);
 
         Task<ResponseInfo> MovePlaylistSongUpAsync(Guid entryGuid);

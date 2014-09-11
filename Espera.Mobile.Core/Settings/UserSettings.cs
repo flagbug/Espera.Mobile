@@ -21,7 +21,15 @@ namespace Espera.Mobile.Core.Settings
         public bool IsPremium
         {
 #if DEBUG || DEV
-            get { return true; }
+            get
+            {
+                if (ModeDetector.InUnitTestRunner())
+                {
+                    return this.GetOrCreate(true);
+                }
+
+                return true;
+            }
 #else
             get { return this.GetOrCreate(false); }
 #endif

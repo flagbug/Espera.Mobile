@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Configuration;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
@@ -112,6 +113,36 @@ namespace Espera.Android.Tests
             }
 
             [Fact]
+            public async Task IgnoresPasswordIfNotPremium()
+            {
+                var messenger = Substitute.For<INetworkMessenger>();
+                messenger.DiscoverServerAsync(Arg.Any<string>(), Arg.Any<int>()).Returns(Observable.Return("192.168.1.1"));
+                messenger.ConnectAsync(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<Guid>(), Arg.Any<string>())
+                    .Returns(Task.FromResult(new ConnectionResultContainer(ConnectionResult.Successful, NetworkAccessPermission.Admin, new Version("99.99.99"))));
+
+                NetworkMessenger.Override(messenger);
+
+                var settings = new UserSettings
+                {
+                    AdministratorPassword = "Password",
+                    IsPremium = false
+                };
+
+                // We're not in the trial period
+                var installationDateFetcher = Substitute.For<IInstallationDateFetcher>();
+                installationDateFetcher.GetInstallationDate().Returns(DateTime.MinValue);
+                var clock = Substitute.For<IClock>();
+                clock.Now.Returns(DateTime.MinValue + AppConstants.TrialTime);
+
+                var vm = new MainViewModel(settings, () => "192.168.1.2", installationDateFetcher, clock);
+                vm.Activator.Activate();
+
+                await vm.ConnectCommand.ExecuteAsync();
+
+                messenger.Received().ConnectAsync("192.168.1.1", settings.Port, new Guid(), null);
+            }
+
+            [Fact]
             public async Task SmokeTest()
             {
                 var messenger = Substitute.For<INetworkMessenger>();
@@ -169,7 +200,11 @@ namespace Espera.Android.Tests
 
                 NetworkMessenger.Override(messenger);
 
-                var settings = new UserSettings { AdministratorPassword = "Bla" };
+                var settings = new UserSettings
+                {
+                    AdministratorPassword = "Bla",
+                    IsPremium = true
+                };
 
                 var vm = new MainViewModel(settings, () => "192.168.1.2");
                 vm.Activator.Activate();

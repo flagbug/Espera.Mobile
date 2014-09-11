@@ -13,12 +13,21 @@
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
         android:paddingLeft="10dip">
         <TextView
             android:id="@+id/YoutubeSongTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16dip" />
+        <TextView
+            android:id="@+id/YoutubeSongUploader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dip" />
+        <TextView
+            android:id="@+id/YoutubeSongViews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dip" />
     </LinearLayout>
 </LinearLayout>

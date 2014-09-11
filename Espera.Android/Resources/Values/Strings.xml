@@ -94,4 +94,5 @@
   <string name="loading_youtube">Loading YouTube...</string>
   <string name="youtube_no_songs">No songs found</string>
   <string name="search">Search</string>
+  <string name="view">view</string>
 </resources>

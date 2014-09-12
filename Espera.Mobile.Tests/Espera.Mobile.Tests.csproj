@@ -116,6 +116,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="ReactiveHelperTest.cs" />
+    <Compile Include="RemoteArtistsViewModelTest.cs" />
     <Compile Include="RemoteSongsViewModelTest.cs" />
     <Compile Include="TrialHelpersTest.cs" />
   </ItemGroup>

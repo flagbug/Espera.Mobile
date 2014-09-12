@@ -6,7 +6,6 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Akavache;
 using Android.App;
-using Android.Content.PM;
 using Android.OS;
 using Android.Views;
 using Android.Widget;

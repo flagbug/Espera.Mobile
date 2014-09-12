@@ -9,7 +9,7 @@ using Google.Analytics.Tracking;
 
 namespace Espera.Android.Views
 {
-    [Activity(ConfigurationChanges = ConfigChanges.Orientation)]
+    [Activity]
     public class RemoteArtistsActivity : ArtistsActivity<NetworkSong>
     {
         protected override ArtistsViewModel<NetworkSong> ConstructViewModel()

@@ -25,8 +25,7 @@ using IMenuItem = Android.Views.IMenuItem;
 
 namespace Espera.Android.Views
 {
-    [Activity(Label = "Espera", MainLauncher = true, Icon = "@drawable/icon",
-        ConfigurationChanges = ConfigChanges.Orientation, LaunchMode = LaunchMode.SingleTop)]
+    [Activity(Label = "Espera", MainLauncher = true, Icon = "@drawable/icon", LaunchMode = LaunchMode.SingleTop)]
     public class MainActivity : ReactiveActivity<MainViewModel>
     {
         public MainActivity()

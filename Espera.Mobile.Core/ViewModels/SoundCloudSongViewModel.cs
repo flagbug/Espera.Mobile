@@ -43,6 +43,11 @@ namespace Espera.Mobile.Core.ViewModels
             get { return this.model.Guid; }
         }
 
+        public int PlaybackCount
+        {
+            get { return this.model.PlaybackCount; }
+        }
+
         public string Title
         {
             get { return this.model.Title; }

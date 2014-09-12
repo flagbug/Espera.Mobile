@@ -18,59 +18,6 @@ namespace Espera.Android.Views
     {
         private ProgressDialog progressDialog;
 
-        public YoutubeActivity()
-        {
-            this.WhenActivated(() =>
-            {
-                var disposable = new CompositeDisposable();
-
-                var reactiveList = new ReactiveList<YoutubeSongViewModel>();
-                this.WhenAnyValue(x => x.ViewModel.Songs).Skip(1)
-                    .Subscribe(x =>
-                    {
-                        using (reactiveList.SuppressChangeNotifications())
-                        {
-                            reactiveList.Clear();
-                            reactiveList.AddRange(x);
-                        }
-                    }).DisposeWith(disposable);
-                this.YoutubeSongsList.Adapter = new ReactiveListAdapter<YoutubeSongViewModel>(reactiveList, (vm, parent) => new YoutubeSongView(this, vm, parent));
-                this.YoutubeSongsList.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty);
-                this.YoutubeSongsList.Events().ItemClick.Select(x => x.Position)
-                    .Subscribe(this.DisplayAddToPlaylistDialog<YoutubeViewModel, YoutubeSongViewModel>)
-                    .DisposeWith(disposable);
-
-                this.ViewModel.AddToPlaylistCommand.ThrownExceptions
-                    .ObserveOn(RxApp.MainThreadScheduler)
-                    .Subscribe(_ => Toast.MakeText(this, Resource.String.something_went_wrong, ToastLength.Short).Show())
-                    .DisposeWith(disposable);
-
-                this.progressDialog = new ProgressDialog(this);
-                this.progressDialog.SetMessage(Resources.GetString(Resource.String.loading_youtube));
-                this.progressDialog.Indeterminate = true;
-                this.progressDialog.SetCancelable(false);
-
-                this.ViewModel.LoadCommand.IsExecuting
-                    .Skip(1)
-                    .Subscribe(x =>
-                    {
-                        if (x)
-                        {
-                            this.progressDialog.Show();
-                        }
-
-                        else if (this.progressDialog.IsShowing)
-                        {
-                            this.progressDialog.Dismiss();
-                        }
-                    }).DisposeWith(disposable);
-
-                this.ViewModel.LoadCommand.Execute(null);
-
-                return disposable;
-            });
-        }
-
         public ListView YoutubeSongsList { get; private set; }
 
         public override bool OnCreateOptionsMenu(IMenu menu)
@@ -107,6 +54,47 @@ namespace Espera.Android.Views
             this.WireUpControls();
 
             this.ViewModel = new YoutubeViewModel();
+
+            var reactiveList = new ReactiveList<YoutubeSongViewModel>();
+            this.WhenAnyValue(x => x.ViewModel.Songs).Skip(1)
+                .Subscribe(x =>
+                {
+                    using (reactiveList.SuppressChangeNotifications())
+                    {
+                        reactiveList.Clear();
+                        reactiveList.AddRange(x);
+                    }
+                });
+            this.YoutubeSongsList.Adapter = new ReactiveListAdapter<YoutubeSongViewModel>(reactiveList, (vm, parent) => new YoutubeSongView(this, vm, parent));
+            this.YoutubeSongsList.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty);
+            this.YoutubeSongsList.Events().ItemClick.Select(x => x.Position)
+                .Subscribe(this.DisplayAddToPlaylistDialog<YoutubeViewModel, YoutubeSongViewModel>);
+
+            this.ViewModel.AddToPlaylistCommand.ThrownExceptions
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(_ => Toast.MakeText(this, Resource.String.something_went_wrong, ToastLength.Short).Show());
+
+            this.progressDialog = new ProgressDialog(this);
+            this.progressDialog.SetMessage(Resources.GetString(Resource.String.loading_youtube));
+            this.progressDialog.Indeterminate = true;
+            this.progressDialog.SetCancelable(false);
+
+            this.ViewModel.LoadCommand.IsExecuting
+                .Skip(1)
+                .Subscribe(x =>
+                {
+                    if (x)
+                    {
+                        this.progressDialog.Show();
+                    }
+
+                    else if (this.progressDialog.IsShowing)
+                    {
+                        this.progressDialog.Dismiss();
+                    }
+                });
+
+            this.ViewModel.LoadCommand.Execute(null);
         }
 
         protected override void OnDestroy()

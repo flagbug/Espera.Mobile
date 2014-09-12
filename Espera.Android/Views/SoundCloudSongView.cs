@@ -23,7 +23,7 @@ namespace Espera.Android.Views
             this.OneWayBind(this.ViewModel, vm => vm.Title, v => v.SoundCloudSongTitle.Text);
             this.OneWayBind(this.ViewModel, vm => vm.Artist, v => v.SoundCloudSongArtist.Text);
             this.OneWayBind(this.ViewModel, vm => vm.PlaybackCount, v => v.SoundCloudSongPlaybackCount.Text,
-                x => ctx.Resources.GetString(Resource.String.play).ToQuantity(x, "N0"));
+                x => ctx.Resources.GetString(Resource.String.soundcloud_play).ToQuantity(x, "N0"));
 
             this.WhenAnyValue(x => x.ViewModel.Artwork)
                 .Where(x => x != null)

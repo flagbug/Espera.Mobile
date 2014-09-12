@@ -407,8 +407,8 @@ namespace Espera.Android
 			// aapt resource value: 0x7f040054
 			public const int loading_soundcloud = 2130968660;
 			
-			// aapt resource value: 0x7f040056
-			public const int loading_youtube = 2130968662;
+			// aapt resource value: 0x7f040057
+			public const int loading_youtube = 2130968663;
 			
 			// aapt resource value: 0x7f04004d
 			public const int local_artists = 2130968653;
@@ -554,8 +554,8 @@ namespace Espera.Android
 			// aapt resource value: 0x7f040039
 			public const int required_server_version = 2130968633;
 			
-			// aapt resource value: 0x7f040058
-			public const int search = 2130968664;
+			// aapt resource value: 0x7f04005a
+			public const int search = 2130968666;
 			
 			// aapt resource value: 0x7f04003b
 			public const int settings = 2130968635;
@@ -566,6 +566,9 @@ namespace Espera.Android
 			// aapt resource value: 0x7f040055
 			public const int soundcloud_no_songs = 2130968661;
 			
+			// aapt resource value: 0x7f040056
+			public const int soundcloud_play = 2130968662;
+			
 			// aapt resource value: 0x7f040023
 			public const int trial_expiration = 2130968611;
 			
@@ -574,9 +577,6 @@ namespace Espera.Android
 			
 			// aapt resource value: 0x7f04002f
 			public const int uses_vote = 2130968623;
-			
-			// aapt resource value: 0x7f040059
-			public const int view = 2130968665;
 			
 			// aapt resource value: 0x7f04004b
 			public const int vote = 2130968651;
@@ -605,8 +605,11 @@ namespace Espera.Android
 			// aapt resource value: 0x7f04003a
 			public const int wrong_password = 2130968634;
 			
-			// aapt resource value: 0x7f040057
-			public const int youtube_no_songs = 2130968663;
+			// aapt resource value: 0x7f040058
+			public const int youtube_no_songs = 2130968664;
+			
+			// aapt resource value: 0x7f040059
+			public const int youtube_view = 2130968665;
 			
 			static String()
 			{

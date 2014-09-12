@@ -47,6 +47,7 @@
     <Compile Include="Analytics\AnalyticsMixin.cs" />
     <Compile Include="Analytics\IAnalytics.cs" />
     <Compile Include="AppConstants.cs" />
+    <Compile Include="ArtworkHelper.cs" />
     <Compile Include="BlobCacheKeys.cs" />
     <Compile Include="IClock.cs" />
     <Compile Include="IDeviceIdFactory.cs" />

@@ -23,7 +23,7 @@ namespace Espera.Android.Views
             this.OneWayBind(this.ViewModel, vm => vm.Title, v => v.YoutubeSongTitle.Text);
             this.OneWayBind(this.ViewModel, vm => vm.Uploader, v => v.YoutubeSongUploader.Text);
             this.OneWayBind(this.ViewModel, vm => vm.Views, v => v.YoutubeSongViews.Text,
-                x => ctx.Resources.GetString(Resource.String.view).ToQuantity(x, "N0"));
+                x => ctx.Resources.GetString(Resource.String.youtube_view).ToQuantity(x, "N0"));
 
             this.WhenAnyValue(x => x.ViewModel.Artwork)
                 .Where(x => x != null)

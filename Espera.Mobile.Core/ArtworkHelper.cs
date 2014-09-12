@@ -17,11 +17,11 @@ namespace Espera.Mobile.Core
             if (song.ArtworkKey == null)
                 return null;
 
-            byte[] imageBytes = await BlobCache.LocalMachine.GetOrFetchObject(song.ArtworkKey, async () =>
+            byte[] imageBytes = await BlobCache.LocalMachine.GetOrFetchObject(song.ArtworkKey, () =>
             {
                 using (var client = new HttpClient(NetCache.UserInitiated))
                 {
-                    return await client.GetByteArrayAsync(song.ArtworkKey);
+                    return client.GetByteArrayAsync(song.ArtworkKey);
                 }
             }, DateTimeOffset.Now + TimeSpan.FromDays(1));
 

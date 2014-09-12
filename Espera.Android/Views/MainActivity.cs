@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using Akavache;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -182,6 +183,13 @@ namespace Espera.Android.Views
 
             this.SetContentView(Resource.Layout.Main);
             this.WireUpControls();
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+
+            BlobCache.LocalMachine.Vacuum().Wait();
         }
 
         protected override void OnNewIntent(Intent intent)

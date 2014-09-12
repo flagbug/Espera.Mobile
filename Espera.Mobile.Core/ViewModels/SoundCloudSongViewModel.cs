@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Net.Http;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
 using Espera.Network;
-using Fusillade;
 using ReactiveUI;
 using Splat;
 
@@ -21,7 +18,8 @@ namespace Espera.Mobile.Core.ViewModels
 
             this.model = model;
 
-            this.artwork = Observable.FromAsync(this.LoadArtwork)
+            this.artwork = Observable.FromAsync(() => ArtworkHelper.LoadArtwork(model))
+                .LoggedCatch(this, null, "Failed to load SoundCloud artwork")
                 .FirstAsync()
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .ToProperty(this, x => x.Artwork);
@@ -51,30 +49,6 @@ namespace Espera.Mobile.Core.ViewModels
         public string Title
         {
             get { return this.model.Title; }
-        }
-
-        private async Task<IBitmap> LoadArtwork()
-        {
-            if (this.model.ArtworkKey == null)
-                return null;
-
-            using (var client = new HttpClient(NetCache.UserInitiated))
-            {
-                try
-                {
-                    using (var stream = await client.GetStreamAsync(this.model.ArtworkKey))
-                    {
-                        return await BitmapLoader.Current.Load(stream, null, null);
-                    }
-                }
-
-                catch (Exception ex)
-                {
-                    this.Log().ErrorException("Failed to load SoundCloud artwork", ex);
-
-                    return null;
-                }
-            }
         }
     }
 }

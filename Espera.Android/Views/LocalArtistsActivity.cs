@@ -9,7 +9,7 @@ using Splat;
 
 namespace Espera.Android.Views
 {
-    [Activity(ConfigurationChanges = ConfigChanges.Orientation)]
+    [Activity]
     public class LocalArtistsActivity : ArtistsActivity<LocalSong>
     {
         protected override ArtistsViewModel<LocalSong> ConstructViewModel()

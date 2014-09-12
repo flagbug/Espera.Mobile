@@ -17,7 +17,7 @@ using ReactiveUI;
 
 namespace Espera.Android.Views
 {
-    [Activity(ConfigurationChanges = ConfigChanges.Orientation)]
+    [Activity]
     public class LocalSongsActivity : ReactiveActivity<LocalSongsViewModel>
     {
         public LocalSongsActivity()

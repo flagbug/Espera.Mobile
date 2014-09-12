@@ -20,7 +20,7 @@ using ReactiveUI;
 
 namespace Espera.Android.Views
 {
-    [Activity(Label = "Current Playlist", ConfigurationChanges = ConfigChanges.Orientation)]
+    [Activity(Label = "Current Playlist")]
     public class PlaylistActivity : ReactiveActivity<PlaylistViewModel>
     {
         private ProgressDialog progressDialog;

@@ -19,7 +19,7 @@ using ReactiveUI;
 
 namespace Espera.Android.Views
 {
-    [Activity(ConfigurationChanges = ConfigChanges.Orientation)]
+    [Activity]
     public class RemoteSongsActivity : ReactiveActivity<RemoteSongsViewModel>
     {
         public RemoteSongsActivity()

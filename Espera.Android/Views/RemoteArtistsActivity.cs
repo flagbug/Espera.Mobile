@@ -1,8 +1,5 @@
 using Android.App;
-using Android.Content.PM;
 using Android.OS;
-using Espera.Mobile.Core;
-using Espera.Mobile.Core.SongFetchers;
 using Espera.Mobile.Core.ViewModels;
 using Espera.Network;
 using Google.Analytics.Tracking;
@@ -14,7 +11,7 @@ namespace Espera.Android.Views
     {
         protected override ArtistsViewModel<NetworkSong> ConstructViewModel()
         {
-            return new ArtistsViewModel<NetworkSong>(new RemoteSongFetcher(), BlobCacheKeys.SelectedRemoteSongs);
+            return new RemoteArtistsViewModel();
         }
 
         protected override void OnCreate(Bundle bundle)

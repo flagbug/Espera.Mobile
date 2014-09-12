@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Akavache;
 using Espera.Mobile.Core;
 using Espera.Mobile.Core.SongFetchers;
 using Espera.Mobile.Core.ViewModels;
@@ -65,6 +66,29 @@ namespace Espera.Android.Tests
 
                 Assert.Equal(1, coll.Count);
                 Assert.IsType<TimeoutException>(coll[0]);
+            }
+        }
+
+        public class TheSelectedArtistProperty
+        {
+            [Fact]
+            public async Task FiltersSongsAndStoresThemInLocalCache()
+            {
+                IReadOnlyList<NetworkSong> songs = SetupSongsWithArtist("A", "A", "B").ToList();
+
+                var songFetcher = Substitute.For<ISongFetcher<NetworkSong>>();
+                songFetcher.GetSongsAsync().Returns(Observable.Return(songs));
+
+                var vm = new ArtistsViewModel<NetworkSong>(songFetcher, "TheKey");
+
+                await vm.LoadCommand.ExecuteAsync();
+
+                vm.SelectedArtist = "A";
+
+                List<NetworkSong> cached = await BlobCache.LocalMachine.GetObject<List<NetworkSong>>("TheKey");
+
+                Assert.Equal(2, cached.Count);
+                Assert.True(cached.All(x => x.Artist == "A"));
             }
         }
     }

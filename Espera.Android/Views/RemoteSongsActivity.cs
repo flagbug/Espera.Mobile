@@ -87,16 +87,9 @@ namespace Espera.Android.Views
             this.SetContentView(Resource.Layout.RemoteSongs);
             this.WireUpControls();
 
-            var songs = BlobCache.InMemory.GetObject<IEnumerable<NetworkSong>>(BlobCacheKeys.SelectedRemoteSongs).Wait().ToList();
+            var songs = BlobCache.LocalMachine.GetObject<IEnumerable<NetworkSong>>(BlobCacheKeys.SelectedRemoteSongs).Wait().ToList();
             this.Title = songs.First().Artist;
             this.ViewModel = new RemoteSongsViewModel(songs);
-        }
-
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-
-            BlobCache.InMemory.InvalidateObject<IEnumerable<LocalSong>>(BlobCacheKeys.SelectedRemoteSongs).Wait();
         }
 
         protected override void OnStart()

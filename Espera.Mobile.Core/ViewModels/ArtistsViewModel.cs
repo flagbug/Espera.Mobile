@@ -31,7 +31,7 @@ namespace Espera.Mobile.Core.ViewModels
 
             this.WhenAnyValue(x => x.SelectedArtist).Where(x => x != null)
                 .Select(FilterSongsByArtist)
-                .Select(x => BlobCache.InMemory.InsertObject(serializationKey, x))
+                .Select(x => BlobCache.LocalMachine.InsertObject(serializationKey, x))
                 .Concat()
                 .Subscribe();
         }

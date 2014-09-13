@@ -66,7 +66,11 @@ namespace Espera.Android.Views
                     }
                 });
             this.YoutubeSongsList.Adapter = new ReactiveListAdapter<YoutubeSongViewModel>(reactiveList, (vm, parent) => new YoutubeSongView(this, vm, parent));
-            this.YoutubeSongsList.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty);
+
+            this.ViewModel.LoadCommand
+                .FirstAsync()
+                .Subscribe(_ => this.YoutubeSongsList.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty));
+
             this.YoutubeSongsList.Events().ItemClick.Select(x => x.Position)
                 .Subscribe(this.DisplayAddToPlaylistDialog<YoutubeViewModel, YoutubeSongViewModel>);
 

@@ -66,7 +66,11 @@ namespace Espera.Android.Views
                     }
                 });
             this.SoundCloudSongsList.Adapter = new ReactiveListAdapter<SoundCloudSongViewModel>(reactiveList, (vm, parent) => new SoundCloudSongView(this, vm, parent));
-            this.SoundCloudSongsList.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty);
+
+            this.ViewModel.LoadCommand
+               .FirstAsync()
+               .Subscribe(_ => this.SoundCloudSongsList.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty));
+
             this.SoundCloudSongsList.Events().ItemClick.Select(x => x.Position)
                 .Subscribe(this.DisplayAddToPlaylistDialog<SoundCloudViewModel, SoundCloudSongViewModel>);
 

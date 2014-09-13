@@ -32,7 +32,11 @@ namespace Espera.Android.Views
             this.ViewModel = this.ConstructViewModel();
 
             this.OneWayBind(this.ViewModel, x => x.Artists, x => x.ArtistList.Adapter, list => new ArtistsAdapter(this, list));
-            this.ArtistList.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty);
+
+            this.ViewModel.LoadCommand
+                .FirstAsync()
+                .Subscribe(_ => this.ArtistList.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty));
+
             this.ArtistList.Events().ItemClick.Subscribe(x =>
             {
                 this.ViewModel.SelectedArtist = (string)this.ArtistList.GetItemAtPosition(x.Position);

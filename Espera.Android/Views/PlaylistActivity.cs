@@ -41,7 +41,11 @@ namespace Espera.Android.Views
 
                 var adapter = new ReactiveListAdapter<PlaylistEntryViewModel>(this.ViewModel.Entries, (vm, parent) => new PlaylistEntryView(this, vm, parent));
                 this.Playlist.Adapter = adapter;
-                this.Playlist.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty);
+
+                this.ViewModel.LoadPlaylistCommand
+                    .FirstAsync()
+                    .Subscribe(_ => this.Playlist.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty));
+
                 this.Playlist.Events().ItemClick.Select(x => x.Position)
                     .Subscribe(x =>
                     {

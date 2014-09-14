@@ -1,3 +1,6 @@
+# v1.1.1
+- Fixed a crash when tapping on a SoundCloud or YouTube song
+
 # v1.1.0
 - Added SoundCloud and YouTube support
 - Improved the remote artists loading

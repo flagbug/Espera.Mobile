@@ -46,7 +46,7 @@ namespace Espera.Android.Views
             return AndroidVolumeRequests.Instance.HandleKeyCode(keyCode) || base.OnKeyDown(keyCode, e);
         }
 
-        protected override void OnCreate(Bundle bundle)
+        protected async override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
 
@@ -66,10 +66,6 @@ namespace Espera.Android.Views
                     }
                 });
             this.YoutubeSongsList.Adapter = new ReactiveListAdapter<YoutubeSongViewModel>(reactiveList, (vm, parent) => new YoutubeSongView(this, vm, parent));
-
-            this.ViewModel.LoadCommand
-                .FirstAsync()
-                .Subscribe(_ => this.YoutubeSongsList.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty));
 
             this.YoutubeSongsList.Events().ItemClick.Select(x => x.Position)
                 .Subscribe(this.DisplayAddToPlaylistDialog<YoutubeViewModel, YoutubeSongViewModel>);
@@ -98,7 +94,8 @@ namespace Espera.Android.Views
                     }
                 });
 
-            this.ViewModel.LoadCommand.Execute(null);
+            this.ViewModel.LoadCommand.ExecuteAsync()
+                .Subscribe(_ => this.YoutubeSongsList.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty));
         }
 
         protected override void OnDestroy()

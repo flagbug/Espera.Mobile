@@ -3,14 +3,14 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/YoutubeSongsList" />
     <TextView
         android:id="@android:id/empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="@string/youtube_no_songs"
         android:gravity="center" />
-    <ListView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/YoutubeSongsList" />
 </LinearLayout>

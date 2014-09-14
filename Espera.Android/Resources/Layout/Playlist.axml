@@ -37,7 +37,7 @@
             <SeekBar
                 android:layout_height="wrap_content"
                 android:id="@+id/DurationSeekBar"
-                android:layout_weight="7"
+                android:layout_weight="6"
                 android:layout_width="0px" />
             <TextView
                 android:id="@+id/TotalTimeTextView"

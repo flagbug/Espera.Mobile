@@ -1,3 +1,9 @@
+# v1.1.0
+- Added SoundCloud and YouTube support
+- Improved the remote artists loading
+- Fixed the playlist on small phones
+- Fixed crashes when rotating the device
+
 # v1.0.3
 - Added a feedback button and version info
 - Fixed the formatting in some context menus

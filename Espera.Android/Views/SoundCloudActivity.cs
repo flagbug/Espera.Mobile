@@ -1,6 +1,5 @@
 using System;
 using System.Reactive;
-using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Android.App;
 using Android.OS;
@@ -8,7 +7,6 @@ using Android.Views;
 using Android.Widget;
 using Espera.Mobile.Core.ViewModels;
 using Google.Analytics.Tracking;
-using ReactiveMarrow;
 using ReactiveUI;
 
 namespace Espera.Android.Views
@@ -66,11 +64,6 @@ namespace Espera.Android.Views
                     }
                 });
             this.SoundCloudSongsList.Adapter = new ReactiveListAdapter<SoundCloudSongViewModel>(reactiveList, (vm, parent) => new SoundCloudSongView(this, vm, parent));
-
-            this.ViewModel.LoadCommand
-               .FirstAsync()
-               .Subscribe(_ => this.SoundCloudSongsList.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty));
-
             this.SoundCloudSongsList.Events().ItemClick.Select(x => x.Position)
                 .Subscribe(this.DisplayAddToPlaylistDialog<SoundCloudViewModel, SoundCloudSongViewModel>);
 
@@ -98,7 +91,8 @@ namespace Espera.Android.Views
                     }
                 });
 
-            this.ViewModel.LoadCommand.Execute(null);
+            this.ViewModel.LoadCommand.ExecuteAsync()
+                .Subscribe(_ => this.SoundCloudSongsList.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty));
         }
 
         protected override void OnDestroy()

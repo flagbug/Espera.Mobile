@@ -33,10 +33,6 @@ namespace Espera.Android.Views
 
             this.OneWayBind(this.ViewModel, x => x.Artists, x => x.ArtistList.Adapter, list => new ArtistsAdapter(this, list));
 
-            this.ViewModel.LoadCommand
-                .FirstAsync()
-                .Subscribe(_ => this.ArtistList.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty));
-
             this.ArtistList.Events().ItemClick.Subscribe(x =>
             {
                 this.ViewModel.SelectedArtist = (string)this.ArtistList.GetItemAtPosition(x.Position);
@@ -49,7 +45,8 @@ namespace Espera.Android.Views
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(x => Toast.MakeText(this, Resource.String.loading_artists_failed, ToastLength.Long).Show());
 
-            this.ViewModel.LoadCommand.Execute(null);
+            this.ViewModel.LoadCommand.ExecuteAsync()
+                .Subscribe(x => this.ArtistList.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty));
         }
 
         protected abstract void OpenArtist();

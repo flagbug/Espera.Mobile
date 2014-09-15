@@ -120,15 +120,20 @@ namespace Espera.Android.Views
                 this.LoadYoutubeButton.Events().Click.Subscribe(x => this.StartActivity(typeof(YoutubeActivity)))
                     .DisposeWith(disposable);
 
-                bool displayTrialPeriod = TrialHelpers.IsInTrialPeriod(AppConstants.TrialTime) && !settings.IsPremium;
+                bool displayTrialPeriod = !settings.IsPremium;
                 this.TrialExpirationTextView.Visibility = this.TrialExpirationExplanationTextview.Visibility =
                     displayTrialPeriod ? ViewStates.Visible : ViewStates.Gone;
 
                 if (displayTrialPeriod)
                 {
                     TimeSpan remainingTrialTime = TrialHelpers.GetRemainingTrialTime(AppConstants.TrialTime);
+
+                    string expirationMessage = remainingTrialTime > TimeSpan.Zero ?
+                        Resources.GetString(Resource.String.trial_expiration) :
+                        Resources.GetString(Resource.String.trial_expiration_expired);
+
                     this.TrialExpirationTextView.Text = string.Format("{0} {1}",
-                        Resources.GetString(Resource.String.trial_expiration),
+                        expirationMessage,
                         remainingTrialTime.Humanize(culture: new CultureInfo("en-US")));
 
                     this.TrialExpirationExplanationTextview.Text = Resources.GetString(Resource.String.trial_expiration_explanation);

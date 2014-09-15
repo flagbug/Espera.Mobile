@@ -15,19 +15,19 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/LoadPlaylistButton"
-        android:text="Playlist"
+        android:text="@string/playlist"
         android:layout_margin="10dp" />
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/LoadRemoteArtistsButton"
-        android:text="Songs on the computer"
+        android:text="@string/remote_songs"
         android:layout_margin="10dp" />
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/LoadLocalArtistsButton"
-        android:text="Songs on this device"
+        android:text="@string/local_songs"
         android:layout_margin="10dp" />
     <Button
         android:layout_width="fill_parent"

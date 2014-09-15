@@ -44,10 +44,14 @@
   </string>
   <string name="guest_functions">Guest functions</string>
   <string name="administrator_functions">Admin functions</string>
+  <string name="playlist">Playlist</string>
+  <string name="remote_songs">Songs on the computer</string>
+  <string name="local_songs">Songs on this device</string>
   <string name="no_votes_left">No votes left</string>
   <string name="play">Play</string>
   <string name="add_to_playlist">Add to playlist</string>
   <string name="loading_playlist">Loading playlist</string>
+  <string name="playlist_is_empty">Playlist is empty</string>
   <string name="remove">Remove</string>
   <string name="move_up">Move Up</string>
   <string name="move_down">Move Down</string>
@@ -97,4 +101,5 @@
   <string name="youtube_no_songs">No songs found</string>
   <string name="youtube_view">view</string>
   <string name="search">Search</string>
+  <string name="artists_no_songs">No songs found</string>
 </resources>

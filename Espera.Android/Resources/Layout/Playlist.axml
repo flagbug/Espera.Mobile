@@ -12,7 +12,7 @@
         android:id="@android:id/empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Playlist is empty"
+        android:text="@string/playlist_is_empty"
         android:gravity="center" />
     <LinearLayout
         android:id="@+id/PlaybackControlPanel"

@@ -572,6 +572,12 @@ namespace Espera.Android
 			// aapt resource value: 0x7f04005f
 			public const int search = 2130968671;
 			
+			// aapt resource value: 0x7f040062
+			public const int service_notification_text = 2130968674;
+			
+			// aapt resource value: 0x7f040061
+			public const int service_notification_title = 2130968673;
+			
 			// aapt resource value: 0x7f040040
 			public const int settings = 2130968640;
 			

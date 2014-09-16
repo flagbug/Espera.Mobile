@@ -11,7 +11,6 @@ using Android.Support.V4.App;
 using Android.Support.V4.Widget;
 using Android.Views;
 using Android.Widget;
-using Dalvik.SystemInterop;
 using Espera.Android.Services;
 using Espera.Mobile.Core.Analytics;
 using Espera.Mobile.Core.Network;
@@ -63,6 +62,8 @@ namespace Espera.Android.Views
 
         protected override void OnCreate(Bundle bundle)
         {
+            this.RequestWindowFeature(WindowFeatures.IndeterminateProgress);
+
             base.OnCreate(bundle);
 
             this.Title = String.Empty;
@@ -187,6 +188,14 @@ namespace Espera.Android.Views
 
                 case 1:
                     fragment = new PlaylistFragment();
+                    break;
+
+                case 2:
+                    fragment = new RemoteArtistsFragment();
+                    break;
+
+                case 3:
+                    fragment = new LocalArtistsFragment();
                     break;
             }
 

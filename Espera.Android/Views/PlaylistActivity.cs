@@ -23,8 +23,6 @@ namespace Espera.Android.Views
     [Activity(Label = "Current Playlist")]
     public class PlaylistActivity : ReactiveActivity<PlaylistViewModel>
     {
-        private ProgressDialog progressDialog;
-
         public PlaylistActivity()
         {
             this.WhenActivated(() =>
@@ -182,15 +180,15 @@ namespace Espera.Android.Views
                     .Subscribe(x => this.NextButton.Background.SetAlpha(x))
                     .DisposeWith(disposable);
 
-                this.progressDialog = new ProgressDialog(this);
-                this.progressDialog.SetMessage(Resources.GetString(Resource.String.loading_playlist));
-                this.progressDialog.Indeterminate = true;
-                this.progressDialog.SetCancelable(false);
+                var progressDialog = new ProgressDialog(this);
+                progressDialog.SetMessage(Resources.GetString(Resource.String.loading_playlist));
+                progressDialog.Indeterminate = true;
+                progressDialog.SetCancelable(false);
 
-                this.progressDialog.Show();
+                progressDialog.Show();
 
                 this.ViewModel.LoadPlaylistCommand.ExecuteAsync()
-                    .Finally(() => this.progressDialog.Dismiss())
+                    .Finally(progressDialog.Dismiss)
                     .Subscribe(_ => this.Playlist.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty))
                     .DisposeWith(disposable);
 

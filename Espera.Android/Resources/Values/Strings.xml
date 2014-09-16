@@ -37,6 +37,14 @@
   <string name="preference_category_administrator">Administrator</string>
   <string name="preference_category_premium">Premium</string>
   <string name="preference_category_about">About</string>
+  <string-array name="main_drawer_items">
+    <item>Connection</item>
+    <item>Playlist</item>
+    <item>Songs on the computer</item>
+    <item>Songs on this device</item>
+    <item>SoundCloud</item>
+    <item>YouTube</item>
+  </string-array>
   <string name="trial_expiration">Trial expires in</string>
   <string name="trial_expiration_expired">Trial expired</string>
   <string name="trial_expiration_explanation">

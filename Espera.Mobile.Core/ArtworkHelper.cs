@@ -12,23 +12,26 @@ namespace Espera.Mobile.Core
 {
     public static class ArtworkHelper
     {
-        public static async Task<IBitmap> LoadArtwork(NetworkSong song)
+        public static IObservable<IBitmap> LoadArtwork(NetworkSong song)
         {
             if (song.ArtworkKey == null)
-                return null;
+                return Observable.Return((IBitmap)null);
 
-            byte[] imageBytes = await BlobCache.LocalMachine.GetOrFetchObject(song.ArtworkKey, () =>
-            {
-                using (var client = new HttpClient(NetCache.UserInitiated))
+            return BlobCache.LocalMachine.GetOrFetchObject(song.ArtworkKey, () => GetData(song.ArtworkKey), DateTimeOffset.Now + TimeSpan.FromDays(1))
+                .SelectMany(async imageData =>
                 {
-                    return client.GetByteArrayAsync(song.ArtworkKey);
-                }
-            }, DateTimeOffset.Now + TimeSpan.FromDays(1));
+                    using (var stream = new MemoryStream(imageData))
+                    {
+                        return await BitmapLoader.Current.Load(stream, null, null);
+                    }
+                });
+        }
 
-            using (var stream = new MemoryStream(imageBytes))
-            {
-                return await BitmapLoader.Current.Load(stream, null, null);
-            }
+        private static IObservable<byte[]> GetData(string requestUrl)
+        {
+            return Observable.Using(() => new HttpClient(NetCache.UserInitiated),
+                client => Observable.FromAsync(ct => client.GetAsync(requestUrl, ct)))
+                    .SelectMany(message => message.Content.ReadAsByteArrayAsync());
         }
     }
 }

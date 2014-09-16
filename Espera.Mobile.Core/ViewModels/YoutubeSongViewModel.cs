@@ -18,9 +18,8 @@ namespace Espera.Mobile.Core.ViewModels
 
             this.model = model;
 
-            this.artwork = Observable.FromAsync(() => ArtworkHelper.LoadArtwork(model))
+            this.artwork = ArtworkHelper.LoadArtwork(model)
                 .LoggedCatch(this, null, "Failed to load YouTube artwork")
-                .FirstAsync()
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .ToProperty(this, x => x.Artwork);
             var connectArtwork = this.Artwork;

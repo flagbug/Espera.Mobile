@@ -30,8 +30,8 @@ namespace Espera.Android.Views
                     (vm, parent) => new LocalSongView(this, vm, parent));
                 this.SongsList.Adapter = adapter;
 
-                this.SongsList.Events().ItemClick.Select(x => x.Position)
-                    .Subscribe(this.DisplayAddToPlaylistDialog<LocalSongsViewModel, LocalSongViewModel>)
+                this.SongsList.Events().ItemClick
+                    .Subscribe(x => this.DisplayAddToPlaylistDialog<LocalSongsViewModel, LocalSongViewModel>(this, x.Position))
                     .DisposeWith(disposable);
 
                 this.ViewModel.AddToPlaylistCommand.ThrownExceptions

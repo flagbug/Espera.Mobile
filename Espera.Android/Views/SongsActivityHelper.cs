@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using Android.App;
+using Android.Content;
 using Espera.Mobile.Core.ViewModels;
 using ReactiveMarrow;
 using ReactiveUI;
@@ -12,7 +13,7 @@ namespace Espera.Android.Views
 {
     public static class SongsActivityHelper
     {
-        public static void DisplayAddToPlaylistDialog<T, TSong>(this ReactiveActivity<T> activity, int songPosition) where T : SongsViewModelBase<TSong>
+        public static void DisplayAddToPlaylistDialog<T, TSong>(this IViewFor<T> activity, Context context, int songPosition) where T : SongsViewModelBase<TSong>
         {
             activity.ViewModel.SelectedSong = activity.ViewModel.Songs[songPosition];
 
@@ -20,22 +21,22 @@ namespace Espera.Android.Views
 
             if (activity.ViewModel.IsAdmin)
             {
-                items.Add(Tuple.Create(activity.Resources.GetString(Resource.String.add_to_playlist), activity.ViewModel.AddToPlaylistCommand.ExecuteAsync().ToUnit()));
+                items.Add(Tuple.Create(context.Resources.GetString(Resource.String.add_to_playlist), activity.ViewModel.AddToPlaylistCommand.ExecuteAsync().ToUnit()));
             }
 
             else if (activity.ViewModel.RemainingVotes > 0)
             {
-                string voteString = string.Format(activity.Resources.GetString(Resource.String.uses_vote), activity.ViewModel.RemainingVotes);
-                items.Add(Tuple.Create(string.Format("{0} \n({1})", activity.Resources.GetString(Resource.String.add_to_playlist), voteString),
+                string voteString = string.Format(context.Resources.GetString(Resource.String.uses_vote), activity.ViewModel.RemainingVotes);
+                items.Add(Tuple.Create(string.Format("{0} \n({1})", context.Resources.GetString(Resource.String.add_to_playlist), voteString),
                     activity.ViewModel.AddToPlaylistCommand.ExecuteAsync().ToUnit()));
             }
 
             else
             {
-                items.Add(Tuple.Create(activity.Resources.GetString(Resource.String.no_votes_left), Observable.Return(Unit.Default)));
+                items.Add(Tuple.Create(context.Resources.GetString(Resource.String.no_votes_left), Observable.Return(Unit.Default)));
             }
 
-            var builder = new AlertDialog.Builder(activity);
+            var builder = new AlertDialog.Builder(context);
             builder.SetItems(items.Select(y => y.Item1).ToArray(), async (o, eventArgs) =>
             {
                 await items[eventArgs.Which].Item2;

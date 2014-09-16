@@ -197,6 +197,14 @@ namespace Espera.Android.Views
                 case 3:
                     fragment = new LocalArtistsFragment();
                     break;
+
+                case 4:
+                    fragment = new SoundCloudFragment();
+                    break;
+
+                case 5:
+                    fragment = new YoutubeFragment();
+                    break;
             }
 
             FragmentManager.BeginTransaction()

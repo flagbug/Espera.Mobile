@@ -49,22 +49,10 @@ namespace Espera.Android.Views
                 this.progressDialog.Indeterminate = true;
                 this.progressDialog.SetCancelable(false);
 
-                this.ViewModel.LoadCommand.IsExecuting
-                    .Skip(1)
-                    .Subscribe(x =>
-                    {
-                        if (x)
-                        {
-                            this.progressDialog.Show();
-                        }
-
-                        else if (this.progressDialog.IsShowing)
-                        {
-                            this.progressDialog.Dismiss();
-                        }
-                    }).DisposeWith(disposable);
+                this.progressDialog.Show();
 
                 this.ViewModel.LoadCommand.ExecuteAsync()
+                    .Finally(() => this.progressDialog.Dismiss())
                     .Subscribe(_ => this.SoundCloudSongsList.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty))
                     .DisposeWith(disposable);
 
@@ -108,16 +96,6 @@ namespace Espera.Android.Views
             this.WireUpControls();
 
             this.ViewModel = new SoundCloudViewModel();
-        }
-
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-
-            if (this.progressDialog != null && this.progressDialog.IsShowing)
-            {
-                this.progressDialog.Dismiss();
-            }
         }
 
         protected override void OnStart()

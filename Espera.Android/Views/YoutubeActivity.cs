@@ -93,7 +93,7 @@ namespace Espera.Android.Views
         {
             base.OnCreate(bundle);
 
-            this.SetContentView(Resource.Layout.YoutubeSongs);
+            this.SetContentView(Resource.Layout.Youtube);
             this.WireUpControls();
 
             this.ViewModel = new YoutubeViewModel();

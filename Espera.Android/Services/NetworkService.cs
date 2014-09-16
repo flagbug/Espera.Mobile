@@ -121,9 +121,9 @@ namespace Espera.Android.Services
             var pendingIntent = PendingIntent.GetActivity(this, 0, intent, 0);
 
             Notification notification = new Notification.Builder(this)
-                .SetContentTitle("Espera Network")
-                .SetContentText("Espera is connected")
-                .SetTicker("Espera is connected")
+                .SetContentTitle(this.GetString(Resource.String.service_notification_title))
+                .SetContentText(this.GetString(Resource.String.service_notification_text))
+                .SetTicker(this.GetString(Resource.String.service_notification_text))
                 .SetSmallIcon(Resource.Drawable.Play)
                 .SetLargeIcon(BitmapFactory.DecodeResource(this.Resources, Resource.Drawable.Play))
                 .SetContentIntent(pendingIntent)

@@ -11,6 +11,7 @@ using Android.Support.V4.App;
 using Android.Support.V4.Widget;
 using Android.Views;
 using Android.Widget;
+using Dalvik.SystemInterop;
 using Espera.Android.Services;
 using Espera.Mobile.Core.Analytics;
 using Espera.Mobile.Core.Network;
@@ -18,6 +19,7 @@ using Google.Analytics.Tracking;
 using ReactiveMarrow;
 using ReactiveUI;
 using Splat;
+using Fragment = Android.App.Fragment;
 using IMenuItem = Android.Views.IMenuItem;
 
 namespace Espera.Android.Views
@@ -76,6 +78,9 @@ namespace Espera.Android.Views
 
             this.drawerAdapter = new DeactivatableListAdapter<string>(this, global::Android.Resource.Layout.SimpleListItem1, drawerItems);
             this.MainDrawerListView.Adapter = this.drawerAdapter;
+
+            this.MainDrawerListView.Events().ItemClick
+                .Subscribe(x => this.HandleNavigation(x.Position));
 
             this.ActionBar.SetDisplayHomeAsUpEnabled(true);
             this.ActionBar.SetHomeButtonEnabled(true);
@@ -168,6 +173,28 @@ namespace Espera.Android.Views
             {
                 this.StopService(new Intent(this, typeof(NetworkService)));
             }
+        }
+
+        private void HandleNavigation(int position)
+        {
+            Fragment fragment = null;
+
+            switch (position)
+            {
+                case 0:
+                    fragment = new MainFragment();
+                    break;
+
+                case 1:
+                    fragment = new PlaylistFragment();
+                    break;
+            }
+
+            FragmentManager.BeginTransaction()
+                .Replace(Resource.Id.ContentFrame, fragment)
+                .Commit();
+
+            this.MainDrawer.CloseDrawer(this.MainDrawerListView);
         }
 
         private void ShowWifiPrompt()

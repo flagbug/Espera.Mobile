@@ -16,8 +16,6 @@ namespace Espera.Android.Views
     [Activity(Label = "YouTube")]
     public class YoutubeActivity : ReactiveActivity<YoutubeViewModel>
     {
-        private ProgressDialog progressDialog;
-
         public YoutubeActivity()
         {
             this.WhenActivated(() =>
@@ -45,15 +43,15 @@ namespace Espera.Android.Views
                     .Subscribe(_ => Toast.MakeText(this, Resource.String.something_went_wrong, ToastLength.Short).Show())
                     .DisposeWith(disposable);
 
-                this.progressDialog = new ProgressDialog(this);
-                this.progressDialog.SetMessage(Resources.GetString(Resource.String.loading_youtube));
-                this.progressDialog.Indeterminate = true;
-                this.progressDialog.SetCancelable(false);
+                var progressDialog = new ProgressDialog(this);
+                progressDialog.SetMessage(Resources.GetString(Resource.String.loading_youtube));
+                progressDialog.Indeterminate = true;
+                progressDialog.SetCancelable(false);
 
-                this.progressDialog.Show();
+                progressDialog.Show();
 
                 this.ViewModel.LoadCommand.ExecuteAsync()
-                    .Finally(() => this.progressDialog.Dismiss())
+                    .Finally(progressDialog.Dismiss)
                     .Subscribe(_ => this.YoutubeSongsList.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty))
                     .DisposeWith(disposable);
 

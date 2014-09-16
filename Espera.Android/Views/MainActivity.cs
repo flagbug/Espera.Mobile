@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Akavache;
@@ -13,14 +12,9 @@ using Android.Support.V4.Widget;
 using Android.Views;
 using Android.Widget;
 using Espera.Android.Services;
-using Espera.Mobile.Core;
 using Espera.Mobile.Core.Analytics;
 using Espera.Mobile.Core.Network;
-using Espera.Mobile.Core.Settings;
-using Espera.Mobile.Core.ViewModels;
-using Espera.Network;
 using Google.Analytics.Tracking;
-using Humanizer;
 using ReactiveMarrow;
 using ReactiveUI;
 using Splat;
@@ -29,8 +23,10 @@ using IMenuItem = Android.Views.IMenuItem;
 namespace Espera.Android.Views
 {
     [Activity(Label = "Espera", MainLauncher = true, Icon = "@drawable/icon", LaunchMode = LaunchMode.SingleTop)]
-    public class MainActivity : ReactiveActivity<MainViewModel>
+    public class MainActivity : ReactiveActivity
     {
+        private IDisposable activationDisposable;
+        private DeactivatableListAdapter<string> drawerAdapter;
         private ActionBarDrawerToggle drawerToggle;
 
         public DrawerLayout MainDrawer { get; private set; }
@@ -78,7 +74,8 @@ namespace Espera.Android.Views
 
             string[] drawerItems = this.Resources.GetStringArray(Resource.Array.main_drawer_items);
 
-            this.MainDrawerListView.Adapter = new ArrayAdapter<string>(this, global::Android.Resource.Layout.SimpleListItem1, drawerItems);
+            this.drawerAdapter = new DeactivatableListAdapter<string>(this, global::Android.Resource.Layout.SimpleListItem1, drawerItems);
+            this.MainDrawerListView.Adapter = this.drawerAdapter;
 
             this.ActionBar.SetDisplayHomeAsUpEnabled(true);
             this.ActionBar.SetHomeButtonEnabled(true);
@@ -138,6 +135,21 @@ namespace Espera.Android.Views
 
             EasyTracker.GetInstance(this).ActivityStart(this);
 
+            var disposable = new CompositeDisposable();
+
+            NetworkMessenger.Instance.WhenAnyValue(x => x.IsConnected)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(x =>
+                {
+                    // Update the enabled state of the network specific buttons
+                    for (var i = 1; i < this.drawerAdapter.Count; i++)
+                    {
+                        this.drawerAdapter.SetIsEnabled(i, x);
+                    }
+                }).DisposeWith(disposable);
+
+            this.activationDisposable = disposable;
+
             this.StartService(new Intent(this, typeof(NetworkService)));
         }
 
@@ -146,6 +158,11 @@ namespace Espera.Android.Views
             base.OnStop();
 
             EasyTracker.GetInstance(this).ActivityStop(this);
+
+            if (this.activationDisposable != null)
+            {
+                this.activationDisposable.Dispose();
+            }
 
             if (!NetworkMessenger.Instance.IsConnected)
             {

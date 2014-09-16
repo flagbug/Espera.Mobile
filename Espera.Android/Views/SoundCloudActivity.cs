@@ -104,7 +104,7 @@ namespace Espera.Android.Views
         {
             base.OnCreate(bundle);
 
-            this.SetContentView(Resource.Layout.SoundCloudSongs);
+            this.SetContentView(Resource.Layout.SoundCloud);
             this.WireUpControls();
 
             this.ViewModel = new SoundCloudViewModel();

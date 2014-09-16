@@ -213,13 +213,13 @@
     <AndroidResource Include="Resources\Layout\SoundCloudSongItem.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
-    <AndroidResource Include="Resources\Layout\SoundCloudSongs.axml">
+    <AndroidResource Include="Resources\Layout\SoundCloud.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\Layout\YoutubeSongItem.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
-    <AndroidResource Include="Resources\Layout\YoutubeSongs.axml">
+    <AndroidResource Include="Resources\Layout\Youtube.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
   </ItemGroup>

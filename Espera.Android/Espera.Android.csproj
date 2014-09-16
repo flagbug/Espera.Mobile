@@ -177,6 +177,7 @@
     <Compile Include="AndroidVolumeRequests.cs" />
     <Compile Include="AndroidWifiService.cs" />
     <Compile Include="App.cs" />
+    <Compile Include="DeactivatableListAdapter.cs" />
     <Compile Include="File.cs" />
     <Compile Include="LinkerOverrides.cs" />
     <Compile Include="NotShittyInAppBillingHandler.cs" />

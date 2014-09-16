@@ -154,6 +154,12 @@
     <Reference Include="GoogleAnalytics.Android">
       <HintPath>..\Components\googleanalytics-3.0.3\lib\android\GoogleAnalytics.Android.dll</HintPath>
     </Reference>
+    <Reference Include="Xamarin.Android.Support.v13">
+      <HintPath>..\packages\Xamarin.Android.Support.v13.20.0.0.4\lib\MonoAndroid32\Xamarin.Android.Support.v13.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.v4">
+      <HintPath>..\packages\Xamarin.Android.Support.v4.20.0.0.4\lib\MonoAndroid32\Xamarin.Android.Support.v4.dll</HintPath>
+    </Reference>
     <Reference Include="Xamarin.InAppBilling">
       <HintPath>..\Components\xamarin.inappbilling-1.5\lib\android\Xamarin.InAppBilling.dll</HintPath>
     </Reference>
@@ -183,6 +189,7 @@
     <Compile Include="Views\LocalSongsActivity.cs" />
     <Compile Include="Views\LocalSongView.cs" />
     <Compile Include="Views\MainActivity.cs" />
+    <Compile Include="Views\MainFragment.cs" />
     <Compile Include="Views\PlaylistActivity.cs" />
     <Compile Include="Views\PlaylistEntryView.cs" />
     <Compile Include="Views\RemoteArtistsActivity.cs" />
@@ -220,6 +227,9 @@
       <SubType>AndroidResource</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\Layout\Youtube.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\Layout\MainLayout.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
   </ItemGroup>
@@ -271,6 +281,14 @@
     <AndroidResource Include="Resources\Menu\options_menu.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
+    <AndroidResource Include="Resources\drawable-hdpi\drawer_shadow.9.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_drawer.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\drawer_shadow.9.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_drawer.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\drawer_shadow.9.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_drawer.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\drawer_shadow.9.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_drawer.png" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="googleanalytics">

@@ -224,5 +224,12 @@ namespace Espera.Android.Views
 
             return view;
         }
+
+        public override void OnResume()
+        {
+            base.OnResume();
+
+            this.Activity.SetTitle(Resource.String.playlist_fragment_title);
+        }
     }
 }

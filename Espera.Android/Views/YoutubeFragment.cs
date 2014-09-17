@@ -95,5 +95,12 @@ namespace Espera.Android.Views
 
             return view;
         }
+
+        public override void OnResume()
+        {
+            base.OnResume();
+
+            this.Activity.Title = "YouTube";
+        }
     }
 }

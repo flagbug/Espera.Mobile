@@ -10,7 +10,6 @@ namespace Espera.Android
 
         public void Write(string message, LogLevel logLevel)
         {
-#if DEBUG
             switch (logLevel)
             {
                 case LogLevel.Debug:
@@ -33,7 +32,6 @@ namespace Espera.Android
                     Log.Warn(String.Empty, message);
                     break;
             }
-#endif
         }
     }
 }

@@ -111,7 +111,7 @@
   <ItemGroup>
     <Compile Include="ArtistsViewModelTest.cs" />
     <Compile Include="AssertEx.cs" />
-    <Compile Include="MainViewModelTest.cs" />
+    <Compile Include="ConnectionViewModelTest.cs" />
     <Compile Include="PlaylistViewModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Helpers.cs" />

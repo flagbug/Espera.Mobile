@@ -190,7 +190,7 @@
     <Compile Include="Views\LocalSongsActivity.cs" />
     <Compile Include="Views\LocalSongView.cs" />
     <Compile Include="Views\MainActivity.cs" />
-    <Compile Include="Views\MainFragment.cs" />
+    <Compile Include="Views\ConnectionFragment.cs" />
     <Compile Include="Views\PlaylistFragment.cs" />
     <Compile Include="Views\PlaylistEntryView.cs" />
     <Compile Include="Views\RemoteArtistsFragment.cs" />

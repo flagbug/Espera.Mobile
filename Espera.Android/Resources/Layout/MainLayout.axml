@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:gravity="center_vertical">
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -11,41 +12,11 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="20dp" />
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/LoadPlaylistButton"
-        android:text="@string/playlist"
-        android:layout_margin="10dp" />
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/LoadRemoteArtistsButton"
-        android:text="@string/remote_songs"
-        android:layout_margin="10dp" />
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/LoadLocalArtistsButton"
-        android:text="@string/local_songs"
-        android:layout_margin="10dp" />
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/LoadSoundCloudButton"
-        android:text="SoundCloud"
-        android:layout_margin="10dp" />
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/LoadYoutubeButton"
-        android:text="YouTube"
-        android:layout_margin="10dp" />
     <LinearLayout
         android:id="@+id/TrialContainer"
         android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"

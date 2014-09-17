@@ -107,9 +107,8 @@ namespace Espera.Android.Views
                         Resources.GetString(Resource.String.trial_expiration) :
                         Resources.GetString(Resource.String.trial_expiration_expired);
 
-                    this.TrialExpirationTextView.Text = string.Format("{0} {1}",
-                        expirationMessage,
-                        remainingTrialTime.Humanize(culture: new CultureInfo("en-US")));
+                    this.TrialExpirationTextView.Text = string.Format(expirationMessage,
+                        remainingTrialTime.Duration().Humanize(culture: new CultureInfo("en-US")));
 
                     this.TrialExpirationExplanationTextview.Text = Resources.GetString(Resource.String.trial_expiration_explanation);
                 }

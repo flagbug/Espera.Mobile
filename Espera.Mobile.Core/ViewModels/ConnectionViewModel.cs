@@ -10,7 +10,7 @@ using ReactiveUI;
 
 namespace Espera.Mobile.Core.ViewModels
 {
-    public class MainViewModel : ReactiveObject, ISupportsActivation
+    public class ConnectionViewModel : ReactiveObject, ISupportsActivation
     {
         public static readonly TimeSpan ConnectCommandTimeout = TimeSpan.FromSeconds(10);
 
@@ -19,7 +19,7 @@ namespace Espera.Mobile.Core.ViewModels
         private readonly UserSettings userSettings;
         private ObservableAsPropertyHelper<bool> isConnected;
 
-        public MainViewModel(UserSettings userSettings, Func<string> ipAddress, IInstallationDateFetcher installationDateFetcher = null, IClock clock = null)
+        public ConnectionViewModel(UserSettings userSettings, Func<string> ipAddress, IInstallationDateFetcher installationDateFetcher = null, IClock clock = null)
         {
             if (ipAddress == null)
                 throw new ArgumentNullException("ipAddress");

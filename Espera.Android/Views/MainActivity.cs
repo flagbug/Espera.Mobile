@@ -14,7 +14,6 @@ using Android.Widget;
 using Espera.Android.Services;
 using Espera.Mobile.Core.Analytics;
 using Espera.Mobile.Core.Network;
-using Google.Analytics.Tracking;
 using ReactiveMarrow;
 using ReactiveUI;
 using Splat;
@@ -91,7 +90,7 @@ namespace Espera.Android.Views
             if (bundle == null)
             {
                 FragmentManager.BeginTransaction()
-                    .Replace(Resource.Id.ContentFrame, new MainFragment())
+                    .Replace(Resource.Id.ContentFrame, new ConnectionFragment())
                     .Commit();
             }
         }
@@ -184,7 +183,7 @@ namespace Espera.Android.Views
             switch (position)
             {
                 case 0:
-                    fragment = new MainFragment();
+                    fragment = new ConnectionFragment();
                     break;
 
                 case 1:

@@ -18,14 +18,14 @@ using Splat;
 
 namespace Espera.Android.Views
 {
-    public class MainFragment : ReactiveFragment<MainViewModel>
+    public class ConnectionFragment : ReactiveFragment<ConnectionViewModel>
     {
-        public MainFragment()
+        public ConnectionFragment()
         {
             var settings = Locator.Current.GetService<UserSettings>();
             var wifiService = Locator.Current.GetService<IWifiService>();
 
-            this.ViewModel = new MainViewModel(settings, wifiService.GetIpAddress);
+            this.ViewModel = new ConnectionViewModel(settings, wifiService.GetIpAddress);
 
             this.WhenActivated(() =>
             {

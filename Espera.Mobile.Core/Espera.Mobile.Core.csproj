@@ -76,7 +76,7 @@
     <Compile Include="ViewModels\ArtistsViewModel.cs" />
     <Compile Include="ViewModels\LocalSongsViewModel.cs" />
     <Compile Include="ViewModels\LocalSongViewModel.cs" />
-    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\ConnectionViewModel.cs" />
     <Compile Include="ViewModels\PlaylistEntryViewModel.cs" />
     <Compile Include="ViewModels\PlaylistViewModel.cs" />
     <Compile Include="ViewModels\RemoteArtistsViewModel.cs" />

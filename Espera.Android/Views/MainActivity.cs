@@ -144,8 +144,6 @@ namespace Espera.Android.Views
         {
             base.OnStart();
 
-            EasyTracker.GetInstance(this).ActivityStart(this);
-
             var disposable = new CompositeDisposable();
 
             NetworkMessenger.Instance.WhenAnyValue(x => x.IsConnected)
@@ -167,8 +165,6 @@ namespace Espera.Android.Views
         protected override void OnStop()
         {
             base.OnStop();
-
-            EasyTracker.GetInstance(this).ActivityStop(this);
 
             if (this.activationDisposable != null)
             {

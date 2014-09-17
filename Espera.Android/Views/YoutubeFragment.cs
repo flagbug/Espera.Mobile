@@ -76,9 +76,14 @@ namespace Espera.Android.Views
                 .SelectMany(async x =>
                 {
                     this.ViewModel.SearchTerm = x.Query;
+
                     await this.ViewModel.LoadCommand.ExecuteAsync();
+
                     x.Handled = false;
                     searchView.ClearFocus();
+
+                    this.YoutubeSongsList.SetSelectionAfterHeaderView();
+
                     return Unit.Default;
                 }).Subscribe();
 

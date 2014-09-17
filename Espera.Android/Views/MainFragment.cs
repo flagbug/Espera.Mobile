@@ -61,6 +61,12 @@ namespace Espera.Android.Views
 
                         case ConnectionResult.Successful:
                             {
+                                var playlistFragment = new PlaylistFragment();
+
+                                this.FragmentManager.BeginTransaction()
+                                    .Replace(Resource.Id.ContentFrame, playlistFragment)
+                                    .Commit();
+
                                 switch (result.AccessPermission)
                                 {
                                     case NetworkAccessPermission.Admin:

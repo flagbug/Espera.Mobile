@@ -41,21 +41,19 @@ namespace Espera.Android.Views
                     .Subscribe(_ => Toast.MakeText(this.Activity, Resource.String.something_went_wrong, ToastLength.Short).Show())
                     .DisposeWith(disposable);
 
-                var progressDialog = new ProgressDialog(this.Activity);
-                progressDialog.SetMessage(Resources.GetString(Resource.String.loading_youtube));
-                progressDialog.Indeterminate = true;
-                progressDialog.SetCancelable(false);
-
-                progressDialog.Show();
+                this.ViewModel.LoadCommand.IsExecuting
+                    .Subscribe(x => this.ProgressSpinner.Visibility = x ? ViewStates.Visible : ViewStates.Gone)
+                    .DisposeWith(disposable);
 
                 this.ViewModel.LoadCommand.ExecuteAsync()
-                    .Finally(progressDialog.Dismiss)
                     .Subscribe(_ => this.YoutubeSongsList.EmptyView = this.View.FindViewById(global::Android.Resource.Id.Empty))
                     .DisposeWith(disposable);
 
                 return disposable;
             });
         }
+
+        public ProgressBar ProgressSpinner { get; private set; }
 
         public ListView YoutubeSongsList { get; private set; }
 

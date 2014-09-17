@@ -5,13 +5,15 @@
     android:layout_height="fill_parent"
     android:gravity="center_vertical">
     <Button
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/ConnectButton"
         android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="20dp" />
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:maxWidth="400dp"
+        android:minWidth="250dp"
+        android:layout_gravity="center_horizontal" />
     <LinearLayout
         android:id="@+id/TrialContainer"
         android:orientation="vertical"

@@ -86,9 +86,14 @@ namespace Espera.Android.Views
             this.ActionBar.SetDisplayHomeAsUpEnabled(true);
             this.ActionBar.SetHomeButtonEnabled(true);
 
-            FragmentManager.BeginTransaction()
-                .Replace(Resource.Id.ContentFrame, new MainFragment())
-                .Commit();
+            // Only set the connection fragment if we're freshly starting this activity and not on
+            // an orientation change
+            if (bundle == null)
+            {
+                FragmentManager.BeginTransaction()
+                    .Replace(Resource.Id.ContentFrame, new MainFragment())
+                    .Commit();
+            }
         }
 
         protected override void OnDestroy()

@@ -6,24 +6,21 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using Android.App;
-using Android.Content.PM;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
 using Espera.Mobile.Core;
 using Espera.Mobile.Core.ViewModels;
 using Espera.Network;
-using Google.Analytics.Tracking;
 using Humanizer;
 using ReactiveMarrow;
 using ReactiveUI;
 
 namespace Espera.Android.Views
 {
-    [Activity(Label = "Current Playlist")]
-    public class PlaylistActivity : ReactiveActivity<PlaylistViewModel>
+    public class PlaylistFragment : ReactiveFragment<PlaylistViewModel>
     {
-        public PlaylistActivity()
+        public PlaylistFragment()
         {
             this.WhenActivated(() =>
             {
@@ -34,10 +31,10 @@ namespace Espera.Android.Views
                     .Merge(this.ViewModel.LoadPlaylistCommand.ThrownExceptions.Select(_ => Resource.String.loading_playlist_failed))
                     .Merge(this.ViewModel.VoteCommand.ThrownExceptions.Select(_ => Resource.String.vote_failed))
                     .ObserveOn(RxApp.MainThreadScheduler)
-                    .Subscribe(x => Toast.MakeText(this, x, ToastLength.Short).Show())
+                    .Subscribe(x => Toast.MakeText(this.Activity, x, ToastLength.Short).Show())
                     .DisposeWith(disposable);
 
-                var adapter = new ReactiveListAdapter<PlaylistEntryViewModel>(this.ViewModel.Entries, (vm, parent) => new PlaylistEntryView(this, vm, parent));
+                var adapter = new ReactiveListAdapter<PlaylistEntryViewModel>(this.ViewModel.Entries, (vm, parent) => new PlaylistEntryView(this.Activity, vm, parent));
                 this.Playlist.Adapter = adapter;
 
                 this.Playlist.Events().ItemClick.Select(x => x.Position)
@@ -53,7 +50,7 @@ namespace Espera.Android.Views
 
                         if (this.ViewModel.CanModify)
                         {
-                            var builder = new AlertDialog.Builder(this);
+                            var builder = new AlertDialog.Builder(this.Activity);
                             builder.SetTitle(Resource.String.administrator_functions);
 
                             var items = new List<string>
@@ -102,7 +99,7 @@ namespace Espera.Android.Views
 
                         else if (this.ViewModel.CanVoteOnSelectedEntry)
                         {
-                            var builder = new AlertDialog.Builder(this);
+                            var builder = new AlertDialog.Builder(this.Activity);
                             builder.SetTitle(Resource.String.guest_functions);
 
                             builder.SetItems(new[] { voteString }, async (sender, args) =>
@@ -180,7 +177,7 @@ namespace Espera.Android.Views
                     .Subscribe(x => this.NextButton.Background.SetAlpha(x))
                     .DisposeWith(disposable);
 
-                var progressDialog = new ProgressDialog(this);
+                var progressDialog = new ProgressDialog(this.Activity);
                 progressDialog.SetMessage(Resources.GetString(Resource.String.loading_playlist));
                 progressDialog.Indeterminate = true;
                 progressDialog.SetCancelable(false);
@@ -189,7 +186,7 @@ namespace Espera.Android.Views
 
                 this.ViewModel.LoadPlaylistCommand.ExecuteAsync()
                     .Finally(progressDialog.Dismiss)
-                    .Subscribe(_ => this.Playlist.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty))
+                    .Subscribe(_ => this.Playlist.EmptyView = this.View.FindViewById(global::Android.Resource.Id.Empty))
                     .DisposeWith(disposable);
 
                 return disposable;
@@ -212,35 +209,20 @@ namespace Espera.Android.Views
 
         public TextView TotalTimeTextView { get; private set; }
 
-        public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
-        {
-            return AndroidVolumeRequests.Instance.HandleKeyCode(keyCode) || base.OnKeyDown(keyCode, e);
-        }
-
-        protected override void OnCreate(Bundle bundle)
+        public override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-
-            this.ActionBar.SetTitle(Resource.String.current_playlist);
-
-            this.SetContentView(Resource.Layout.Playlist);
-            this.WireUpControls();
 
             this.ViewModel = new PlaylistViewModel();
         }
 
-        protected override void OnStart()
+        public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            base.OnStart();
+            View view = inflater.Inflate(Resource.Layout.Playlist, null);
 
-            EasyTracker.GetInstance(this).ActivityStart(this);
-        }
+            this.WireUpControls(view);
 
-        protected override void OnStop()
-        {
-            base.OnStop();
-
-            EasyTracker.GetInstance(this).ActivityStop(this);
+            return view;
         }
     }
 }

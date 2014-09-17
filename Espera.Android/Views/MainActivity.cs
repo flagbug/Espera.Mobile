@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Akavache;
@@ -8,156 +7,32 @@ using Android.Content;
 using Android.Content.PM;
 using Android.Net.Wifi;
 using Android.OS;
+using Android.Support.V4.App;
+using Android.Support.V4.Widget;
 using Android.Views;
 using Android.Widget;
 using Espera.Android.Services;
-using Espera.Mobile.Core;
 using Espera.Mobile.Core.Analytics;
 using Espera.Mobile.Core.Network;
-using Espera.Mobile.Core.Settings;
-using Espera.Mobile.Core.ViewModels;
-using Espera.Network;
 using Google.Analytics.Tracking;
-using Humanizer;
 using ReactiveMarrow;
 using ReactiveUI;
 using Splat;
+using Fragment = Android.App.Fragment;
 using IMenuItem = Android.Views.IMenuItem;
 
 namespace Espera.Android.Views
 {
     [Activity(Label = "Espera", MainLauncher = true, Icon = "@drawable/icon", LaunchMode = LaunchMode.SingleTop)]
-    public class MainActivity : ReactiveActivity<MainViewModel>
+    public class MainActivity : ReactiveActivity
     {
-        public MainActivity()
-        {
-            var settings = Locator.Current.GetService<UserSettings>();
-            var wifiService = Locator.Current.GetService<IWifiService>();
+        private IDisposable activationDisposable;
+        private DeactivatableListAdapter<string> drawerAdapter;
+        private ActionBarDrawerToggle drawerToggle;
 
-            this.ViewModel = new MainViewModel(settings, wifiService.GetIpAddress);
+        public DrawerLayout MainDrawer { get; private set; }
 
-            this.WhenActivated(() =>
-            {
-                var disposable = new CompositeDisposable();
-
-                var connectOrDisconnectCommand = this.ViewModel.WhenAnyValue(x => x.IsConnected)
-                    .Select(x => x ? (IReactiveCommand)this.ViewModel.DisconnectCommand : this.ViewModel.ConnectCommand);
-
-                connectOrDisconnectCommand.SampleAndCombineLatest(this.ConnectButton.Events().Click, (command, args) => command)
-                    .Where(x => x.CanExecute(null))
-                    .Subscribe(x => x.Execute(null))
-                    .DisposeWith(disposable);
-
-                connectOrDisconnectCommand.SelectMany(x => x.CanExecuteObservable)
-                    .BindTo(this.ConnectButton, x => x.Enabled)
-                    .DisposeWith(disposable);
-
-                this.ViewModel.ConnectCommand.IsExecuting
-                    .CombineLatest(this.ViewModel.WhenAnyValue(x => x.IsConnected), (connecting, connected) =>
-                        connected ? Resource.String.disconnect : connecting ? Resource.String.connecting : Resource.String.connect)
-                    .Select(Resources.GetString)
-                    .BindTo(this.ConnectButton, x => x.Text)
-                    .DisposeWith(disposable);
-
-                this.ViewModel.ConnectCommand.Select(result =>
-                {
-                    switch (result.ConnectionResult)
-                    {
-                        case ConnectionResult.Failed:
-                            return Resources.GetString(Resource.String.connection_failed);
-
-                        case ConnectionResult.ServerVersionToLow:
-                            return string.Format(Resources.GetString(Resource.String.required_server_version), result.ServerVersion.ToString(3));
-
-                        case ConnectionResult.Successful:
-                            {
-                                switch (result.AccessPermission)
-                                {
-                                    case NetworkAccessPermission.Admin:
-                                        return Resources.GetString(Resource.String.connected_as_admin);
-
-                                    case NetworkAccessPermission.Guest:
-                                        return Resources.GetString(Resource.String.connected_as_guest);
-                                }
-                                break;
-                            }
-
-                        case ConnectionResult.Timeout:
-                            return Resources.GetString(Resource.String.connection_timeout);
-
-                        case ConnectionResult.WrongPassword:
-                            return Resources.GetString(Resource.String.wrong_password);
-
-                        case ConnectionResult.WifiDisabled:
-                            return Resources.GetString(Resource.String.wifi_enable_error);
-                    }
-
-                    throw new InvalidOperationException("This shouldn't happen");
-                })
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(x => Toast.MakeText(this, x, ToastLength.Long).Show())
-                .DisposeWith(disposable);
-
-                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadPlaylistButton.Enabled)
-                    .DisposeWith(disposable);
-                this.LoadPlaylistButton.Events().Click.Subscribe(x => this.StartActivity(typeof(PlaylistActivity)))
-                    .DisposeWith(disposable);
-
-                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadRemoteArtistsButton.Enabled)
-                    .DisposeWith(disposable);
-                this.LoadRemoteArtistsButton.Events().Click.Subscribe(x => this.StartActivity(typeof(RemoteArtistsActivity)))
-                    .DisposeWith(disposable);
-
-                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadLocalArtistsButton.Enabled);
-                this.LoadLocalArtistsButton.Events().Click.Subscribe(x => this.StartActivity(typeof(LocalArtistsActivity)))
-                    .DisposeWith(disposable);
-
-                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadSoundCloudButton.Enabled);
-                this.LoadSoundCloudButton.Events().Click.Subscribe(x => this.StartActivity(typeof(SoundCloudActivity)))
-                    .DisposeWith(disposable);
-
-                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadYoutubeButton.Enabled);
-                this.LoadYoutubeButton.Events().Click.Subscribe(x => this.StartActivity(typeof(YoutubeActivity)))
-                    .DisposeWith(disposable);
-
-                bool displayTrialPeriod = !settings.IsPremium;
-                this.TrialExpirationTextView.Visibility = this.TrialExpirationExplanationTextview.Visibility =
-                    displayTrialPeriod ? ViewStates.Visible : ViewStates.Gone;
-
-                if (displayTrialPeriod)
-                {
-                    TimeSpan remainingTrialTime = TrialHelpers.GetRemainingTrialTime(AppConstants.TrialTime);
-
-                    string expirationMessage = remainingTrialTime > TimeSpan.Zero ?
-                        Resources.GetString(Resource.String.trial_expiration) :
-                        Resources.GetString(Resource.String.trial_expiration_expired);
-
-                    this.TrialExpirationTextView.Text = string.Format("{0} {1}",
-                        expirationMessage,
-                        remainingTrialTime.Humanize(culture: new CultureInfo("en-US")));
-
-                    this.TrialExpirationExplanationTextview.Text = Resources.GetString(Resource.String.trial_expiration_explanation);
-                }
-
-                return disposable;
-            });
-        }
-
-        public Button ConnectButton { get; private set; }
-
-        public Button LoadLocalArtistsButton { get; private set; }
-
-        public Button LoadPlaylistButton { get; private set; }
-
-        public Button LoadRemoteArtistsButton { get; private set; }
-
-        public Button LoadSoundCloudButton { get; private set; }
-
-        public Button LoadYoutubeButton { get; private set; }
-
-        public TextView TrialExpirationExplanationTextview { get; private set; }
-
-        public TextView TrialExpirationTextView { get; private set; }
+        public ListView MainDrawerListView { get; private set; }
 
         public override bool OnCreateOptionsMenu(IMenu menu)
         {
@@ -175,6 +50,11 @@ namespace Espera.Android.Views
 
         public override bool OnOptionsItemSelected(IMenuItem item)
         {
+            if (this.drawerToggle.OnOptionsItemSelected(item))
+            {
+                return true;
+            }
+
             this.StartActivity(typeof(SettingsActivity));
 
             return true;
@@ -182,12 +62,33 @@ namespace Espera.Android.Views
 
         protected override void OnCreate(Bundle bundle)
         {
+            this.RequestWindowFeature(WindowFeatures.IndeterminateProgress);
+
             base.OnCreate(bundle);
 
             this.Title = String.Empty;
 
             this.SetContentView(Resource.Layout.Main);
             this.WireUpControls();
+
+            this.drawerToggle = new ActionBarDrawerToggle(this, this.MainDrawer, Resource.Drawable.ic_drawer, Resource.String.disconnect, Resource.String.disconnect);
+            this.MainDrawer.SetDrawerListener(this.drawerToggle);
+            this.MainDrawer.SetDrawerShadow(Resource.Drawable.drawer_shadow, (int)GravityFlags.Start);
+
+            string[] drawerItems = this.Resources.GetStringArray(Resource.Array.main_drawer_items);
+
+            this.drawerAdapter = new DeactivatableListAdapter<string>(this, global::Android.Resource.Layout.SimpleListItem1, drawerItems);
+            this.MainDrawerListView.Adapter = this.drawerAdapter;
+
+            this.MainDrawerListView.Events().ItemClick
+                .Subscribe(x => this.HandleNavigation(x.Position));
+
+            this.ActionBar.SetDisplayHomeAsUpEnabled(true);
+            this.ActionBar.SetHomeButtonEnabled(true);
+
+            FragmentManager.BeginTransaction()
+                .Replace(Resource.Id.ContentFrame, new MainFragment())
+                .Commit();
         }
 
         protected override void OnDestroy()
@@ -201,6 +102,13 @@ namespace Espera.Android.Views
         {
             base.OnNewIntent(intent);
             this.Intent = intent;
+        }
+
+        protected override void OnPostCreate(Bundle savedInstanceState)
+        {
+            base.OnPostCreate(savedInstanceState);
+
+            this.drawerToggle.SyncState();
         }
 
         protected override void OnResume()
@@ -233,6 +141,21 @@ namespace Espera.Android.Views
 
             EasyTracker.GetInstance(this).ActivityStart(this);
 
+            var disposable = new CompositeDisposable();
+
+            NetworkMessenger.Instance.WhenAnyValue(x => x.IsConnected)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(x =>
+                {
+                    // Update the enabled state of the network specific buttons
+                    for (var i = 1; i < this.drawerAdapter.Count; i++)
+                    {
+                        this.drawerAdapter.SetIsEnabled(i, x);
+                    }
+                }).DisposeWith(disposable);
+
+            this.activationDisposable = disposable;
+
             this.StartService(new Intent(this, typeof(NetworkService)));
         }
 
@@ -242,10 +165,53 @@ namespace Espera.Android.Views
 
             EasyTracker.GetInstance(this).ActivityStop(this);
 
+            if (this.activationDisposable != null)
+            {
+                this.activationDisposable.Dispose();
+            }
+
             if (!NetworkMessenger.Instance.IsConnected)
             {
                 this.StopService(new Intent(this, typeof(NetworkService)));
             }
+        }
+
+        private void HandleNavigation(int position)
+        {
+            Fragment fragment = null;
+
+            switch (position)
+            {
+                case 0:
+                    fragment = new MainFragment();
+                    break;
+
+                case 1:
+                    fragment = new PlaylistFragment();
+                    break;
+
+                case 2:
+                    fragment = new RemoteArtistsFragment();
+                    break;
+
+                case 3:
+                    fragment = new LocalArtistsFragment();
+                    break;
+
+                case 4:
+                    fragment = new SoundCloudFragment();
+                    break;
+
+                case 5:
+                    fragment = new YoutubeFragment();
+                    break;
+            }
+
+            FragmentManager.BeginTransaction()
+                .Replace(Resource.Id.ContentFrame, fragment)
+                .Commit();
+
+            this.MainDrawer.CloseDrawer(this.MainDrawerListView);
         }
 
         private void ShowWifiPrompt()

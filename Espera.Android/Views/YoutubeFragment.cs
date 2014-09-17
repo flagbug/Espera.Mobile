@@ -7,16 +7,14 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 using Espera.Mobile.Core.ViewModels;
-using Google.Analytics.Tracking;
 using ReactiveMarrow;
 using ReactiveUI;
 
 namespace Espera.Android.Views
 {
-    [Activity(Label = "YouTube")]
-    public class YoutubeActivity : ReactiveActivity<YoutubeViewModel>
+    public class YoutubeFragment : ReactiveFragment<YoutubeViewModel>
     {
-        public YoutubeActivity()
+        public YoutubeFragment()
         {
             this.WhenActivated(() =>
             {
@@ -32,18 +30,18 @@ namespace Espera.Android.Views
                             reactiveList.AddRange(x);
                         }
                     }).DisposeWith(disposable);
-                this.YoutubeSongsList.Adapter = new ReactiveListAdapter<YoutubeSongViewModel>(reactiveList, (vm, parent) => new YoutubeSongView(this, vm, parent));
+                this.YoutubeSongsList.Adapter = new ReactiveListAdapter<YoutubeSongViewModel>(reactiveList, (vm, parent) => new YoutubeSongView(this.Activity, vm, parent));
 
-                this.YoutubeSongsList.Events().ItemClick.Select(x => x.Position)
-                    .Subscribe(this.DisplayAddToPlaylistDialog<YoutubeViewModel, YoutubeSongViewModel>)
+                this.YoutubeSongsList.Events().ItemClick
+                    .Subscribe(x => this.DisplayAddToPlaylistDialog<YoutubeViewModel, YoutubeSongViewModel>(this.Activity, x.Position))
                     .DisposeWith(disposable);
 
                 this.ViewModel.AddToPlaylistCommand.ThrownExceptions
                     .ObserveOn(RxApp.MainThreadScheduler)
-                    .Subscribe(_ => Toast.MakeText(this, Resource.String.something_went_wrong, ToastLength.Short).Show())
+                    .Subscribe(_ => Toast.MakeText(this.Activity, Resource.String.something_went_wrong, ToastLength.Short).Show())
                     .DisposeWith(disposable);
 
-                var progressDialog = new ProgressDialog(this);
+                var progressDialog = new ProgressDialog(this.Activity);
                 progressDialog.SetMessage(Resources.GetString(Resource.String.loading_youtube));
                 progressDialog.Indeterminate = true;
                 progressDialog.SetCancelable(false);
@@ -52,7 +50,7 @@ namespace Espera.Android.Views
 
                 this.ViewModel.LoadCommand.ExecuteAsync()
                     .Finally(progressDialog.Dismiss)
-                    .Subscribe(_ => this.YoutubeSongsList.EmptyView = this.FindViewById(global::Android.Resource.Id.Empty))
+                    .Subscribe(_ => this.YoutubeSongsList.EmptyView = this.View.FindViewById(global::Android.Resource.Id.Empty))
                     .DisposeWith(disposable);
 
                 return disposable;
@@ -61,11 +59,18 @@ namespace Espera.Android.Views
 
         public ListView YoutubeSongsList { get; private set; }
 
-        public override bool OnCreateOptionsMenu(IMenu menu)
+        public override void OnCreate(Bundle bundle)
         {
-            base.OnCreateOptionsMenu(menu);
+            base.OnCreate(bundle);
 
-            this.MenuInflater.Inflate(Resource.Menu.options_menu, menu);
+            this.SetHasOptionsMenu(true);
+
+            this.ViewModel = new YoutubeViewModel();
+        }
+
+        public override void OnCreateOptionsMenu(IMenu menu, MenuInflater inflater)
+        {
+            inflater.Inflate(Resource.Menu.options_menu, menu);
 
             var searchView = (SearchView)menu.FindItem(Resource.Id.search).ActionView;
 
@@ -79,36 +84,16 @@ namespace Espera.Android.Views
                     return Unit.Default;
                 }).Subscribe();
 
-            return true;
+            base.OnCreateOptionsMenu(menu, inflater);
         }
 
-        public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
+        public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            return AndroidVolumeRequests.Instance.HandleKeyCode(keyCode) || base.OnKeyDown(keyCode, e);
-        }
+            View view = inflater.Inflate(Resource.Layout.Youtube, null);
 
-        protected override void OnCreate(Bundle bundle)
-        {
-            base.OnCreate(bundle);
+            this.WireUpControls(view);
 
-            this.SetContentView(Resource.Layout.Youtube);
-            this.WireUpControls();
-
-            this.ViewModel = new YoutubeViewModel();
-        }
-
-        protected override void OnStart()
-        {
-            base.OnStart();
-
-            EasyTracker.GetInstance(this).ActivityStart(this);
-        }
-
-        protected override void OnStop()
-        {
-            base.OnStop();
-
-            EasyTracker.GetInstance(this).ActivityStop(this);
+            return view;
         }
     }
 }

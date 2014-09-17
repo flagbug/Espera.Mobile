@@ -28,7 +28,9 @@ namespace Espera.Android.Views
                     this.OpenArtist();
                 }).DisposeWith(disposable);
 
-                this.ViewModel.LoadCommand.IsExecuting.Subscribe(this.Activity.SetProgressBarIndeterminateVisibility)
+                this.ViewModel.LoadCommand.IsExecuting
+                    .Finally(() => this.Activity.SetProgressBarIndeterminateVisibility(false)) // Reset the visibility when the fragment closes
+                    .Subscribe(this.Activity.SetProgressBarIndeterminateVisibility)
                     .DisposeWith(disposable);
 
                 this.ViewModel.LoadCommand.ThrownExceptions

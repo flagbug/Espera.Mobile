@@ -177,15 +177,11 @@ namespace Espera.Android.Views
                     .Subscribe(x => this.NextButton.Background.SetAlpha(x))
                     .DisposeWith(disposable);
 
-                var progressDialog = new ProgressDialog(this.Activity);
-                progressDialog.SetMessage(Resources.GetString(Resource.String.loading_playlist));
-                progressDialog.Indeterminate = true;
-                progressDialog.SetCancelable(false);
-
-                progressDialog.Show();
+                this.ViewModel.LoadPlaylistCommand.IsExecuting
+                    .Subscribe(x => this.ProgressSpinner.Visibility = x ? ViewStates.Visible : ViewStates.Gone)
+                    .DisposeWith(disposable);
 
                 this.ViewModel.LoadPlaylistCommand.ExecuteAsync()
-                    .Finally(progressDialog.Dismiss)
                     .Subscribe(_ => this.Playlist.EmptyView = this.View.FindViewById(global::Android.Resource.Id.Empty))
                     .DisposeWith(disposable);
 
@@ -206,6 +202,8 @@ namespace Espera.Android.Views
         public Button PlayPauseButton { get; private set; }
 
         public Button PreviousButton { get; private set; }
+
+        public ProgressBar ProgressSpinner { get; private set; }
 
         public TextView TotalTimeTextView { get; private set; }
 

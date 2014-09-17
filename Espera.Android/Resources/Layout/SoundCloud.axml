@@ -3,6 +3,12 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
+    <ProgressBar
+        android:id="@+id/ProgressSpinner"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center" />
     <ListView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

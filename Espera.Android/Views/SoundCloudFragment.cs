@@ -2,7 +2,6 @@ using System;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using Android.App;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
@@ -99,6 +98,14 @@ namespace Espera.Android.Views
             base.OnResume();
 
             this.Activity.Title = "SoundCloud";
+        }
+
+        public override void OnStart()
+        {
+            base.OnStart();
+
+            EasyTracker tracker = EasyTracker.GetInstance(this.Activity);
+            tracker.Set(Fields.ScreenName, this.Class.Name);
         }
     }
 }

@@ -94,9 +94,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Lager.Android.0.4.1\lib\monoandroid\Lager.Android.dll</HintPath>
     </Reference>
-    <Reference Include="ModernHttpClient, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ModernHttpClient, Version=2.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\modernhttpclient.2.1.0\lib\MonoAndroid\ModernHttpClient.dll</HintPath>
+      <HintPath>..\packages\modernhttpclient.2.1.1\lib\MonoAndroid\ModernHttpClient.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Android" />
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -105,27 +105,27 @@
     </Reference>
     <Reference Include="OkHttp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\modernhttpclient.2.1.0\lib\MonoAndroid\OkHttp.dll</HintPath>
+      <HintPath>..\packages\modernhttpclient.2.1.1\lib\MonoAndroid\OkHttp.dll</HintPath>
     </Reference>
     <Reference Include="ReactiveMarrow, Version=0.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\ReactiveMarrow.0.5.0\lib\portable-net45+wp8+win8+monoandroid+monotouch\ReactiveMarrow.dll</HintPath>
     </Reference>
-    <Reference Include="ReactiveUI">
-      <HintPath>..\packages\reactiveui-core.6.0.6\lib\Monoandroid\ReactiveUI.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="ReactiveUI.Events">
-      <HintPath>..\packages\reactiveui-events.6.0.6\lib\Monoandroid\ReactiveUI.Events.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Splat, Version=1.4.3.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ReactiveUI, Version=6.0.7.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Splat.1.4.3\lib\monoandroid\Splat.dll</HintPath>
+      <HintPath>..\packages\reactiveui-core.6.0.7\lib\Monoandroid\ReactiveUI.dll</HintPath>
     </Reference>
-    <Reference Include="SQLitePCL.raw, Version=0.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ReactiveUI.Events, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SQLitePCL.raw_basic.0.5.0\lib\MonoAndroid\SQLitePCL.raw.dll</HintPath>
+      <HintPath>..\packages\reactiveui-events.6.0.7\lib\Monoandroid\ReactiveUI.Events.dll</HintPath>
+    </Reference>
+    <Reference Include="Splat, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Splat.1.5.0\lib\monoandroid\Splat.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLitePCL.raw, Version=0.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SQLitePCL.raw_basic.0.6.0\lib\MonoAndroid\SQLitePCL.raw.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

@@ -1,3 +1,6 @@
+# v1.2.0
+- Reworked the UI
+
 # v1.1.1
 - Fixed a crash when tapping on a SoundCloud or YouTube song
 

@@ -12,7 +12,6 @@ using Android.Widget;
 using Espera.Mobile.Core;
 using Espera.Mobile.Core.ViewModels;
 using Espera.Network;
-using Google.Analytics.Tracking;
 using Humanizer;
 using ReactiveMarrow;
 using ReactiveUI;

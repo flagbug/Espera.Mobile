@@ -88,33 +88,10 @@ namespace Espera.Android.Views
                 .Subscribe(x => Toast.MakeText(this.Activity, x, ToastLength.Long).Show())
                 .DisposeWith(disposable);
 
-                /*
-                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadPlaylistButton.Enabled)
-                    .DisposeWith(disposable);
-                this.LoadPlaylistButton.Events().Click.Subscribe(x => this.StartActivity(typeof(PlaylistActivity)))
-                    .DisposeWith(disposable);
-
-                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadRemoteArtistsButton.Enabled)
-                    .DisposeWith(disposable);
-                this.LoadRemoteArtistsButton.Events().Click.Subscribe(x => this.StartActivity(typeof(RemoteArtistsActivity)))
-                    .DisposeWith(disposable);
-
-                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadLocalArtistsButton.Enabled);
-                this.LoadLocalArtistsButton.Events().Click.Subscribe(x => this.StartActivity(typeof(LocalArtistsActivity)))
-                    .DisposeWith(disposable);
-
-                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadSoundCloudButton.Enabled);
-                this.LoadSoundCloudButton.Events().Click.Subscribe(x => this.StartActivity(typeof(SoundCloudActivity)))
-                    .DisposeWith(disposable);
-
-                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.LoadYoutubeButton.Enabled);
-                this.LoadYoutubeButton.Events().Click.Subscribe(x => this.StartActivity(typeof(YoutubeActivity)))
-                    .DisposeWith(disposable);*/
-
                 bool displayTrialPeriod = !settings.IsPremium;
                 this.TrialExpirationTextView.Visibility = this.TrialExpirationExplanationTextview.Visibility =
                     displayTrialPeriod ? ViewStates.Visible : ViewStates.Gone;
-                
+
                 if (displayTrialPeriod)
                 {
                     TimeSpan remainingTrialTime = TrialHelpers.GetRemainingTrialTime(AppConstants.TrialTime);
@@ -136,20 +113,9 @@ namespace Espera.Android.Views
 
         public Button ConnectButton { get; private set; }
 
-        public Button LoadLocalArtistsButton { get; private set; }
-
-        public Button LoadPlaylistButton { get; private set; }
-
-        public Button LoadRemoteArtistsButton { get; private set; }
-
-        public Button LoadSoundCloudButton { get; private set; }
-
-        public Button LoadYoutubeButton { get; private set; }
-
         public TextView TrialExpirationExplanationTextview { get; private set; }
 
         public TextView TrialExpirationTextView { get; private set; }
-
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {

@@ -1,67 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/ConnectButton"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="20dp" />
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/LoadPlaylistButton"
-        android:text="@string/playlist"
-        android:layout_margin="10dp" />
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/LoadRemoteArtistsButton"
-        android:text="@string/remote_songs"
-        android:layout_margin="10dp" />
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/LoadLocalArtistsButton"
-        android:text="@string/local_songs"
-        android:layout_margin="10dp" />
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/LoadSoundCloudButton"
-        android:text="SoundCloud"
-        android:layout_margin="10dp" />
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/LoadYoutubeButton"
-        android:text="YouTube"
-        android:layout_margin="10dp" />
-    <LinearLayout
-        android:id="@+id/TrialContainer"
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_marginTop="30dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"
-        android:gravity="center_horizontal">
-        <TextView
-            android:id="@+id/TrialExpirationTextView"
-            android:text="Trial Placeholder"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:gravity="center_horizontal" />
-        <TextView
-            android:id="@+id/TrialExpirationExplanationTextView"
-            android:text="Trial Explanation Placeholder"
-            android:layout_marginTop="10dp"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:gravity="center_horizontal" />
-    </LinearLayout>
-</LinearLayout>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/MainDrawer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <FrameLayout
+        android:id="@+id/ContentFrame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <ListView
+        android:id="@+id/MainDrawerListView"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:background="#FF2B2B2B" />
+</android.support.v4.widget.DrawerLayout>

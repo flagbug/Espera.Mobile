@@ -294,6 +294,10 @@
     <AndroidResource Include="Resources\drawable-xhdpi\ic_drawer.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\drawer_shadow.9.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\ic_drawer.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\Feedback.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\Feedback.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\Feedback.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\Feedback.png" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="googleanalytics">

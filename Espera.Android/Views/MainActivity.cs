@@ -20,6 +20,7 @@ using ReactiveUI;
 using Splat;
 using Fragment = Android.App.Fragment;
 using IMenuItem = Android.Views.IMenuItem;
+using Uri = Android.Net.Uri;
 
 namespace Espera.Android.Views
 {
@@ -51,6 +52,15 @@ namespace Espera.Android.Views
             return false;
         }
 
+        public void OpenFeedback()
+        {
+            var emailIntent = new Intent(Intent.ActionSendto);
+            emailIntent.SetData(Uri.Parse("mailto:daume.dennis@gmail.com"));
+            emailIntent.PutExtra(Intent.ExtraSubject, "Espera Feedback");
+
+            this.StartActivity(emailIntent);
+        }
+
         protected override void OnCreate(Bundle bundle)
         {
             this.RequestWindowFeature(WindowFeatures.IndeterminateProgress);
@@ -74,15 +84,19 @@ namespace Espera.Android.Views
             this.MainDrawerListView.Events().ItemClick
                 .Subscribe(x => this.HandleNavigation(x.Position));
 
-            var secondaryItems = new List<Tuple<int, int>>();
-
             var settingsItem = Tuple.Create(Resource.Drawable.Settings, Resource.String.settings);
-            secondaryItems.Add(settingsItem);
+            var feedbackItem = Tuple.Create(Resource.Drawable.Feedback, Resource.String.main_drawer_feedback);
+
+            var secondaryItems = new List<Tuple<int, int>>
+            {
+                settingsItem,
+                feedbackItem
+            };
 
             this.MainDrawerSecondaryListView.Adapter = new MainDrawerSecondaryAdapter(this, secondaryItems);
 
             this.MainDrawerSecondaryListView.Events().ItemClick
-                .Subscribe(x => this.HandleDetailNavigation(x.Position));
+                .Subscribe(x => this.HandleSecondaryNavigation(x.Position));
 
             this.ActionBar.SetDisplayHomeAsUpEnabled(true);
             this.ActionBar.SetHomeButtonEnabled(true);
@@ -178,15 +192,6 @@ namespace Espera.Android.Views
             }
         }
 
-        private void HandleDetailNavigation(int position)
-        {
-            if (position == 0)
-            {
-                var settingsIntent = new Intent(this, typeof(SettingsActivity));
-                this.StartActivity(settingsIntent);
-            }
-        }
-
         private void HandleNavigation(int position)
         {
             Fragment fragment = null;
@@ -223,6 +228,21 @@ namespace Espera.Android.Views
                 .Commit();
 
             this.MainDrawer.CloseDrawer(this.MainDrawerListView);
+        }
+
+        private void HandleSecondaryNavigation(int position)
+        {
+            switch (position)
+            {
+                case 0:
+                    var settingsIntent = new Intent(this, typeof(SettingsActivity));
+                    this.StartActivity(settingsIntent);
+                    break;
+
+                case 1:
+                    this.OpenFeedback();
+                    break;
+            }
         }
 
         private void ShowWifiPrompt()

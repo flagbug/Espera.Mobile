@@ -152,7 +152,7 @@ namespace Espera.Android.Views
                 .Subscribe(x =>
                 {
                     // Update the enabled state of the network specific buttons
-                    for (var i = 1; i < this.drawerAdapter.Count - 1; i++)
+                    for (var i = 1; i < this.drawerAdapter.Count; i++)
                     {
                         this.drawerAdapter.SetIsEnabled(i, x);
                     }

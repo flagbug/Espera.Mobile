@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using Android.Content;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
@@ -125,7 +126,7 @@ namespace Espera.Android.Views
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            View view = inflater.Inflate(Resource.Layout.MainLayout, null);
+            View view = inflater.Inflate(Resource.Layout.ConnectionLayout, null);
 
             this.WireUpControls(view);
 

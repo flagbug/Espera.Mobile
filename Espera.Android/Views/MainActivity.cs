@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Akavache;
@@ -33,14 +34,7 @@ namespace Espera.Android.Views
 
         public ListView MainDrawerListView { get; private set; }
 
-        public override bool OnCreateOptionsMenu(IMenu menu)
-        {
-            menu.Add(Resources.GetString(Resource.String.settings))
-                .SetIcon(Resource.Drawable.Settings)
-                .SetShowAsAction(ShowAsAction.Always);
-
-            return true;
-        }
+        public ListView MainDrawerSecondaryListView { get; private set; }
 
         public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
         {
@@ -54,9 +48,7 @@ namespace Espera.Android.Views
                 return true;
             }
 
-            this.StartActivity(typeof(SettingsActivity));
-
-            return true;
+            return false;
         }
 
         protected override void OnCreate(Bundle bundle)
@@ -81,6 +73,16 @@ namespace Espera.Android.Views
 
             this.MainDrawerListView.Events().ItemClick
                 .Subscribe(x => this.HandleNavigation(x.Position));
+
+            var secondaryItems = new List<Tuple<int, int>>();
+
+            var settingsItem = Tuple.Create(Resource.Drawable.Settings, Resource.String.settings);
+            secondaryItems.Add(settingsItem);
+
+            this.MainDrawerSecondaryListView.Adapter = new MainDrawerSecondaryAdapter(this, secondaryItems);
+
+            this.MainDrawerSecondaryListView.Events().ItemClick
+                .Subscribe(x => this.HandleDetailNavigation(x.Position));
 
             this.ActionBar.SetDisplayHomeAsUpEnabled(true);
             this.ActionBar.SetHomeButtonEnabled(true);
@@ -150,7 +152,7 @@ namespace Espera.Android.Views
                 .Subscribe(x =>
                 {
                     // Update the enabled state of the network specific buttons
-                    for (var i = 1; i < this.drawerAdapter.Count; i++)
+                    for (var i = 1; i < this.drawerAdapter.Count - 1; i++)
                     {
                         this.drawerAdapter.SetIsEnabled(i, x);
                     }
@@ -173,6 +175,15 @@ namespace Espera.Android.Views
             if (!NetworkMessenger.Instance.IsConnected)
             {
                 this.StopService(new Intent(this, typeof(NetworkService)));
+            }
+        }
+
+        private void HandleDetailNavigation(int position)
+        {
+            if (position == 0)
+            {
+                var settingsIntent = new Intent(this, typeof(SettingsActivity));
+                this.StartActivity(settingsIntent);
             }
         }
 

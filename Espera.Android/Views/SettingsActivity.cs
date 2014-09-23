@@ -23,7 +23,6 @@ using Splat;
 using Xamarin.InAppBilling;
 using Exception = System.Exception;
 using String = System.String;
-using Uri = Android.Net.Uri;
 
 namespace Espera.Android.Views
 {

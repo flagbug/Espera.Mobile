@@ -107,9 +107,6 @@ namespace Espera.Android.Views
                 .Concat()
                 .Subscribe();
 
-            Preference sendFeedback = this.FindPreference(this.GetString(Resource.String.preference_feedback));
-            sendFeedback.Events().PreferenceClick.Subscribe(_ => this.OpenFeedback());
-
             Preference versionPreference = this.FindPreference(this.GetString(Resource.String.preference_version));
             versionPreference.Summary = this.PackageManager.GetPackageInfo(this.PackageName, 0).VersionName;
         }
@@ -133,15 +130,6 @@ namespace Espera.Android.Views
             IPAddress dontCare;
             return String.IsNullOrEmpty(address) // An empty address indicates that we should auto-detect the server.
                 || IPAddress.TryParse(address, out dontCare);
-        }
-
-        private void OpenFeedback()
-        {
-            var emailIntent = new Intent(Intent.ActionSendto);
-            emailIntent.SetData(Uri.Parse("mailto:daume.dennis@gmail.com"));
-            emailIntent.PutExtra(Intent.ExtraSubject, "Espera Feedback");
-
-            this.StartActivity(emailIntent);
         }
 
         private async Task PurchasePremium()

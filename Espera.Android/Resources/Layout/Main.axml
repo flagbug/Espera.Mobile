@@ -22,9 +22,9 @@
             android:divider="@android:color/transparent"
             android:dividerHeight="0dp" />
         <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="@color/gray" />
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="?android:attr/listDivider" />
         <ListView
             android:id="@+id/MainDrawerSecondaryListView"
             android:layout_width="match_parent"

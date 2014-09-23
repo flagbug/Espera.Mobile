@@ -35,6 +35,8 @@ namespace Espera.Android.Views
 
         public ListView MainDrawerListView { get; private set; }
 
+        public LinearLayout MainDrawerListViewHolder { get; private set; }
+
         public ListView MainDrawerSecondaryListView { get; private set; }
 
         public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
@@ -227,7 +229,7 @@ namespace Espera.Android.Views
                 .Replace(Resource.Id.ContentFrame, fragment)
                 .Commit();
 
-            this.MainDrawer.CloseDrawer(this.MainDrawerListView);
+            this.MainDrawer.CloseDrawer(this.MainDrawerListViewHolder);
         }
 
         private void HandleSecondaryNavigation(int position)

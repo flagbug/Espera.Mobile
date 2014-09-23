@@ -209,6 +209,9 @@ namespace Espera.Android
 			// aapt resource value: 0x7f0a000c
 			public const int MainDrawerListView = 2131361804;
 			
+			// aapt resource value: 0x7f0a000b
+			public const int MainDrawerListViewHolder = 2131361803;
+			
 			// aapt resource value: 0x7f0a000d
 			public const int MainDrawerSecondaryListView = 2131361805;
 			
@@ -274,9 +277,6 @@ namespace Espera.Android
 			
 			// aapt resource value: 0x7f0a0021
 			public const int YoutubeSongsList = 2131361825;
-			
-			// aapt resource value: 0x7f0a000b
-			public const int drawer_Linearlayout = 2131361803;
 			
 			// aapt resource value: 0x7f0a0025
 			public const int search = 2131361829;

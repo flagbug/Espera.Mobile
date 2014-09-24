@@ -22,6 +22,8 @@ namespace Espera.Android.Views
 {
     public class PlaylistFragment : ReactiveFragment<PlaylistViewModel>
     {
+        private IMenu menu;
+
         public PlaylistFragment()
         {
             this.WhenActivated(() =>
@@ -187,6 +189,10 @@ namespace Espera.Android.Views
                     .Subscribe(_ => this.Playlist.EmptyView = this.View.FindViewById(global::Android.Resource.Id.Empty))
                     .DisposeWith(disposable);
 
+                this.ViewModel.WhenAnyValue(x => x.CanModify)
+                    .Subscribe(x => this.menu.FindItem(Resource.Id.ToggleVideoPlayer).SetVisible(x))
+                    .DisposeWith(disposable);
+
                 return disposable;
             });
         }
@@ -221,6 +227,8 @@ namespace Espera.Android.Views
         public override void OnCreateOptionsMenu(IMenu menu, MenuInflater inflater)
         {
             inflater.Inflate(Resource.Menu.PlaylistMenu, menu);
+
+            this.menu = menu;
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

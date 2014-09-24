@@ -298,6 +298,13 @@
     <AndroidResource Include="Resources\drawable-hdpi\Feedback.png" />
     <AndroidResource Include="Resources\drawable-mdpi\Feedback.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\Feedback.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\VideoPlayer.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\VideoPlayer.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\VideoPlayer.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\VideoPlayer.png" />
+    <AndroidResource Include="Resources\Menu\PlaylistMenu.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="googleanalytics">

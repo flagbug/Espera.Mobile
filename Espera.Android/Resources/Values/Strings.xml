@@ -114,4 +114,5 @@
   <string name="artists_no_songs">No songs found</string>
   <string name="service_notification_title">Espera Network</string>
   <string name="service_notification_text">Espera is connected</string>
+  <string name="toggle_video_player">Toggle video player</string>
 </resources>

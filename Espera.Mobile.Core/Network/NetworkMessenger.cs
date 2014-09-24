@@ -485,6 +485,11 @@ namespace Espera.Mobile.Core.Network
             return this.SendRequest(RequestAction.SetVolume, parameters);
         }
 
+        public Task<ResponseInfo> ToggleVideoPlayer()
+        {
+            return this.SendRequest(RequestAction.ToggleYoutubePlayer);
+        }
+
         public Task<ResponseInfo> VoteAsync(Guid entryGuid)
         {
             var parameters = new

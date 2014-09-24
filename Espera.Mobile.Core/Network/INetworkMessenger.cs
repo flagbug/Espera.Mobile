@@ -65,6 +65,8 @@ namespace Espera.Mobile.Core.Network
 
         Task<ResponseInfo> SetVolume(float volume);
 
+        Task<ResponseInfo> ToggleVideoPlayer();
+
         Task<ResponseInfo> VoteAsync(Guid entryGuid);
     }
 }

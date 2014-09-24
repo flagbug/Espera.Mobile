@@ -154,6 +154,9 @@ namespace Espera.Mobile.Core.ViewModels
                 this.MoveSongUpCommand = ReactiveCommand.CreateAsyncTask(this.WhenAnyValue(x => x.CanModify), _ =>
                     NetworkMessenger.Instance.MovePlaylistSongUpAsync(this.SelectedEntry.Guid));
 
+                this.ToggleVideoPlayerCommand = ReactiveCommand.CreateAsyncTask(this.WhenAnyValue(x => x.CanModify), _ =>
+                    NetworkMessenger.Instance.ToggleVideoPlayer());
+
                 return disposable;
             });
         }
@@ -225,6 +228,8 @@ namespace Espera.Mobile.Core.ViewModels
             get { return this.selectedEntry; }
             set { this.RaiseAndSetIfChanged(ref this.selectedEntry, value); }
         }
+
+        public ReactiveCommand<ResponseInfo> ToggleVideoPlayerCommand { get; private set; }
 
         public TimeSpan TotalTime
         {

@@ -107,7 +107,7 @@ namespace Espera.Android.Views
             // an orientation change
             if (bundle == null)
             {
-                FragmentManager.BeginTransaction()
+                this.FragmentManager.BeginTransaction()
                     .Replace(Resource.Id.ContentFrame, new ConnectionFragment())
                     .Commit();
             }
@@ -225,7 +225,7 @@ namespace Espera.Android.Views
                     break;
             }
 
-            FragmentManager.BeginTransaction()
+            this.FragmentManager.BeginTransaction()
                 .Replace(Resource.Id.ContentFrame, fragment)
                 .Commit();
 

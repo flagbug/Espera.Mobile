@@ -68,7 +68,7 @@ namespace Espera.Android.Views
 
         public override void OnCreateOptionsMenu(IMenu menu, MenuInflater inflater)
         {
-            inflater.Inflate(Resource.Menu.options_menu, menu);
+            inflater.Inflate(Resource.Menu.SearchMenu, menu);
 
             var searchView = (SearchView)menu.FindItem(Resource.Id.search).ActionView;
 

@@ -257,8 +257,8 @@ namespace Espera.Android
 			// aapt resource value: 0x7f0a001c
 			public const int SoundCloudSongsList = 2131361820;
 			
-			// aapt resource value: 0x7f0a0026
-			public const int ToggleVideoPlayer = 2131361830;
+			// aapt resource value: 0x7f0a0025
+			public const int ToggleVideoPlayer = 2131361829;
 			
 			// aapt resource value: 0x7f0a0015
 			public const int TotalTimeTextView = 2131361813;
@@ -284,8 +284,8 @@ namespace Espera.Android
 			// aapt resource value: 0x7f0a0021
 			public const int YoutubeSongsList = 2131361825;
 			
-			// aapt resource value: 0x7f0a0025
-			public const int search = 2131361829;
+			// aapt resource value: 0x7f0a0026
+			public const int search = 2131361830;
 			
 			static Id()
 			{
@@ -356,10 +356,10 @@ namespace Espera.Android
 		{
 			
 			// aapt resource value: 0x7f090000
-			public const int options_menu = 2131296256;
+			public const int PlaylistMenu = 2131296256;
 			
 			// aapt resource value: 0x7f090001
-			public const int PlaylistMenu = 2131296257;
+			public const int SearchMenu = 2131296257;
 			
 			static Menu()
 			{

@@ -154,6 +154,9 @@ namespace Espera.Android
 			// aapt resource value: 0x7f02000c
 			public const int Settings = 2130837516;
 			
+			// aapt resource value: 0x7f02000d
+			public const int VideoPlayer = 2130837517;
+			
 			static Drawable()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
@@ -254,6 +257,9 @@ namespace Espera.Android
 			// aapt resource value: 0x7f0a001c
 			public const int SoundCloudSongsList = 2131361820;
 			
+			// aapt resource value: 0x7f0a0026
+			public const int ToggleVideoPlayer = 2131361830;
+			
 			// aapt resource value: 0x7f0a0015
 			public const int TotalTimeTextView = 2131361813;
 			
@@ -351,6 +357,9 @@ namespace Espera.Android
 			
 			// aapt resource value: 0x7f090000
 			public const int options_menu = 2131296256;
+			
+			// aapt resource value: 0x7f090001
+			public const int PlaylistMenu = 2131296257;
 			
 			static Menu()
 			{
@@ -622,6 +631,9 @@ namespace Espera.Android
 			
 			// aapt resource value: 0x7f04005d
 			public const int soundcloud_play = 2130968669;
+			
+			// aapt resource value: 0x7f040065
+			public const int toggle_video_player = 2130968677;
 			
 			// aapt resource value: 0x7f040022
 			public const int trial_expiration = 2130968610;

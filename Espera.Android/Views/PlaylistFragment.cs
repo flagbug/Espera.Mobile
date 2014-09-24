@@ -10,6 +10,7 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 using Espera.Mobile.Core;
+using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.ViewModels;
 using Espera.Network;
 using Google.Analytics.Tracking;
@@ -212,7 +213,14 @@ namespace Espera.Android.Views
         {
             base.OnCreate(bundle);
 
+            this.SetHasOptionsMenu(true);
+
             this.ViewModel = new PlaylistViewModel();
+        }
+
+        public override void OnCreateOptionsMenu(IMenu menu, MenuInflater inflater)
+        {
+            inflater.Inflate(Resource.Menu.PlaylistMenu, menu);
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -222,6 +230,18 @@ namespace Espera.Android.Views
             this.WireUpControls(view);
 
             return view;
+        }
+
+        public override bool OnOptionsItemSelected(IMenuItem item)
+        {
+            switch (item.ItemId)
+            {
+                case Resource.Id.ToggleVideoPlayer:
+                    this.ViewModel.ToggleVideoPlayerCommand.Execute(null);
+                    return true;
+            }
+
+            return base.OnOptionsItemSelected(item);
         }
 
         public override void OnResume()

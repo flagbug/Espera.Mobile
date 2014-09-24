@@ -1,0 +1,8 @@
+﻿<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item
+     android:id="@+id/ToggleVideoPlayer"
+     android:icon="@drawable/VideoPlayer"
+     android:showAsAction="ifRoom"
+     android:title="@string/toggle_video_player">
+  </item>
+</menu>

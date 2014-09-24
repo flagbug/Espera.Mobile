@@ -495,5 +495,37 @@ namespace Espera.Android.Tests
                 Assert.Equal(new[] { true, false, true, false, true, false }, canExecute);
             }
         }
+
+        public class TheToggleVideoPlayerCommand
+        {
+            [Fact]
+            public void CanExecuteOnlyWhenAdministrator()
+            {
+                var messenger = CreateDefaultPlaylistMessenger();
+                messenger.AccessPermission.Returns(NetworkAccessPermission.Guest);
+
+                var vm = new PlaylistViewModel();
+                vm.Activator.Activate();
+
+                Assert.False(vm.ToggleVideoPlayerCommand.CanExecute(null));
+
+                messenger.AccessPermission.Returns(NetworkAccessPermission.Admin);
+                messenger.PropertyChanged += Raise.Event<PropertyChangedEventHandler>(new PropertyChangedEventArgs("AccessPermission"));
+
+                Assert.True(vm.ToggleVideoPlayerCommand.CanExecute(null));
+            }
+
+            [Fact]
+            public async Task SendsCorrectMessageToNetworkMessenger()
+            {
+                var messenger = CreateDefaultPlaylistMessenger();
+
+                var vm = new PlaylistViewModel();
+                vm.Activator.Activate();
+                await vm.ToggleVideoPlayerCommand.ExecuteAsync();
+
+                messenger.Received().ToggleVideoPlayer();
+            }
+        }
     }
 }

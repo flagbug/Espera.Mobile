@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Akavache;
@@ -13,6 +14,7 @@ using Android.Support.V4.Widget;
 using Android.Views;
 using Android.Widget;
 using Espera.Android.Services;
+using Espera.Android.ViewModels;
 using Espera.Mobile.Core.Analytics;
 using Espera.Mobile.Core.Network;
 using ReactiveMarrow;
@@ -28,16 +30,12 @@ namespace Espera.Android.Views
     public class MainActivity : ReactiveActivity
     {
         private IDisposable activationDisposable;
-        private MainDrawerPrimaryAdapter drawerAdapter;
+        private MainDrawerAdapter drawerAdapter;
         private ActionBarDrawerToggle drawerToggle;
 
         public DrawerLayout MainDrawer { get; private set; }
 
         public ListView MainDrawerListView { get; private set; }
-
-        public LinearLayout MainDrawerListViewHolder { get; private set; }
-
-        public ListView MainDrawerSecondaryListView { get; private set; }
 
         public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
         {
@@ -78,27 +76,26 @@ namespace Espera.Android.Views
             this.MainDrawer.SetDrawerListener(this.drawerToggle);
             this.MainDrawer.SetDrawerShadow(Resource.Drawable.drawer_shadow, (int)GravityFlags.Start);
 
-            string[] drawerItems = this.Resources.GetStringArray(Resource.Array.main_drawer_items);
+            var drawerItems = new List<NavigationDrawerItemViewModel>();
+            var primaryDrawerItems = this.Resources.GetStringArray(Resource.Array.main_drawer_items)
+                .Select(NavigationDrawerItemViewModel.CreatePrimary);
 
-            this.drawerAdapter = new MainDrawerPrimaryAdapter(this, drawerItems);
+            drawerItems.AddRange(primaryDrawerItems);
+
+            var secondaryDrawerItems = new[]
+            {
+                NavigationDrawerItemViewModel.CreateDivider(),
+                NavigationDrawerItemViewModel.CreateSecondary(this.GetString(Resource.String.settings), Resource.Drawable.Settings, true),
+                NavigationDrawerItemViewModel.CreateSecondary(this.GetString(Resource.String.main_drawer_feedback), Resource.Drawable.Feedback)
+            };
+
+            drawerItems.AddRange(secondaryDrawerItems);
+
+            this.drawerAdapter = new MainDrawerAdapter(this, drawerItems);
             this.MainDrawerListView.Adapter = this.drawerAdapter;
 
             this.MainDrawerListView.Events().ItemClick
                 .Subscribe(x => this.HandleNavigation(x.Position));
-
-            var settingsItem = Tuple.Create(Resource.Drawable.Settings, Resource.String.settings);
-            var feedbackItem = Tuple.Create(Resource.Drawable.Feedback, Resource.String.main_drawer_feedback);
-
-            var secondaryItems = new List<Tuple<int, int>>
-            {
-                settingsItem,
-                feedbackItem
-            };
-
-            this.MainDrawerSecondaryListView.Adapter = new MainDrawerSecondaryAdapter(this, secondaryItems);
-
-            this.MainDrawerSecondaryListView.Events().ItemClick
-                .Subscribe(x => this.HandleSecondaryNavigation(x.Position));
 
             this.ActionBar.SetDisplayHomeAsUpEnabled(true);
             this.ActionBar.SetHomeButtonEnabled(true);
@@ -168,10 +165,12 @@ namespace Espera.Android.Views
                 .Subscribe(x =>
                 {
                     // Update the enabled state of the network specific buttons
-                    for (var i = 1; i < this.drawerAdapter.Count; i++)
+                    foreach (var item in this.drawerAdapter.Where(y => y.ItemType == MainDrawerItemType.Primary).Skip(1))
                     {
-                        this.drawerAdapter.SetIsEnabled(i, x);
+                        item.IsEnabled = x;
                     }
+
+                    this.drawerAdapter.NotifyDataSetChanged();
                 }).DisposeWith(disposable);
 
             this.activationDisposable = disposable;
@@ -223,28 +222,22 @@ namespace Espera.Android.Views
                 case 5:
                     fragment = new YoutubeFragment();
                     break;
+
+                case 7:
+                    var settingsIntent = new Intent(this, typeof(SettingsActivity));
+                    this.StartActivity(settingsIntent);
+                    return;
+
+                case 8:
+                    this.OpenFeedback();
+                    return;
             }
 
             this.FragmentManager.BeginTransaction()
                 .Replace(Resource.Id.ContentFrame, fragment)
                 .Commit();
 
-            this.MainDrawer.CloseDrawer(this.MainDrawerListViewHolder);
-        }
-
-        private void HandleSecondaryNavigation(int position)
-        {
-            switch (position)
-            {
-                case 0:
-                    var settingsIntent = new Intent(this, typeof(SettingsActivity));
-                    this.StartActivity(settingsIntent);
-                    break;
-
-                case 1:
-                    this.OpenFeedback();
-                    break;
-            }
+            this.MainDrawer.CloseDrawer(this.MainDrawerListView);
         }
 
         private void ShowWifiPrompt()

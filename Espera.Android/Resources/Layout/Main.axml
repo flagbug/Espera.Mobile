@@ -7,30 +7,14 @@
         android:id="@+id/ContentFrame"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-    <LinearLayout
-        android:id="@+id/MainDrawerListViewHolder"
+    <ListView
+        android:id="@+id/MainDrawerListView"
         android:layout_width="240dp"
         android:layout_height="match_parent"
+        android:fillViewport="true"
         android:layout_gravity="start"
-        android:orientation="vertical"
-        android:background="#FF2B2B2B">
-        <ListView
-            android:id="@+id/MainDrawerListView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:choiceMode="singleChoice"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="0dp" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="?android:attr/listDivider" />
-        <ListView
-            android:id="@+id/MainDrawerSecondaryListView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:choiceMode="singleChoice"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="0dp" />
-    </LinearLayout>
+        android:background="#FF2B2B2B"
+        android:choiceMode="singleChoice"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp" />
 </android.support.v4.widget.DrawerLayout>

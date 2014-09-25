@@ -76,22 +76,7 @@ namespace Espera.Android.Views
             this.MainDrawer.SetDrawerListener(this.drawerToggle);
             this.MainDrawer.SetDrawerShadow(Resource.Drawable.drawer_shadow, (int)GravityFlags.Start);
 
-            var drawerItems = new List<NavigationDrawerItemViewModel>();
-            var primaryDrawerItems = this.Resources.GetStringArray(Resource.Array.main_drawer_items)
-                .Select(NavigationDrawerItemViewModel.CreatePrimary);
-
-            drawerItems.AddRange(primaryDrawerItems);
-
-            var secondaryDrawerItems = new[]
-            {
-                NavigationDrawerItemViewModel.CreateDivider(),
-                NavigationDrawerItemViewModel.CreateSecondary(this.GetString(Resource.String.settings), Resource.Drawable.Settings, true),
-                NavigationDrawerItemViewModel.CreateSecondary(this.GetString(Resource.String.main_drawer_feedback), Resource.Drawable.Feedback)
-            };
-
-            drawerItems.AddRange(secondaryDrawerItems);
-
-            this.drawerAdapter = new MainDrawerAdapter(this, drawerItems);
+            this.drawerAdapter = new MainDrawerAdapter(this, CreateMainDrawerItems());
             this.MainDrawerListView.Adapter = this.drawerAdapter;
 
             this.MainDrawerListView.Events().ItemClick
@@ -193,51 +178,42 @@ namespace Espera.Android.Views
             }
         }
 
+        private IEnumerable<NavigationDrawerItemViewModel> CreateMainDrawerItems()
+        {
+            return new[]
+            {
+                NavigationDrawerItemViewModel.CreatePrimary(this.GetString(Resource.String.main_drawer_connection), () => this.ReplaceContentFrame(new ConnectionFragment())),
+                NavigationDrawerItemViewModel.CreatePrimary(this.GetString(Resource.String.main_drawer_playlist), () => this.ReplaceContentFrame(new PlaylistFragment())),
+                NavigationDrawerItemViewModel.CreatePrimary(this.GetString(Resource.String.main_drawer_remote_songs), () => this.ReplaceContentFrame(new RemoteArtistsFragment())),
+                NavigationDrawerItemViewModel.CreatePrimary(this.GetString(Resource.String.main_drawer_local_songs), () => this.ReplaceContentFrame(new LocalArtistsFragment())),
+                NavigationDrawerItemViewModel.CreatePrimary(this.GetString(Resource.String.main_drawer_soundcloud), () => this.ReplaceContentFrame(new SoundCloudFragment())),
+                NavigationDrawerItemViewModel.CreatePrimary(this.GetString(Resource.String.main_drawer_youtube), () => this.ReplaceContentFrame(new YoutubeFragment())),
+                NavigationDrawerItemViewModel.CreateDivider(),
+                NavigationDrawerItemViewModel.CreateSecondary(this.GetString(Resource.String.settings), Resource.Drawable.Settings, this.OpenSetting),
+                NavigationDrawerItemViewModel.CreateSecondary(this.GetString(Resource.String.main_drawer_feedback), Resource.Drawable.Feedback, this.OpenFeedback)
+            };
+        }
+
         private void HandleNavigation(int position)
         {
-            Fragment fragment = null;
+            NavigationDrawerItemViewModel item = this.drawerAdapter[position];
 
-            switch (position)
-            {
-                case 0:
-                    fragment = new ConnectionFragment();
-                    break;
+            item.SelectionAction();
 
-                case 1:
-                    fragment = new PlaylistFragment();
-                    break;
+            this.MainDrawer.CloseDrawer(this.MainDrawerListView);
+        }
 
-                case 2:
-                    fragment = new RemoteArtistsFragment();
-                    break;
+        private void OpenSetting()
+        {
+            var settingsIntent = new Intent(this, typeof(SettingsActivity));
+            this.StartActivity(settingsIntent);
+        }
 
-                case 3:
-                    fragment = new LocalArtistsFragment();
-                    break;
-
-                case 4:
-                    fragment = new SoundCloudFragment();
-                    break;
-
-                case 5:
-                    fragment = new YoutubeFragment();
-                    break;
-
-                case 7:
-                    var settingsIntent = new Intent(this, typeof(SettingsActivity));
-                    this.StartActivity(settingsIntent);
-                    return;
-
-                case 8:
-                    this.OpenFeedback();
-                    return;
-            }
-
+        private void ReplaceContentFrame(Fragment fragment)
+        {
             this.FragmentManager.BeginTransaction()
                 .Replace(Resource.Id.ContentFrame, fragment)
                 .Commit();
-
-            this.MainDrawer.CloseDrawer(this.MainDrawerListView);
         }
 
         private void ShowWifiPrompt()

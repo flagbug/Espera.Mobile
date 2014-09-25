@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
 using Android.App;
 using Android.OS;
@@ -22,10 +23,12 @@ namespace Espera.Android.Views
 {
     public class PlaylistFragment : ReactiveFragment<PlaylistViewModel>
     {
-        private IMenu menu;
+        private Subject<IMenu> menu;
 
         public PlaylistFragment()
         {
+            this.menu = new Subject<IMenu>();
+
             this.WhenActivated(() =>
             {
                 var disposable = new CompositeDisposable();
@@ -189,8 +192,8 @@ namespace Espera.Android.Views
                     .Subscribe(_ => this.Playlist.EmptyView = this.View.FindViewById(global::Android.Resource.Id.Empty))
                     .DisposeWith(disposable);
 
-                this.ViewModel.WhenAnyValue(x => x.CanModify)
-                    .Subscribe(x => this.menu.FindItem(Resource.Id.ToggleVideoPlayer).SetVisible(x))
+                this.ViewModel.WhenAnyValue(x => x.CanModify).CombineLatest(this.menu, Tuple.Create)
+                    .Subscribe(x => x.Item2.FindItem(Resource.Id.ToggleVideoPlayer).SetVisible(x.Item1))
                     .DisposeWith(disposable);
 
                 return disposable;
@@ -228,7 +231,7 @@ namespace Espera.Android.Views
         {
             inflater.Inflate(Resource.Menu.PlaylistMenu, menu);
 
-            this.menu = menu;
+            this.menu.OnNext(menu);
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

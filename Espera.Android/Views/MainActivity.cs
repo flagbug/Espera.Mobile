@@ -28,7 +28,7 @@ namespace Espera.Android.Views
     public class MainActivity : ReactiveActivity
     {
         private IDisposable activationDisposable;
-        private DeactivatableListAdapter<string> drawerAdapter;
+        private MainDrawerPrimaryAdapter drawerAdapter;
         private ActionBarDrawerToggle drawerToggle;
 
         public DrawerLayout MainDrawer { get; private set; }
@@ -80,7 +80,7 @@ namespace Espera.Android.Views
 
             string[] drawerItems = this.Resources.GetStringArray(Resource.Array.main_drawer_items);
 
-            this.drawerAdapter = new DeactivatableListAdapter<string>(this, global::Android.Resource.Layout.SimpleListItem1, drawerItems);
+            this.drawerAdapter = new MainDrawerPrimaryAdapter(this, drawerItems);
             this.MainDrawerListView.Adapter = this.drawerAdapter;
 
             this.MainDrawerListView.Events().ItemClick

@@ -1,4 +1,4 @@
-using System.Collections.Specialized;
+using System;
 using ReactiveUI;
 
 namespace Espera.Android.ViewModels
@@ -16,6 +16,11 @@ namespace Espera.Android.ViewModels
 
         public MainDrawerItemType ItemType { get; private set; }
 
+        /// <summary>
+        /// The action to invoke when this item is selected.
+        /// </summary>
+        public Action SelectionAction { get; private set; }
+
         public string Text { get; private set; }
 
         public static NavigationDrawerItemViewModel CreateDivider()
@@ -27,22 +32,24 @@ namespace Espera.Android.ViewModels
             };
         }
 
-        public static NavigationDrawerItemViewModel CreatePrimary(string text)
+        public static NavigationDrawerItemViewModel CreatePrimary(string text, Action selectionAction)
         {
             return new NavigationDrawerItemViewModel
             {
                 Text = text,
-                ItemType = MainDrawerItemType.Primary
+                ItemType = MainDrawerItemType.Primary,
+                SelectionAction = selectionAction
             };
         }
 
-        public static NavigationDrawerItemViewModel CreateSecondary(string text, int iconResourceId, bool isFirstSecondary = false)
+        public static NavigationDrawerItemViewModel CreateSecondary(string text, int iconResourceId, Action selectionAction)
         {
             return new NavigationDrawerItemViewModel
             {
                 Text = text,
                 IconResourceId = iconResourceId,
-                ItemType = MainDrawerItemType.Secondary
+                ItemType = MainDrawerItemType.Secondary,
+                SelectionAction = selectionAction
             };
         }
     }

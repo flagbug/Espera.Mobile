@@ -13,6 +13,7 @@ using Android.Text;
 using Android.Views;
 using Android.Widget;
 using Espera.Mobile.Core;
+using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
 using Espera.Network;
 using Google.Analytics.Tracking;
@@ -108,6 +109,29 @@ namespace Espera.Android.Views
 
             Preference versionPreference = this.FindPreference(this.GetString(Resource.String.preference_version));
             versionPreference.Summary = this.PackageManager.GetPackageInfo(this.PackageName, 0).VersionName;
+
+            var virtualServerPreference = (SwitchPreference)this.FindPreference(this.GetString(Resource.String.preference_virtual_server));
+            virtualServerPreference.Persistent = false;
+            virtualServerPreference.Events().PreferenceChange
+                .Subscribe(x =>
+                {
+                    if ((bool)x.NewValue)
+                    {
+                        NetworkMessenger.Override(new VirtualNetworkMessenger());
+                    }
+
+                    else
+                    {
+                        NetworkMessenger.ResetOverride();
+                    }
+                });
+
+#if !DEBUG && !DEVELOPMENT
+            var developmentCategory = (PreferenceCategory)this.FindPreference(this.GetString(Resource.String.preference_development));
+
+            var screen = (PreferenceScreen)this.FindPreference(this.GetString(Resource.String.preference_main_screen));
+            screen.RemovePreference(developmentCategory);
+#endif
         }
 
         protected override void OnStart()

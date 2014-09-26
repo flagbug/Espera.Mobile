@@ -377,140 +377,140 @@ namespace Espera.Android
 			// aapt resource value: 0x7f040002
 			public const int ApplicationName = 2130968578;
 			
-			// aapt resource value: 0x7f040037
-			public const int add_to_playlist = 2130968631;
+			// aapt resource value: 0x7f040039
+			public const int add_to_playlist = 2130968633;
 			
-			// aapt resource value: 0x7f040060
-			public const int added_to_playlist = 2130968672;
+			// aapt resource value: 0x7f040062
+			public const int added_to_playlist = 2130968674;
 			
-			// aapt resource value: 0x7f04002d
-			public const int administrator_functions = 2130968621;
+			// aapt resource value: 0x7f04002f
+			public const int administrator_functions = 2130968623;
 			
-			// aapt resource value: 0x7f040069
-			public const int artists_no_songs = 2130968681;
+			// aapt resource value: 0x7f04006b
+			public const int artists_no_songs = 2130968683;
 			
-			// aapt resource value: 0x7f040053
-			public const int connect = 2130968659;
+			// aapt resource value: 0x7f040055
+			public const int connect = 2130968661;
 			
-			// aapt resource value: 0x7f040046
-			public const int connected_as_admin = 2130968646;
+			// aapt resource value: 0x7f040048
+			public const int connected_as_admin = 2130968648;
+			
+			// aapt resource value: 0x7f040049
+			public const int connected_as_guest = 2130968649;
+			
+			// aapt resource value: 0x7f040054
+			public const int connecting = 2130968660;
 			
 			// aapt resource value: 0x7f040047
-			public const int connected_as_guest = 2130968647;
+			public const int connection_failed = 2130968647;
 			
-			// aapt resource value: 0x7f040052
-			public const int connecting = 2130968658;
+			// aapt resource value: 0x7f04004d
+			public const int connection_lost = 2130968653;
 			
-			// aapt resource value: 0x7f040045
-			public const int connection_failed = 2130968645;
+			// aapt resource value: 0x7f040042
+			public const int connection_timeout = 2130968642;
 			
-			// aapt resource value: 0x7f04004b
-			public const int connection_lost = 2130968651;
+			// aapt resource value: 0x7f040053
+			public const int disconnect = 2130968659;
 			
-			// aapt resource value: 0x7f040040
-			public const int connection_timeout = 2130968640;
-			
-			// aapt resource value: 0x7f040051
-			public const int disconnect = 2130968657;
+			// aapt resource value: 0x7f040063
+			public const int error_adding_song = 2130968675;
 			
 			// aapt resource value: 0x7f040061
-			public const int error_adding_song = 2130968673;
-			
-			// aapt resource value: 0x7f04005f
-			public const int error_adding_songs = 2130968671;
+			public const int error_adding_songs = 2130968673;
 			
 			// aapt resource value: 0x7f040001
 			public const int ga_trackingId = 2130968577;
 			
-			// aapt resource value: 0x7f04002c
-			public const int guest_functions = 2130968620;
+			// aapt resource value: 0x7f04002e
+			public const int guest_functions = 2130968622;
 			
 			// aapt resource value: 0x7f040000
 			public const int library_name = 2130968576;
 			
-			// aapt resource value: 0x7f04003d
-			public const int loading_artists = 2130968637;
-			
-			// aapt resource value: 0x7f040054
-			public const int loading_artists_failed = 2130968660;
-			
-			// aapt resource value: 0x7f040038
-			public const int loading_playlist = 2130968632;
-			
-			// aapt resource value: 0x7f040058
-			public const int loading_playlist_failed = 2130968664;
-			
-			// aapt resource value: 0x7f040062
-			public const int loading_soundcloud = 2130968674;
-			
-			// aapt resource value: 0x7f040065
-			public const int loading_youtube = 2130968677;
-			
-			// aapt resource value: 0x7f04005c
-			public const int local_artists = 2130968668;
-			
-			// aapt resource value: 0x7f040034
-			public const int local_artists_fragment_title = 2130968628;
-			
-			// aapt resource value: 0x7f040033
-			public const int local_songs = 2130968627;
-			
-			// aapt resource value: 0x7f040021
-			public const int main_drawer_connection = 2130968609;
-			
-			// aapt resource value: 0x7f040028
-			public const int main_drawer_feedback = 2130968616;
-			
-			// aapt resource value: 0x7f040024
-			public const int main_drawer_local_songs = 2130968612;
-			
-			// aapt resource value: 0x7f040022
-			public const int main_drawer_playlist = 2130968610;
-			
-			// aapt resource value: 0x7f040023
-			public const int main_drawer_remote_songs = 2130968611;
-			
-			// aapt resource value: 0x7f040027
-			public const int main_drawer_settings = 2130968615;
-			
-			// aapt resource value: 0x7f040025
-			public const int main_drawer_soundcloud = 2130968613;
-			
-			// aapt resource value: 0x7f040026
-			public const int main_drawer_youtube = 2130968614;
-			
-			// aapt resource value: 0x7f04002e
-			public const int main_fragment_title = 2130968622;
-			
-			// aapt resource value: 0x7f04003c
-			public const int move_down = 2130968636;
-			
-			// aapt resource value: 0x7f04003b
-			public const int move_up = 2130968635;
-			
-			// aapt resource value: 0x7f040035
-			public const int no_votes_left = 2130968629;
-			
-			// aapt resource value: 0x7f040036
-			public const int play = 2130968630;
-			
-			// aapt resource value: 0x7f040057
-			public const int playback_failed = 2130968663;
+			// aapt resource value: 0x7f04003f
+			public const int loading_artists = 2130968639;
 			
 			// aapt resource value: 0x7f040056
-			public const int playing_song = 2130968662;
+			public const int loading_artists_failed = 2130968662;
+			
+			// aapt resource value: 0x7f04003a
+			public const int loading_playlist = 2130968634;
+			
+			// aapt resource value: 0x7f04005a
+			public const int loading_playlist_failed = 2130968666;
+			
+			// aapt resource value: 0x7f040064
+			public const int loading_soundcloud = 2130968676;
+			
+			// aapt resource value: 0x7f040067
+			public const int loading_youtube = 2130968679;
 			
 			// aapt resource value: 0x7f04005e
-			public const int playing_songs = 2130968670;
+			public const int local_artists = 2130968670;
 			
-			// aapt resource value: 0x7f04002f
-			public const int playlist = 2130968623;
+			// aapt resource value: 0x7f040036
+			public const int local_artists_fragment_title = 2130968630;
+			
+			// aapt resource value: 0x7f040035
+			public const int local_songs = 2130968629;
+			
+			// aapt resource value: 0x7f040023
+			public const int main_drawer_connection = 2130968611;
+			
+			// aapt resource value: 0x7f04002a
+			public const int main_drawer_feedback = 2130968618;
+			
+			// aapt resource value: 0x7f040026
+			public const int main_drawer_local_songs = 2130968614;
+			
+			// aapt resource value: 0x7f040024
+			public const int main_drawer_playlist = 2130968612;
+			
+			// aapt resource value: 0x7f040025
+			public const int main_drawer_remote_songs = 2130968613;
+			
+			// aapt resource value: 0x7f040029
+			public const int main_drawer_settings = 2130968617;
+			
+			// aapt resource value: 0x7f040027
+			public const int main_drawer_soundcloud = 2130968615;
+			
+			// aapt resource value: 0x7f040028
+			public const int main_drawer_youtube = 2130968616;
 			
 			// aapt resource value: 0x7f040030
-			public const int playlist_fragment_title = 2130968624;
+			public const int main_fragment_title = 2130968624;
 			
-			// aapt resource value: 0x7f040039
-			public const int playlist_is_empty = 2130968633;
+			// aapt resource value: 0x7f04003e
+			public const int move_down = 2130968638;
+			
+			// aapt resource value: 0x7f04003d
+			public const int move_up = 2130968637;
+			
+			// aapt resource value: 0x7f040037
+			public const int no_votes_left = 2130968631;
+			
+			// aapt resource value: 0x7f040038
+			public const int play = 2130968632;
+			
+			// aapt resource value: 0x7f040059
+			public const int playback_failed = 2130968665;
+			
+			// aapt resource value: 0x7f040058
+			public const int playing_song = 2130968664;
+			
+			// aapt resource value: 0x7f040060
+			public const int playing_songs = 2130968672;
+			
+			// aapt resource value: 0x7f040031
+			public const int playlist = 2130968625;
+			
+			// aapt resource value: 0x7f040032
+			public const int playlist_fragment_title = 2130968626;
+			
+			// aapt resource value: 0x7f04003b
+			public const int playlist_is_empty = 2130968635;
 			
 			// aapt resource value: 0x7f040012
 			public const int preference_administrator_default_library_action_summary = 2130968594;
@@ -527,17 +527,20 @@ namespace Espera.Android
 			// aapt resource value: 0x7f04000f
 			public const int preference_administrator_password_title = 2130968591;
 			
+			// aapt resource value: 0x7f040022
+			public const int preference_category_about = 2130968610;
+			
 			// aapt resource value: 0x7f040020
-			public const int preference_category_about = 2130968608;
-			
-			// aapt resource value: 0x7f04001e
-			public const int preference_category_administrator = 2130968606;
-			
-			// aapt resource value: 0x7f04001d
-			public const int preference_category_network = 2130968605;
+			public const int preference_category_administrator = 2130968608;
 			
 			// aapt resource value: 0x7f04001f
-			public const int preference_category_premium = 2130968607;
+			public const int preference_category_network = 2130968607;
+			
+			// aapt resource value: 0x7f040021
+			public const int preference_category_premium = 2130968609;
+			
+			// aapt resource value: 0x7f04001d
+			public const int preference_development = 2130968605;
 			
 			// aapt resource value: 0x7f040007
 			public const int preference_ipaddress = 2130968583;
@@ -602,104 +605,107 @@ namespace Espera.Android
 			// aapt resource value: 0x7f04001c
 			public const int preference_version_title = 2130968604;
 			
-			// aapt resource value: 0x7f04003f
-			public const int premium_already_purchased = 2130968639;
-			
-			// aapt resource value: 0x7f040042
-			public const int purchase_failed = 2130968642;
-			
-			// aapt resource value: 0x7f040044
-			public const int purchase_restore_failed = 2130968644;
-			
-			// aapt resource value: 0x7f040043
-			public const int purchase_restored = 2130968643;
+			// aapt resource value: 0x7f04001e
+			public const int preference_virtual_server = 2130968606;
 			
 			// aapt resource value: 0x7f040041
-			public const int purchase_successful = 2130968641;
+			public const int premium_already_purchased = 2130968641;
 			
-			// aapt resource value: 0x7f04005d
-			public const int remote_artists = 2130968669;
+			// aapt resource value: 0x7f040044
+			public const int purchase_failed = 2130968644;
 			
-			// aapt resource value: 0x7f040032
-			public const int remote_artists_fragment_title = 2130968626;
+			// aapt resource value: 0x7f040046
+			public const int purchase_restore_failed = 2130968646;
 			
-			// aapt resource value: 0x7f040031
-			public const int remote_songs = 2130968625;
+			// aapt resource value: 0x7f040045
+			public const int purchase_restored = 2130968645;
 			
-			// aapt resource value: 0x7f04003a
-			public const int remove = 2130968634;
+			// aapt resource value: 0x7f040043
+			public const int purchase_successful = 2130968643;
 			
-			// aapt resource value: 0x7f040048
-			public const int required_server_version = 2130968648;
+			// aapt resource value: 0x7f04005f
+			public const int remote_artists = 2130968671;
 			
-			// aapt resource value: 0x7f040068
-			public const int search = 2130968680;
+			// aapt resource value: 0x7f040034
+			public const int remote_artists_fragment_title = 2130968628;
 			
-			// aapt resource value: 0x7f04006b
-			public const int service_notification_text = 2130968683;
+			// aapt resource value: 0x7f040033
+			public const int remote_songs = 2130968627;
 			
-			// aapt resource value: 0x7f04006a
-			public const int service_notification_title = 2130968682;
+			// aapt resource value: 0x7f04003c
+			public const int remove = 2130968636;
 			
 			// aapt resource value: 0x7f04004a
-			public const int settings = 2130968650;
+			public const int required_server_version = 2130968650;
 			
-			// aapt resource value: 0x7f040055
-			public const int something_went_wrong = 2130968661;
+			// aapt resource value: 0x7f04006a
+			public const int search = 2130968682;
 			
-			// aapt resource value: 0x7f040063
-			public const int soundcloud_no_songs = 2130968675;
-			
-			// aapt resource value: 0x7f040064
-			public const int soundcloud_play = 2130968676;
+			// aapt resource value: 0x7f04006d
+			public const int service_notification_text = 2130968685;
 			
 			// aapt resource value: 0x7f04006c
-			public const int toggle_video_player = 2130968684;
-			
-			// aapt resource value: 0x7f040029
-			public const int trial_expiration = 2130968617;
-			
-			// aapt resource value: 0x7f04002a
-			public const int trial_expiration_expired = 2130968618;
-			
-			// aapt resource value: 0x7f04002b
-			public const int trial_expiration_explanation = 2130968619;
-			
-			// aapt resource value: 0x7f04003e
-			public const int uses_vote = 2130968638;
-			
-			// aapt resource value: 0x7f04005a
-			public const int vote = 2130968666;
-			
-			// aapt resource value: 0x7f040059
-			public const int vote_failed = 2130968665;
-			
-			// aapt resource value: 0x7f04005b
-			public const int votes_and_votes_left = 2130968667;
-			
-			// aapt resource value: 0x7f040050
-			public const int wifi_enable_error = 2130968656;
-			
-			// aapt resource value: 0x7f04004f
-			public const int wifi_enable_later = 2130968655;
-			
-			// aapt resource value: 0x7f04004e
-			public const int wifi_enable_now = 2130968654;
-			
-			// aapt resource value: 0x7f04004d
-			public const int wifi_reminder_message = 2130968653;
+			public const int service_notification_title = 2130968684;
 			
 			// aapt resource value: 0x7f04004c
-			public const int wifi_reminder_title = 2130968652;
+			public const int settings = 2130968652;
 			
-			// aapt resource value: 0x7f040049
-			public const int wrong_password = 2130968649;
+			// aapt resource value: 0x7f040057
+			public const int something_went_wrong = 2130968663;
+			
+			// aapt resource value: 0x7f040065
+			public const int soundcloud_no_songs = 2130968677;
 			
 			// aapt resource value: 0x7f040066
-			public const int youtube_no_songs = 2130968678;
+			public const int soundcloud_play = 2130968678;
 			
-			// aapt resource value: 0x7f040067
-			public const int youtube_view = 2130968679;
+			// aapt resource value: 0x7f04006e
+			public const int toggle_video_player = 2130968686;
+			
+			// aapt resource value: 0x7f04002b
+			public const int trial_expiration = 2130968619;
+			
+			// aapt resource value: 0x7f04002c
+			public const int trial_expiration_expired = 2130968620;
+			
+			// aapt resource value: 0x7f04002d
+			public const int trial_expiration_explanation = 2130968621;
+			
+			// aapt resource value: 0x7f040040
+			public const int uses_vote = 2130968640;
+			
+			// aapt resource value: 0x7f04005c
+			public const int vote = 2130968668;
+			
+			// aapt resource value: 0x7f04005b
+			public const int vote_failed = 2130968667;
+			
+			// aapt resource value: 0x7f04005d
+			public const int votes_and_votes_left = 2130968669;
+			
+			// aapt resource value: 0x7f040052
+			public const int wifi_enable_error = 2130968658;
+			
+			// aapt resource value: 0x7f040051
+			public const int wifi_enable_later = 2130968657;
+			
+			// aapt resource value: 0x7f040050
+			public const int wifi_enable_now = 2130968656;
+			
+			// aapt resource value: 0x7f04004f
+			public const int wifi_reminder_message = 2130968655;
+			
+			// aapt resource value: 0x7f04004e
+			public const int wifi_reminder_title = 2130968654;
+			
+			// aapt resource value: 0x7f04004b
+			public const int wrong_password = 2130968651;
+			
+			// aapt resource value: 0x7f040068
+			public const int youtube_no_songs = 2130968680;
+			
+			// aapt resource value: 0x7f040069
+			public const int youtube_view = 2130968681;
 			
 			static String()
 			{

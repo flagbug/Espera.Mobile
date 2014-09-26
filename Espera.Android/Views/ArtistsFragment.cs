@@ -21,6 +21,7 @@ namespace Espera.Android.Views
 
                 this.OneWayBind(this.ViewModel, x => x.Artists, x => x.ArtistList.Adapter, list => new ArtistsAdapter(this.Activity, list))
                     .DisposeWith(disposable);
+                this.ArtistList.FastScrollEnabled = true;
 
                 this.ArtistList.Events().ItemClick.Subscribe(x =>
                 {

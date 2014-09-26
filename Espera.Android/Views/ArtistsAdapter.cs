@@ -20,7 +20,7 @@ namespace Espera.Android.Views
             this.context = context;
             this.artists = artists;
 
-            this.sections = this.artists.Select((x, i) => Tuple.Create(x[0].ToString(), i))
+            this.sections = this.artists.Select((x, i) => Tuple.Create(x[0].ToString().ToUpper(), i))
                 .ToLookup(x => x.Item1, x => x.Item2);
         }
 

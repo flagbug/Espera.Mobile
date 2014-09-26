@@ -39,7 +39,7 @@
   <string name="main_drawer_playlist">Playlist</string>
   <string name="main_drawer_remote_songs">Songs on the computer</string>
   <string name="main_drawer_local_songs">Songs on this device</string>
-  <string name="main_drawer_soundcloud">SouncCloud</string>
+  <string name="main_drawer_soundcloud">SoundCloud</string>
   <string name="main_drawer_youtube">YouTube</string>
   <string name="main_drawer_settings">Settings</string>
   <string name="main_drawer_feedback">Send Feedback</string>

@@ -57,8 +57,9 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
-    <AndroidLinkSkip>Espera.Android%3bEspera.Mobile.Core%3bEspera.Network%3bSystem.Reactive.Linq%3bSplat%3bAkavache%3bAkavache.Sqlite3%3bReactiveUI%3bReactiveUI.Events%3bSystem.IO.Compression%3b</AndroidLinkSkip>
-    <AndroidLinkMode>Full</AndroidLinkMode>
+    <AndroidLinkSkip>
+    </AndroidLinkSkip>
+    <AndroidLinkMode>SdkOnly</AndroidLinkMode>
     <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
     <BundleAssemblies>False</BundleAssemblies>
     <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>

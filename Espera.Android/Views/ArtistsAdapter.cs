@@ -29,6 +29,11 @@ namespace Espera.Android.Views
             get { return artists.Count; }
         }
 
+        public override bool HasStableIds
+        {
+            get { return true; }
+        }
+
         public override string this[int position]
         {
             get { return artists[position]; }

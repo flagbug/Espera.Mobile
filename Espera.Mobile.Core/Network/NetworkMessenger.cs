@@ -38,7 +38,7 @@ namespace Espera.Mobile.Core.Network
 
         static NetworkMessenger()
         {
-            instance = new Lazy<INetworkMessenger>(() => new NetworkMessenger());
+            ResetOverride();
         }
 
         private NetworkMessenger()
@@ -141,11 +141,20 @@ namespace Espera.Mobile.Core.Network
         public IObservable<NetworkPlaylist> PlaylistChanged { get; private set; }
 
         /// <summary>
-        /// Overrides the instance for unit testing.
+        /// Overrides the instance for unit testing or for the
+        /// <see cref="VirtualNetworkMessenger" /> .
         /// </summary>
         public static void Override(INetworkMessenger messenger)
         {
             instance = new Lazy<INetworkMessenger>(() => messenger);
+        }
+
+        /// <summary>
+        /// Resets the instance to the default <see cref="NetworkMessenger" /> .
+        /// </summary>
+        public static void ResetOverride()
+        {
+            instance = new Lazy<INetworkMessenger>(() => new NetworkMessenger());
         }
 
         public Task<ResponseInfo> AddSongToPlaylistAsync(Guid songGuid)

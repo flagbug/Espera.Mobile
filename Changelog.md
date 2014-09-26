@@ -1,3 +1,6 @@
+# v1.3.1
+- Fixed some problems with the navigation drawer.
+
 # v1.3.0
 - Added a playlist button to toggle the video player visibility.
 - Moved the "Settings" and "Send Feedback" buttons to the navigation drawer.

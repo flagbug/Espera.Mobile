@@ -61,6 +61,7 @@
     <Compile Include="Network\IWifiService.cs" />
     <Compile Include="Network\NetworkException.cs" />
     <Compile Include="Network\NetworkMessenger.cs" />
+    <Compile Include="Network\VirtualNetworkMessenger.cs" />
     <Compile Include="ServerVersionException.cs" />
     <Compile Include="LocalSong.cs" />
     <Compile Include="SongFetchers\ISongFetcher.cs" />

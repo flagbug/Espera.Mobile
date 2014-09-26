@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="ApplicationName">Espera.Android</string>
+  <string name="preference_main_screen">preference_main_screen</string>
   <string name="preference_port">preference_port</string>
   <string name="preference_port_title">Port</string>
   <string name="preference_port_summary">The port of the server</string>

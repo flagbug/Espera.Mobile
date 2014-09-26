@@ -128,7 +128,9 @@ namespace Espera.Android.Views
 
 #if !DEBUG && !DEVELOPMENT
             var developmentCategory = (PreferenceCategory)this.FindPreference(this.GetString(Resource.String.preference_development));
-            this.PreferenceScreen.RemovePreference(developmentCategory);
+
+            var screen = (PreferenceScreen)this.FindPreference(this.GetString(Resource.String.preference_main_screen));
+            screen.RemovePreference(developmentCategory);
 #endif
         }
 

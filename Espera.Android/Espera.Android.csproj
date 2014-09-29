@@ -200,6 +200,7 @@
     <Compile Include="Views\RemoteSongsActivity.cs" />
     <Compile Include="Views\RemoteSongsAdapter.cs" />
     <Compile Include="Views\SettingsActivity.cs" />
+    <Compile Include="Views\SettingsFragment.cs" />
     <Compile Include="Views\SongsActivityHelper.cs" />
     <Compile Include="Views\SoundCloudFragment.cs" />
     <Compile Include="Views\SoundCloudSongView.cs" />

@@ -11,7 +11,6 @@ using Android.Content;
 using Android.OS;
 using Android.Preferences;
 using Android.Text;
-using Android.Views;
 using Android.Widget;
 using Espera.Mobile.Core;
 using Espera.Mobile.Core.Network;

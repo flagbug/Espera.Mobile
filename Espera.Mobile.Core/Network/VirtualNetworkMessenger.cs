@@ -4,7 +4,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
+using Akavache;
 using Espera.Network;
 using ReactiveMarrow;
 using ReactiveUI;
@@ -16,10 +19,17 @@ namespace Espera.Mobile.Core.Network
     /// </summary>
     public class VirtualNetworkMessenger : ReactiveObject, INetworkMessenger
     {
+        private readonly InMemoryBlobCache cache;
+        private readonly Subject<NetworkPlaybackState> playbackState;
+        private readonly Subject<TimeSpan> playbackTime;
         private bool isConnected;
 
         public VirtualNetworkMessenger()
         {
+            this.playbackState = new Subject<NetworkPlaybackState>();
+            this.playbackTime = new Subject<TimeSpan>();
+            this.cache = new InMemoryBlobCache();
+
             this.Disconnected = this.WhenAnyValue(x => x.IsConnected)
                 .Skip(1)
                 .Where(x => !x)
@@ -53,12 +63,12 @@ namespace Espera.Mobile.Core.Network
 
         public IObservable<NetworkPlaybackState> PlaybackStateChanged
         {
-            get { return Observable.Never<NetworkPlaybackState>(); }
+            get { return this.playbackState.AsObservable(); }
         }
 
         public IObservable<TimeSpan> PlaybackTimeChanged
         {
-            get { return Observable.Never<TimeSpan>(); }
+            get { return this.playbackTime.AsObservable(); }
         }
 
         public IObservable<NetworkPlaylist> PlaylistChanged
@@ -68,7 +78,7 @@ namespace Espera.Mobile.Core.Network
 
         public Task<ResponseInfo> AddSongToPlaylistAsync(Guid songGuid)
         {
-            return this.Success();
+            return Success();
         }
 
         public Task<ConnectionResultContainer> ConnectAsync(string address, int port, Guid deviceId, string password)
@@ -80,7 +90,9 @@ namespace Espera.Mobile.Core.Network
 
         public Task<ResponseInfo> ContinueSongAsync()
         {
-            return this.Success();
+            this.playbackState.OnNext(NetworkPlaybackState.Playing);
+
+            return Success();
         }
 
         public void Disconnect()
@@ -113,31 +125,61 @@ namespace Espera.Mobile.Core.Network
 
         public Task<IReadOnlyList<NetworkSong>> GetSongsAsync()
         {
-            List<NetworkSong> songs = Enumerable.Range(0, 10)
-                .Select(_ =>
-                    new NetworkSong
-                    {
-                        Album = "About That Life",
-                        Artist = "Attila",
-                        Genre = "Partycore",
-                        Guid = Guid.NewGuid(),
-                        Source = NetworkSongSource.Local,
-                        Duration = TimeSpan.FromMinutes(3)
-                    })
-                .ToList();
+            return this.cache.GetOrCreateObject("songs", () =>
+            {
+                var random = new Random();
 
-            songs[0].Title = "Hellraiser";
-            songs[1].Title = "Rageaholics";
-            songs[2].Title = "Backtalk";
-            songs[3].Title = "Leave A Message";
-            songs[4].Title = "About That Life";
-            songs[5].Title = "Thug Life";
-            songs[6].Title = "Break Shit";
-            songs[7].Title = "Unfogivable";
-            songs[8].Title = "Shots For The Boys";
-            songs[9].Title = "Party With The Devil";
+                List<NetworkSong> songs = Enumerable.Range(0, 9)
+                    .Select(_ =>
+                        new NetworkSong
+                        {
+                            Guid = Guid.NewGuid(),
+                            Source = NetworkSongSource.Local,
+                            Duration = GetRandomSongTime(random)
+                        })
+                    .ToList();
 
-            return Task.FromResult((IReadOnlyList<NetworkSong>)songs);
+                var attilaSongs = songs.Take(3).ToList();
+
+                foreach (NetworkSong attilaSong in attilaSongs)
+                {
+                    attilaSong.Album = "About That Life";
+                    attilaSong.Artist = "Attila";
+                    attilaSong.Genre = "Partycore";
+                }
+
+                attilaSongs[0].Title = "Backtalk";
+                attilaSongs[1].Title = "About That Life";
+                attilaSongs[2].Title = "Shots For The Boys";
+
+                var peripherySongs = songs.Skip(3).Take(3).ToList();
+
+                foreach (NetworkSong peripherySong in peripherySongs)
+                {
+                    peripherySong.Album = "Clear EP";
+                    peripherySong.Artist = "Periphery";
+                    peripherySong.Genre = "Progressive Metal";
+                }
+
+                peripherySongs[0].Title = "Overture";
+                peripherySongs[1].Title = "Zero: Misha";
+                peripherySongs[2].Title = "Pale Aura: Mark";
+
+                var curesickSongs = songs.Skip(6).Take(3).ToList();
+
+                foreach (NetworkSong curesickSong in curesickSongs)
+                {
+                    curesickSong.Album = "Dead End";
+                    curesickSong.Artist = "CureSick";
+                    curesickSong.Genre = "Alternative Melodic Metal";
+                }
+
+                curesickSongs[0].Title = "Shades";
+                curesickSongs[1].Title = "December Morning";
+                curesickSongs[2].Title = "Till The End";
+
+                return (IReadOnlyList<NetworkSong>)songs;
+            }).ToTask();
         }
 
         public Task<IReadOnlyList<NetworkSong>> GetSoundCloudSongsAsync(string searchTerm)
@@ -157,70 +199,92 @@ namespace Espera.Mobile.Core.Network
 
         public Task<ResponseInfo> MovePlaylistSongDownAsync(Guid entryGuid)
         {
-            return this.Success();
+            return Success();
         }
 
         public Task<ResponseInfo> MovePlaylistSongUpAsync(Guid entryGuid)
         {
-            return this.Success();
+            return Success();
         }
 
         public Task<ResponseInfo> PauseSongAsync()
         {
-            return this.Success();
+            this.playbackState.OnNext(NetworkPlaybackState.Paused);
+
+            return Success();
         }
 
         public Task<ResponseInfo> PlayNextSongAsync()
         {
-            return this.Success();
+            this.playbackState.OnNext(NetworkPlaybackState.Playing);
+
+            return Success();
         }
 
         public Task<ResponseInfo> PlayPlaylistSongAsync(Guid entryGuid)
         {
-            return this.Success();
+            this.playbackState.OnNext(NetworkPlaybackState.Playing);
+
+            return Success();
         }
 
         public Task<ResponseInfo> PlayPreviousSongAsync()
         {
-            return this.Success();
+            this.playbackState.OnNext(NetworkPlaybackState.Playing);
+
+            return Success();
         }
 
         public Task<ResponseInfo> PlaySongsAsync(IEnumerable<Guid> guids)
         {
-            return this.Success();
+            this.playbackState.OnNext(NetworkPlaybackState.Playing);
+
+            return Success();
         }
 
         public async Task<FileTransferStatus> QueueRemoteSong(LocalSong songMetadata, byte[] data)
         {
-            return new FileTransferStatus(await this.Success(), Observable.Never<int>());
+            return new FileTransferStatus(await Success(), Observable.Never<int>());
         }
 
         public Task<ResponseInfo> RemovePlaylistSongAsync(Guid entryGuid)
         {
-            return this.Success();
+            return Success();
         }
 
         public Task<ResponseInfo> SetCurrentTime(TimeSpan time)
         {
-            return this.Success();
+            this.playbackTime.OnNext(time);
+
+            return Success();
         }
 
         public Task<ResponseInfo> SetVolume(float volume)
         {
-            return this.Success();
+            return Success();
         }
 
         public Task<ResponseInfo> ToggleVideoPlayer()
         {
-            return this.Success();
+            return Success();
         }
 
         public Task<ResponseInfo> VoteAsync(Guid entryGuid)
         {
-            return this.Success();
+            return Success();
         }
 
-        private Task<ResponseInfo> Success()
+        private static TimeSpan GetRandomSongTime(Random random)
+        {
+            int lowerTimeBound = TimeSpan.FromMinutes(1).Milliseconds;
+            int upperTimeBound = TimeSpan.FromMinutes(3).Milliseconds;
+
+            int theRandom = random.Next(lowerTimeBound, upperTimeBound);
+
+            return TimeSpan.FromMilliseconds(theRandom);
+        }
+
+        private static Task<ResponseInfo> Success()
         {
             return Task.FromResult(new ResponseInfo { RequestId = Guid.NewGuid(), Status = ResponseStatus.Success });
         }

@@ -79,6 +79,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\akavache.sqlite3.4.0.3.2\lib\Portable-Net45+Win8+WP8+Wpa81\Akavache.Sqlite3.dll</HintPath>
     </Reference>
+    <Reference Include="Dapr.WebSockets, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Dapr.WebSockets.0.1.109\lib\MonoAndroid\Dapr.WebSockets.dll</HintPath>
+    </Reference>
     <Reference Include="Espera.Network, Version=1.0.34.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Espera-Network.1.0.34\lib\portable-net45+monoandroid\Espera.Network.dll</HintPath>
@@ -154,6 +158,9 @@
     <Reference Include="System.Xml" />
     <Reference Include="GoogleAnalytics.Android">
       <HintPath>..\Components\googleanalytics-3.0.3\lib\android\GoogleAnalytics.Android.dll</HintPath>
+    </Reference>
+    <Reference Include="WebSocket4Net">
+      <HintPath>..\packages\WebSocket4Net.0.10\lib\monoandroid22\WebSocket4Net.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Android.Support.v13">
       <HintPath>..\packages\Xamarin.Android.Support.v13.20.0.0.4\lib\MonoAndroid32\Xamarin.Android.Support.v13.dll</HintPath>

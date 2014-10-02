@@ -10,6 +10,7 @@ using System.Reactive.Threading.Tasks;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Dapr.WebSockets;
 using Espera.Mobile.Core.Analytics;
 using Espera.Mobile.Core.Settings;
 using Espera.Network;
@@ -24,7 +25,7 @@ namespace Espera.Mobile.Core.Network
         private static Lazy<INetworkMessenger> instance;
         private readonly ObservableAsPropertyHelper<NetworkAccessPermission> accessPermission;
         private readonly IAnalytics analytics;
-        private readonly Subject<ITcpClient> client;
+        private readonly Subject<ObservableSocket> client;
         private readonly Subject<Unit> connectionEstablished;
         private readonly Subject<ConnectionInfo> connectionInfoReceived;
         private readonly Subject<Unit> disconnected;
@@ -33,7 +34,7 @@ namespace Espera.Mobile.Core.Network
         private readonly ObservableAsPropertyHelper<bool> isConnected;
         private readonly IObservable<NetworkMessage> messagePipeline;
         private readonly IDisposable messagePipelineConnection;
-        private ITcpClient currentClient;
+        private ObservableSocket currentClient;
         private ITcpClient currentFileTransferClient;
 
         static NetworkMessenger()
@@ -51,7 +52,7 @@ namespace Espera.Mobile.Core.Network
 
             this.analytics = Locator.Current.GetService<IAnalytics>();
 
-            this.client = new Subject<ITcpClient>();
+            this.client = new Subject<ObservableSocket>();
 
             this.isConnected = this.Disconnected.Select(_ => false)
                 .Merge(this.connectionEstablished.Select(_ => true))
@@ -60,16 +61,16 @@ namespace Espera.Mobile.Core.Network
                 .ToProperty(this, x => x.IsConnected);
             var connectConn = this.IsConnected;
 
-            var pipeline = this.client.Select(x => Observable.Defer(() => x.GetStream().ReadNextMessageAsync()
-                    .ToObservable())
-                    .Repeat()
+            var pipeline = this.client.Select(x => x.Incoming)
                     .LoggedCatch(this, null, "Error while reading the next network message")
                     .TakeWhile(m => m != null)
-                    .TakeUntil(this.Disconnected))
+                    .TakeUntil(this.Disconnected)
+                    .Finally(this.Disconnect)
                 .Switch()
                 .Publish();
 
-            this.messagePipeline = pipeline.ObserveOn(RxApp.TaskpoolScheduler);
+            this.messagePipeline = pipeline.ObserveOn(RxApp.TaskpoolScheduler)
+                .SelectMany(x => Task.Run(() => JObject.Parse(x).ToObject<NetworkMessage>()));
             this.messagePipelineConnection = pipeline.Connect();
 
             var pushMessages = this.messagePipeline.Where(x => x.MessageType == NetworkMessageType.Push)
@@ -195,18 +196,19 @@ namespace Espera.Mobile.Core.Network
                 this.Disconnect();
             }
 
-            Func<ITcpClient> clientLocator = () => Locator.Current.GetService<ITcpClient>();
+            var host = new Uri("ws://" + ipAddress + ":" + port);
 
-            this.currentClient = clientLocator();
-            this.currentFileTransferClient = clientLocator();
+            this.Log().Info("Connecting to the Espera host at {0}", host);
 
-            this.Log().Info("Connecting to the Espera host at {0}", ipAddress);
+            ObservableSocket socket = WebSocket.Connect(host, new CancellationToken(), RxApp.TaskpoolScheduler);
 
-            this.Log().Info("Connecting the message client at port {0}", port);
-            await this.currentClient.ConnectAsync(ipAddress, port);
+            //await socket.Status.FirstAsync(x => x == ConnectionStatus.Opened);
 
+            this.currentClient = socket;
+
+            /*
             this.Log().Info("Connecting the file transfer client at port {0}", port + 1);
-            await this.currentFileTransferClient.ConnectAsync(ipAddress, port + 1);
+            await this.currentFileTransferClient.ConnectAsync(ipAddress, port + 1);*/
             this.client.OnNext(this.currentClient);
 
             var parameters = new
@@ -258,7 +260,7 @@ namespace Espera.Mobile.Core.Network
         public void Disconnect()
         {
             this.Log().Info("Disconnecting from the network");
-
+            /*
             if (this.currentClient != null)
             {
                 this.currentClient.Dispose();
@@ -269,7 +271,7 @@ namespace Espera.Mobile.Core.Network
             {
                 this.currentFileTransferClient.Dispose();
                 this.currentClient = null;
-            }
+            }*/
 
             if (this.IsConnected)
             {
@@ -518,19 +520,13 @@ namespace Espera.Mobile.Core.Network
 
         private async Task SendMessage(NetworkMessage message)
         {
-            byte[] packedMessage = await NetworkHelpers.PackMessageAsync(message);
+            string serializedMessage = await Task.Run(() => JObject.FromObject(message).ToString());
 
             await this.gate.WaitAsync();
 
-            try
-            {
-                await this.currentClient.GetStream().WriteAsync(packedMessage, 0, packedMessage.Length);
-            }
+            this.currentClient.Outgoing.OnNext(serializedMessage);
 
-            finally
-            {
-                this.gate.Release();
-            }
+            this.gate.Release();
         }
 
         private async Task<ResponseInfo> SendRequest(RequestAction action, object parameters = null)

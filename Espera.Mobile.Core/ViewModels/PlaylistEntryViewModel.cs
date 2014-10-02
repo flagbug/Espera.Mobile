@@ -32,6 +32,11 @@ namespace Espera.Mobile.Core.ViewModels
             }
         }
 
+        public TimeSpan Duration
+        {
+            get { return this.song.Duration; }
+        }
+
         public Guid Guid
         {
             get { return this.song.Guid; }

@@ -170,8 +170,8 @@ namespace Espera.Android
 			// aapt resource value: 0x7f0a0000
 			public const int ArtistList = 2131361792;
 			
-			// aapt resource value: 0x7f0a001c
-			public const int Artwork = 2131361820;
+			// aapt resource value: 0x7f0a001d
+			public const int Artwork = 2131361821;
 			
 			// aapt resource value: 0x7f0a0001
 			public const int ConnectButton = 2131361793;
@@ -224,6 +224,9 @@ namespace Espera.Android
 			// aapt resource value: 0x7f0a001a
 			public const int PlaylistEntryArtist = 2131361818;
 			
+			// aapt resource value: 0x7f0a001b
+			public const int PlaylistEntryDuration = 2131361819;
+			
 			// aapt resource value: 0x7f0a0019
 			public const int PlaylistEntryTitle = 2131361817;
 			
@@ -239,20 +242,20 @@ namespace Espera.Android
 			// aapt resource value: 0x7f0a0008
 			public const int SongsList = 2131361800;
 			
-			// aapt resource value: 0x7f0a001e
-			public const int SoundCloudSongArtist = 2131361822;
-			
 			// aapt resource value: 0x7f0a001f
-			public const int SoundCloudSongPlaybackCount = 2131361823;
+			public const int SoundCloudSongArtist = 2131361823;
 			
-			// aapt resource value: 0x7f0a001d
-			public const int SoundCloudSongTitle = 2131361821;
+			// aapt resource value: 0x7f0a0020
+			public const int SoundCloudSongPlaybackCount = 2131361824;
 			
-			// aapt resource value: 0x7f0a001b
-			public const int SoundCloudSongsList = 2131361819;
+			// aapt resource value: 0x7f0a001e
+			public const int SoundCloudSongTitle = 2131361822;
 			
-			// aapt resource value: 0x7f0a0024
-			public const int ToggleVideoPlayer = 2131361828;
+			// aapt resource value: 0x7f0a001c
+			public const int SoundCloudSongsList = 2131361820;
+			
+			// aapt resource value: 0x7f0a0025
+			public const int ToggleVideoPlayer = 2131361829;
 			
 			// aapt resource value: 0x7f0a0014
 			public const int TotalTimeTextView = 2131361812;
@@ -266,20 +269,20 @@ namespace Espera.Android
 			// aapt resource value: 0x7f0a0003
 			public const int TrialExpirationTextView = 2131361795;
 			
-			// aapt resource value: 0x7f0a0021
-			public const int YoutubeSongTitle = 2131361825;
-			
 			// aapt resource value: 0x7f0a0022
-			public const int YoutubeSongUploader = 2131361826;
+			public const int YoutubeSongTitle = 2131361826;
 			
 			// aapt resource value: 0x7f0a0023
-			public const int YoutubeSongViews = 2131361827;
+			public const int YoutubeSongUploader = 2131361827;
 			
-			// aapt resource value: 0x7f0a0020
-			public const int YoutubeSongsList = 2131361824;
+			// aapt resource value: 0x7f0a0024
+			public const int YoutubeSongViews = 2131361828;
 			
-			// aapt resource value: 0x7f0a0025
-			public const int search = 2131361829;
+			// aapt resource value: 0x7f0a0021
+			public const int YoutubeSongsList = 2131361825;
+			
+			// aapt resource value: 0x7f0a0026
+			public const int search = 2131361830;
 			
 			static Id()
 			{

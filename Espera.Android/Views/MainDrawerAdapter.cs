@@ -5,16 +5,16 @@ using System.Linq;
 using Android.App;
 using Android.Views;
 using Android.Widget;
-using Espera.Android.ViewModels;
+using Espera.Mobile.Core.ViewModels;
 
 namespace Espera.Android.Views
 {
-    public class MainDrawerAdapter : BaseAdapter<NavigationDrawerItemViewModel>, IEnumerable<NavigationDrawerItemViewModel>
+    public class MainDrawerAdapter : BaseAdapter<NavigationItemViewModel>, IEnumerable<NavigationItemViewModel>
     {
         private readonly Activity context;
-        private readonly List<NavigationDrawerItemViewModel> items;
+        private readonly List<NavigationItemViewModel> items;
 
-        public MainDrawerAdapter(Activity context, IEnumerable<NavigationDrawerItemViewModel> items)
+        public MainDrawerAdapter(Activity context, IEnumerable<NavigationItemViewModel> items)
         {
             if (context == null)
                 throw new ArgumentNullException("context");
@@ -31,7 +31,7 @@ namespace Espera.Android.Views
             get { return this.items.Count; }
         }
 
-        public override NavigationDrawerItemViewModel this[int position]
+        public override NavigationItemViewModel this[int position]
         {
             get { return this.items[position]; }
         }
@@ -41,7 +41,7 @@ namespace Espera.Android.Views
             return false;
         }
 
-        public IEnumerator<NavigationDrawerItemViewModel> GetEnumerator()
+        public IEnumerator<NavigationItemViewModel> GetEnumerator()
         {
             return this.items.GetEnumerator();
         }
@@ -53,12 +53,18 @@ namespace Espera.Android.Views
 
         public override View GetView(int position, View convertView, ViewGroup parent)
         {
+            throw new NotImplementedException();
+        }
+
+        /*
+        public override View GetView(int position, View convertView, ViewGroup parent)
+        {
             View view = null;
-            NavigationDrawerItemViewModel viewModel = this[position];
+            NavigationItemViewModel viewModel = this[position];
 
             switch (viewModel.ItemType)
             {
-                case MainDrawerItemType.Primary:
+                case NavigationItemType.Primary:
                     view = this.context.LayoutInflater.Inflate(Resource.Layout.MainDrawerPrimaryItem, null);
                     view.FindViewById<TextView>(Resource.Id.PrimaryItemText).Text = viewModel.Text;
 
@@ -66,19 +72,19 @@ namespace Espera.Android.Views
                     view.Alpha = alpha;
                     break;
 
-                case MainDrawerItemType.Secondary:
+                case NavigationItemType.Secondary:
                     view = this.context.LayoutInflater.Inflate(Resource.Layout.MainDrawerSecondaryItem, null);
-                    view.FindViewById<ImageView>(Resource.Id.DetailImage).SetImageDrawable(this.context.Resources.GetDrawable(this[position].IconResourceId.Value));
+                    //view.FindViewById<ImageView>(Resource.Id.DetailImage).SetImageDrawable(this.context.Resources.GetDrawable(this[position].IconResourceId.Value));
                     view.FindViewById<TextView>(Resource.Id.DetailText).Text = viewModel.Text;
                     break;
 
-                case MainDrawerItemType.Divider:
+                case NavigationItemType.Divider:
                     view = this.context.LayoutInflater.Inflate(Resource.Layout.MainDrawerDivider, null);
                     break;
             }
 
             return view;
-        }
+        }*/
 
         IEnumerator IEnumerable.GetEnumerator()
         {

@@ -1,0 +1,14 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Android.SelectDevice" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Espera.Mobile.Core\Views\MainPage.xaml">
+    <Files>
+      <File FileName="Espera.Mobile.Core\Views\MainPage.xaml" Line="16" Column="16" />
+      <File FileName="Espera.Mobile.Core\Views\MainPage.xaml.cs" Line="77" Column="77" />
+      <File FileName="Espera.Mobile.Core\ViewModels\AppBootstrapper.cs" Line="2" Column="2" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

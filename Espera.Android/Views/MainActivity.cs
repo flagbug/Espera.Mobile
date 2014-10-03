@@ -14,12 +14,14 @@ using Android.Support.V4.Widget;
 using Android.Views;
 using Android.Widget;
 using Espera.Android.Services;
-using Espera.Android.ViewModels;
 using Espera.Mobile.Core.Analytics;
 using Espera.Mobile.Core.Network;
+using Espera.Mobile.Core.ViewModels;
 using ReactiveMarrow;
 using ReactiveUI;
 using Splat;
+using Xamarin.Forms;
+using Xamarin.Forms.Platform.Android;
 using Fragment = Android.App.Fragment;
 using IMenuItem = Android.Views.IMenuItem;
 using Uri = Android.Net.Uri;
@@ -27,8 +29,23 @@ using Uri = Android.Net.Uri;
 namespace Espera.Android.Views
 {
     [Activity(Label = "Espera", MainLauncher = true, Icon = "@drawable/icon", LaunchMode = LaunchMode.SingleTop)]
-    public class MainActivity : ReactiveActivity
+    public class MainActivity : AndroidActivity
     {
+        public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
+        {
+            return AndroidVolumeRequests.Instance.HandleKeyCode(keyCode) || base.OnKeyDown(keyCode, e);
+        }
+
+        protected override void OnCreate(Bundle bundle)
+        {
+            base.OnCreate(bundle);
+            Forms.Init(this, bundle);
+
+            var bootstrapper = RxApp.SuspensionHost.GetAppState<AppBootstrapper>();
+            this.SetPage(bootstrapper.CreateMainPage());
+        }
+
+        /*
         private IDisposable activationDisposable;
         private MainDrawerAdapter drawerAdapter;
         private ActionBarDrawerToggle drawerToggle;
@@ -36,11 +53,6 @@ namespace Espera.Android.Views
         public DrawerLayout MainDrawer { get; private set; }
 
         public ListView MainDrawerListView { get; private set; }
-
-        public override bool OnKeyDown(Keycode keyCode, KeyEvent e)
-        {
-            return AndroidVolumeRequests.Instance.HandleKeyCode(keyCode) || base.OnKeyDown(keyCode, e);
-        }
 
         public override bool OnOptionsItemSelected(IMenuItem item)
         {
@@ -150,7 +162,7 @@ namespace Espera.Android.Views
                 .Subscribe(x =>
                 {
                     // Update the enabled state of the network specific buttons
-                    foreach (var item in this.drawerAdapter.Where(y => y.ItemType == MainDrawerItemType.Primary).Skip(1))
+                    foreach (var item in this.drawerAdapter.Where(y => y.ItemType == NavigationItemType.Primary).Skip(1))
                     {
                         item.IsEnabled = x;
                     }
@@ -178,25 +190,25 @@ namespace Espera.Android.Views
             }
         }
 
-        private IEnumerable<NavigationDrawerItemViewModel> CreateMainDrawerItems()
+        private IEnumerable<NavigationItemViewModel> CreateMainDrawerItems()
         {
             return new[]
             {
-                NavigationDrawerItemViewModel.CreatePrimary(this.GetString(Resource.String.main_drawer_connection), () => this.ReplaceContentFrame(new ConnectionFragment())),
-                NavigationDrawerItemViewModel.CreatePrimary(this.GetString(Resource.String.main_drawer_playlist), () => this.ReplaceContentFrame(new PlaylistFragment())),
-                NavigationDrawerItemViewModel.CreatePrimary(this.GetString(Resource.String.main_drawer_remote_songs), () => this.ReplaceContentFrame(new RemoteArtistsFragment())),
-                NavigationDrawerItemViewModel.CreatePrimary(this.GetString(Resource.String.main_drawer_local_songs), () => this.ReplaceContentFrame(new LocalArtistsFragment())),
-                NavigationDrawerItemViewModel.CreatePrimary(this.GetString(Resource.String.main_drawer_soundcloud), () => this.ReplaceContentFrame(new SoundCloudFragment())),
-                NavigationDrawerItemViewModel.CreatePrimary(this.GetString(Resource.String.main_drawer_youtube), () => this.ReplaceContentFrame(new YoutubeFragment())),
-                NavigationDrawerItemViewModel.CreateDivider(),
-                NavigationDrawerItemViewModel.CreateSecondary(this.GetString(Resource.String.settings), Resource.Drawable.Settings, this.OpenSetting),
-                NavigationDrawerItemViewModel.CreateSecondary(this.GetString(Resource.String.main_drawer_feedback), Resource.Drawable.Feedback, this.OpenFeedback)
+                NavigationItemViewModel.CreatePrimary(this.GetString(Resource.String.main_drawer_connection), () => this.ReplaceContentFrame(new ConnectionFragment())),
+                NavigationItemViewModel.CreatePrimary(this.GetString(Resource.String.main_drawer_playlist), () => this.ReplaceContentFrame(new PlaylistFragment())),
+                NavigationItemViewModel.CreatePrimary(this.GetString(Resource.String.main_drawer_remote_songs), () => this.ReplaceContentFrame(new RemoteArtistsFragment())),
+                NavigationItemViewModel.CreatePrimary(this.GetString(Resource.String.main_drawer_local_songs), () => this.ReplaceContentFrame(new LocalArtistsFragment())),
+                NavigationItemViewModel.CreatePrimary(this.GetString(Resource.String.main_drawer_soundcloud), () => this.ReplaceContentFrame(new SoundCloudFragment())),
+                NavigationItemViewModel.CreatePrimary(this.GetString(Resource.String.main_drawer_youtube), () => this.ReplaceContentFrame(new YoutubeFragment())),
+                NavigationItemViewModel.CreateDivider(),
+                NavigationItemViewModel.CreateSecondary(this.GetString(Resource.String.settings), Resource.Drawable.Settings, this.OpenSetting),
+                NavigationItemViewModel.CreateSecondary(this.GetString(Resource.String.main_drawer_feedback), Resource.Drawable.Feedback, this.OpenFeedback)
             };
         }
 
         private void HandleNavigation(int position)
         {
-            NavigationDrawerItemViewModel item = this.drawerAdapter[position];
+            NavigationItemViewModel item = this.drawerAdapter[position];
 
             item.SelectionAction();
 
@@ -226,6 +238,6 @@ namespace Espera.Android.Views
             builder.SetNegativeButton(Resource.String.wifi_enable_later, (sender, args) => { });
 
             builder.Show();
-        }
+        }*/
     }
 }

@@ -8,6 +8,7 @@ using Espera.Mobile.Core.Analytics;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
 using Espera.Mobile.Core.SongFetchers;
+using Espera.Mobile.Core.ViewModels;
 using ModernHttpClient;
 using ReactiveUI;
 using Splat;
@@ -34,7 +35,7 @@ namespace Espera.Android
             base.OnCreate();
 
             this.suspendHelper = new AutoSuspendHelper(this);
-            //RxApp.SuspensionHost.SetupDefaultSuspendResume();
+
             Locator.CurrentMutable.Register(() => new AndroidWifiService(), typeof(IWifiService));
             Locator.CurrentMutable.Register(() => new AndroidSongFetcher(), typeof(ISongFetcher<LocalSong>));
             Locator.CurrentMutable.Register(() => new File(), typeof(IFile));
@@ -50,6 +51,10 @@ namespace Espera.Android
 #if DEBUG
             Locator.CurrentMutable.RegisterConstant(new AndroidLogger(), typeof(ILogger));
 #endif
+
+            RxApp.SuspensionHost.CreateNewAppState = () => new AppBootstrapper();
+
+            RxApp.SuspensionHost.SetupDefaultSuspendResume();
         }
     }
 }

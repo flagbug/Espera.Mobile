@@ -2,15 +2,14 @@ using System;
 using System.Net.Http;
 using Android.App;
 using Android.Runtime;
-using Espera.Android.Analytics;
 using Espera.Mobile.Core;
-using Espera.Mobile.Core.Analytics;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
 using Espera.Mobile.Core.SongFetchers;
 using ModernHttpClient;
 using ReactiveUI;
 using Splat;
+using Xamarin;
 
 namespace Espera.Android
 {
@@ -40,7 +39,6 @@ namespace Espera.Android
             Locator.CurrentMutable.Register(() => new File(), typeof(IFile));
             Locator.CurrentMutable.Register(() => new AndroidTcpClient(), typeof(ITcpClient));
             Locator.CurrentMutable.Register(() => new AndroidUdpClient(), typeof(IUdpClient));
-            Locator.CurrentMutable.RegisterConstant(new AndroidAnalytics(this), typeof(IAnalytics));
             Locator.CurrentMutable.Register(() => new AndroidDeviceIdFactory(this), typeof(IDeviceIdFactory));
             Locator.CurrentMutable.RegisterConstant(new UserSettings(), typeof(UserSettings));
             Locator.CurrentMutable.RegisterConstant(new AndroidSettings(), typeof(AndroidSettings));
@@ -50,6 +48,8 @@ namespace Espera.Android
 #if DEBUG
             Locator.CurrentMutable.RegisterConstant(new AndroidLogger(), typeof(ILogger));
 #endif
+
+            Insights.Initialize(null, this.ApplicationContext);
         }
     }
 }

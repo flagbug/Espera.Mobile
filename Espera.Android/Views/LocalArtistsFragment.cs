@@ -2,7 +2,6 @@ using Android.Content;
 using Espera.Mobile.Core;
 using Espera.Mobile.Core.SongFetchers;
 using Espera.Mobile.Core.ViewModels;
-using Google.Analytics.Tracking;
 using Splat;
 
 namespace Espera.Android.Views
@@ -14,14 +13,6 @@ namespace Espera.Android.Views
             base.OnResume();
 
             this.Activity.SetTitle(Resource.String.local_artists_fragment_title);
-        }
-
-        public override void OnStart()
-        {
-            base.OnStart();
-
-            EasyTracker tracker = EasyTracker.GetInstance(this.Activity);
-            tracker.Set(Fields.ScreenName, this.Class.Name);
         }
 
         protected override ArtistsViewModel<LocalSong> ConstructViewModel()

@@ -6,7 +6,6 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 using Espera.Mobile.Core.ViewModels;
-using Google.Analytics.Tracking;
 using ReactiveMarrow;
 using ReactiveUI;
 
@@ -104,14 +103,6 @@ namespace Espera.Android.Views
             base.OnResume();
 
             this.Activity.Title = "YouTube";
-        }
-
-        public override void OnStart()
-        {
-            base.OnStart();
-
-            EasyTracker tracker = EasyTracker.GetInstance(this.Activity);
-            tracker.Set(Fields.ScreenName, this.Class.Name);
         }
     }
 }

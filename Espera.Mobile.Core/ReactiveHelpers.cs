@@ -13,6 +13,10 @@ namespace Espera.Mobile.Core
             return observable;
         }
 
+        /// <summary>
+        /// Skips elements from the <paramref name="source" /> sequence as soon as an element of the
+        /// <paramref name="throttler" /> sequence arrives, for the specified duration.
+        /// </summary>
         public static IObservable<T> ThrottleWhenIncoming<T, TDontCare>(this IObservable<T> source, IObservable<TDontCare> throttler, TimeSpan throttleDuration, IScheduler scheduler)
         {
             bool acceptElements = true;

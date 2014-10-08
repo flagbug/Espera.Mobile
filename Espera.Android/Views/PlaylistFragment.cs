@@ -11,7 +11,6 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 using Espera.Mobile.Core;
-using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.ViewModels;
 using Espera.Network;
 using Google.Analytics.Tracking;

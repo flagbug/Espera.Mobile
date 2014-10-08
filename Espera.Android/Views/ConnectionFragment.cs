@@ -2,7 +2,6 @@ using System;
 using System.Globalization;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using Android.Content;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
@@ -11,7 +10,6 @@ using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
 using Espera.Mobile.Core.ViewModels;
 using Espera.Network;
-using Google.Analytics.Tracking;
 using Humanizer;
 using ReactiveMarrow;
 using ReactiveUI;
@@ -138,14 +136,6 @@ namespace Espera.Android.Views
             base.OnResume();
 
             this.Activity.SetTitle(Resource.String.main_fragment_title);
-        }
-
-        public override void OnStart()
-        {
-            base.OnStart();
-
-            EasyTracker tracker = EasyTracker.GetInstance(this.Activity);
-            tracker.Set(Fields.ScreenName, this.Class.Name);
         }
     }
 }

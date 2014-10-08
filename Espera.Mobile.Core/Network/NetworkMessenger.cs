@@ -10,20 +10,22 @@ using System.Reactive.Threading.Tasks;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Espera.Mobile.Core.Analytics;
 using Espera.Mobile.Core.Settings;
 using Espera.Network;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
 using Splat;
+using Xamarin;
 
 namespace Espera.Mobile.Core.Network
 {
     public class NetworkMessenger : ReactiveObject, INetworkMessenger
     {
-        private static Lazy<INetworkMessenger> instance;
+        internal
+private ITcpClient currentClient;
+
+private static Lazy<INetworkMessenger> instance;
         private readonly ObservableAsPropertyHelper<NetworkAccessPermission> accessPermission;
-        private readonly IAnalytics analytics;
         private readonly Subject<ITcpClient> client;
         private readonly Subject<Unit> connectionEstablished;
         private readonly Subject<ConnectionInfo> connectionInfoReceived;
@@ -33,10 +35,12 @@ namespace Espera.Mobile.Core.Network
         private readonly ObservableAsPropertyHelper<bool> isConnected;
         private readonly IObservable<NetworkMessage> messagePipeline;
         private readonly IDisposable messagePipelineConnection;
-        private ITcpClient currentClient;
+        private var buffer = new byte[bufferSize]private int count;
         private ITcpClient currentFileTransferClient;
 
-        static NetworkMessenger()
+        private var dataStream = new MemoryStream(data))
+
+static NetworkMessenger()
         {
             ResetOverride();
         }
@@ -48,8 +52,6 @@ namespace Espera.Mobile.Core.Network
             this.disconnected = new Subject<Unit>();
             this.connectionEstablished = new Subject<Unit>();
             this.connectionInfoReceived = new Subject<ConnectionInfo>();
-
-            this.analytics = Locator.Current.GetService<IAnalytics>();
 
             this.client = new Subject<ITcpClient>();
 
@@ -389,7 +391,9 @@ namespace Espera.Mobile.Core.Network
             return this.SendRequest(RequestAction.MovePlaylistSongUp, parameters);
         }
 
-        public Task<ResponseInfo> PauseSongAsync()
+        await NetworkHelpers.PackFileTransferMessageAsync(message);
+
+public Task<ResponseInfo> PauseSongAsync()
         {
             return this.SendRequest(RequestAction.PauseSong);
         }
@@ -554,38 +558,30 @@ namespace Espera.Mobile.Core.Network
                 .FirstAsync(x => x.RequestId == id)
                 .ToTask();
 
-            var stopwatch = Stopwatch.StartNew();
-
-            try
-            {
-                await this.SendMessage(message);
-
-                ResponseInfo response = await responseMessage;
-
-                stopwatch.Stop();
-
-                if (analytics != null)
+                try
                 {
-                    this.analytics.RecordNetworkTiming(action.ToString(), stopwatch.ElapsedMilliseconds);
+                    using (Insights.TrackTime("Network", new Dictionary<string, string>{{"operation", action.ToString()}}))
+                    {
+                        await this.SendMessage(message);
+
+                        ResponseInfo response = await responseMessage;
+
+                        return response;
+                    }
                 }
 
-                return response;
-            }
-
-            catch (Exception ex)
-            {
-                stopwatch.Stop();
-
-                this.Log().ErrorException("Fatal error while sending or receiving a network response", ex);
-
-                this.Disconnect();
-
-                return new ResponseInfo
+                catch (Exception ex)
                 {
-                    Status = ResponseStatus.Fatal,
-                    Message = "Connection lost",
-                    RequestId = id
-                };
+                    this.Log().ErrorException("Fatal error while sending or receiving a network response", ex);
+
+                    this.Disconnect();
+
+                    return new ResponseInfo
+                    {
+                        Status = ResponseStatus.Fatal,
+                        Message = "Connection lost",
+                        RequestId = id
+                    };
             }
         }
 
@@ -601,13 +597,11 @@ namespace Espera.Mobile.Core.Network
             {
                 this.Log().Info("Starting a file transfer with ID: {0} and a size of {1} bytes", message.TransferId, message.Data.Length);
 
-                byte[] data = await NetworkHelpers.PackFileTransferMessageAsync(message);
+                byte[] internal data =
 
-                using (var dataStream = new MemoryStream(data))
+                using (
                 {
-                    var buffer = new byte[bufferSize];
-                    int count;
-
+                     ;
                     while ((count = dataStream.Read(buffer, 0, bufferSize)) > 0)
                     {
                         stream.Write(buffer, 0, count);

@@ -12,7 +12,6 @@ using Android.Widget;
 using Espera.Mobile.Core;
 using Espera.Mobile.Core.ViewModels;
 using Espera.Network;
-using Google.Analytics.Tracking;
 using ReactiveMarrow;
 using ReactiveUI;
 
@@ -89,20 +88,6 @@ namespace Espera.Android.Views
             var songs = BlobCache.LocalMachine.GetObject<IEnumerable<NetworkSong>>(BlobCacheKeys.SelectedRemoteSongs).Wait().ToList();
             this.Title = songs.First().Artist;
             this.ViewModel = new RemoteSongsViewModel(songs);
-        }
-
-        protected override void OnStart()
-        {
-            base.OnStart();
-
-            EasyTracker.GetInstance(this).ActivityStart(this);
-        }
-
-        protected override void OnStop()
-        {
-            base.OnStop();
-
-            EasyTracker.GetInstance(this).ActivityStop(this);
         }
     }
 }

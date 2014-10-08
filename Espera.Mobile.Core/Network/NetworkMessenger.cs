@@ -21,10 +21,7 @@ namespace Espera.Mobile.Core.Network
 {
     public class NetworkMessenger : ReactiveObject, INetworkMessenger
     {
-        internal
-private ITcpClient currentClient;
-
-private static Lazy<INetworkMessenger> instance;
+        private static Lazy<INetworkMessenger> instance;
         private readonly ObservableAsPropertyHelper<NetworkAccessPermission> accessPermission;
         private readonly Subject<ITcpClient> client;
         private readonly Subject<Unit> connectionEstablished;
@@ -35,12 +32,10 @@ private static Lazy<INetworkMessenger> instance;
         private readonly ObservableAsPropertyHelper<bool> isConnected;
         private readonly IObservable<NetworkMessage> messagePipeline;
         private readonly IDisposable messagePipelineConnection;
-        private var buffer = new byte[bufferSize]private int count;
+        private ITcpClient currentClient;
         private ITcpClient currentFileTransferClient;
 
-        private var dataStream = new MemoryStream(data))
-
-static NetworkMessenger()
+        static NetworkMessenger()
         {
             ResetOverride();
         }
@@ -391,9 +386,7 @@ static NetworkMessenger()
             return this.SendRequest(RequestAction.MovePlaylistSongUp, parameters);
         }
 
-        await NetworkHelpers.PackFileTransferMessageAsync(message);
-
-public Task<ResponseInfo> PauseSongAsync()
+        public Task<ResponseInfo> PauseSongAsync()
         {
             return this.SendRequest(RequestAction.PauseSong);
         }
@@ -558,30 +551,29 @@ public Task<ResponseInfo> PauseSongAsync()
                 .FirstAsync(x => x.RequestId == id)
                 .ToTask();
 
-                try
+            try
+            {
+                using (Insights.TrackTime("Network", new Dictionary<string, string> { { "operation", action.ToString() } }))
                 {
-                    using (Insights.TrackTime("Network", new Dictionary<string, string>{{"operation", action.ToString()}}))
-                    {
-                        await this.SendMessage(message);
+                    await this.SendMessage(message);
 
-                        ResponseInfo response = await responseMessage;
-
-                        return response;
-                    }
+                    ResponseInfo response = await responseMessage;
+                    return response;
                 }
+            }
 
-                catch (Exception ex)
+            catch (Exception ex)
+            {
+                this.Log().ErrorException("Fatal error while sending or receiving a network response", ex);
+
+                this.Disconnect();
+
+                return new ResponseInfo
                 {
-                    this.Log().ErrorException("Fatal error while sending or receiving a network response", ex);
-
-                    this.Disconnect();
-
-                    return new ResponseInfo
-                    {
-                        Status = ResponseStatus.Fatal,
-                        Message = "Connection lost",
-                        RequestId = id
-                    };
+                    Status = ResponseStatus.Fatal,
+                    Message = "Connection lost",
+                    RequestId = id
+                };
             }
         }
 
@@ -597,11 +589,13 @@ public Task<ResponseInfo> PauseSongAsync()
             {
                 this.Log().Info("Starting a file transfer with ID: {0} and a size of {1} bytes", message.TransferId, message.Data.Length);
 
-                byte[] internal data =
+                byte[] data = await NetworkHelpers.PackFileTransferMessageAsync(message);
 
-                using (
+                using (var dataStream = new MemoryStream(data))
                 {
-                     ;
+                    var buffer = new byte[bufferSize];
+                    int count;
+
                     while ((count = dataStream.Read(buffer, 0, bufferSize)) > 0)
                     {
                         stream.Write(buffer, 0, count);

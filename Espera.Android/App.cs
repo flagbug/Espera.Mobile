@@ -49,7 +49,7 @@ namespace Espera.Android
             Locator.CurrentMutable.RegisterConstant(new AndroidLogger(), typeof(ILogger));
 #endif
 
-            Insights.Initialize(null, this.ApplicationContext);
+            Insights.Initialize("9251496bfa10cea251b633c46bfdbd56cf6ef82a", this.ApplicationContext);
         }
     }
 }

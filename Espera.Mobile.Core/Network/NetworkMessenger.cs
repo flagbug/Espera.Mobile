@@ -295,12 +295,18 @@ namespace Espera.Mobile.Core.Network
 
             this.Log().Info("Starting server discovery at port {0}...", port);
 
+            Insights.Track("Server discovery");
+
             return Observable.Using(locatorFunc, x => Observable.FromAsync(x.ReceiveAsync))
                 .Repeat()
                 .TakeWhile(x => x != null)
                 .FirstAsync(x => Encoding.Unicode.GetString(x.Item1, 0, x.Item1.Length) == NetworkConstants.DiscoveryMessage)
                 .Select(x => x.Item2)
-                .Do(x => this.Log().Info("Detected server at IP address {0}", x));
+                .Do(x =>
+                {
+                    this.Log().Info("Detected server at IP address {0}", x);
+                    Insights.Track("Server discovered", new Dictionary<string, string> { { "Address", x } });
+                });
         }
 
         public void Dispose()

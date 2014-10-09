@@ -216,6 +216,8 @@ namespace Espera.Mobile.Core.Network
 
             ResponseInfo response = await this.SendRequest(RequestAction.GetConnectionInfo, parameters);
 
+            Insights.Track("ConnectionAttempt", new Dictionary<string, string> { { "status", response.Status.ToString() } });
+
             if (response.Status == ResponseStatus.WrongPassword)
             {
                 this.Log().Error("Server said: wrong password");
@@ -238,6 +240,8 @@ namespace Espera.Mobile.Core.Network
 
                 // Notify the connection status at the very end or bad things happen
                 this.connectionEstablished.OnNext(Unit.Default);
+
+                Insights.Track("Connected");
 
                 this.Log().Info("Connection to server established");
 
@@ -272,6 +276,8 @@ namespace Espera.Mobile.Core.Network
             {
                 this.Log().Info("Notifying of disconnection");
                 this.disconnected.OnNext(Unit.Default);
+
+                Insights.Track("Disconnected");
             }
         }
 
@@ -551,19 +557,33 @@ namespace Espera.Mobile.Core.Network
                 .FirstAsync(x => x.RequestId == id)
                 .ToTask();
 
+            var traits = new Dictionary<string, string> { { "Operation", action.ToString() } };
+            if (requestInfo.Parameters != null)
+            {
+                foreach (KeyValuePair<string, JToken> parameter in requestInfo.Parameters)
+                {
+                    traits.Add(parameter.Key, parameter.Value.ToString());
+                }
+            }
+
             try
             {
-                using (Insights.TrackTime("Network", new Dictionary<string, string> { { "operation", action.ToString() } }))
+                using (Insights.TrackTime("Network", traits))
                 {
                     await this.SendMessage(message);
 
                     ResponseInfo response = await responseMessage;
+
+                    traits.Add("Response", response.Status.ToString());
+
                     return response;
                 }
             }
 
             catch (Exception ex)
             {
+                Insights.Report(ex);
+
                 this.Log().ErrorException("Fatal error while sending or receiving a network response", ex);
 
                 this.Disconnect();
@@ -589,19 +609,27 @@ namespace Espera.Mobile.Core.Network
             {
                 this.Log().Info("Starting a file transfer with ID: {0} and a size of {1} bytes", message.TransferId, message.Data.Length);
 
-                byte[] data = await NetworkHelpers.PackFileTransferMessageAsync(message);
-
-                using (var dataStream = new MemoryStream(data))
+                var traits = new Dictionary<string, string>
                 {
-                    var buffer = new byte[bufferSize];
-                    int count;
+                    {"Size", message.Data.Length.ToString()}
+                };
 
-                    while ((count = dataStream.Read(buffer, 0, bufferSize)) > 0)
+                using (Insights.TrackTime("Song Transfer", traits))
+                {
+                    byte[] data = await NetworkHelpers.PackFileTransferMessageAsync(message);
+
+                    using (var dataStream = new MemoryStream(data))
                     {
-                        stream.Write(buffer, 0, count);
-                        written += count;
+                        var buffer = new byte[bufferSize];
+                        int count;
 
-                        progress.OnNext((int)(100 * ((double)written / data.Length)));
+                        while ((count = dataStream.Read(buffer, 0, bufferSize)) > 0)
+                        {
+                            stream.Write(buffer, 0, count);
+                            written += count;
+
+                            progress.OnNext((int)(100 * ((double)written / data.Length)));
+                        }
                     }
                 }
 

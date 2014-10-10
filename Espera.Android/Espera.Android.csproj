@@ -153,9 +153,6 @@
     <Reference Include="System.Threading" />
     <Reference Include="System.Threading.Tasks" />
     <Reference Include="System.Xml" />
-    <Reference Include="GoogleAnalytics.Android">
-      <HintPath>..\Components\googleanalytics-3.0.3\lib\android\GoogleAnalytics.Android.dll</HintPath>
-    </Reference>
     <Reference Include="Xamarin.Android.Support.v13">
       <HintPath>..\packages\Xamarin.Android.Support.v13.20.0.0.4\lib\MonoAndroid32\Xamarin.Android.Support.v13.dll</HintPath>
     </Reference>
@@ -165,10 +162,12 @@
     <Reference Include="Xamarin.InAppBilling">
       <HintPath>..\Components\xamarin.inappbilling-1.5\lib\android\Xamarin.InAppBilling.dll</HintPath>
     </Reference>
+    <Reference Include="Xamarin.Insights">
+      <HintPath>..\packages\Xamarin.Insights.1.6.0\lib\MonoAndroid10\Xamarin.Insights.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AkavacheSqliteLinkerOverride.cs" />
-    <Compile Include="Analytics\AndroidAnalytics.cs" />
     <Compile Include="AndroidDeviceIdFactory.cs" />
     <Compile Include="AndroidInstallationDateFetcher.cs" />
     <Compile Include="AndroidLogger.cs" />
@@ -315,13 +314,6 @@
     <AndroidResource Include="Resources\Menu\PlaylistMenu.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <XamarinComponentReference Include="googleanalytics">
-      <InstallationInProgress>True</InstallationInProgress>
-      <Version>3.0.3</Version>
-      <Visible>False</Visible>
-    </XamarinComponentReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Espera.Mobile.Core\Espera.Mobile.Core.csproj">

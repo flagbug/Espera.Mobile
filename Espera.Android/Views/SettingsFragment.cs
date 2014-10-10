@@ -16,10 +16,10 @@ using Espera.Mobile.Core;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
 using Espera.Network;
-using Google.Analytics.Tracking;
 using Lager.Android;
 using ReactiveUI;
 using Splat;
+using Xamarin;
 using Xamarin.InAppBilling;
 
 namespace Espera.Android.Views
@@ -216,7 +216,7 @@ namespace Espera.Android.Views
 
         private void TrackInAppPurchaseException(Exception ex)
         {
-            EasyTracker.GetInstance(this.Activity).Send(MapBuilder.CreateException(ex.StackTrace, Java.Lang.Boolean.False).Build());
+            Insights.Report(ex);
         }
     }
 }

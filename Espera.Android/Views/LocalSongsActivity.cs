@@ -5,13 +5,11 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Akavache;
 using Android.App;
-using Android.Content.PM;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
 using Espera.Mobile.Core;
 using Espera.Mobile.Core.ViewModels;
-using Google.Analytics.Tracking;
 using ReactiveMarrow;
 using ReactiveUI;
 
@@ -60,20 +58,6 @@ namespace Espera.Android.Views
             var songs = BlobCache.LocalMachine.GetObject<IEnumerable<LocalSong>>(BlobCacheKeys.SelectedLocalSongs).Wait().ToList();
             this.Title = songs.First().Artist;
             this.ViewModel = new LocalSongsViewModel(songs);
-        }
-
-        protected override void OnStart()
-        {
-            base.OnStart();
-
-            EasyTracker.GetInstance(this).ActivityStart(this);
-        }
-
-        protected override void OnStop()
-        {
-            base.OnStop();
-
-            EasyTracker.GetInstance(this).ActivityStop(this);
         }
     }
 }

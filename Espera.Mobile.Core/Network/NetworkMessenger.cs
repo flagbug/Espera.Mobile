@@ -10,12 +10,12 @@ using System.Reactive.Threading.Tasks;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Espera.Mobile.Core.Analytics;
 using Espera.Mobile.Core.Settings;
 using Espera.Network;
 using Newtonsoft.Json.Linq;
 using ReactiveUI;
 using Splat;
+using Xamarin;
 
 namespace Espera.Mobile.Core.Network
 {
@@ -23,7 +23,6 @@ namespace Espera.Mobile.Core.Network
     {
         private static Lazy<INetworkMessenger> instance;
         private readonly ObservableAsPropertyHelper<NetworkAccessPermission> accessPermission;
-        private readonly IAnalytics analytics;
         private readonly Subject<ITcpClient> client;
         private readonly Subject<Unit> connectionEstablished;
         private readonly Subject<ConnectionInfo> connectionInfoReceived;
@@ -48,8 +47,6 @@ namespace Espera.Mobile.Core.Network
             this.disconnected = new Subject<Unit>();
             this.connectionEstablished = new Subject<Unit>();
             this.connectionInfoReceived = new Subject<ConnectionInfo>();
-
-            this.analytics = Locator.Current.GetService<IAnalytics>();
 
             this.client = new Subject<ITcpClient>();
 
@@ -219,6 +216,8 @@ namespace Espera.Mobile.Core.Network
 
             ResponseInfo response = await this.SendRequest(RequestAction.GetConnectionInfo, parameters);
 
+            Insights.Track("ConnectionAttempt", new Dictionary<string, string> { { "status", response.Status.ToString() } });
+
             if (response.Status == ResponseStatus.WrongPassword)
             {
                 this.Log().Error("Server said: wrong password");
@@ -241,6 +240,8 @@ namespace Espera.Mobile.Core.Network
 
                 // Notify the connection status at the very end or bad things happen
                 this.connectionEstablished.OnNext(Unit.Default);
+
+                Insights.Track("Connected");
 
                 this.Log().Info("Connection to server established");
 
@@ -275,6 +276,8 @@ namespace Espera.Mobile.Core.Network
             {
                 this.Log().Info("Notifying of disconnection");
                 this.disconnected.OnNext(Unit.Default);
+
+                Insights.Track("Disconnected");
             }
         }
 
@@ -292,12 +295,18 @@ namespace Espera.Mobile.Core.Network
 
             this.Log().Info("Starting server discovery at port {0}...", port);
 
+            Insights.Track("Server discovery");
+
             return Observable.Using(locatorFunc, x => Observable.FromAsync(x.ReceiveAsync))
                 .Repeat()
                 .TakeWhile(x => x != null)
                 .FirstAsync(x => Encoding.Unicode.GetString(x.Item1, 0, x.Item1.Length) == NetworkConstants.DiscoveryMessage)
                 .Select(x => x.Item2)
-                .Do(x => this.Log().Info("Detected server at IP address {0}", x));
+                .Do(x =>
+                {
+                    this.Log().Info("Detected server at IP address {0}", x);
+                    Insights.Track("Server discovered", new Dictionary<string, string> { { "Address", x } });
+                });
         }
 
         public void Dispose()
@@ -554,27 +563,32 @@ namespace Espera.Mobile.Core.Network
                 .FirstAsync(x => x.RequestId == id)
                 .ToTask();
 
-            var stopwatch = Stopwatch.StartNew();
+            var traits = new Dictionary<string, string> { { "Operation", action.ToString() } };
+            if (requestInfo.Parameters != null)
+            {
+                foreach (KeyValuePair<string, JToken> parameter in requestInfo.Parameters)
+                {
+                    traits.Add(parameter.Key, parameter.Value.ToString());
+                }
+            }
 
             try
             {
-                await this.SendMessage(message);
-
-                ResponseInfo response = await responseMessage;
-
-                stopwatch.Stop();
-
-                if (analytics != null)
+                using (Insights.TrackTime("Network", traits))
                 {
-                    this.analytics.RecordNetworkTiming(action.ToString(), stopwatch.ElapsedMilliseconds);
-                }
+                    await this.SendMessage(message);
 
-                return response;
+                    ResponseInfo response = await responseMessage;
+
+                    traits.Add("Response", response.Status.ToString());
+
+                    return response;
+                }
             }
 
             catch (Exception ex)
             {
-                stopwatch.Stop();
+                Insights.Report(ex);
 
                 this.Log().ErrorException("Fatal error while sending or receiving a network response", ex);
 
@@ -601,19 +615,27 @@ namespace Espera.Mobile.Core.Network
             {
                 this.Log().Info("Starting a file transfer with ID: {0} and a size of {1} bytes", message.TransferId, message.Data.Length);
 
-                byte[] data = await NetworkHelpers.PackFileTransferMessageAsync(message);
-
-                using (var dataStream = new MemoryStream(data))
+                var traits = new Dictionary<string, string>
                 {
-                    var buffer = new byte[bufferSize];
-                    int count;
+                    {"Size", message.Data.Length.ToString()}
+                };
 
-                    while ((count = dataStream.Read(buffer, 0, bufferSize)) > 0)
+                using (Insights.TrackTime("Song Transfer", traits))
+                {
+                    byte[] data = await NetworkHelpers.PackFileTransferMessageAsync(message);
+
+                    using (var dataStream = new MemoryStream(data))
                     {
-                        stream.Write(buffer, 0, count);
-                        written += count;
+                        var buffer = new byte[bufferSize];
+                        int count;
 
-                        progress.OnNext((int)(100 * ((double)written / data.Length)));
+                        while ((count = dataStream.Read(buffer, 0, bufferSize)) > 0)
+                        {
+                            stream.Write(buffer, 0, count);
+                            written += count;
+
+                            progress.OnNext((int)(100 * ((double)written / data.Length)));
+                        }
                     }
                 }
 

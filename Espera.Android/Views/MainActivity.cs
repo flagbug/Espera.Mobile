@@ -15,7 +15,6 @@ using Android.Views;
 using Android.Widget;
 using Espera.Android.Services;
 using Espera.Android.ViewModels;
-using Espera.Mobile.Core.Analytics;
 using Espera.Mobile.Core.Network;
 using ReactiveMarrow;
 using ReactiveUI;
@@ -134,8 +133,7 @@ namespace Espera.Android.Views
 
             else
             {
-                var analytics = Locator.Current.GetService<IAnalytics>();
-                analytics.RecordWifiSpeed(wifiService.GetWifiSpeed());
+                //analytics.RecordWifiSpeed(wifiService.GetWifiSpeed());
             }
         }
 

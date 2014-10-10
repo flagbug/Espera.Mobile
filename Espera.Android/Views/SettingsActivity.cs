@@ -2,7 +2,6 @@ using Android.App;
 using Android.OS;
 using Android.Preferences;
 using Android.Views;
-using Google.Analytics.Tracking;
 
 namespace Espera.Android.Views
 {
@@ -21,20 +20,6 @@ namespace Espera.Android.Views
             this.FragmentManager.BeginTransaction()
                 .Replace(global::Android.Resource.Id.Content, new SettingsFragment())
                 .Commit();
-        }
-
-        protected override void OnStart()
-        {
-            base.OnStart();
-
-            EasyTracker.GetInstance(this).ActivityStart(this);
-        }
-
-        protected override void OnStop()
-        {
-            base.OnStop();
-
-            EasyTracker.GetInstance(this).ActivityStop(this);
         }
     }
 }

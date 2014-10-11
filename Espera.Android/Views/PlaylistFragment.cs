@@ -21,7 +21,7 @@ namespace Espera.Android.Views
 {
     public class PlaylistFragment : ReactiveFragment<PlaylistViewModel>
     {
-        private Subject<IMenu> menu;
+        private readonly Subject<IMenu> menu;
 
         public PlaylistFragment()
         {

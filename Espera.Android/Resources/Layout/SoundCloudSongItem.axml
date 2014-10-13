@@ -1,33 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="fill_parent"
     android:padding="8dip">
-    <ImageView
-        android:id="@+id/Artwork"
-        android:layout_width="50dip"
-        android:layout_height="50dip"
-        android:layout_gravity="center_vertical" />
     <LinearLayout
-        android:orientation="vertical"
+        android:orientation="horizontal"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/Artwork"
+            android:layout_width="50dip"
+            android:layout_height="50dip"
+            android:layout_gravity="center_vertical" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dip">
+            <TextView
+                android:id="@+id/SoundCloudSongTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16dip"
+                android:singleLine="true" />
+            <TextView
+                android:id="@+id/SoundCloudSongArtist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12dip"
+                android:singleLine="true" />
+            <TextView
+                android:id="@+id/SoundCloudSongPlaybackCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12dip"
+                android:singleLine="true" />
+        </LinearLayout>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/SoundCloudSongDuration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dip">
-        <TextView
-            android:id="@+id/SoundCloudSongTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14dip" />
-        <TextView
-            android:id="@+id/SoundCloudSongArtist"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12dip" />
-        <TextView
-            android:id="@+id/SoundCloudSongPlaybackCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12dip" />
-    </LinearLayout>
+        android:textSize="12dip"
+        android:gravity="right" />
 </LinearLayout>

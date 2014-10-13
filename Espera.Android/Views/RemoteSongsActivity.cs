@@ -26,7 +26,10 @@ namespace Espera.Android.Views
             {
                 var disposable = new CompositeDisposable();
 
-                this.SongsList.Adapter = new RemoteSongsAdapter(this, new ReactiveList<NetworkSong>(this.ViewModel.Songs));
+                var adapter = new ReactiveListAdapter<RemoteSongViewModel>(new ReactiveList<RemoteSongViewModel>(this.ViewModel.Songs),
+                    (vm, parent) => new RemoteSongView(this, vm, parent));
+                this.SongsList.Adapter = adapter;
+
                 this.SongsList.Events().ItemClick.Select(x => x.Position)
                     .Subscribe(x =>
                     {

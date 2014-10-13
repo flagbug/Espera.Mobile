@@ -9,30 +9,19 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="8">
-        <ImageView
-            android:id="@+id/Artwork"
-            android:layout_width="120dip"
-            android:layout_height="90dip"
-            android:layout_gravity="center_vertical" />
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="10dip">
             <TextView
-                android:id="@+id/YoutubeSongTitle"
+                android:id="@+id/RemoteSongTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16dip"
                 android:singleLine="true" />
             <TextView
-                android:id="@+id/YoutubeSongUploader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12dip"
-                android:singleLine="true" />
-            <TextView
-                android:id="@+id/YoutubeSongViews"
+                android:id="@+id/RemoteSongArtist"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12dip"
@@ -40,7 +29,7 @@
         </LinearLayout>
     </LinearLayout>
     <TextView
-        android:id="@+id/YoutubeSongDuration"
+        android:id="@+id/RemoteSongDuration"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="2"

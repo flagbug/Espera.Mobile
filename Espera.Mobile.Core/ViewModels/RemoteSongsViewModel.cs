@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Espera.Mobile.Core.ViewModels
 {
-    public class RemoteSongsViewModel : SongsViewModelBase<NetworkSong>
+    public class RemoteSongsViewModel : SongsViewModelBase<RemoteSongViewModel>
     {
         private readonly ReactiveCommand<ResponseInfo> addToPlaylistCommand;
 
@@ -16,12 +16,12 @@ namespace Espera.Mobile.Core.ViewModels
             if (songs == null)
                 throw new ArgumentNullException("songs");
 
-            this.Songs = songs.Order().ToList();
+            this.Songs = songs.Order().Select(x => new RemoteSongViewModel(x)).ToList();
 
             this.PlaySongsCommand = ReactiveCommand.CreateAsyncTask(x => NetworkMessenger.Instance.PlaySongsAsync(
-                this.Songs.SkipWhile(song => song.Guid != this.SelectedSong.Guid).Select(y => y.Guid).ToList()));
+                this.Songs.SkipWhile(song => song.Model.Guid != this.SelectedSong.Model.Guid).Select(y => y.Model.Guid).ToList()));
 
-            this.addToPlaylistCommand = ReactiveCommand.CreateAsyncTask(x => NetworkMessenger.Instance.AddSongToPlaylistAsync(this.SelectedSong.Guid));
+            this.addToPlaylistCommand = ReactiveCommand.CreateAsyncTask(x => NetworkMessenger.Instance.AddSongToPlaylistAsync(this.SelectedSong.Model.Guid));
         }
 
         public override ReactiveCommand<ResponseInfo> AddToPlaylistCommand

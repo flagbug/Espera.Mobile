@@ -198,7 +198,7 @@
     <Compile Include="Views\PlaylistEntryView.cs" />
     <Compile Include="Views\RemoteArtistsFragment.cs" />
     <Compile Include="Views\RemoteSongsActivity.cs" />
-    <Compile Include="Views\RemoteSongsAdapter.cs" />
+    <Compile Include="Views\RemoteSongView.cs" />
     <Compile Include="Views\SettingsActivity.cs" />
     <Compile Include="Views\SettingsFragment.cs" />
     <Compile Include="Views\SongsActivityHelper.cs" />
@@ -244,6 +244,9 @@
       <SubType>AndroidResource</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\Layout\MainDrawerDivider.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\Layout\RemoteSongItem.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
   </ItemGroup>

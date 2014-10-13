@@ -3,6 +3,7 @@ using System.Reactive.Linq;
 using Android.Content;
 using Android.Views;
 using Android.Widget;
+using Espera.Mobile.Core;
 using Espera.Mobile.Core.ViewModels;
 using Humanizer;
 using ReactiveUI;
@@ -24,6 +25,7 @@ namespace Espera.Android.Views
             this.OneWayBind(this.ViewModel, vm => vm.Uploader, v => v.YoutubeSongUploader.Text);
             this.OneWayBind(this.ViewModel, vm => vm.Views, v => v.YoutubeSongViews.Text,
                 x => ctx.Resources.GetString(Resource.String.youtube_view).ToQuantity(x, "N0"));
+            this.OneWayBind(this.ViewModel, vm => vm.Duration, v => v.YoutubeSongDuration.Text, x => x.FormatAdaptive());
 
             this.WhenAnyValue(x => x.ViewModel.Artwork)
                 .Where(x => x != null)
@@ -32,6 +34,8 @@ namespace Espera.Android.Views
         }
 
         public ImageView Artwork { get; private set; }
+
+        public TextView YoutubeSongDuration { get; private set; }
 
         public TextView YoutubeSongTitle { get; private set; }
 

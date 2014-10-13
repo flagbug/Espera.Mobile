@@ -23,7 +23,8 @@ namespace Espera.Android.Tests
                 NetworkMessenger.Override(messenger);
                 var songs = Helpers.SetupSongs(4).ToList();
 
-                var vm = new RemoteSongsViewModel(songs) { SelectedSong = songs[2] };
+                var vm = new RemoteSongsViewModel(songs);
+                vm.SelectedSong = vm.Songs[2];
 
                 await vm.AddToPlaylistCommand.ExecuteAsync();
 
@@ -40,7 +41,8 @@ namespace Espera.Android.Tests
                 NetworkMessenger.Override(messenger);
                 var songs = Helpers.SetupSongs(4).ToList();
 
-                var vm = new RemoteSongsViewModel(songs) { SelectedSong = songs[2] };
+                var vm = new RemoteSongsViewModel(songs);
+                vm.SelectedSong = vm.Songs[2];
 
                 await vm.PlaySongsCommand.ExecuteAsync();
 

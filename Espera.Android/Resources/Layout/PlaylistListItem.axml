@@ -8,7 +8,7 @@
         android:orientation="horizontal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="9">
+        android:layout_weight="1">
         <ImageView
             android:id="@+id/Image"
             android:layout_width="18dp"
@@ -36,9 +36,8 @@
     </LinearLayout>
     <TextView
         android:id="@+id/PlaylistEntryDuration"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:textSize="12dip"
         android:gravity="right" />
 </LinearLayout>

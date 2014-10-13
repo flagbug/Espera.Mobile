@@ -197,13 +197,13 @@ namespace Espera.Android
 			public const int Image = 2131361816;
 			
 			// aapt resource value: 0x7f0a0006
-			public const int LocalSongAlbum = 2131361798;
+			public const int LocalSongArtist = 2131361798;
+			
+			// aapt resource value: 0x7f0a0007
+			public const int LocalSongDuration = 2131361799;
 			
 			// aapt resource value: 0x7f0a0005
 			public const int LocalSongTitle = 2131361797;
-			
-			// aapt resource value: 0x7f0a0007
-			public const int LocalSongTransferProgress = 2131361799;
 			
 			// aapt resource value: 0x7f0a0009
 			public const int MainDrawer = 2131361801;

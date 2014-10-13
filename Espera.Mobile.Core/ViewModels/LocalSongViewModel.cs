@@ -22,6 +22,11 @@ namespace Espera.Mobile.Core.ViewModels
             get { return this.model.Album; }
         }
 
+        public TimeSpan Duration
+        {
+            get { return this.model.Duration; }
+        }
+
         public bool IsTransfering
         {
             get { return this.isTransfering; }

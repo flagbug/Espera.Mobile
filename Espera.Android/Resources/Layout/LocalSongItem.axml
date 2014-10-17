@@ -1,37 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
     android:padding="8dip">
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent">
         <LinearLayout
-            android:orientation="vertical"
+            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dip">
+                <TextView
+                    android:id="@+id/LocalSongTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16dip"
+                    android:singleLine="true" />
+                <TextView
+                    android:id="@+id/LocalSongAlbum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12dip"
+                    android:singleLine="true" />
+            </LinearLayout>
+        </LinearLayout>
+        <TextView
+            android:id="@+id/LocalSongDuration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dip">
-            <TextView
-                android:id="@+id/LocalSongTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16dip"
-                android:singleLine="true" />
-            <TextView
-                android:id="@+id/LocalSongArtist"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12dip"
-                android:singleLine="true" />
-        </LinearLayout>
+            android:textSize="12dip"
+            android:gravity="right" />
     </LinearLayout>
-    <TextView
-        android:id="@+id/LocalSongDuration"
-        android:layout_width="wrap_content"
+    <ProgressBar
+        android:id="@+id/LocalSongTransferProgress"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textSize="12dip"
-        android:gravity="right" />
+        style="?android:attr/progressBarStyleHorizontal"
+        android:progress="50" />
 </LinearLayout>

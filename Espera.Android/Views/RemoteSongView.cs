@@ -15,11 +15,11 @@ namespace Espera.Android.Views
             this.ViewModel = viewModel;
 
             this.OneWayBind(this.ViewModel, vm => vm.Title, v => v.RemoteSongTitle.Text);
-            this.OneWayBind(this.ViewModel, vm => vm.Artist, v => v.RemoteSongArtist.Text);
+            this.OneWayBind(this.ViewModel, vm => vm.Album, v => v.RemoteSongAlbum.Text);
             this.OneWayBind(this.ViewModel, vm => vm.Duration, v => v.RemoteSongDuration.Text, x => x.FormatAdaptive());
         }
 
-        public TextView RemoteSongArtist { get; private set; }
+        public TextView RemoteSongAlbum { get; private set; }
 
         public TextView RemoteSongDuration { get; private set; }
 

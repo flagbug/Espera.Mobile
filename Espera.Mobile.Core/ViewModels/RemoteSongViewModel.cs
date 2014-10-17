@@ -16,9 +16,9 @@ namespace Espera.Mobile.Core.ViewModels
             this.model = model;
         }
 
-        public string Artist
+        public string Album
         {
-            get { return this.model.Artist; }
+            get { return this.model.Album; }
         }
 
         public TimeSpan Duration

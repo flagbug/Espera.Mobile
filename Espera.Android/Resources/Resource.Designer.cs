@@ -172,32 +172,32 @@ namespace Espera.Android
 			// aapt resource value: 0x7f0a0000
 			public const int ArtistList = 2131361792;
 			
-			// aapt resource value: 0x7f0a0020
-			public const int Artwork = 2131361824;
+			// aapt resource value: 0x7f0a0021
+			public const int Artwork = 2131361825;
 			
 			// aapt resource value: 0x7f0a0001
 			public const int ConnectButton = 2131361793;
 			
-			// aapt resource value: 0x7f0a000a
-			public const int ContentFrame = 2131361802;
-			
-			// aapt resource value: 0x7f0a0012
-			public const int CurrentTimeTextView = 2131361810;
-			
-			// aapt resource value: 0x7f0a000d
-			public const int DetailImage = 2131361805;
-			
-			// aapt resource value: 0x7f0a000e
-			public const int DetailText = 2131361806;
+			// aapt resource value: 0x7f0a000b
+			public const int ContentFrame = 2131361803;
 			
 			// aapt resource value: 0x7f0a0013
-			public const int DurationSeekBar = 2131361811;
+			public const int CurrentTimeTextView = 2131361811;
 			
-			// aapt resource value: 0x7f0a0018
-			public const int Image = 2131361816;
+			// aapt resource value: 0x7f0a000e
+			public const int DetailImage = 2131361806;
+			
+			// aapt resource value: 0x7f0a000f
+			public const int DetailText = 2131361807;
+			
+			// aapt resource value: 0x7f0a0014
+			public const int DurationSeekBar = 2131361812;
+			
+			// aapt resource value: 0x7f0a0019
+			public const int Image = 2131361817;
 			
 			// aapt resource value: 0x7f0a0006
-			public const int LocalSongArtist = 2131361798;
+			public const int LocalSongAlbum = 2131361798;
 			
 			// aapt resource value: 0x7f0a0007
 			public const int LocalSongDuration = 2131361799;
@@ -205,74 +205,77 @@ namespace Espera.Android
 			// aapt resource value: 0x7f0a0005
 			public const int LocalSongTitle = 2131361797;
 			
-			// aapt resource value: 0x7f0a0009
-			public const int MainDrawer = 2131361801;
+			// aapt resource value: 0x7f0a0008
+			public const int LocalSongTransferProgress = 2131361800;
 			
-			// aapt resource value: 0x7f0a000b
-			public const int MainDrawerListView = 2131361803;
-			
-			// aapt resource value: 0x7f0a0017
-			public const int NextButton = 2131361815;
-			
-			// aapt resource value: 0x7f0a0010
-			public const int PlayList = 2131361808;
-			
-			// aapt resource value: 0x7f0a0016
-			public const int PlayPauseButton = 2131361814;
-			
-			// aapt resource value: 0x7f0a0011
-			public const int PlaybackControlPanel = 2131361809;
-			
-			// aapt resource value: 0x7f0a001a
-			public const int PlaylistEntryArtist = 2131361818;
-			
-			// aapt resource value: 0x7f0a001b
-			public const int PlaylistEntryDuration = 2131361819;
-			
-			// aapt resource value: 0x7f0a0019
-			public const int PlaylistEntryTitle = 2131361817;
-			
-			// aapt resource value: 0x7f0a0015
-			public const int PreviousButton = 2131361813;
+			// aapt resource value: 0x7f0a000a
+			public const int MainDrawer = 2131361802;
 			
 			// aapt resource value: 0x7f0a000c
-			public const int PrimaryItemText = 2131361804;
+			public const int MainDrawerListView = 2131361804;
 			
-			// aapt resource value: 0x7f0a000f
-			public const int ProgressSpinner = 2131361807;
+			// aapt resource value: 0x7f0a0018
+			public const int NextButton = 2131361816;
 			
-			// aapt resource value: 0x7f0a001d
-			public const int RemoteSongArtist = 2131361821;
+			// aapt resource value: 0x7f0a0011
+			public const int PlayList = 2131361809;
 			
-			// aapt resource value: 0x7f0a001e
-			public const int RemoteSongDuration = 2131361822;
+			// aapt resource value: 0x7f0a0017
+			public const int PlayPauseButton = 2131361815;
+			
+			// aapt resource value: 0x7f0a0012
+			public const int PlaybackControlPanel = 2131361810;
+			
+			// aapt resource value: 0x7f0a001b
+			public const int PlaylistEntryArtist = 2131361819;
 			
 			// aapt resource value: 0x7f0a001c
-			public const int RemoteSongTitle = 2131361820;
+			public const int PlaylistEntryDuration = 2131361820;
 			
-			// aapt resource value: 0x7f0a0008
-			public const int SongsList = 2131361800;
+			// aapt resource value: 0x7f0a001a
+			public const int PlaylistEntryTitle = 2131361818;
 			
-			// aapt resource value: 0x7f0a0022
-			public const int SoundCloudSongArtist = 2131361826;
+			// aapt resource value: 0x7f0a0016
+			public const int PreviousButton = 2131361814;
 			
-			// aapt resource value: 0x7f0a0024
-			public const int SoundCloudSongDuration = 2131361828;
+			// aapt resource value: 0x7f0a000d
+			public const int PrimaryItemText = 2131361805;
 			
-			// aapt resource value: 0x7f0a0023
-			public const int SoundCloudSongPlaybackCount = 2131361827;
+			// aapt resource value: 0x7f0a0010
+			public const int ProgressSpinner = 2131361808;
 			
-			// aapt resource value: 0x7f0a0021
-			public const int SoundCloudSongTitle = 2131361825;
+			// aapt resource value: 0x7f0a001e
+			public const int RemoteSongAlbum = 2131361822;
 			
 			// aapt resource value: 0x7f0a001f
-			public const int SoundCloudSongsList = 2131361823;
+			public const int RemoteSongDuration = 2131361823;
 			
-			// aapt resource value: 0x7f0a002a
-			public const int ToggleVideoPlayer = 2131361834;
+			// aapt resource value: 0x7f0a001d
+			public const int RemoteSongTitle = 2131361821;
 			
-			// aapt resource value: 0x7f0a0014
-			public const int TotalTimeTextView = 2131361812;
+			// aapt resource value: 0x7f0a0009
+			public const int SongsList = 2131361801;
+			
+			// aapt resource value: 0x7f0a0023
+			public const int SoundCloudSongArtist = 2131361827;
+			
+			// aapt resource value: 0x7f0a0025
+			public const int SoundCloudSongDuration = 2131361829;
+			
+			// aapt resource value: 0x7f0a0024
+			public const int SoundCloudSongPlaybackCount = 2131361828;
+			
+			// aapt resource value: 0x7f0a0022
+			public const int SoundCloudSongTitle = 2131361826;
+			
+			// aapt resource value: 0x7f0a0020
+			public const int SoundCloudSongsList = 2131361824;
+			
+			// aapt resource value: 0x7f0a002b
+			public const int ToggleVideoPlayer = 2131361835;
+			
+			// aapt resource value: 0x7f0a0015
+			public const int TotalTimeTextView = 2131361813;
 			
 			// aapt resource value: 0x7f0a0002
 			public const int TrialContainer = 2131361794;
@@ -283,23 +286,23 @@ namespace Espera.Android
 			// aapt resource value: 0x7f0a0003
 			public const int TrialExpirationTextView = 2131361795;
 			
-			// aapt resource value: 0x7f0a0029
-			public const int YoutubeSongDuration = 2131361833;
-			
-			// aapt resource value: 0x7f0a0026
-			public const int YoutubeSongTitle = 2131361830;
+			// aapt resource value: 0x7f0a002a
+			public const int YoutubeSongDuration = 2131361834;
 			
 			// aapt resource value: 0x7f0a0027
-			public const int YoutubeSongUploader = 2131361831;
+			public const int YoutubeSongTitle = 2131361831;
 			
 			// aapt resource value: 0x7f0a0028
-			public const int YoutubeSongViews = 2131361832;
+			public const int YoutubeSongUploader = 2131361832;
 			
-			// aapt resource value: 0x7f0a0025
-			public const int YoutubeSongsList = 2131361829;
+			// aapt resource value: 0x7f0a0029
+			public const int YoutubeSongViews = 2131361833;
 			
-			// aapt resource value: 0x7f0a002b
-			public const int search = 2131361835;
+			// aapt resource value: 0x7f0a0026
+			public const int YoutubeSongsList = 2131361830;
+			
+			// aapt resource value: 0x7f0a002c
+			public const int search = 2131361836;
 			
 			static Id()
 			{

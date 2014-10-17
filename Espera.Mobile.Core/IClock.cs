@@ -4,14 +4,14 @@ namespace Espera.Mobile.Core
 {
     public interface IClock
     {
-        DateTime Now { get; }
+        DateTimeOffset Now { get; }
     }
 
     public class Clock : IClock
     {
-        public DateTime Now
+        public DateTimeOffset Now
         {
-            get { return DateTime.Now; }
+            get { return DateTimeOffset.Now; }
         }
     }
 }

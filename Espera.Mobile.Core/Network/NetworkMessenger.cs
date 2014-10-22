@@ -562,25 +562,17 @@ namespace Espera.Mobile.Core.Network
                 }
             }
 
+            ResponseInfo response;
+
             try
             {
                 using (Insights.TrackTime("Network", traits))
                 {
                     await this.SendMessage(message);
 
-                    ResponseInfo response = await responseMessage;
+                    response = await responseMessage;
 
                     traits.Add("Response", response.Status.ToString());
-
-                    if (response.Status != ResponseStatus.Success)
-                    {
-                        var exception = new NetworkRequestException(requestInfo, response);
-                        Insights.Report(exception);
-
-                        throw exception;
-                    }
-
-                    return response;
                 }
             }
 
@@ -596,6 +588,16 @@ namespace Espera.Mobile.Core.Network
 
                 throw new NetworkException("Fatal error while sending or receiving a network response", ex);
             }
+
+            if (response.Status != ResponseStatus.Success)
+            {
+                var exception = new NetworkRequestException(requestInfo, response);
+                Insights.Report(exception);
+
+                throw exception;
+            }
+
+            return response;
         }
 
         private IObservable<int> TransferFileAsync(SongTransferMessage message)

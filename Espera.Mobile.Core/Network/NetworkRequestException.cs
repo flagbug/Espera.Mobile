@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Espera.Network;
 
 namespace Espera.Mobile.Core.Network
@@ -22,6 +24,18 @@ namespace Espera.Mobile.Core.Network
 
             this.RequestInfo = requestInfo;
             this.ResponseInfo = responseInfo;
+        }
+
+        public override IDictionary Data
+        {
+            get
+            {
+                return new Dictionary<string, object>
+                {
+                    { "requestInfo", this.RequestInfo },
+                    { "responseInfo", this.ResponseInfo }
+                };
+            }
         }
 
         public RequestInfo RequestInfo { get; private set; }

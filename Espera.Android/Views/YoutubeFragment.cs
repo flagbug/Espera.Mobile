@@ -35,7 +35,7 @@ namespace Espera.Android.Views
                     .Subscribe(x => this.DisplayAddToPlaylistDialog<YoutubeViewModel, YoutubeSongViewModel>(this.Activity, x.Position))
                     .DisposeWith(disposable);
 
-                this.ViewModel.AddToPlaylistCommand.ThrownExceptions
+                this.ViewModel.LoadCommand.ThrownExceptions.Merge(this.ViewModel.AddToPlaylistCommand.ThrownExceptions)
                     .ObserveOn(RxApp.MainThreadScheduler)
                     .Subscribe(_ => Toast.MakeText(this.Activity, Resource.String.something_went_wrong, ToastLength.Short).Show())
                     .DisposeWith(disposable);

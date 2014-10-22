@@ -19,6 +19,7 @@ namespace Espera.Android.Tests
             public async Task SmokeTest()
             {
                 var messenger = Substitute.For<INetworkMessenger>();
+                messenger.GuestSystemInfo.Returns(new GuestSystemInfo());
                 messenger.AddSongToPlaylistAsync(Arg.Any<Guid>()).Returns(new ResponseInfo().ToTaskResult());
                 NetworkMessenger.Override(messenger);
                 var songs = Helpers.SetupSongs(4).ToList();
@@ -39,6 +40,7 @@ namespace Espera.Android.Tests
             public async Task SmokeTest()
             {
                 var messenger = Substitute.For<INetworkMessenger>();
+                messenger.GuestSystemInfo.Returns(new GuestSystemInfo());
                 NetworkMessenger.Override(messenger);
                 var songs = Helpers.SetupSongs(4).ToList();
 

@@ -187,6 +187,7 @@ namespace Espera.Android.Views
                     .DisposeWith(disposable);
 
                 this.ViewModel.LoadPlaylistCommand.ExecuteAsync()
+                    .SwallowNetworkExceptions()
                     .Subscribe(_ => this.Playlist.EmptyView = this.View.FindViewById(global::Android.Resource.Id.Empty))
                     .DisposeWith(disposable);
 

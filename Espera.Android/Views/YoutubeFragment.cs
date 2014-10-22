@@ -5,6 +5,7 @@ using System.Reactive.Linq;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
+using Espera.Mobile.Core;
 using Espera.Mobile.Core.ViewModels;
 using ReactiveMarrow;
 using ReactiveUI;
@@ -45,6 +46,7 @@ namespace Espera.Android.Views
                     .DisposeWith(disposable);
 
                 this.ViewModel.LoadCommand.ExecuteAsync()
+                    .SwallowNetworkExceptions()
                     .Subscribe(_ => this.YoutubeSongsList.EmptyView = this.View.FindViewById(global::Android.Resource.Id.Empty))
                     .DisposeWith(disposable);
 
@@ -76,7 +78,7 @@ namespace Espera.Android.Views
                 {
                     this.ViewModel.SearchTerm = x.Query;
 
-                    await this.ViewModel.LoadCommand.ExecuteAsync();
+                    await this.ViewModel.LoadCommand.ExecuteAsync().SwallowNetworkExceptions();
 
                     x.Handled = false;
                     searchView.ClearFocus();

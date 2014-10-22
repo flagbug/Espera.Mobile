@@ -76,7 +76,7 @@ namespace Espera.Mobile.Core.Network
             get { return Observable.Never<NetworkPlaylist>(); }
         }
 
-        public Task<ResponseInfo> AddSongToPlaylistAsync(Guid songGuid)
+        public Task AddSongToPlaylistAsync(Guid songGuid)
         {
             return Success();
         }
@@ -88,7 +88,7 @@ namespace Espera.Mobile.Core.Network
             return Task.FromResult(new ConnectionResultContainer(ConnectionResult.Successful, NetworkAccessPermission.Admin, new Version("99.99.99")));
         }
 
-        public Task<ResponseInfo> ContinueSongAsync()
+        public Task ContinueSongAsync()
         {
             this.playbackState.OnNext(NetworkPlaybackState.Playing);
 
@@ -197,45 +197,45 @@ namespace Espera.Mobile.Core.Network
             return Task.FromResult((IReadOnlyList<NetworkSong>)new List<NetworkSong>());
         }
 
-        public Task<ResponseInfo> MovePlaylistSongDownAsync(Guid entryGuid)
+        public Task MovePlaylistSongDownAsync(Guid entryGuid)
         {
             return Success();
         }
 
-        public Task<ResponseInfo> MovePlaylistSongUpAsync(Guid entryGuid)
+        public Task MovePlaylistSongUpAsync(Guid entryGuid)
         {
             return Success();
         }
 
-        public Task<ResponseInfo> PauseSongAsync()
+        public Task PauseSongAsync()
         {
             this.playbackState.OnNext(NetworkPlaybackState.Paused);
 
             return Success();
         }
 
-        public Task<ResponseInfo> PlayNextSongAsync()
+        public Task PlayNextSongAsync()
         {
             this.playbackState.OnNext(NetworkPlaybackState.Playing);
 
             return Success();
         }
 
-        public Task<ResponseInfo> PlayPlaylistSongAsync(Guid entryGuid)
+        public Task PlayPlaylistSongAsync(Guid entryGuid)
         {
             this.playbackState.OnNext(NetworkPlaybackState.Playing);
 
             return Success();
         }
 
-        public Task<ResponseInfo> PlayPreviousSongAsync()
+        public Task PlayPreviousSongAsync()
         {
             this.playbackState.OnNext(NetworkPlaybackState.Playing);
 
             return Success();
         }
 
-        public Task<ResponseInfo> PlaySongsAsync(IEnumerable<Guid> guids)
+        public Task PlaySongsAsync(IEnumerable<Guid> guids)
         {
             this.playbackState.OnNext(NetworkPlaybackState.Playing);
 
@@ -247,29 +247,29 @@ namespace Espera.Mobile.Core.Network
             return new FileTransferStatus(await Success(), Observable.Never<int>());
         }
 
-        public Task<ResponseInfo> RemovePlaylistSongAsync(Guid entryGuid)
+        public Task RemovePlaylistSongAsync(Guid entryGuid)
         {
             return Success();
         }
 
-        public Task<ResponseInfo> SetCurrentTime(TimeSpan time)
+        public Task SetCurrentTime(TimeSpan time)
         {
             this.playbackTime.OnNext(time);
 
             return Success();
         }
 
-        public Task<ResponseInfo> SetVolume(float volume)
+        public Task SetVolume(float volume)
         {
             return Success();
         }
 
-        public Task<ResponseInfo> ToggleVideoPlayer()
+        public Task ToggleVideoPlayer()
         {
             return Success();
         }
 
-        public Task<ResponseInfo> VoteAsync(Guid entryGuid)
+        public Task VoteAsync(Guid entryGuid)
         {
             return Success();
         }

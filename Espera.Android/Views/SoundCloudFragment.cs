@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
+using Espera.Mobile.Core;
 using Espera.Mobile.Core.ViewModels;
 using ReactiveMarrow;
 using ReactiveUI;
@@ -34,7 +36,7 @@ namespace Espera.Android.Views
                     .Subscribe(x => this.DisplayAddToPlaylistDialog<SoundCloudViewModel, SoundCloudSongViewModel>(this.Activity, x.Position))
                     .DisposeWith(disposable);
 
-                this.ViewModel.AddToPlaylistCommand.ThrownExceptions
+                this.ViewModel.LoadCommand.ThrownExceptions.Merge(this.ViewModel.AddToPlaylistCommand.ThrownExceptions)
                     .ObserveOn(RxApp.MainThreadScheduler)
                     .Subscribe(_ => Toast.MakeText(this.Activity, Resource.String.something_went_wrong, ToastLength.Short).Show())
                     .DisposeWith(disposable);
@@ -44,6 +46,7 @@ namespace Espera.Android.Views
                     .DisposeWith(disposable);
 
                 this.ViewModel.LoadCommand.ExecuteAsync()
+                    .SwallowNetworkExceptions()
                     .Subscribe(_ => this.SoundCloudSongsList.EmptyView = this.View.FindViewById(global::Android.Resource.Id.Empty))
                     .DisposeWith(disposable);
 
@@ -75,7 +78,7 @@ namespace Espera.Android.Views
                 {
                     this.ViewModel.SearchTerm = x.Query;
 
-                    await this.ViewModel.LoadCommand.ExecuteAsync();
+                    await this.ViewModel.LoadCommand.ExecuteAsync().SwallowNetworkExceptions();
 
                     x.Handled = false;
                     searchView.ClearFocus();

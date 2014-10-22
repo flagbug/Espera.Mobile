@@ -1,7 +1,9 @@
 using System;
 using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using Espera.Mobile.Core.Network;
 
 namespace Espera.Mobile.Core
 {
@@ -11,6 +13,40 @@ namespace Espera.Mobile.Core
         {
             observable.Connect();
             return observable;
+        }
+
+        /// <summary>
+        /// Catches exceptions of type <see cref="NetworkException" /> and
+        /// <see cref="NetworkRequestException" /> and returns an empty observable instead.
+        /// </summary>
+        public static IObservable<T> SwallowNetworkExceptions<T>(this IObservable<T> source)
+        {
+            return source
+                .Catch<T, NetworkException>(ex => Observable.Empty<T>())
+                .Catch<T, NetworkRequestException>(ex => Observable.Empty<T>());
+        }
+
+        /// <summary>
+        /// Returns elements from the source sequence until the specified
+        /// <see cref="CompositeDisposable" /> is disposed.
+        /// </summary>
+        public static IObservable<T> TakeUntil<T>(this IObservable<T> source, CompositeDisposable disposable)
+        {
+            if (source == null)
+                throw new ArgumentNullException("source");
+
+            if (disposable == null)
+                throw new ArgumentNullException("disposable");
+
+            var subject = new AsyncSubject<T>();
+
+            disposable.Add(Disposable.Create(() =>
+            {
+                subject.OnNext(default(T));
+                subject.OnCompleted();
+            }));
+
+            return source.TakeUntil(subject);
         }
 
         /// <summary>

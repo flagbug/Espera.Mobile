@@ -122,6 +122,10 @@ namespace Espera.Android.Views
             {
                 Toast.MakeText(this, Resource.String.connection_lost, ToastLength.Long).Show();
                 this.Intent.RemoveExtra(NetworkService.ConnectionLostString);
+
+                this.FragmentManager.BeginTransaction()
+                    .Replace(Resource.Id.ContentFrame, new ConnectionFragment())
+                    .Commit();
             }
 
             var wifiService = Locator.Current.GetService<IWifiService>();

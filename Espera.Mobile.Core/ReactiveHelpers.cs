@@ -3,6 +3,7 @@ using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using Espera.Mobile.Core.Network;
 
 namespace Espera.Mobile.Core
 {
@@ -12,6 +13,17 @@ namespace Espera.Mobile.Core
         {
             observable.Connect();
             return observable;
+        }
+
+        /// <summary>
+        /// Catches exceptions of type <see cref="NetworkException" /> and
+        /// <see cref="NetworkRequestException" /> and returns an empty observable instead.
+        /// </summary>
+        public static IObservable<T> SwallowNetworkExceptions<T>(this IObservable<T> source)
+        {
+            return source
+                .Catch<T, NetworkException>(ex => Observable.Empty<T>())
+                .Catch<T, NetworkRequestException>(ex => Observable.Empty<T>());
         }
 
         /// <summary>

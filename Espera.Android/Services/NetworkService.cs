@@ -10,6 +10,7 @@ using Android.Net;
 using Android.Net.Wifi;
 using Android.OS;
 using Espera.Android.Views;
+using Espera.Mobile.Core;
 using Espera.Mobile.Core.Network;
 using Espera.Mobile.Core.Settings;
 using Espera.Network;
@@ -62,10 +63,10 @@ namespace Espera.Android.Services
                     NetworkMessenger.Instance.WhenAnyValue(x => x.AccessPermission),
                     (_, connected, permission) => connected && permission == NetworkAccessPermission.Admin)
                 .Where(x => x)
-                .SelectMany(_ => NetworkMessenger.Instance.GetVolume().ToObservable().Catch(Observable.Empty<float>()))
+                .SelectMany(_ => NetworkMessenger.Instance.GetVolume().ToObservable().SwallowNetworkExceptions())
                 .Where(currentVolume => currentVolume > 0)
                 .Select(currentVolume => Math.Max(currentVolume - 0.1f, 0))
-                .Select(volume => NetworkMessenger.Instance.SetVolume(volume).ToObservable().Catch(Observable.Empty<Unit>()))
+                .Select(volume => NetworkMessenger.Instance.SetVolume(volume).ToObservable().SwallowNetworkExceptions())
                 .Concat()
                 .Subscribe()
                 .DisposeWith(this.disposable);
@@ -74,10 +75,10 @@ namespace Espera.Android.Services
                     NetworkMessenger.Instance.WhenAnyValue(x => x.AccessPermission),
                     (_, connected, permission) => connected && permission == NetworkAccessPermission.Admin)
                 .Where(x => x)
-                .SelectMany(_ => NetworkMessenger.Instance.GetVolume().ToObservable().Catch(Observable.Empty<float>()))
+                .SelectMany(_ => NetworkMessenger.Instance.GetVolume().ToObservable().SwallowNetworkExceptions())
                 .Where(currentVolume => currentVolume < 1)
                 .Select(currentVolume => Math.Min(currentVolume + 0.1f, 1))
-                .Select(volume => NetworkMessenger.Instance.SetVolume(volume).ToObservable().Catch(Observable.Empty<Unit>()))
+                .Select(volume => NetworkMessenger.Instance.SetVolume(volume).ToObservable().SwallowNetworkExceptions())
                 .Concat()
                 .Subscribe()
                 .DisposeWith(this.disposable);

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Espera.Mobile.Core.Network;
@@ -38,7 +39,7 @@ namespace Espera.Mobile.Core.ViewModels
 
         public ViewModelActivator Activator { get; private set; }
 
-        public abstract ReactiveCommand<ResponseInfo> AddToPlaylistCommand { get; }
+        public abstract ReactiveCommand<Unit> AddToPlaylistCommand { get; }
 
         public bool IsAdmin
         {

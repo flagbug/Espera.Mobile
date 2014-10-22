@@ -42,23 +42,13 @@ namespace Espera.Mobile.Core.ViewModels
                     .ToProperty(this, x => x.IsConnected)
                     .DisposeWith(disposable);
 
-                // We use this interrupt to make sure the application doesn't die if the ViewModel
-                // is deactivated but the connect command throws an exception after that.
-                //
-                // We can't simply dispose the ReactiveCommand, as this only disposes the CanExecute subscription
-                var connectionInterrupt = new AsyncSubject<Unit>();
-                Disposable.Create(() =>
-                {
-                    connectionInterrupt.OnNext(Unit.Default);
-                    connectionInterrupt.OnCompleted();
-                }).DisposeWith(disposable);
-
                 var canConnect = this.WhenAnyValue(x => x.IsConnected, x => !x);
                 this.ConnectCommand = ReactiveCommand.CreateAsyncObservable(canConnect, _ => ConnectAsync(ipAddress(), this.userSettings.Port)
                     .Timeout(ConnectCommandTimeout, RxApp.TaskpoolScheduler)
                     .Catch<ConnectionResultContainer, TimeoutException>(ex => Observable.Return(new ConnectionResultContainer(ConnectionResult.Timeout)))
                     .Catch<ConnectionResultContainer, NetworkException>(ex => Observable.Return(new ConnectionResultContainer(ConnectionResult.Failed)))
-                    .TakeUntil(connectionInterrupt));
+                    .Catch<ConnectionResultContainer, NetworkRequestException>(ex => Observable.Return(new ConnectionResultContainer(ConnectionResult.Failed)))
+                    .TakeUntil(disposable));
 
                 this.DisconnectCommand = ReactiveCommand.Create(this.WhenAnyValue(x => x.IsConnected));
                 this.DisconnectCommand.Subscribe(x => NetworkMessenger.Instance.Disconnect());

@@ -31,10 +31,10 @@ namespace Espera.Android.Views
             {
                 var disposable = new CompositeDisposable();
 
-                this.ViewModel.PlayPlaylistSongCommand
-                    .Select(x => x.Status == ResponseStatus.Success ? Resource.String.playing_song : Resource.String.playback_failed)
-                    .Merge(this.ViewModel.LoadPlaylistCommand.ThrownExceptions.Select(_ => Resource.String.loading_playlist_failed))
-                    .Merge(this.ViewModel.VoteCommand.ThrownExceptions.Select(_ => Resource.String.vote_failed))
+                Observable.Merge(this.ViewModel.PlayPlaylistSongCommand.Select(_ => Resource.String.playing_song),
+                    this.ViewModel.PlayPlaylistSongCommand.ThrownExceptions.Select(_ => Resource.String.playback_failed),
+                    this.ViewModel.LoadPlaylistCommand.ThrownExceptions.Select(_ => Resource.String.loading_playlist_failed),
+                    this.ViewModel.VoteCommand.ThrownExceptions.Select(_ => Resource.String.vote_failed))
                     .ObserveOn(RxApp.MainThreadScheduler)
                     .Subscribe(x => Toast.MakeText(this.Activity, x, ToastLength.Short).Show())
                     .DisposeWith(disposable);
@@ -71,30 +71,30 @@ namespace Espera.Android.Views
                                 items.Add(voteString);
                             }
 
-                            builder.SetItems(items.ToArray(), async (o, eventArgs) =>
+                            builder.SetItems(items.ToArray(), (o, eventArgs) =>
                             {
                                 switch (eventArgs.Which)
                                 {
                                     case 0:
-                                        await this.ViewModel.PlayPlaylistSongCommand.ExecuteAsync();
+                                        this.ViewModel.PlayPlaylistSongCommand.Execute(null);
                                         break;
 
                                     case 1:
-                                        await this.ViewModel.RemoveSongCommand.ExecuteAsync();
+                                        this.ViewModel.RemoveSongCommand.Execute(null);
                                         break;
 
                                     case 2:
-                                        await this.ViewModel.MoveSongUpCommand.ExecuteAsync();
+                                        this.ViewModel.MoveSongUpCommand.Execute(null);
                                         break;
 
                                     case 3:
-                                        await this.ViewModel.MoveSongDownCommand.ExecuteAsync();
+                                        this.ViewModel.MoveSongDownCommand.Execute(null);
                                         break;
 
                                     case 4:
                                         if (hasVotesLeft)
                                         {
-                                            await this.ViewModel.VoteCommand.ExecuteAsync();
+                                            this.ViewModel.VoteCommand.Execute(null);
                                         }
                                         break;
                                 }
@@ -107,11 +107,11 @@ namespace Espera.Android.Views
                             var builder = new AlertDialog.Builder(this.Activity);
                             builder.SetTitle(Resource.String.guest_functions);
 
-                            builder.SetItems(new[] { voteString }, async (sender, args) =>
+                            builder.SetItems(new[] { voteString }, (sender, args) =>
                             {
                                 if (hasVotesLeft)
                                 {
-                                    await this.ViewModel.VoteCommand.ExecuteAsync();
+                                    this.ViewModel.VoteCommand.Execute(null);
                                 }
                             });
                             builder.Create().Show();

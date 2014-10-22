@@ -4,12 +4,15 @@ using Espera.Network;
 using ReactiveUI;
 using System;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Disposables;
+using System.Reactive.Threading.Tasks;
 
 namespace Espera.Mobile.Core.ViewModels
 {
     public class RemoteSongsViewModel : SongsViewModelBase<RemoteSongViewModel>
     {
-        private readonly ReactiveCommand<ResponseInfo> addToPlaylistCommand;
+        private ReactiveCommand<Unit> addToPlaylistCommand;
 
         public RemoteSongsViewModel(IReadOnlyList<NetworkSong> songs)
         {
@@ -18,17 +21,25 @@ namespace Espera.Mobile.Core.ViewModels
 
             this.Songs = songs.Order().Select(x => new RemoteSongViewModel(x)).ToList();
 
-            this.PlaySongsCommand = ReactiveCommand.CreateAsyncTask(x => NetworkMessenger.Instance.PlaySongsAsync(
-                this.Songs.SkipWhile(song => song.Model.Guid != this.SelectedSong.Model.Guid).Select(y => y.Model.Guid).ToList()));
+            this.WhenActivated(() =>
+            {
+                var disposable = new CompositeDisposable();
 
-            this.addToPlaylistCommand = ReactiveCommand.CreateAsyncTask(x => NetworkMessenger.Instance.AddSongToPlaylistAsync(this.SelectedSong.Model.Guid));
+                this.PlaySongsCommand = ReactiveCommand.CreateAsyncObservable(x => NetworkMessenger.Instance.PlaySongsAsync(
+                    this.Songs.SkipWhile(song => song.Model.Guid != this.SelectedSong.Model.Guid).Select(y => y.Model.Guid).ToList()).ToObservable().TakeUntil(disposable));
+
+                this.addToPlaylistCommand = ReactiveCommand.CreateAsyncObservable(x =>
+                    NetworkMessenger.Instance.AddSongToPlaylistAsync(this.SelectedSong.Model.Guid).ToObservable().TakeUntil(disposable));
+
+                return disposable;
+            });
         }
 
-        public override ReactiveCommand<ResponseInfo> AddToPlaylistCommand
+        public override ReactiveCommand<Unit> AddToPlaylistCommand
         {
             get { return this.addToPlaylistCommand; }
         }
 
-        public ReactiveCommand<ResponseInfo> PlaySongsCommand { get; private set; }
+        public ReactiveCommand<Unit> PlaySongsCommand { get; private set; }
     }
 }

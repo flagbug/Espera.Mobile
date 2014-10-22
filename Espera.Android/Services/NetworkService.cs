@@ -2,6 +2,7 @@ using System;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Graphics;
@@ -64,7 +65,7 @@ namespace Espera.Android.Services
                 .SelectMany(async _ => await NetworkMessenger.Instance.GetVolume())
                 .Where(currentVolume => currentVolume > 0)
                 .Select(currentVolume => Math.Max(currentVolume - 0.1f, 0))
-                .Select(async volume => await NetworkMessenger.Instance.SetVolume(volume))
+                .Select(volume => NetworkMessenger.Instance.SetVolume(volume).ToObservable())
                 .Concat()
                 .Subscribe()
                 .DisposeWith(this.disposable);
@@ -76,7 +77,7 @@ namespace Espera.Android.Services
                 .SelectMany(async _ => await NetworkMessenger.Instance.GetVolume())
                 .Where(currentVolume => currentVolume < 1)
                 .Select(currentVolume => Math.Min(currentVolume + 0.1f, 1))
-                .Select(async volume => await NetworkMessenger.Instance.SetVolume(volume))
+                .Select(volume => NetworkMessenger.Instance.SetVolume(volume).ToObservable())
                 .Concat()
                 .Subscribe()
                 .DisposeWith(this.disposable);

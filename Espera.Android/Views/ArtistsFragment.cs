@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Android.OS;
@@ -40,6 +42,7 @@ namespace Espera.Android.Views
                     .DisposeWith(disposable);
 
                 this.ViewModel.LoadCommand.ExecuteAsync()
+                    .Catch(Observable.Empty<IReadOnlyList<T>>())
                     .Subscribe(x => this.ArtistList.EmptyView = this.View.FindViewById(global::Android.Resource.Id.Empty))
                     .DisposeWith(disposable);
 

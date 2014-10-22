@@ -44,7 +44,9 @@ namespace Espera.Android.Tests
                 var songFetcher = Substitute.For<ISongFetcher<NetworkSong>>();
                 songFetcher.GetSongsAsync().Returns(Observable.Return(songs).Concat(Observable.Return(songs)));
 
-                var vm = new RemoteArtistsViewModel(songFetcher);
+                var cache = new InMemoryBlobCache();
+
+                var vm = new RemoteArtistsViewModel(songFetcher, cache);
                 vm.Activator.Activate();
 
                 var loadResults = vm.LoadCommand.CreateCollection();
@@ -67,7 +69,9 @@ namespace Espera.Android.Tests
                 var songFetcher = Substitute.For<ISongFetcher<NetworkSong>>();
                 songFetcher.GetSongsAsync().Returns(Observable.Return(songs1).Concat(Observable.Return(songs2)));
 
-                var vm = new RemoteArtistsViewModel(songFetcher);
+                var cache = new InMemoryBlobCache();
+
+                var vm = new RemoteArtistsViewModel(songFetcher, cache);
                 vm.Activator.Activate();
 
                 var artists = vm.WhenAnyValue(x => x.Artists).CreateCollection();

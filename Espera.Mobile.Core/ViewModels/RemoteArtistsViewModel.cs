@@ -12,29 +12,40 @@ namespace Espera.Mobile.Core.ViewModels
     {
         public static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(30);
 
-        public RemoteArtistsViewModel(ISongFetcher<NetworkSong> songFetcher = null)
-            : base(new CachingSongFetcher<NetworkSong>(songFetcher ?? new RemoteSongFetcher(), BlobCacheKeys.RemoteSongs, CacheDuration), BlobCacheKeys.SelectedRemoteSongs)
+        public RemoteArtistsViewModel(ISongFetcher<NetworkSong> songFetcher = null, IBlobCache cache = null)
+            : base(new CachingSongFetcher<NetworkSong>(songFetcher ?? new RemoteSongFetcher(), cache ?? BlobCache.LocalMachine, BlobCacheKeys.RemoteSongs, CacheDuration), BlobCacheKeys.SelectedRemoteSongs)
         { }
 
         private class CachingSongFetcher<T> : ISongFetcher<T> where T : NetworkSong
         {
+            private readonly IBlobCache cache;
             private readonly TimeSpan cacheDuration;
             private readonly string cacheKey;
             private readonly ISongFetcher<T> wrappedFetcher;
 
-            public CachingSongFetcher(ISongFetcher<T> wrappedFetcher, string cacheKey, TimeSpan cacheDuration)
+            public CachingSongFetcher(ISongFetcher<T> wrappedFetcher, IBlobCache cache, string cacheKey, TimeSpan cacheDuration)
             {
                 if (wrappedFetcher == null)
                     throw new ArgumentNullException("wrappedFetcher");
 
+                if (cache == null)
+                    throw new ArgumentNullException();
+
+                if (String.IsNullOrWhiteSpace(cacheKey))
+                    throw new ArgumentException("Cache key can't be null or empty", "cacheKey");
+
+                if (cacheDuration < TimeSpan.Zero)
+                    throw new ArgumentOutOfRangeException("cacheDuration");
+
                 this.wrappedFetcher = wrappedFetcher;
+                this.cache = cache;
                 this.cacheKey = cacheKey;
                 this.cacheDuration = cacheDuration;
             }
 
             public IObservable<IReadOnlyList<T>> GetSongsAsync()
             {
-                return BlobCache.LocalMachine.GetAndFetchLatest(this.cacheKey, () => this.wrappedFetcher.GetSongsAsync(), null, DateTimeOffset.Now + cacheDuration)
+                return this.cache.GetAndFetchLatest(this.cacheKey, () => this.wrappedFetcher.GetSongsAsync(), null, DateTimeOffset.Now + cacheDuration)
                     .DistinctUntilChanged(new RemoteSongListEqualityComparer<T>()); //Distinct the fetched result so we don't reset the list if the cached and fetched songs have the same Guids
             }
         }

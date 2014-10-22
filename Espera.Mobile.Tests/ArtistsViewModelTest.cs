@@ -42,6 +42,7 @@ namespace Espera.Android.Tests
                 songFetcher.GetSongsAsync().Returns(Observable.Return(songs));
 
                 var vm = new ArtistsViewModel<NetworkSong>(songFetcher, "AnyKey");
+                vm.Activator.Activate();
 
                 await vm.LoadCommand.ExecuteAsync();
 
@@ -55,6 +56,7 @@ namespace Espera.Android.Tests
                 songFetcher.GetSongsAsync().Returns(Observable.Never<IReadOnlyList<NetworkSong>>());
 
                 var vm = new ArtistsViewModel<NetworkSong>(songFetcher, "AnyKey");
+                vm.Activator.Activate();
 
                 var coll = vm.LoadCommand.ThrownExceptions.CreateCollection();
 
@@ -80,6 +82,7 @@ namespace Espera.Android.Tests
                 songFetcher.GetSongsAsync().Returns(Observable.Return(songs));
 
                 var vm = new ArtistsViewModel<NetworkSong>(songFetcher, "TheKey");
+                vm.Activator.Activate();
 
                 await vm.LoadCommand.ExecuteAsync();
 

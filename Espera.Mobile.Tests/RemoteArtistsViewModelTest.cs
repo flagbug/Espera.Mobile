@@ -25,6 +25,7 @@ namespace Espera.Android.Tests
                 songFetcher.GetSongsAsync().Returns(Observable.Return(songs));
 
                 var vm = new RemoteArtistsViewModel(songFetcher);
+                vm.Activator.Activate();
 
                 await vm.LoadCommand.ExecuteAsync();
 
@@ -44,6 +45,7 @@ namespace Espera.Android.Tests
                 songFetcher.GetSongsAsync().Returns(Observable.Return(songs).Concat(Observable.Return(songs)));
 
                 var vm = new RemoteArtistsViewModel(songFetcher);
+                vm.Activator.Activate();
 
                 var loadResults = vm.LoadCommand.CreateCollection();
 
@@ -66,6 +68,7 @@ namespace Espera.Android.Tests
                 songFetcher.GetSongsAsync().Returns(Observable.Return(songs1).Concat(Observable.Return(songs2)));
 
                 var vm = new RemoteArtistsViewModel(songFetcher);
+                vm.Activator.Activate();
 
                 var artists = vm.WhenAnyValue(x => x.Artists).CreateCollection();
 

@@ -1,9 +1,12 @@
 using System;
+using System.Collections.Generic;
+using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
+using Espera.Mobile.Core;
 using Espera.Mobile.Core.ViewModels;
 using Espera.Network;
 using ReactiveMarrow;
@@ -40,6 +43,7 @@ namespace Espera.Android.Views
                     .DisposeWith(disposable);
 
                 this.ViewModel.LoadCommand.ExecuteAsync()
+                    .SwallowNetworkExceptions()
                     .Subscribe(x => this.ArtistList.EmptyView = this.View.FindViewById(global::Android.Resource.Id.Empty))
                     .DisposeWith(disposable);
 

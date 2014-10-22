@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Espera.Mobile.Core.Network;
 using Espera.Network;
+using ReactiveMarrow;
 using ReactiveUI;
 using Splat;
 
@@ -12,7 +16,7 @@ namespace Espera.Mobile.Core.ViewModels
 {
     public class LocalSongsViewModel : SongsViewModelBase<LocalSongViewModel>
     {
-        private readonly ReactiveCommand<ResponseInfo> addToPlaylistCommand;
+        private ReactiveCommand<Unit> addToPlaylistCommand;
 
         public LocalSongsViewModel(IReadOnlyList<LocalSong> songs)
         {
@@ -21,10 +25,18 @@ namespace Espera.Mobile.Core.ViewModels
 
             this.Songs = songs.Order().Select(x => new LocalSongViewModel(x)).ToList();
 
-            this.addToPlaylistCommand = ReactiveCommand.CreateAsyncTask(x => this.QueueSong(this.SelectedSong));
+            this.WhenActivated(() =>
+            {
+                var disposable = new CompositeDisposable();
+
+                this.addToPlaylistCommand = ReactiveCommand.CreateAsyncObservable(x =>
+                    this.QueueSong(this.SelectedSong).ToObservable().TakeUntil(disposable).ToUnit());
+
+                return disposable;
+            });
         }
 
-        public override ReactiveCommand<ResponseInfo> AddToPlaylistCommand
+        public override ReactiveCommand<Unit> AddToPlaylistCommand
         {
             get { return this.addToPlaylistCommand; }
         }

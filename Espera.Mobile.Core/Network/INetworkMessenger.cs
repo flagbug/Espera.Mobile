@@ -23,11 +23,11 @@ namespace Espera.Mobile.Core.Network
 
         IObservable<NetworkPlaylist> PlaylistChanged { get; }
 
-        Task<ResponseInfo> AddSongToPlaylistAsync(Guid songGuid);
+        Task AddSongToPlaylistAsync(Guid songGuid);
 
         Task<ConnectionResultContainer> ConnectAsync(string address, int port, Guid deviceId, string password);
 
-        Task<ResponseInfo> ContinueSongAsync();
+        Task ContinueSongAsync();
 
         void Disconnect();
 
@@ -43,30 +43,30 @@ namespace Espera.Mobile.Core.Network
 
         Task<IReadOnlyList<NetworkSong>> GetYoutubeSongsAsync(string searchTerm);
 
-        Task<ResponseInfo> MovePlaylistSongDownAsync(Guid entryGuid);
+        Task MovePlaylistSongDownAsync(Guid entryGuid);
 
-        Task<ResponseInfo> MovePlaylistSongUpAsync(Guid entryGuid);
+        Task MovePlaylistSongUpAsync(Guid entryGuid);
 
-        Task<ResponseInfo> PauseSongAsync();
+        Task PauseSongAsync();
 
-        Task<ResponseInfo> PlayNextSongAsync();
+        Task PlayNextSongAsync();
 
-        Task<ResponseInfo> PlayPlaylistSongAsync(Guid entryGuid);
+        Task PlayPlaylistSongAsync(Guid entryGuid);
 
-        Task<ResponseInfo> PlayPreviousSongAsync();
+        Task PlayPreviousSongAsync();
 
-        Task<ResponseInfo> PlaySongsAsync(IEnumerable<Guid> guids);
+        Task PlaySongsAsync(IEnumerable<Guid> guids);
 
         Task<FileTransferStatus> QueueRemoteSong(LocalSong songMetadata, byte[] data);
 
-        Task<ResponseInfo> RemovePlaylistSongAsync(Guid entryGuid);
+        Task RemovePlaylistSongAsync(Guid entryGuid);
 
-        Task<ResponseInfo> SetCurrentTime(TimeSpan time);
+        Task SetCurrentTime(TimeSpan time);
 
-        Task<ResponseInfo> SetVolume(float volume);
+        Task SetVolume(float volume);
 
-        Task<ResponseInfo> ToggleVideoPlayer();
+        Task ToggleVideoPlayer();
 
-        Task<ResponseInfo> VoteAsync(Guid entryGuid);
+        Task VoteAsync(Guid entryGuid);
     }
 }

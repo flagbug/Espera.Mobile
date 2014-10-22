@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive;
@@ -154,7 +153,7 @@ namespace Espera.Mobile.Core.Network
             instance = new Lazy<INetworkMessenger>(() => new NetworkMessenger());
         }
 
-        public Task<ResponseInfo> AddSongToPlaylistAsync(Guid songGuid)
+        public Task AddSongToPlaylistAsync(Guid songGuid)
         {
             var parameters = new
             {
@@ -214,28 +213,14 @@ namespace Espera.Mobile.Core.Network
 
             this.Log().Info("Everything connected, requesting the connection info");
 
-            ResponseInfo response = await this.SendRequest(RequestAction.GetConnectionInfo, parameters);
-
-            Insights.Track("ConnectionAttempt", new Dictionary<string, string> { { "status", response.Status.ToString() } });
-
-            if (response.Status == ResponseStatus.WrongPassword)
+            try
             {
-                this.Log().Error("Server said: wrong password");
+                ResponseInfo response = await this.SendRequest(RequestAction.GetConnectionInfo, parameters);
 
-                return new ConnectionResultContainer(ConnectionResult.WrongPassword);
-            }
+                Insights.Track("ConnectionAttempt", new Dictionary<string, string> { { "status", response.Status.ToString() } });
 
-            var connectionInfo = response.Content.ToObject<ConnectionInfo>();
+                var connectionInfo = response.Content.ToObject<ConnectionInfo>();
 
-            if (connectionInfo.ServerVersion < AppConstants.MinimumServerVersion)
-            {
-                this.Log().Error("Server has version {0}, but version {1} is required", connectionInfo.ServerVersion, AppConstants.MinimumServerVersion);
-
-                return new ConnectionResultContainer(ConnectionResult.ServerVersionToLow, null, connectionInfo.ServerVersion);
-            }
-
-            if (response.Status == ResponseStatus.Success)
-            {
                 this.connectionInfoReceived.OnNext(connectionInfo);
 
                 // Notify the connection status at the very end or bad things happen
@@ -248,10 +233,30 @@ namespace Espera.Mobile.Core.Network
                 return new ConnectionResultContainer(ConnectionResult.Successful, connectionInfo.AccessPermission, connectionInfo.ServerVersion);
             }
 
-            throw new InvalidOperationException("We shouldn't reach this code");
+            catch (NetworkRequestException ex)
+            {
+                if (ex.ResponseInfo.Status == ResponseStatus.WrongPassword)
+                {
+                    this.Log().Error("Server said: wrong password");
+
+                    return new ConnectionResultContainer(ConnectionResult.WrongPassword);
+                }
+
+                var connectionInfo = ex.ResponseInfo.Content.ToObject<ConnectionInfo>();
+
+                if (connectionInfo.ServerVersion < AppConstants.MinimumServerVersion)
+                {
+                    this.Log().Error("Server has version {0}, but version {1} is required", connectionInfo.ServerVersion, AppConstants.MinimumServerVersion);
+
+                    return new ConnectionResultContainer(ConnectionResult.ServerVersionToLow, null, connectionInfo.ServerVersion);
+                }
+            }
+
+            // We never reach this
+            throw new InvalidOperationException();
         }
 
-        public Task<ResponseInfo> ContinueSongAsync()
+        public Task ContinueSongAsync()
         {
             return this.SendRequest(RequestAction.ContinueSong);
         }
@@ -346,12 +351,7 @@ namespace Espera.Mobile.Core.Network
 
             ResponseInfo response = await this.SendRequest(RequestAction.GetSoundCloudSongs, parameters);
 
-            if (response.Status == ResponseStatus.Success)
-            {
-                return response.Content["songs"].ToObject<List<NetworkSong>>();
-            }
-
-            return new List<NetworkSong>();
+            return response.Content["songs"].ToObject<List<NetworkSong>>();
         }
 
         public async Task<float> GetVolume()
@@ -370,15 +370,10 @@ namespace Espera.Mobile.Core.Network
 
             ResponseInfo response = await this.SendRequest(RequestAction.GetYoutubeSongs, parameters);
 
-            if (response.Status == ResponseStatus.Success)
-            {
-                return response.Content["songs"].ToObject<List<NetworkSong>>();
-            }
-
-            return new List<NetworkSong>();
+            return response.Content["songs"].ToObject<List<NetworkSong>>();
         }
 
-        public Task<ResponseInfo> MovePlaylistSongDownAsync(Guid entryGuid)
+        public Task MovePlaylistSongDownAsync(Guid entryGuid)
         {
             var parameters = new
             {
@@ -388,7 +383,7 @@ namespace Espera.Mobile.Core.Network
             return this.SendRequest(RequestAction.MovePlaylistSongDown, parameters);
         }
 
-        public Task<ResponseInfo> MovePlaylistSongUpAsync(Guid entryGuid)
+        public Task MovePlaylistSongUpAsync(Guid entryGuid)
         {
             var parameters = new
             {
@@ -398,17 +393,17 @@ namespace Espera.Mobile.Core.Network
             return this.SendRequest(RequestAction.MovePlaylistSongUp, parameters);
         }
 
-        public Task<ResponseInfo> PauseSongAsync()
+        public Task PauseSongAsync()
         {
             return this.SendRequest(RequestAction.PauseSong);
         }
 
-        public Task<ResponseInfo> PlayNextSongAsync()
+        public Task PlayNextSongAsync()
         {
             return this.SendRequest(RequestAction.PlayNextSong);
         }
 
-        public Task<ResponseInfo> PlayPlaylistSongAsync(Guid entryGuid)
+        public Task PlayPlaylistSongAsync(Guid entryGuid)
         {
             var parameters = new
             {
@@ -418,12 +413,12 @@ namespace Espera.Mobile.Core.Network
             return this.SendRequest(RequestAction.PlayPlaylistSong, parameters);
         }
 
-        public Task<ResponseInfo> PlayPreviousSongAsync()
+        public Task PlayPreviousSongAsync()
         {
             return this.SendRequest(RequestAction.PlayPreviousSong);
         }
 
-        public Task<ResponseInfo> PlaySongsAsync(IEnumerable<Guid> guids)
+        public Task PlaySongsAsync(IEnumerable<Guid> guids)
         {
             var parameters = new
             {
@@ -455,11 +450,6 @@ namespace Espera.Mobile.Core.Network
 
             ResponseInfo response = await this.SendRequest(RequestAction.QueueRemoteSong, info);
 
-            if (response.Status != ResponseStatus.Success)
-            {
-                return new FileTransferStatus(response);
-            }
-
             var message = new SongTransferMessage { Data = songData, TransferId = transferId };
 
             var progress = this.TransferFileAsync(message).Publish(0);
@@ -470,7 +460,7 @@ namespace Espera.Mobile.Core.Network
             return status;
         }
 
-        public Task<ResponseInfo> RemovePlaylistSongAsync(Guid entryGuid)
+        public Task RemovePlaylistSongAsync(Guid entryGuid)
         {
             var parameters = new
             {
@@ -480,7 +470,7 @@ namespace Espera.Mobile.Core.Network
             return this.SendRequest(RequestAction.RemovePlaylistSong, parameters);
         }
 
-        public Task<ResponseInfo> SetCurrentTime(TimeSpan time)
+        public Task SetCurrentTime(TimeSpan time)
         {
             var parameters = new
             {
@@ -490,7 +480,7 @@ namespace Espera.Mobile.Core.Network
             return this.SendRequest(RequestAction.SetCurrentTime, parameters);
         }
 
-        public Task<ResponseInfo> SetVolume(float volume)
+        public Task SetVolume(float volume)
         {
             if (volume < 0 || volume > 1)
                 throw new ArgumentOutOfRangeException("volume");
@@ -503,12 +493,12 @@ namespace Espera.Mobile.Core.Network
             return this.SendRequest(RequestAction.SetVolume, parameters);
         }
 
-        public Task<ResponseInfo> ToggleVideoPlayer()
+        public Task ToggleVideoPlayer()
         {
             return this.SendRequest(RequestAction.ToggleYoutubePlayer);
         }
 
-        public Task<ResponseInfo> VoteAsync(Guid entryGuid)
+        public Task VoteAsync(Guid entryGuid)
         {
             var parameters = new
             {
@@ -582,24 +572,29 @@ namespace Espera.Mobile.Core.Network
 
                     traits.Add("Response", response.Status.ToString());
 
+                    if (response.Status != ResponseStatus.Success)
+                    {
+                        var exception = new NetworkRequestException(requestInfo, response);
+                        Insights.Report(exception);
+
+                        throw exception;
+                    }
+
                     return response;
                 }
             }
 
             catch (Exception ex)
             {
+                ex.Data["requestInfo"] = requestInfo;
+
                 Insights.Report(ex);
 
                 this.Log().ErrorException("Fatal error while sending or receiving a network response", ex);
 
                 this.Disconnect();
 
-                return new ResponseInfo
-                {
-                    Status = ResponseStatus.Fatal,
-                    Message = "Connection lost",
-                    RequestId = id
-                };
+                throw new NetworkException("Fatal error while sending or receiving a network response", ex);
             }
         }
 

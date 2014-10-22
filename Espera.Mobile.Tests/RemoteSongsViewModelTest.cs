@@ -24,6 +24,7 @@ namespace Espera.Android.Tests
                 var songs = Helpers.SetupSongs(4).ToList();
 
                 var vm = new RemoteSongsViewModel(songs);
+                vm.Activator.Activate();
                 vm.SelectedSong = vm.Songs[2];
 
                 await vm.AddToPlaylistCommand.ExecuteAsync();
@@ -42,6 +43,7 @@ namespace Espera.Android.Tests
                 var songs = Helpers.SetupSongs(4).ToList();
 
                 var vm = new RemoteSongsViewModel(songs);
+                vm.Activator.Activate();
                 vm.SelectedSong = vm.Songs[2];
 
                 await vm.PlaySongsCommand.ExecuteAsync();

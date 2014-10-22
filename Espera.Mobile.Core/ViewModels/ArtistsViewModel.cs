@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Akavache;
 using Espera.Mobile.Core.SongFetchers;
@@ -9,11 +10,11 @@ using ReactiveUI;
 
 namespace Espera.Mobile.Core.ViewModels
 {
-    public class ArtistsViewModel<T> : ReactiveObject where T : NetworkSong
+    public class ArtistsViewModel<T> : ReactiveObject, ISupportsActivation where T : NetworkSong
     {
         public static readonly TimeSpan LoadCommandTimeout = TimeSpan.FromSeconds(15);
 
-        private readonly ObservableAsPropertyHelper<IReadOnlyList<string>> artists;
+        private ObservableAsPropertyHelper<IReadOnlyList<string>> artists;
         private string selectedArtist;
         private IReadOnlyList<T> songs;
 
@@ -22,19 +23,32 @@ namespace Espera.Mobile.Core.ViewModels
             if (songFetcher == null)
                 throw new ArgumentNullException("songFetcher");
 
-            this.LoadCommand = ReactiveCommand.CreateAsyncObservable(_ => songFetcher.GetSongsAsync()
-                .Timeout(LoadCommandTimeout, RxApp.TaskpoolScheduler));
-            this.artists = this.LoadCommand
-               .Do(x => this.songs = x)
-               .Select(GetArtists)
-               .ToProperty(this, x => x.Artists, new List<string>());
+            this.Activator = new ViewModelActivator();
 
-            this.WhenAnyValue(x => x.SelectedArtist).Where(x => x != null)
-                .Select(FilterSongsByArtist)
-                .Select(x => BlobCache.LocalMachine.InsertObject(serializationKey, x))
-                .Concat()
-                .Subscribe();
+            this.WhenActivated(() =>
+            {
+                var disposable = new CompositeDisposable();
+
+                this.LoadCommand = ReactiveCommand.CreateAsyncObservable(_ => songFetcher.GetSongsAsync()
+                    .Timeout(LoadCommandTimeout, RxApp.TaskpoolScheduler)
+                    .TakeUntil(disposable));
+
+                this.artists = this.LoadCommand
+                   .Do(x => this.songs = x)
+                   .Select(GetArtists)
+                   .ToProperty(this, x => x.Artists, new List<string>());
+
+                this.WhenAnyValue(x => x.SelectedArtist).Where(x => x != null)
+                    .Select(FilterSongsByArtist)
+                    .Select(x => BlobCache.LocalMachine.InsertObject(serializationKey, x))
+                    .Concat()
+                   .Subscribe();
+
+                return disposable;
+            });
         }
+
+        public ViewModelActivator Activator { get; private set; }
 
         public IReadOnlyList<string> Artists
         {

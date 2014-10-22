@@ -1,5 +1,6 @@
 using System;
 using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
@@ -11,6 +12,29 @@ namespace Espera.Mobile.Core
         {
             observable.Connect();
             return observable;
+        }
+
+        /// <summary>
+        /// Returns elements from the source sequence until the specified
+        /// <see cref="CompositeDisposable" /> is disposed.
+        /// </summary>
+        public static IObservable<T> TakeUntil<T>(this IObservable<T> source, CompositeDisposable disposable)
+        {
+            if (source == null)
+                throw new ArgumentNullException("source");
+
+            if (disposable == null)
+                throw new ArgumentNullException("disposable");
+
+            var subject = new AsyncSubject<T>();
+
+            disposable.Add(Disposable.Create(() =>
+            {
+                subject.OnNext(default(T));
+                subject.OnCompleted();
+            }));
+
+            return source.TakeUntil(subject);
         }
 
         /// <summary>

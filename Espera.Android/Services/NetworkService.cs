@@ -62,10 +62,10 @@ namespace Espera.Android.Services
                     NetworkMessenger.Instance.WhenAnyValue(x => x.AccessPermission),
                     (_, connected, permission) => connected && permission == NetworkAccessPermission.Admin)
                 .Where(x => x)
-                .SelectMany(async _ => await NetworkMessenger.Instance.GetVolume())
+                .SelectMany(_ => NetworkMessenger.Instance.GetVolume().ToObservable().Catch(Observable.Empty<float>()))
                 .Where(currentVolume => currentVolume > 0)
                 .Select(currentVolume => Math.Max(currentVolume - 0.1f, 0))
-                .Select(volume => NetworkMessenger.Instance.SetVolume(volume).ToObservable())
+                .Select(volume => NetworkMessenger.Instance.SetVolume(volume).ToObservable().Catch(Observable.Empty<Unit>()))
                 .Concat()
                 .Subscribe()
                 .DisposeWith(this.disposable);
@@ -74,10 +74,10 @@ namespace Espera.Android.Services
                     NetworkMessenger.Instance.WhenAnyValue(x => x.AccessPermission),
                     (_, connected, permission) => connected && permission == NetworkAccessPermission.Admin)
                 .Where(x => x)
-                .SelectMany(async _ => await NetworkMessenger.Instance.GetVolume())
+                .SelectMany(_ => NetworkMessenger.Instance.GetVolume().ToObservable().Catch(Observable.Empty<float>()))
                 .Where(currentVolume => currentVolume < 1)
                 .Select(currentVolume => Math.Min(currentVolume + 0.1f, 1))
-                .Select(volume => NetworkMessenger.Instance.SetVolume(volume).ToObservable())
+                .Select(volume => NetworkMessenger.Instance.SetVolume(volume).ToObservable().Catch(Observable.Empty<Unit>()))
                 .Concat()
                 .Subscribe()
                 .DisposeWith(this.disposable);

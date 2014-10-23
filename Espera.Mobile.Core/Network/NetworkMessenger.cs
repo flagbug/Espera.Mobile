@@ -539,7 +539,7 @@ namespace Espera.Mobile.Core.Network
             var requestInfo = new RequestInfo
             {
                 RequestAction = action,
-                Parameters = parameters != null ? JObject.FromObject(parameters) : null,
+                Parameters = parameters == null ? null : JObject.FromObject(parameters),
                 RequestId = id
             };
 

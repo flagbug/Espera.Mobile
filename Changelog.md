@@ -1,3 +1,7 @@
+# v1.4.0
+- Added a display for the song duration.
+- Fixed crashes when the connection to the server failed.
+
 # v1.3.1
 - Fixed some problems with the navigation drawer.
 

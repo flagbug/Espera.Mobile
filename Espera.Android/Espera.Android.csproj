@@ -162,8 +162,9 @@
     <Reference Include="Xamarin.InAppBilling">
       <HintPath>..\Components\xamarin.inappbilling-1.5\lib\android\Xamarin.InAppBilling.dll</HintPath>
     </Reference>
-    <Reference Include="Xamarin.Insights">
-      <HintPath>..\packages\Xamarin.Insights.1.6.0\lib\MonoAndroid10\Xamarin.Insights.dll</HintPath>
+    <Reference Include="Xamarin.Insights, Version=1.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Xamarin.Insights.1.7.1.96\lib\MonoAndroid10\Xamarin.Insights.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -26,7 +26,7 @@ namespace Espera.Mobile.Core.ViewModels
                 var disposable = new CompositeDisposable();
 
                 this.PlaySongsCommand = ReactiveCommand.CreateAsyncObservable(x => NetworkMessenger.Instance.PlaySongsAsync(
-                    this.Songs.SkipWhile(song => song.Model.Guid != this.SelectedSong.Model.Guid).Select(y => y.Model.Guid).ToList()).ToObservable().TakeUntil(disposable));
+                    this.GetSongGuidsToPlay()).ToObservable().TakeUntil(disposable));
 
                 this.addToPlaylistCommand = ReactiveCommand.CreateAsyncObservable(x =>
                     NetworkMessenger.Instance.AddSongToPlaylistAsync(this.SelectedSong.Model.Guid).ToObservable().TakeUntil(disposable));
@@ -41,5 +41,10 @@ namespace Espera.Mobile.Core.ViewModels
         }
 
         public ReactiveCommand<Unit> PlaySongsCommand { get; private set; }
+
+        private IReadOnlyList<Guid> GetSongGuidsToPlay()
+        {
+            return this.Songs.SkipWhile(song => song.Model.Guid != this.SelectedSong.Model.Guid).Select(y => y.Model.Guid).ToList();
+        }
     }
 }

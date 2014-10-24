@@ -300,7 +300,13 @@ namespace Espera.Mobile.Core.Network
 
             this.Log().Info("Starting server discovery at port {0}...", port);
 
-            Insights.Track("Server discovery");
+            var traits = new Dictionary<string, string>
+            {
+                {"local address", localAddress},
+                {"port", port.ToString()}
+            };
+
+            Insights.Track("Server discovery started", traits);
 
             return Observable.Using(locatorFunc, x => Observable.FromAsync(x.ReceiveAsync))
                 .Repeat()
@@ -310,7 +316,11 @@ namespace Espera.Mobile.Core.Network
                 .Do(x =>
                 {
                     this.Log().Info("Detected server at IP address {0}", x);
-                    Insights.Track("Server discovered", new Dictionary<string, string> { { "Address", x } });
+                    Insights.Track("Server discovered", new Dictionary<string, string> { { "address", x } });
+                }).Finally(() =>
+                {
+                    this.Log().Info("Server discovery ended");
+                    Insights.Track("Server discovery ended");
                 });
         }
 

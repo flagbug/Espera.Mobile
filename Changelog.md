@@ -1,3 +1,6 @@
+# v1.4.1
+- Fixed a crash when returning from the settings screen.
+
 # v1.4.0
 - Added a display for the song duration.
 - Fixed crashes when the connection to the server failed.

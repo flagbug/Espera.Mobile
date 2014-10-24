@@ -15,6 +15,7 @@ using Espera.Mobile.Core.ViewModels;
 using Espera.Network;
 using ReactiveMarrow;
 using ReactiveUI;
+using Xamarin;
 
 namespace Espera.Android.Views
 {
@@ -98,6 +99,13 @@ namespace Espera.Android.Views
             var songs = BlobCache.LocalMachine.GetObject<IEnumerable<NetworkSong>>(BlobCacheKeys.SelectedRemoteSongs).Wait().ToList();
             this.Title = songs.First().Artist;
             this.ViewModel = new RemoteSongsViewModel(songs);
+        }
+
+        protected override void OnStart()
+        {
+            base.OnStart();
+
+            Insights.Track(this.GetType().Name);
         }
     }
 }

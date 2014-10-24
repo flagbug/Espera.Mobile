@@ -19,6 +19,7 @@ using Espera.Mobile.Core.Network;
 using ReactiveMarrow;
 using ReactiveUI;
 using Splat;
+using Xamarin;
 using Fragment = Android.App.Fragment;
 using IMenuItem = Android.Views.IMenuItem;
 using Uri = Android.Net.Uri;
@@ -144,6 +145,8 @@ namespace Espera.Android.Views
         protected override void OnStart()
         {
             base.OnStart();
+
+            Insights.Track(this.GetType().Name);
 
             var disposable = new CompositeDisposable();
 

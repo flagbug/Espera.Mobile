@@ -141,9 +141,12 @@ namespace Espera.Android.Views
 
         private async Task PurchasePremium()
         {
+            Insights.Track("Premium purchase attempt");
+
             if (this.userSettings.IsPremium)
             {
                 Toast.MakeText(this.Activity, Resource.String.premium_already_purchased, ToastLength.Long).Show();
+                Insights.Track("Premium already purchased");
                 return;
             }
 
@@ -157,6 +160,7 @@ namespace Espera.Android.Views
             catch (TimeoutException)
             {
                 Toast.MakeText(this.Activity, Resource.String.connection_timeout, ToastLength.Long).Show();
+                Insights.Track("Premium purchase connect timeout");
                 return;
             }
 
@@ -168,12 +172,16 @@ namespace Espera.Android.Views
             if (billingResult == BillingResult.OK)
             {
                 this.userSettings.IsPremium = true;
+
                 Toast.MakeText(this.Activity, Resource.String.purchase_successful, ToastLength.Long).Show();
+                Insights.Track("Premium purchase successful");
             }
 
             else
             {
                 Toast.MakeText(this.Activity, Resource.String.purchase_failed, ToastLength.Long).Show();
+
+                Insights.Track("Premium purchase failed", new Dictionary<string, string> { { "result", billingResult.ToString() } });
             }
 
             await this.billingHandler.Disconnect();
@@ -183,6 +191,8 @@ namespace Espera.Android.Views
 
         private async Task RestorePremium()
         {
+            Insights.Track("Premium restore attempt");
+
             if (this.userSettings.IsPremium)
             {
                 Toast.MakeText(this.Activity, Resources.GetString(Resource.String.premium_already_purchased), ToastLength.Long).Show();
@@ -199,6 +209,7 @@ namespace Espera.Android.Views
             catch (TimeoutException)
             {
                 Toast.MakeText(this.Activity, Resources.GetString(Resource.String.connection_timeout), ToastLength.Long).Show();
+                Insights.Track("Premium restore connect timeout");
                 return;
             }
 
@@ -208,12 +219,14 @@ namespace Espera.Android.Views
             if (premium == null || premium.PurchaseState != 0)
             {
                 Toast.MakeText(this.Activity, Resource.String.purchase_restore_failed, ToastLength.Long).Show();
+                Insights.Track("Premium restore failed");
             }
 
             else
             {
                 this.userSettings.IsPremium = true;
                 Toast.MakeText(this.Activity, Resource.String.purchase_restored, ToastLength.Long).Show();
+                Insights.Track("Premium restore successful");
             }
 
             await this.billingHandler.Disconnect();

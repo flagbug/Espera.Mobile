@@ -9,6 +9,7 @@ using Espera.Mobile.Core;
 using Espera.Mobile.Core.ViewModels;
 using ReactiveMarrow;
 using ReactiveUI;
+using Xamarin;
 
 namespace Espera.Android.Views
 {
@@ -105,6 +106,13 @@ namespace Espera.Android.Views
             base.OnResume();
 
             this.Activity.Title = "YouTube";
+        }
+
+        public override void OnStart()
+        {
+            base.OnStart();
+
+            Insights.Track(this.GetType().Name);
         }
     }
 }

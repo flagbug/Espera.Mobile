@@ -16,6 +16,7 @@ using Espera.Network;
 using Humanizer;
 using ReactiveMarrow;
 using ReactiveUI;
+using Xamarin;
 
 namespace Espera.Android.Views
 {
@@ -259,6 +260,13 @@ namespace Espera.Android.Views
             base.OnResume();
 
             this.Activity.SetTitle(Resource.String.playlist_fragment_title);
+        }
+
+        public override void OnStart()
+        {
+            base.OnStart();
+
+            Insights.Track(this.GetType().Name);
         }
     }
 }

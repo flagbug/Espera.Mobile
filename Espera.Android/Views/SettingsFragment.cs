@@ -125,6 +125,13 @@ namespace Espera.Android.Views
 #endif
         }
 
+        public override void OnStart()
+        {
+            base.OnStart();
+
+            Insights.Track(this.GetType().Name);
+        }
+
         private static bool IsValidIpAddress(string address)
         {
             IPAddress dontCare;

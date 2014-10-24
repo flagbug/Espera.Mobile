@@ -3,6 +3,7 @@ using Espera.Mobile.Core;
 using Espera.Mobile.Core.SongFetchers;
 using Espera.Mobile.Core.ViewModels;
 using Splat;
+using Xamarin;
 
 namespace Espera.Android.Views
 {
@@ -13,6 +14,13 @@ namespace Espera.Android.Views
             base.OnResume();
 
             this.Activity.SetTitle(Resource.String.local_artists_fragment_title);
+        }
+
+        public override void OnStart()
+        {
+            base.OnStart();
+
+            Insights.Track(this.GetType().Name);
         }
 
         protected override ArtistsViewModel<LocalSong> ConstructViewModel()

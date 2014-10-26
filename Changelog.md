@@ -1,3 +1,6 @@
+# v1.4.2
+- Fixed a crash in the playlist view that could occur when the network connection failed.
+
 # v1.4.1
 - Fixed a crash when returning from the settings screen.
 

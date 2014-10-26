@@ -1,5 +1,5 @@
 # v1.4.3
-- Fixed a bug that caused the initial connection to the server fail.
+- Fixed a bug that caused the initial connection to the server to fail.
 
 # v1.4.2
 - Fixed a crash in the playlist view that could occur when the network connection failed.

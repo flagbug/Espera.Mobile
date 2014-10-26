@@ -99,7 +99,8 @@ namespace Espera.Mobile.Core.ViewModels
                     .Select(x => x.DistinctUntilChanged())
                     .Select(x => x.Take(1).Concat(x.Skip(1).TakeLast(1)))
                     .Switch()
-                    .SelectMany(x => NetworkMessenger.Instance.SetCurrentTime(TimeSpan.FromSeconds(x)).ToObservable())
+                    .Select(x => TimeSpan.FromSeconds(x))
+                    .SelectMany(x => NetworkMessenger.Instance.SetCurrentTime(x).ToObservable().SwallowNetworkExceptions())
                     .Subscribe()
                     .DisposeWith(disposable);
 

@@ -35,7 +35,14 @@ namespace Espera.Android.Views
                 Observable.Merge(this.ViewModel.PlayPlaylistSongCommand.Select(_ => Resource.String.playing_song),
                     this.ViewModel.PlayPlaylistSongCommand.ThrownExceptions.Select(_ => Resource.String.playback_failed),
                     this.ViewModel.LoadPlaylistCommand.ThrownExceptions.Select(_ => Resource.String.loading_playlist_failed),
-                    this.ViewModel.VoteCommand.ThrownExceptions.Select(_ => Resource.String.vote_failed))
+                    this.ViewModel.VoteCommand.ThrownExceptions.Select(_ => Resource.String.vote_failed),
+                    Observable.Merge(
+                        this.ViewModel.RemoveSongCommand.ThrownExceptions,
+                        this.ViewModel.MoveSongUpCommand.ThrownExceptions,
+                        this.ViewModel.MoveSongDownCommand.ThrownExceptions,
+                        this.ViewModel.PlayNextSongCommand.ThrownExceptions,
+                        this.ViewModel.PlayPreviousSongCommand.ThrownExceptions,
+                        this.ViewModel.PlayPauseCommand.ThrownExceptions).Select(_ => Resource.String.something_went_wrong))
                     .ObserveOn(RxApp.MainThreadScheduler)
                     .Subscribe(x => Toast.MakeText(this.Activity, x, ToastLength.Short).Show())
                     .DisposeWith(disposable);

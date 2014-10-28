@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Android.OS;
@@ -60,11 +58,30 @@ namespace Espera.Android.Views
             this.ViewModel = this.ConstructViewModel();
         }
 
+        public override void OnCreateOptionsMenu(IMenu menu, MenuInflater inflater)
+        {
+            inflater.Inflate(Resource.Menu.SearchMenu, menu);
+
+            var searchView = (SearchView)menu.FindItem(Resource.Id.search).ActionView;
+
+            searchView.Events().QueryTextChange
+                .Subscribe(x =>
+                {
+                    this.ViewModel.SearchTerm = x.NewText;
+                    x.Handled = true;
+                    this.ArtistList.SetSelectionAfterHeaderView();
+                });
+
+            base.OnCreateOptionsMenu(menu, inflater);
+        }
+
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             View view = inflater.Inflate(Resource.Layout.Artists, null);
 
             this.WireUpControls(view);
+
+            this.SetHasOptionsMenu(true);
 
             return view;
         }

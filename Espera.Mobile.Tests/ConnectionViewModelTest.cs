@@ -129,9 +129,9 @@ namespace Espera.Android.Tests
 
                 // We're not in the trial period
                 var installationDateFetcher = Substitute.For<IInstallationDateFetcher>();
-                installationDateFetcher.GetInstallationDate().Returns(DateTime.MinValue);
+                installationDateFetcher.GetInstallationDate().Returns(DateTimeOffset.MinValue);
                 var clock = Substitute.For<IClock>();
-                clock.Now.Returns(DateTime.MinValue + AppConstants.TrialTime);
+                clock.Now.Returns(DateTimeOffset.MinValue + AppConstants.TrialTime);
 
                 var vm = new ConnectionViewModel(settings, () => "192.168.1.2", installationDateFetcher, clock);
                 vm.Activator.Activate();

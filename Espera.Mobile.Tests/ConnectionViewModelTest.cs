@@ -34,7 +34,7 @@ namespace Espera.Android.Tests
 
                 new TestScheduler().With(sched =>
                 {
-                    var vm = new ConnectionViewModel(settings, () => "192.168.1.2");
+                    ConnectionViewModel vm = Helpers.CreateDefaultConnectionViewModel(settings);
                     vm.Activator.Activate();
 
                     vm.ConnectCommand.Execute(null);
@@ -56,7 +56,7 @@ namespace Espera.Android.Tests
 
                 NetworkMessenger.Override(messenger);
 
-                var vm = new ConnectionViewModel(new UserSettings(), () => "192.168.1.2");
+                ConnectionViewModel vm = Helpers.CreateDefaultConnectionViewModel();
                 vm.Activator.Activate();
 
                 ConnectionResultContainer result = await vm.ConnectCommand.ExecuteAsync();
@@ -76,7 +76,7 @@ namespace Espera.Android.Tests
 
                 NetworkMessenger.Override(messenger);
 
-                var vm = new ConnectionViewModel(settings, () => "192.168.1.2");
+                ConnectionViewModel vm = Helpers.CreateDefaultConnectionViewModel(settings);
                 vm.Activator.Activate();
 
                 ConnectionResultContainer result = await vm.ConnectCommand.ExecuteAsync();
@@ -103,7 +103,7 @@ namespace Espera.Android.Tests
 
                 NetworkMessenger.Override(messenger);
 
-                var vm = new ConnectionViewModel(settings, () => "192.168.1.2");
+                ConnectionViewModel vm = Helpers.CreateDefaultConnectionViewModel(settings);
                 vm.Activator.Activate();
 
                 await vm.ConnectCommand.ExecuteAsync();
@@ -151,7 +151,7 @@ namespace Espera.Android.Tests
                 messenger.DiscoverServerAsync(Arg.Any<string>(), Arg.Any<int>()).Returns(Observable.Return("192.168.1.1"));
                 NetworkMessenger.Override(messenger);
 
-                var vm = new ConnectionViewModel(new UserSettings(), () => "192.168.1.2");
+                ConnectionViewModel vm = Helpers.CreateDefaultConnectionViewModel();
                 vm.Activator.Activate();
 
                 Assert.True(vm.ConnectCommand.CanExecute(null));
@@ -176,7 +176,7 @@ namespace Espera.Android.Tests
 
                 NetworkMessenger.Override(messenger);
 
-                var vm = new ConnectionViewModel(new UserSettings(), () => "192.168.1.2");
+                ConnectionViewModel vm = Helpers.CreateDefaultConnectionViewModel();
                 vm.Activator.Activate();
 
                 (new TestScheduler()).With(scheduler =>
@@ -205,7 +205,7 @@ namespace Espera.Android.Tests
                     IsPremium = true
                 };
 
-                var vm = new ConnectionViewModel(settings, () => "192.168.1.2");
+                ConnectionViewModel vm = Helpers.CreateDefaultConnectionViewModel(settings);
                 vm.Activator.Activate();
 
                 Assert.Equal(ConnectionResult.WrongPassword, (await vm.ConnectCommand.ExecuteAsync()).ConnectionResult);
@@ -222,7 +222,7 @@ namespace Espera.Android.Tests
 
                 NetworkMessenger.Override(messenger);
 
-                var vm = new ConnectionViewModel(new UserSettings(), () => "192.168.1.2");
+                ConnectionViewModel vm = Helpers.CreateDefaultConnectionViewModel();
                 vm.Activator.Activate();
 
                 Assert.True(vm.DisconnectCommand.CanExecute(true));
@@ -257,7 +257,7 @@ namespace Espera.Android.Tests
 
                 var settings = new UserSettings { AdministratorPassword = "Bla" };
 
-                var vm = new ConnectionViewModel(settings, () => "192.168.1.2");
+                ConnectionViewModel vm = Helpers.CreateDefaultConnectionViewModel(settings);
                 vm.Activator.Activate();
 
                 var coll = messenger.WhenAnyValue(x => x.IsConnected).CreateCollection();

@@ -4,11 +4,25 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Espera.Mobile.Core;
+using Espera.Mobile.Core.Settings;
+using Espera.Mobile.Core.ViewModels;
+using NSubstitute;
 
 namespace Espera.Android.Tests
 {
     public static class Helpers
     {
+        public static ConnectionViewModel CreateDefaultConnectionViewModel(UserSettings settings = null, string localIpAddress = "192.168.1.2")
+        {
+            var installationDateFetcher = Substitute.For<IInstallationDateFetcher>();
+            installationDateFetcher.GetInstallationDate().Returns(DateTimeOffset.MinValue);
+            var clock = Substitute.For<IClock>();
+            clock.Now.Returns(DateTimeOffset.MinValue);
+
+            return new ConnectionViewModel(settings ?? new UserSettings(), () => localIpAddress, installationDateFetcher, clock);
+        }
+
         public static NetworkSong SetupSong()
         {
             return new NetworkSong

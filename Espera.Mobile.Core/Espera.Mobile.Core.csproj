@@ -61,6 +61,7 @@
     <Compile Include="Network\NetworkMessenger.cs" />
     <Compile Include="Network\NetworkRequestException.cs" />
     <Compile Include="Network\VirtualNetworkMessenger.cs" />
+    <Compile Include="SearchEngine.cs" />
     <Compile Include="ServerVersionException.cs" />
     <Compile Include="LocalSong.cs" />
     <Compile Include="SongFetchers\ISongFetcher.cs" />

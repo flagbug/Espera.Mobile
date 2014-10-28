@@ -15,8 +15,9 @@ namespace Espera.Mobile.Core.ViewModels
         public static readonly TimeSpan LoadCommandTimeout = TimeSpan.FromSeconds(15);
 
         private ObservableAsPropertyHelper<IReadOnlyList<string>> artists;
+        private IReadOnlyList<T> filteredSongs;
+        private string searchTerm;
         private string selectedArtist;
-        private IReadOnlyList<T> songs;
 
         public ArtistsViewModel(ISongFetcher<T> songFetcher, string serializationKey)
         {
@@ -34,7 +35,8 @@ namespace Espera.Mobile.Core.ViewModels
                     .TakeUntil(disposable));
 
                 this.artists = this.LoadCommand
-                   .Do(x => this.songs = x)
+                   .CombineLatest(this.WhenAnyValue(x => x.SearchTerm), (songs, searchTerm) => songs.FilterSongs(searchTerm).ToList())
+                   .Do(x => this.filteredSongs = x)
                    .Select(GetArtists)
                    .ToProperty(this, x => x.Artists, new List<string>());
 
@@ -57,6 +59,12 @@ namespace Espera.Mobile.Core.ViewModels
 
         public ReactiveCommand<IReadOnlyList<T>> LoadCommand { get; private set; }
 
+        public string SearchTerm
+        {
+            get { return this.searchTerm; }
+            set { this.RaiseAndSetIfChanged(ref this.searchTerm, value); }
+        }
+
         public string SelectedArtist
         {
             get { return this.selectedArtist; }
@@ -74,7 +82,7 @@ namespace Espera.Mobile.Core.ViewModels
 
         private IEnumerable<T> FilterSongsByArtist(string artist)
         {
-            return this.songs
+            return this.filteredSongs
                 .Where(x => x.Artist.Equals(this.SelectedArtist, StringComparison.CurrentCultureIgnoreCase))
                 .ToList();
         }

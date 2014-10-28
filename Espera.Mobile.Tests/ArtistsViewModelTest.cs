@@ -71,6 +71,55 @@ namespace Espera.Android.Tests
             }
         }
 
+        public class TheSearchTermProperty
+        {
+            [Fact]
+            public async Task FiltersArtists()
+            {
+                var songs = SetupSongsWithArtist("A", "B").ToReadOnlyList();
+
+                var songFetcher = Substitute.For<ISongFetcher<NetworkSong>>();
+                songFetcher.GetSongsAsync().Returns(Observable.Return(songs));
+
+                var vm = new ArtistsViewModel<NetworkSong>(songFetcher, "key");
+                vm.Activator.Activate();
+
+                await vm.LoadCommand.ExecuteAsync();
+
+                vm.SearchTerm = "A";
+                Assert.Equal("A", vm.Artists.Single());
+
+                vm.SearchTerm = "B";
+                Assert.Equal("B", vm.Artists.Single());
+
+                vm.SearchTerm = "C";
+                Assert.Equal(0, vm.Artists.Count);
+            }
+
+            [Fact]
+            public async Task NullOrWhiteSpaceDoesntFilter()
+            {
+                var songs = SetupSongsWithArtist("A", "B").ToReadOnlyList();
+
+                var songFetcher = Substitute.For<ISongFetcher<NetworkSong>>();
+                songFetcher.GetSongsAsync().Returns(Observable.Return(songs));
+
+                var vm = new ArtistsViewModel<NetworkSong>(songFetcher, "key");
+                vm.Activator.Activate();
+
+                await vm.LoadCommand.ExecuteAsync();
+
+                vm.SearchTerm = null;
+                Assert.Equal(2, vm.Artists.Count);
+
+                vm.SearchTerm = String.Empty;
+                Assert.Equal(2, vm.Artists.Count);
+
+                vm.SearchTerm = "   ";
+                Assert.Equal(2, vm.Artists.Count);
+            }
+        }
+
         public class TheSelectedArtistProperty
         {
             [Fact]
@@ -92,6 +141,30 @@ namespace Espera.Android.Tests
 
                 Assert.Equal(2, cached.Count);
                 Assert.True(cached.All(x => x.Artist == "A"));
+            }
+
+            [Fact]
+            public async Task FiltersWithSearchTerm()
+            {
+                IReadOnlyList<NetworkSong> songs = SetupSongsWithArtist("A", "A", "B").ToList();
+                songs[0].Title = "C";
+                songs[1].Title = "D";
+
+                var songFetcher = Substitute.For<ISongFetcher<NetworkSong>>();
+                songFetcher.GetSongsAsync().Returns(Observable.Return(songs));
+
+                var vm = new ArtistsViewModel<NetworkSong>(songFetcher, "TheKey");
+                vm.Activator.Activate();
+
+                await vm.LoadCommand.ExecuteAsync();
+
+                vm.SearchTerm = "C";
+                vm.SelectedArtist = "A";
+
+                List<NetworkSong> cached = await BlobCache.LocalMachine.GetObject<List<NetworkSong>>("TheKey");
+
+                Assert.Equal(1, cached.Count);
+                Assert.Equal("C", songs[0].Title);
             }
         }
     }

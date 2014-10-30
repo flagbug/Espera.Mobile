@@ -28,6 +28,7 @@ namespace Espera.Android
 		{
 			global::ModernHttpClient.Resource.String.library_name = global::Espera.Android.Resource.String.library_name;
 			global::Splat.Resource.String.library_name = global::Espera.Android.Resource.String.library_name;
+			global::Xamarin.InAppBilling.Resource.String.library_name = global::Espera.Android.Resource.String.library_name;
 			global::Xamarin.InsightsCore.Resource.String.ApplicationName = global::Espera.Android.Resource.String.ApplicationName;
 			global::Xamarin.InsightsCore.Resource.String.Hello = global::Espera.Android.Resource.String.Hello;
 		}

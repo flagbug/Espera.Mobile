@@ -12,7 +12,7 @@ namespace Espera.Android
             long installationDateLong = Application.Context.PackageManager
                 .GetPackageInfo(Application.Context.PackageName, PackageInfoFlags.MetaData).FirstInstallTime;
 
-            return new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.FromMilliseconds(installationDateLong));
+            return DateTime.SpecifyKind(new DateTime(1970, 1, 1), DateTimeKind.Utc) + TimeSpan.FromMilliseconds(installationDateLong);
         }
     }
 }

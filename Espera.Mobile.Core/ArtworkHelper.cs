@@ -2,7 +2,6 @@
 using System.IO;
 using System.Net.Http;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
 using Akavache;
 using Espera.Network;
 using Fusillade;
@@ -29,7 +28,7 @@ namespace Espera.Mobile.Core
 
         private static IObservable<byte[]> GetData(string requestUrl)
         {
-            return Observable.Using(() => new HttpClient(NetCache.UserInitiated),
+            return Observable.Using(() => new HttpClient(NetCache.Background),
                 client => Observable.FromAsync(ct => client.GetAsync(requestUrl, ct)))
                     .SelectMany(message => message.Content.ReadAsByteArrayAsync());
         }

@@ -23,17 +23,17 @@ namespace Espera.Android
         {
             return Observable.Create<int>(o =>
             {
-                InAppBillingHandler.OnProductPurchaseCompletedDelegate purchaseCompleted = (response, purchase) =>
+                InAppBillingHandler.OnProductPurchasedDelegate purchaseCompleted = (response, purchase) =>
                 {
                     o.OnNext(response);
                     o.OnCompleted();
                 };
 
-                this.serviceConnection.BillingHandler.OnProductPurchaseCompleted += purchaseCompleted;
+                this.serviceConnection.BillingHandler.OnProductPurchased += purchaseCompleted;
 
                 this.serviceConnection.BillingHandler.BuyProduct(product);
 
-                return () => this.serviceConnection.BillingHandler.OnProductPurchaseCompleted -= purchaseCompleted;
+                return () => this.serviceConnection.BillingHandler.OnProductPurchased -= purchaseCompleted;
             });
         }
 

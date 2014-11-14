@@ -1,6 +1,6 @@
-﻿using System;
-using Espera.Network;
+﻿using Espera.Network;
 using ReactiveUI;
+using System;
 
 namespace Espera.Mobile.Core.ViewModels
 {
@@ -12,7 +12,7 @@ namespace Espera.Mobile.Core.ViewModels
         public PlaylistEntryViewModel(NetworkSong song, bool isVoteable, bool isPlaying = false)
         {
             if (song == null)
-                throw new ArgumentNullException("song");
+                throw new ArgumentNullException(nameof(song));
 
             this.song = song;
             this.IsVoteAble = isVoteable;
@@ -48,16 +48,13 @@ namespace Espera.Mobile.Core.ViewModels
             set { this.RaiseAndSetIfChanged(ref this.isPlayling, value); }
         }
 
-        public bool IsVoteAble { get; private set; }
+        public bool IsVoteAble { get; }
 
         public string Title
         {
             get { return this.song.Title; }
         }
 
-        public override int GetHashCode()
-        {
-            return new { Guid }.GetHashCode();
-        }
+        public override int GetHashCode() => new { Guid }.GetHashCode();
     }
 }

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Reactive.Linq;
-using Espera.Network;
+﻿using Espera.Network;
 using ReactiveUI;
 using Splat;
+using System;
+using System.Reactive.Linq;
 
 namespace Espera.Mobile.Core.ViewModels
 {
@@ -14,7 +14,7 @@ namespace Espera.Mobile.Core.ViewModels
         public SoundCloudSongViewModel(NetworkSong model)
         {
             if (model == null)
-                throw new ArgumentNullException("model");
+                throw new ArgumentNullException(nameof(model));
 
             this.model = model;
 

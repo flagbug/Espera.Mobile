@@ -1,24 +1,24 @@
-﻿using System;
-using Espera.Network;
+﻿using Espera.Network;
+using System;
 
 namespace Espera.Mobile.Core.Network
 {
     public class FileTransferStatus
     {
-        public FileTransferStatus(ResponseInfo responseInfo, IObservable<int> transferProgress = null)
+        public FileTransferStatus(ResponseInfo responseInfo, IObservable<int> transferProgress)
         {
             if (responseInfo == null)
-                throw new ArgumentNullException("responseInfo");
+                throw new ArgumentNullException(nameof(responseInfo));
 
             if (transferProgress == null)
-                throw new ArgumentNullException("transferProgress");
+                throw new ArgumentNullException(nameof(transferProgress));
 
             this.ResponseInfo = responseInfo;
             this.TransferProgress = transferProgress;
         }
 
-        public ResponseInfo ResponseInfo { get; private set; }
+        public ResponseInfo ResponseInfo { get; }
 
-        public IObservable<int> TransferProgress { get; private set; }
+        public IObservable<int> TransferProgress { get; }
     }
 }

@@ -1,9 +1,9 @@
+using Espera.Mobile.Core.Network;
 using System;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using Espera.Mobile.Core.Network;
 
 namespace Espera.Mobile.Core
 {
@@ -33,10 +33,10 @@ namespace Espera.Mobile.Core
         public static IObservable<T> TakeUntil<T>(this IObservable<T> source, CompositeDisposable disposable)
         {
             if (source == null)
-                throw new ArgumentNullException("source");
+                throw new ArgumentNullException(nameof(source));
 
             if (disposable == null)
-                throw new ArgumentNullException("disposable");
+                throw new ArgumentNullException(nameof(disposable));
 
             var subject = new AsyncSubject<T>();
 

@@ -1,11 +1,11 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using Android.App;
 using Android.Views;
 using Android.Widget;
 using Espera.Android.ViewModels;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Espera.Android.Views
 {
@@ -36,20 +36,11 @@ namespace Espera.Android.Views
             get { return this.items[position]; }
         }
 
-        public override bool AreAllItemsEnabled()
-        {
-            return false;
-        }
+        public override bool AreAllItemsEnabled() => false;
 
-        public IEnumerator<NavigationDrawerItemViewModel> GetEnumerator()
-        {
-            return this.items.GetEnumerator();
-        }
+        public IEnumerator<NavigationDrawerItemViewModel> GetEnumerator() => this.items.GetEnumerator();
 
-        public override long GetItemId(int position)
-        {
-            return position;
-        }
+        public override long GetItemId(int position) => position;
 
         public override View GetView(int position, View convertView, ViewGroup parent)
         {
@@ -80,14 +71,8 @@ namespace Espera.Android.Views
             return view;
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
+        public override bool IsEnabled(int position) => this.items[position].IsEnabled;
 
-        public override bool IsEnabled(int position)
-        {
-            return this.items[position].IsEnabled;
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
 }

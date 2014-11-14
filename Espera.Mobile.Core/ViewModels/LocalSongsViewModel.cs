@@ -1,4 +1,9 @@
-﻿using System;
+﻿using Espera.Mobile.Core.Network;
+using Espera.Network;
+using ReactiveMarrow;
+using ReactiveUI;
+using Splat;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
@@ -6,11 +11,6 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
-using Espera.Mobile.Core.Network;
-using Espera.Network;
-using ReactiveMarrow;
-using ReactiveUI;
-using Splat;
 
 namespace Espera.Mobile.Core.ViewModels
 {
@@ -21,7 +21,7 @@ namespace Espera.Mobile.Core.ViewModels
         public LocalSongsViewModel(IReadOnlyList<LocalSong> songs)
         {
             if (songs == null)
-                throw new ArgumentNullException("songs");
+                throw new ArgumentNullException(nameof(songs));
 
             this.Songs = songs.Order().Select(x => new LocalSongViewModel(x)).ToList();
 

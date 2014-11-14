@@ -21,10 +21,7 @@ namespace Espera.Android.Views
             Insights.Track(this.GetType().Name);
         }
 
-        protected override ArtistsViewModel<NetworkSong> ConstructViewModel()
-        {
-            return new RemoteArtistsViewModel();
-        }
+        protected override ArtistsViewModel<NetworkSong> ConstructViewModel() => new RemoteArtistsViewModel();
 
         protected override void OpenArtist()
         {

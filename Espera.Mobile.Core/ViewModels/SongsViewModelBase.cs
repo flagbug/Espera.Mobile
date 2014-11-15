@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Reactive;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
-using Espera.Mobile.Core.Network;
+﻿using Espera.Mobile.Core.Network;
 using Espera.Network;
 using ReactiveMarrow;
 using ReactiveUI;
+using System.Collections.Generic;
+using System.Reactive;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 
 namespace Espera.Mobile.Core.ViewModels
 {
@@ -37,7 +37,7 @@ namespace Espera.Mobile.Core.ViewModels
             });
         }
 
-        public ViewModelActivator Activator { get; private set; }
+        public ViewModelActivator Activator { get; }
 
         public abstract ReactiveCommand<Unit> AddToPlaylistCommand { get; }
 

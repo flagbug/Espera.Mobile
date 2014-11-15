@@ -1,12 +1,12 @@
+using Akavache;
+using Espera.Mobile.Core.SongFetchers;
+using Espera.Network;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using Akavache;
-using Espera.Mobile.Core.SongFetchers;
-using Espera.Network;
-using ReactiveUI;
 
 namespace Espera.Mobile.Core.ViewModels
 {
@@ -21,7 +21,7 @@ namespace Espera.Mobile.Core.ViewModels
         public ArtistsViewModel(ISongFetcher<T> songFetcher, string serializationKey)
         {
             if (songFetcher == null)
-                throw new ArgumentNullException("songFetcher");
+                throw new ArgumentNullException(nameof(songFetcher));
 
             this.Activator = new ViewModelActivator();
 
@@ -48,7 +48,7 @@ namespace Espera.Mobile.Core.ViewModels
             });
         }
 
-        public ViewModelActivator Activator { get; private set; }
+        public ViewModelActivator Activator { get; }
 
         public IReadOnlyList<string> Artists
         {

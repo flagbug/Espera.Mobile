@@ -1,4 +1,9 @@
-﻿using System;
+﻿using Espera.Mobile.Core.Settings;
+using Espera.Network;
+using Newtonsoft.Json.Linq;
+using ReactiveUI;
+using Splat;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,11 +14,6 @@ using System.Reactive.Threading.Tasks;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Espera.Mobile.Core.Settings;
-using Espera.Network;
-using Newtonsoft.Json.Linq;
-using ReactiveUI;
-using Splat;
 using Xamarin;
 
 namespace Espera.Mobile.Core.Network
@@ -130,11 +130,11 @@ namespace Espera.Mobile.Core.Network
             get { return this.isConnected.Value; }
         }
 
-        public IObservable<NetworkPlaybackState> PlaybackStateChanged { get; private set; }
+        public IObservable<NetworkPlaybackState> PlaybackStateChanged { get; }
 
-        public IObservable<TimeSpan> PlaybackTimeChanged { get; private set; }
+        public IObservable<TimeSpan> PlaybackTimeChanged { get; }
 
-        public IObservable<NetworkPlaylist> PlaylistChanged { get; private set; }
+        public IObservable<NetworkPlaylist> PlaylistChanged { get; }
 
         /// <summary>
         /// Overrides the instance for unit testing or for the
@@ -184,7 +184,7 @@ namespace Espera.Mobile.Core.Network
         public async Task<ConnectionResultContainer> ConnectAsync(string ipAddress, int port, Guid deviceId, string password)
         {
             if (ipAddress == null)
-                throw new ArgumentNullException("ipAddress");
+                throw new ArgumentNullException(nameof(ipAddress));
 
             if (this.IsConnected)
             {
@@ -256,10 +256,7 @@ namespace Espera.Mobile.Core.Network
             throw new InvalidOperationException();
         }
 
-        public Task ContinueSongAsync()
-        {
-            return this.SendRequest(RequestAction.ContinueSong);
-        }
+        public Task ContinueSongAsync() => this.SendRequest(RequestAction.ContinueSong);
 
         public void Disconnect()
         {
@@ -289,7 +286,7 @@ namespace Espera.Mobile.Core.Network
         public IObservable<string> DiscoverServerAsync(string localAddress, int port)
         {
             if (localAddress == null)
-                throw new ArgumentNullException("localAddress");
+                throw new ArgumentNullException(nameof(localAddress));
 
             Func<IUdpClient> locatorFunc = () =>
             {
@@ -403,15 +400,9 @@ namespace Espera.Mobile.Core.Network
             return this.SendRequest(RequestAction.MovePlaylistSongUp, parameters);
         }
 
-        public Task PauseSongAsync()
-        {
-            return this.SendRequest(RequestAction.PauseSong);
-        }
+        public Task PauseSongAsync() => this.SendRequest(RequestAction.PauseSong);
 
-        public Task PlayNextSongAsync()
-        {
-            return this.SendRequest(RequestAction.PlayNextSong);
-        }
+        public Task PlayNextSongAsync() => this.SendRequest(RequestAction.PlayNextSong);
 
         public Task PlayPlaylistSongAsync(Guid entryGuid)
         {
@@ -423,10 +414,7 @@ namespace Espera.Mobile.Core.Network
             return this.SendRequest(RequestAction.PlayPlaylistSong, parameters);
         }
 
-        public Task PlayPreviousSongAsync()
-        {
-            return this.SendRequest(RequestAction.PlayPreviousSong);
-        }
+        public Task PlayPreviousSongAsync() => this.SendRequest(RequestAction.PlayPreviousSong);
 
         public Task PlaySongsAsync(IEnumerable<Guid> guids)
         {
@@ -493,7 +481,7 @@ namespace Espera.Mobile.Core.Network
         public Task SetVolume(float volume)
         {
             if (volume < 0 || volume > 1)
-                throw new ArgumentOutOfRangeException("volume");
+                throw new ArgumentOutOfRangeException(nameof(volume));
 
             var parameters = new
             {
@@ -503,10 +491,7 @@ namespace Espera.Mobile.Core.Network
             return this.SendRequest(RequestAction.SetVolume, parameters);
         }
 
-        public Task ToggleVideoPlayer()
-        {
-            return this.SendRequest(RequestAction.ToggleYoutubePlayer);
-        }
+        public Task ToggleVideoPlayer() => this.SendRequest(RequestAction.ToggleYoutubePlayer);
 
         public Task VoteAsync(Guid entryGuid)
         {

@@ -2,7 +2,7 @@ param (
     [string]$config = $(throw "config (Release/Dev) is required")
  )
 
-$MSBuildLocation = "C:\Program Files (x86)\MSBuild\12.0\bin"
+$MSBuildLocation = "C:\Program Files (x86)\MSBuild\14.0\bin"
 
 & "$MSBuildLocation\MSBuild.exe" Espera.Android\Espera.Android.csproj /p:Configuration=$config /t:Clean
 & "$MSBuildLocation\MSBuild.exe" Espera.Android\Espera.Android.csproj /p:Configuration=$config /t:PackageForAndroid

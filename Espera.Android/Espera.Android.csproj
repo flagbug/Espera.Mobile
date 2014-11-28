@@ -34,8 +34,17 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidLinkMode>None</AndroidLinkMode>
-    <AndroidSupportedAbis>armeabi;armeabi-v7a;x86</AndroidSupportedAbis>
-    <EmbedAssembliesIntoApk>False</EmbedAssembliesIntoApk>
+    <AndroidSupportedAbis>armeabi,armeabi-v7a,x86</AndroidSupportedAbis>
+    <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
+    <AndroidUseSharedRuntime>True</AndroidUseSharedRuntime>
+    <AndroidLinkSkip />
+    <BundleAssemblies>False</BundleAssemblies>
+    <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
+    <AndroidStoreUncompressedFileExtensions />
+    <MandroidI18n />
+    <JavaMaximumHeapSize />
+    <JavaOptions />
+    <MonoDroidExtraArgs />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -132,6 +141,12 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Linq.Expressions" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Extensions">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.28\lib\monoandroid\System.Net.Http.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Primitives">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.28\lib\monoandroid\System.Net.Http.Primitives.dll</HintPath>
+    </Reference>
     <Reference Include="System.ObjectModel" />
     <Reference Include="System.Reactive.Core, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -149,7 +164,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Rx-PlatformServices.2.2.5\lib\portable-windows8+net45+wp8\System.Reactive.PlatformServices.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime" />
     <Reference Include="System.Threading" />
     <Reference Include="System.Threading.Tasks" />
     <Reference Include="System.Xml" />

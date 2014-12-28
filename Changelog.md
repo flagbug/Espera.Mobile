@@ -1,3 +1,6 @@
+# v1.4.4
+- Fixed a crash when entering an invalid network port.
+
 # v1.4.3
 - Fixed a bug that caused the initial connection to the server to fail.
 

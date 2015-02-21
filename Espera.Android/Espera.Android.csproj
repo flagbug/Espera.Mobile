@@ -129,9 +129,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\reactiveui-events.6.4.0.1\lib\Monoandroid\ReactiveUI.Events.dll</HintPath>
     </Reference>
-    <Reference Include="Splat, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Splat, Version=1.6.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Splat.1.6.0\lib\monoandroid\Splat.dll</HintPath>
+      <HintPath>..\packages\Splat.1.6.1\lib\monoandroid\Splat.dll</HintPath>
     </Reference>
     <Reference Include="SQLitePCL.raw, Version=0.6.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

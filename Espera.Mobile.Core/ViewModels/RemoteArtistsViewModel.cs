@@ -1,10 +1,10 @@
-﻿using Akavache;
-using Espera.Mobile.Core.SongFetchers;
-using Espera.Network;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using Akavache;
+using Espera.Mobile.Core.SongFetchers;
+using Espera.Network;
 
 namespace Espera.Mobile.Core.ViewModels
 {
@@ -26,16 +26,16 @@ namespace Espera.Mobile.Core.ViewModels
             public CachingSongFetcher(ISongFetcher<T> wrappedFetcher, IBlobCache cache, string cacheKey, TimeSpan cacheDuration)
             {
                 if (wrappedFetcher == null)
-                    throw new ArgumentNullException(nameof(wrappedFetcher));
+                    throw new ArgumentNullException("wrappedFetcher");
 
                 if (cache == null)
                     throw new ArgumentNullException();
 
                 if (String.IsNullOrWhiteSpace(cacheKey))
-                    throw new ArgumentException("Cache key can't be null or empty", nameof(cacheKey));
+                    throw new ArgumentException("Cache key can't be null or empty", "cacheKey");
 
                 if (cacheDuration < TimeSpan.Zero)
-                    throw new ArgumentOutOfRangeException(nameof(cacheDuration));
+                    throw new ArgumentOutOfRangeException("cacheDuration");
 
                 this.wrappedFetcher = wrappedFetcher;
                 this.cache = cache;

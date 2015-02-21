@@ -1,8 +1,8 @@
-using Espera.Mobile.Core;
 using System;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using Espera.Mobile.Core;
 
 namespace Espera.Android
 {
@@ -54,8 +54,14 @@ namespace Espera.Android
             return false;
         }
 
-        private void RaiseVolumeDown() => this.volumeDown.OnNext(Unit.Default);
+        private void RaiseVolumeDown()
+        {
+            this.volumeDown.OnNext(Unit.Default);
+        }
 
-        private void RaiseVolumeUp() => this.volumeUp.OnNext(Unit.Default);
+        private void RaiseVolumeUp()
+        {
+            this.volumeUp.OnNext(Unit.Default);
+        }
     }
 }

@@ -1,8 +1,8 @@
-﻿using Espera.Network;
+﻿using System;
+using System.Reactive.Linq;
+using Espera.Network;
 using ReactiveUI;
 using Splat;
-using System;
-using System.Reactive.Linq;
 
 namespace Espera.Mobile.Core.ViewModels
 {
@@ -14,7 +14,7 @@ namespace Espera.Mobile.Core.ViewModels
         public YoutubeSongViewModel(NetworkSong model)
         {
             if (model == null)
-                throw new ArgumentNullException(nameof(model));
+                throw new ArgumentNullException("model");
 
             this.model = model;
 

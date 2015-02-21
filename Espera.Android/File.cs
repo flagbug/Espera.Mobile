@@ -4,6 +4,9 @@ namespace Espera.Android
 {
     public class File : IFile
     {
-        public byte[] ReadAllBytes(string path) => System.IO.File.ReadAllBytes(path);
+        public byte[] ReadAllBytes(string path)
+        {
+            return System.IO.File.ReadAllBytes(path);
+        }
     }
 }

@@ -1,5 +1,5 @@
-﻿using Espera.Network;
-using System;
+﻿using System;
+using Espera.Network;
 
 namespace Espera.Mobile.Core.Network
 {
@@ -22,10 +22,10 @@ namespace Espera.Mobile.Core.Network
             this.AccessPermission = accessPermission;
         }
 
-        public NetworkAccessPermission? AccessPermission { get; }
+        public NetworkAccessPermission? AccessPermission { get; private set; }
 
-        public ConnectionResult ConnectionResult { get; }
+        public ConnectionResult ConnectionResult { get; private set; }
 
-        public Version ServerVersion { get; }
+        public Version ServerVersion { get; private set; }
     }
 }

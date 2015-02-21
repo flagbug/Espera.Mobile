@@ -1,5 +1,5 @@
-using ReactiveUI;
 using System;
+using ReactiveUI;
 
 namespace Espera.Android.ViewModels
 {

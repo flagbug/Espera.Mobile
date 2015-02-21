@@ -1,9 +1,9 @@
-using Espera.Mobile.Core.Network;
-using Splat;
 using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Espera.Mobile.Core.Network;
+using Splat;
 
 namespace Espera.Android
 {
@@ -11,7 +11,10 @@ namespace Espera.Android
     {
         private UdpClient client;
 
-        public void Dispose() => this.client.Close();
+        public void Dispose()
+        {
+            this.client.Close();
+        }
 
         public void Initialize(string ipAddress, int port)
         {

@@ -1,5 +1,5 @@
-﻿using ReactiveUI;
-using System;
+﻿using System;
+using ReactiveUI;
 
 namespace Espera.Mobile.Core.ViewModels
 {
@@ -12,7 +12,7 @@ namespace Espera.Mobile.Core.ViewModels
         public LocalSongViewModel(LocalSong model)
         {
             if (model == null)
-                throw new ArgumentNullException(nameof(model));
+                throw new ArgumentNullException("model");
 
             this.model = model;
         }

@@ -1,7 +1,7 @@
-using Espera.Mobile.Core.Network;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Espera.Mobile.Core.Network;
 
 namespace Espera.Android
 {
@@ -27,8 +27,14 @@ namespace Espera.Android
             }
         }
 
-        public void Dispose() => this.client.Close();
+        public void Dispose()
+        {
+            this.client.Close();
+        }
 
-        public Stream GetStream() => this.client.GetStream();
+        public Stream GetStream()
+        {
+            return this.client.GetStream();
+        }
     }
 }

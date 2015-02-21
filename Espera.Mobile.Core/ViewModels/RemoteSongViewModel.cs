@@ -1,6 +1,6 @@
-﻿using Espera.Network;
+﻿using System;
+using Espera.Network;
 using ReactiveUI;
-using System;
 
 namespace Espera.Mobile.Core.ViewModels
 {
@@ -11,7 +11,7 @@ namespace Espera.Mobile.Core.ViewModels
         public RemoteSongViewModel(NetworkSong model)
         {
             if (model == null)
-                throw new ArgumentNullException(nameof(model));
+                throw new ArgumentNullException("model");
 
             this.model = model;
         }

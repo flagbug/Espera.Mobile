@@ -1,7 +1,7 @@
-﻿using Espera.Network;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Espera.Network;
 
 namespace Espera.Mobile.Core.Network
 {
@@ -17,10 +17,10 @@ namespace Espera.Mobile.Core.Network
             : base("Network request didn't succeed")
         {
             if (requestInfo == null)
-                throw new ArgumentNullException(nameof(requestInfo));
+                throw new ArgumentNullException("requestInfo");
 
             if (responseInfo == null)
-                throw new ArgumentNullException(nameof(responseInfo));
+                throw new ArgumentNullException("responseInfo");
 
             this.RequestInfo = requestInfo;
             this.ResponseInfo = responseInfo;
@@ -38,8 +38,8 @@ namespace Espera.Mobile.Core.Network
             }
         }
 
-        public RequestInfo RequestInfo { get; }
+        public RequestInfo RequestInfo { get; private set; }
 
-        public ResponseInfo ResponseInfo { get; }
+        public ResponseInfo ResponseInfo { get; private set; }
     }
 }

@@ -1,8 +1,4 @@
-﻿using Akavache;
-using Espera.Network;
-using ReactiveMarrow;
-using ReactiveUI;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -11,6 +7,10 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
+using Akavache;
+using Espera.Network;
+using ReactiveMarrow;
+using ReactiveUI;
 
 namespace Espera.Mobile.Core.Network
 {
@@ -41,7 +41,7 @@ namespace Espera.Mobile.Core.Network
             get { return NetworkAccessPermission.Admin; }
         }
 
-        public IObservable<Unit> Disconnected { get; }
+        public IObservable<Unit> Disconnected { get; private set; }
 
         public GuestSystemInfo GuestSystemInfo
         {
@@ -76,7 +76,10 @@ namespace Espera.Mobile.Core.Network
             get { return Observable.Never<NetworkPlaylist>(); }
         }
 
-        public Task AddSongToPlaylistAsync(Guid songGuid) => Success();
+        public Task AddSongToPlaylistAsync(Guid songGuid)
+        {
+            return Success();
+        }
 
         public Task<ConnectionResultContainer> ConnectAsync(string address, int port, Guid deviceId, string password)
         {
@@ -92,9 +95,15 @@ namespace Espera.Mobile.Core.Network
             return Success();
         }
 
-        public void Disconnect() => this.IsConnected = false;
+        public void Disconnect()
+        {
+            this.IsConnected = false;
+        }
 
-        public IObservable<string> DiscoverServerAsync(string localAddress, int port) => Observable.Return("192.169.1.10");
+        public IObservable<string> DiscoverServerAsync(string localAddress, int port)
+        {
+            return Observable.Return("192.169.1.10");
+        }
 
         public void Dispose()
         { }
@@ -173,15 +182,30 @@ namespace Espera.Mobile.Core.Network
             }).ToTask();
         }
 
-        public Task<IReadOnlyList<NetworkSong>> GetSoundCloudSongsAsync(string searchTerm) => Task.FromResult((IReadOnlyList<NetworkSong>)new List<NetworkSong>());
+        public Task<IReadOnlyList<NetworkSong>> GetSoundCloudSongsAsync(string searchTerm)
+        {
+            return Task.FromResult((IReadOnlyList<NetworkSong>)new List<NetworkSong>());
+        }
 
-        public Task<float> GetVolume() => Task.FromResult(1.0f);
+        public Task<float> GetVolume()
+        {
+            return Task.FromResult(1.0f);
+        }
 
-        public Task<IReadOnlyList<NetworkSong>> GetYoutubeSongsAsync(string searchTerm) => Task.FromResult((IReadOnlyList<NetworkSong>)new List<NetworkSong>());
+        public Task<IReadOnlyList<NetworkSong>> GetYoutubeSongsAsync(string searchTerm)
+        {
+            return Task.FromResult((IReadOnlyList<NetworkSong>)new List<NetworkSong>());
+        }
 
-        public Task MovePlaylistSongDownAsync(Guid entryGuid) => Success();
+        public Task MovePlaylistSongDownAsync(Guid entryGuid)
+        {
+            return Success();
+        }
 
-        public Task MovePlaylistSongUpAsync(Guid entryGuid) => Success();
+        public Task MovePlaylistSongUpAsync(Guid entryGuid)
+        {
+            return Success();
+        }
 
         public Task PauseSongAsync()
         {
@@ -218,9 +242,15 @@ namespace Espera.Mobile.Core.Network
             return Success();
         }
 
-        public async Task<FileTransferStatus> QueueRemoteSong(LocalSong songMetadata, byte[] data) => new FileTransferStatus(await Success(), Observable.Never<int>());
+        public async Task<FileTransferStatus> QueueRemoteSong(LocalSong songMetadata, byte[] data)
+        {
+            return new FileTransferStatus(await Success(), Observable.Never<int>());
+        }
 
-        public Task RemovePlaylistSongAsync(Guid entryGuid) => Success();
+        public Task RemovePlaylistSongAsync(Guid entryGuid)
+        {
+            return Success();
+        }
 
         public Task SetCurrentTime(TimeSpan time)
         {
@@ -229,11 +259,20 @@ namespace Espera.Mobile.Core.Network
             return Success();
         }
 
-        public Task SetVolume(float volume) => Success();
+        public Task SetVolume(float volume)
+        {
+            return Success();
+        }
 
-        public Task ToggleVideoPlayer() => Success();
+        public Task ToggleVideoPlayer()
+        {
+            return Success();
+        }
 
-        public Task VoteAsync(Guid entryGuid) => Success();
+        public Task VoteAsync(Guid entryGuid)
+        {
+            return Success();
+        }
 
         private static TimeSpan GetRandomSongTime(Random random)
         {
@@ -245,6 +284,9 @@ namespace Espera.Mobile.Core.Network
             return TimeSpan.FromMilliseconds(theRandom);
         }
 
-        private static Task<ResponseInfo> Success() => Task.FromResult(new ResponseInfo { RequestId = Guid.NewGuid(), Status = ResponseStatus.Success });
+        private static Task<ResponseInfo> Success()
+        {
+            return Task.FromResult(new ResponseInfo { RequestId = Guid.NewGuid(), Status = ResponseStatus.Success });
+        }
     }
 }

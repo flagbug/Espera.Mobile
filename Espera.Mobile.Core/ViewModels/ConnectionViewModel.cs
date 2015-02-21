@@ -1,12 +1,12 @@
-using Espera.Mobile.Core.Network;
-using Espera.Mobile.Core.Settings;
-using ReactiveMarrow;
-using ReactiveUI;
 using System;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using Espera.Mobile.Core.Network;
+using Espera.Mobile.Core.Settings;
+using ReactiveMarrow;
+using ReactiveUI;
 
 namespace Espera.Mobile.Core.ViewModels
 {
@@ -21,11 +21,11 @@ namespace Espera.Mobile.Core.ViewModels
 
         public ConnectionViewModel(UserSettings userSettings, Func<string> ipAddress, IInstallationDateFetcher installationDateFetcher = null, IClock clock = null)
         {
-            if (userSettings == null)
-                throw new ArgumentNullException(nameof(userSettings));
-
             if (ipAddress == null)
-                throw new ArgumentNullException(nameof(ipAddress));
+                throw new ArgumentNullException("ipAddress");
+
+            if (userSettings == null)
+                throw new ArgumentNullException("userSettings");
 
             this.userSettings = userSettings;
             this.installationDateFetcher = installationDateFetcher;
@@ -64,7 +64,7 @@ namespace Espera.Mobile.Core.ViewModels
             });
         }
 
-        public ViewModelActivator Activator { get; }
+        public ViewModelActivator Activator { get; private set; }
 
         public ReactiveCommand<ConnectionResultContainer> ConnectCommand { get; private set; }
 

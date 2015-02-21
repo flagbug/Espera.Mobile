@@ -1,7 +1,3 @@
-using Espera.Mobile.Core.Network;
-using Espera.Network;
-using ReactiveMarrow;
-using ReactiveUI;
 using System;
 using System.Linq;
 using System.Reactive;
@@ -9,6 +5,10 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
+using Espera.Mobile.Core.Network;
+using Espera.Network;
+using ReactiveMarrow;
+using ReactiveUI;
 
 namespace Espera.Mobile.Core.ViewModels
 {
@@ -167,7 +167,7 @@ namespace Espera.Mobile.Core.ViewModels
             });
         }
 
-        public ViewModelActivator Activator { get; }
+        public ViewModelActivator Activator { get; private set; }
 
         /// <summary>
         /// Returns whether the playlist can be modified by the users. Always true for administrators.

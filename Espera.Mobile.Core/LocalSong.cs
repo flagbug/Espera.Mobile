@@ -1,5 +1,5 @@
-﻿using Espera.Network;
-using System;
+﻿using System;
+using Espera.Network;
 
 namespace Espera.Mobile.Core
 {
@@ -16,6 +16,6 @@ namespace Espera.Mobile.Core
             this.Path = path;
         }
 
-        public string Path { get; set; }
+        public string Path { get; private set; }
     }
 }

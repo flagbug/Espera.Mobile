@@ -1,3 +1,8 @@
+using System;
+using System.Reactive;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Graphics;
@@ -12,11 +17,6 @@ using Espera.Network;
 using ReactiveMarrow;
 using ReactiveUI;
 using Splat;
-using System;
-using System.Reactive;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
-using System.Reactive.Threading.Tasks;
 using Notification = Android.App.Notification;
 
 namespace Espera.Android.Services
@@ -30,7 +30,10 @@ namespace Espera.Android.Services
         private PowerManager.WakeLock wakeLock;
         private WifiManager.WifiLock wifiLock;
 
-        public override IBinder OnBind(Intent intent) => null;
+        public override IBinder OnBind(Intent intent)
+        {
+            return null;
+        }
 
         public override void OnCreate()
         {

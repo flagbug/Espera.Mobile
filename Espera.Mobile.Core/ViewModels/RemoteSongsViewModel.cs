@@ -1,8 +1,8 @@
+using System.Collections.Generic;
 using Espera.Mobile.Core.Network;
 using Espera.Network;
 using ReactiveUI;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
@@ -17,7 +17,7 @@ namespace Espera.Mobile.Core.ViewModels
         public RemoteSongsViewModel(IReadOnlyList<NetworkSong> songs)
         {
             if (songs == null)
-                throw new ArgumentNullException(nameof(songs));
+                throw new ArgumentNullException("songs");
 
             this.Songs = songs.Order().Select(x => new RemoteSongViewModel(x)).ToList();
 
@@ -42,6 +42,9 @@ namespace Espera.Mobile.Core.ViewModels
 
         public ReactiveCommand<Unit> PlaySongsCommand { get; private set; }
 
-        private IReadOnlyList<Guid> GetSongGuidsToPlay() => this.Songs.SkipWhile(song => song.Model.Guid != this.SelectedSong.Model.Guid).Select(y => y.Model.Guid).ToList();
+        private IReadOnlyList<Guid> GetSongGuidsToPlay()
+        {
+            return this.Songs.SkipWhile(song => song.Model.Guid != this.SelectedSong.Model.Guid).Select(y => y.Model.Guid).ToList();
+        }
     }
 }

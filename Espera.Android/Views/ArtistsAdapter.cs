@@ -1,9 +1,9 @@
-using Android.App;
-using Android.Views;
-using Android.Widget;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Android.App;
+using Android.Views;
+using Android.Widget;
 using Object = Java.Lang.Object;
 using String = Java.Lang.String;
 
@@ -39,9 +39,15 @@ namespace Espera.Android.Views
             get { return artists[position]; }
         }
 
-        public override long GetItemId(int position) => position;
+        public override long GetItemId(int position)
+        {
+            return position;
+        }
 
-        public int GetPositionForSection(int section) => this.sections.ElementAt(section).Min();
+        public int GetPositionForSection(int section)
+        {
+            return this.sections.ElementAt(section).Min();
+        }
 
         public int GetSectionForPosition(int position)
         {
@@ -49,7 +55,10 @@ namespace Espera.Android.Views
                 .First(x => x > -1);
         }
 
-        public Object[] GetSections() => this.sections.Select(x => (Object)new String(x.Key)).ToArray();
+        public Object[] GetSections()
+        {
+            return this.sections.Select(x => (Object)new String(x.Key)).ToArray();
+        }
 
         public override View GetView(int position, View convertView, ViewGroup parent)
         {

@@ -95,14 +95,15 @@ namespace Espera.Android.Views
                 .Subscribe(x => Toast.MakeText(this.Activity, x, ToastLength.Long).Show())
                 .DisposeWith(disposable);
 
-                bool displayTrialPeriod = !settings.IsPremium;
+                TimeSpan remainingTrialTime = TrialHelpers.GetRemainingTrialTime(AppConstants.TrialTime);
+
+                // We don't want to immediately scare the user with the display of the remaining trial period, so give it some time
+                bool displayTrialPeriod = !settings.IsPremium && remainingTrialTime < TimeSpan.FromDays(4);
                 this.TrialExpirationTextView.Visibility = this.TrialExpirationExplanationTextview.Visibility =
                     displayTrialPeriod ? ViewStates.Visible : ViewStates.Gone;
 
                 if (displayTrialPeriod)
                 {
-                    TimeSpan remainingTrialTime = TrialHelpers.GetRemainingTrialTime(AppConstants.TrialTime);
-
                     string expirationMessage = remainingTrialTime > TimeSpan.Zero ?
                         Resources.GetString(Resource.String.trial_expiration) :
                         Resources.GetString(Resource.String.trial_expiration_expired);

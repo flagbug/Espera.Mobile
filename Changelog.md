@@ -1,3 +1,6 @@
+# v1.4.5
+- Various Bugfixes and performance improvements.
+
 # v1.4.4
 - Fixed a crash when entering an invalid network port.
 

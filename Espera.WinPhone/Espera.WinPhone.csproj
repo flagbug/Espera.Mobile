@@ -94,6 +94,8 @@
     <Compile Include="Pages\ConnectionPage.xaml.cs">
       <DependentUpon>ConnectionPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Platform\WinPhoneDeviceIdFactory.cs" />
+    <Compile Include="Platform\WinPhoneUdpClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -168,6 +170,9 @@
     </Reference>
     <Reference Include="System.Reactive.WindowsRuntime">
       <HintPath>..\packages\Rx-WinRT.2.2.5\lib\portable-win81+wpa81\System.Reactive.WindowsRuntime.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Insights">
+      <HintPath>..\packages\Xamarin.Insights.1.9.1.107\lib\wpa\Xamarin.Insights.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

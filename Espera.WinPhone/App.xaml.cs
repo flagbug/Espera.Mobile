@@ -1,5 +1,8 @@
-﻿using Espera.Mobile.Core.Settings;
+﻿using Espera.Mobile.Core;
+using Espera.Mobile.Core.Network;
+using Espera.Mobile.Core.Settings;
 using Espera.WinPhone.Pages;
+using Espera.WinPhone.Platform;
 using ReactiveUI;
 using Splat;
 using System;
@@ -19,6 +22,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
+using Xamarin;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
 
@@ -43,6 +47,16 @@ namespace Espera.WinPhone
 
             autoSuspendHelper = new AutoSuspendHelper(this);
             Locator.CurrentMutable.RegisterConstant(new UserSettings(), typeof(UserSettings));
+            Locator.CurrentMutable.Register(() => new WinPhoneUdpClient(), typeof(IUdpClient));
+            Locator.CurrentMutable.Register(() => new WinPhoneDeviceIdFactory(), typeof(IDeviceIdFactory));
+
+#if DEBUG
+            Insights.Initialize(Insights.DebugModeKey);
+#else
+            Insights.Initialize("9251496bfa10cea251b633c46bfdbd56cf6ef82a");
+#endif
+
+            NetworkMessenger.Override(new VirtualNetworkMessenger()); // TODO: Remove this once we have a working settings page
         }
 
         /// <summary>

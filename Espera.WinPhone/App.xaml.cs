@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using Espera.WinPhone.Pages;
+using ReactiveUI;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
 
@@ -27,6 +28,7 @@ namespace Espera.WinPhone
     public sealed partial class App : Application
     {
         private TransitionCollection transitions;
+        private readonly AutoSuspendHelper autoSuspendHelper;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -36,6 +38,8 @@ namespace Espera.WinPhone
         {
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
+
+            autoSuspendHelper = new AutoSuspendHelper(this);
         }
 
         /// <summary>

@@ -43,10 +43,11 @@ namespace Espera.WinPhone.Pages
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
 
             this.ViewModel = new ConnectionViewModel(new UserSettings(), () => "0.0.0.0");
-            this.DataContext = this.ViewModel;
 
             this.WhenActivated(() =>
             {
+                this.DataContext = this.ViewModel;
+
                 var disp = new CompositeDisposable();
 
                 return disp;

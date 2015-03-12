@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Espera.Mobile.Core.Settings;
+using Espera.WinPhone.Pages;
+using ReactiveUI;
+using Splat;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,8 +19,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
-using Espera.WinPhone.Pages;
-using ReactiveUI;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=391641
 
@@ -31,7 +33,7 @@ namespace Espera.WinPhone
         private readonly AutoSuspendHelper autoSuspendHelper;
 
         /// <summary>
-        /// Initializes the singleton application object.  This is the first line of authored code
+        /// Initializes the singleton application object. This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
         public App()
@@ -40,12 +42,13 @@ namespace Espera.WinPhone
             this.Suspending += this.OnSuspending;
 
             autoSuspendHelper = new AutoSuspendHelper(this);
+            Locator.CurrentMutable.RegisterConstant(new UserSettings(), typeof(UserSettings));
         }
 
         /// <summary>
-        /// Invoked when the application is launched normally by the end user.  Other entry points
-        /// will be used when the application is launched to open a specific file, to display
-        /// search results, and so forth.
+        /// Invoked when the application is launched normally by the end user. Other entry points
+        /// will be used when the application is launched to open a specific file, to display search
+        /// results, and so forth.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs e)
@@ -59,8 +62,8 @@ namespace Espera.WinPhone
 
             Frame rootFrame = Window.Current.Content as Frame;
 
-            // Do not repeat app initialization when the Window already has content,
-            // just ensure that the window is active
+            // Do not repeat app initialization when the Window already has content, just ensure
+            // that the window is active
             if (rootFrame == null)
             {
                 // Create a Frame to act as the navigation context and navigate to the first page
@@ -93,9 +96,8 @@ namespace Espera.WinPhone
                 rootFrame.ContentTransitions = null;
                 rootFrame.Navigated += this.RootFrame_FirstNavigated;
 
-                // When the navigation stack isn't restored navigate to the first page,
-                // configuring the new page by passing required information as a navigation
-                // parameter
+                // When the navigation stack isn't restored navigate to the first page, configuring
+                // the new page by passing required information as a navigation parameter
                 if (!rootFrame.Navigate(typeof(ConnectionPage), e.Arguments))
                 {
                     throw new Exception("Failed to create initial page");
@@ -119,7 +121,7 @@ namespace Espera.WinPhone
         }
 
         /// <summary>
-        /// Invoked when application execution is being suspended.  Application state is saved
+        /// Invoked when application execution is being suspended. Application state is saved
         /// without knowing whether the application will be terminated or resumed with the contents
         /// of memory still intact.
         /// </summary>

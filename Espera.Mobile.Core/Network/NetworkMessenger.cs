@@ -301,13 +301,10 @@ namespace Espera.Mobile.Core.Network
 
             Insights.Track("Server discovery started", traits);
 
-            return Observable.Using(() => new UdpSocketReceiver(), x =>
-                {
-                    return Observable.FromAsync(() => x.StartListeningAsync(port))
-                        .SelectMany(_ => Observable.FromEventPattern<UdpSocketMessageReceivedEventArgs>(h => x.MessageReceived += h, h => x.MessageReceived -= h));
-                })
+            return Observable.Using(() => new UdpSocketReceiver(), x => Observable.FromAsync(() => x.StartListeningAsync(port))
+                    .SelectMany(_ => Observable.FromEventPattern<UdpSocketMessageReceivedEventArgs>(h => x.MessageReceived += h, h => x.MessageReceived -= h)))
                 .Select(x => x.EventArgs)
-                .Catch<UdpSocketMessageReceivedEventArgs, ObjectDisposedException>(ex => Observable.Return <UdpSocketMessageReceivedEventArgs>(null))
+                .Catch<UdpSocketMessageReceivedEventArgs, ObjectDisposedException>(ex => Observable.Return<UdpSocketMessageReceivedEventArgs>(null))
                 .TakeWhile(x => x != null)
                 .FirstAsync(x => Encoding.Unicode.GetString(x.ByteData, 0, x.ByteData.Length) == NetworkConstants.DiscoveryMessage)
                 .Select(x => x.RemoteAddress)

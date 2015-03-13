@@ -191,7 +191,6 @@
     <Compile Include="AndroidLogger.cs" />
     <Compile Include="AndroidSettings.cs" />
     <Compile Include="AndroidSongFetcher.cs" />
-    <Compile Include="AndroidTcpClient.cs" />
     <Compile Include="AndroidVolumeRequests.cs" />
     <Compile Include="AndroidWifiService.cs" />
     <Compile Include="App.cs" />

@@ -24,7 +24,7 @@ namespace Espera.Mobile.Core.Network
     {
         private static Lazy<INetworkMessenger> instance;
         private readonly ObservableAsPropertyHelper<NetworkAccessPermission> accessPermission;
-        private readonly Subject<ITcpClient> client;
+        private readonly Subject<TcpSocketClient> client;
         private readonly Subject<Unit> connectionEstablished;
         private readonly Subject<ConnectionInfo> connectionInfoReceived;
         private readonly Subject<Unit> disconnected;
@@ -33,8 +33,8 @@ namespace Espera.Mobile.Core.Network
         private readonly ObservableAsPropertyHelper<bool> isConnected;
         private readonly IObservable<NetworkMessage> messagePipeline;
         private readonly IDisposable messagePipelineConnection;
-        private ITcpClient currentClient;
-        private ITcpClient currentFileTransferClient;
+        private TcpSocketClient currentClient;
+        private TcpSocketClient currentFileTransferClient;
 
         static NetworkMessenger()
         {
@@ -49,7 +49,7 @@ namespace Espera.Mobile.Core.Network
             this.connectionEstablished = new Subject<Unit>();
             this.connectionInfoReceived = new Subject<ConnectionInfo>();
 
-            this.client = new Subject<ITcpClient>();
+            this.client = new Subject<TcpSocketClient>();
 
             this.isConnected = this.Disconnected.Select(_ => false)
                 .Merge(this.connectionEstablished.Select(_ => true))
@@ -58,7 +58,7 @@ namespace Espera.Mobile.Core.Network
                 .ToProperty(this, x => x.IsConnected);
             var connectConn = this.IsConnected;
 
-            var pipeline = this.client.Select(x => Observable.Defer(() => x.GetStream().ReadNextMessageAsync()
+            var pipeline = this.client.Select(x => Observable.Defer(() => x.ReadStream.ReadNextMessageAsync()
                     .ToObservable())
                     .Repeat()
                     .LoggedCatch(this, null, "Error while reading the next network message")
@@ -193,10 +193,8 @@ namespace Espera.Mobile.Core.Network
                 this.Disconnect();
             }
 
-            Func<ITcpClient> clientLocator = () => Locator.Current.GetService<ITcpClient>();
-
-            this.currentClient = clientLocator();
-            this.currentFileTransferClient = clientLocator();
+            this.currentClient = new TcpSocketClient();
+            this.currentFileTransferClient = new TcpSocketClient();
 
             this.Log().Info("Connecting to the Espera host at {0}", ipAddress);
 
@@ -529,7 +527,7 @@ namespace Espera.Mobile.Core.Network
 
             try
             {
-                await this.currentClient.GetStream().WriteAsync(packedMessage, 0, packedMessage.Length);
+                await this.currentClient.WriteStream.WriteAsync(packedMessage, 0, packedMessage.Length);
             }
 
             finally
@@ -610,7 +608,7 @@ namespace Espera.Mobile.Core.Network
         {
             const int bufferSize = 32 * 1024;
             int written = 0;
-            Stream stream = this.currentFileTransferClient.GetStream();
+            Stream stream = this.currentFileTransferClient.WriteStream;
 
             var progress = new BehaviorSubject<int>(0);
 

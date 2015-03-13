@@ -37,7 +37,6 @@ namespace Espera.Android
             Locator.CurrentMutable.Register(() => new AndroidWifiService(), typeof(IWifiService));
             Locator.CurrentMutable.Register(() => new AndroidSongFetcher(), typeof(ISongFetcher<LocalSong>));
             Locator.CurrentMutable.Register(() => new File(), typeof(IFile));
-            Locator.CurrentMutable.Register(() => new AndroidTcpClient(), typeof(ITcpClient));
             Locator.CurrentMutable.Register(() => new AndroidDeviceIdFactory(this), typeof(IDeviceIdFactory));
             Locator.CurrentMutable.RegisterConstant(new UserSettings(), typeof(UserSettings));
             Locator.CurrentMutable.RegisterConstant(new AndroidSettings(), typeof(AndroidSettings));

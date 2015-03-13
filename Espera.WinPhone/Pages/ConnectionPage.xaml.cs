@@ -1,6 +1,7 @@
 ﻿using Espera.Mobile.Core.Settings;
 using Espera.Mobile.Core.ViewModels;
 using Espera.WinPhone.Common;
+using ReactiveMarrow;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -49,6 +50,9 @@ namespace Espera.WinPhone.Pages
                 this.DataContext = this.ViewModel;
 
                 var disp = new CompositeDisposable();
+
+                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.ConnectButton.Visibility, x => x ? Visibility.Collapsed : Visibility.Visible).DisposeWith(disp);
+                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.DisconnectButton.Visibility, x => x ? Visibility.Visible : Visibility.Collapsed).DisposeWith(disp);
 
                 return disp;
             });

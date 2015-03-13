@@ -1,4 +1,11 @@
-﻿using System;
+﻿using Espera.Mobile.Core.Settings;
+using Espera.Network;
+using Newtonsoft.Json.Linq;
+using ReactiveUI;
+using Sockets.Plugin;
+using Sockets.Plugin.Abstractions;
+using Splat;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,11 +16,6 @@ using System.Reactive.Threading.Tasks;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Espera.Mobile.Core.Settings;
-using Espera.Network;
-using Newtonsoft.Json.Linq;
-using ReactiveUI;
-using Splat;
 using Xamarin;
 
 namespace Espera.Mobile.Core.Network
@@ -137,8 +139,8 @@ namespace Espera.Mobile.Core.Network
         public IObservable<NetworkPlaylist> PlaylistChanged { get; private set; }
 
         /// <summary>
-        /// Overrides the instance for unit testing or for the
-        /// <see cref="VirtualNetworkMessenger" /> .
+        /// Overrides the instance for unit testing or for the <see cref="VirtualNetworkMessenger"
+        /// /> .
         /// </summary>
         public static void Override(INetworkMessenger messenger)
         {
@@ -176,10 +178,10 @@ namespace Espera.Mobile.Core.Network
         /// Something went wrong while connecting to the server.
         /// </exception>
         /// <returns>
-        /// A <see cref="Tuple"/> of a <see cref="ResponseStatus" /> and <see cref="ConnectionInfo" />.
-        ///
-        /// If there was an error on the server side (e.g a wrong password), the
-        /// <see cref="ConnectionInfo" /> is null.
+        /// A <see cref="Tuple" /> of a <see cref="ResponseStatus" /> and <see cref="ConnectionInfo" />.
+        /// 
+        /// If there was an error on the server side (e.g a wrong password), the <see
+        /// cref="ConnectionInfo" /> is null.
         /// </returns>
         public async Task<ConnectionResultContainer> ConnectAsync(string ipAddress, int port, Guid deviceId, string password)
         {
@@ -291,13 +293,6 @@ namespace Espera.Mobile.Core.Network
             if (localAddress == null)
                 throw new ArgumentNullException("localAddress");
 
-            Func<IUdpClient> locatorFunc = () =>
-            {
-                var udpClient = Locator.Current.GetService<IUdpClient>();
-                udpClient.Initialize(localAddress, port);
-                return udpClient;
-            };
-
             this.Log().Info("Starting server discovery at port {0}...", port);
 
             var traits = new Dictionary<string, string>
@@ -308,11 +303,12 @@ namespace Espera.Mobile.Core.Network
 
             Insights.Track("Server discovery started", traits);
 
-            return Observable.Using(locatorFunc, x => Observable.FromAsync(x.ReceiveAsync))
+            return Observable.Using(() => new UdpSocketReceiver(), x => Observable.FromEventPattern<UdpSocketMessageReceivedEventArgs>(h => x.MessageReceived += h, h => x.MessageReceived -= h))
                 .Repeat()
+                .Select(x => x.EventArgs)
                 .TakeWhile(x => x != null)
-                .FirstAsync(x => Encoding.Unicode.GetString(x.Item1, 0, x.Item1.Length) == NetworkConstants.DiscoveryMessage)
-                .Select(x => x.Item2)
+                .FirstAsync(x => Encoding.Unicode.GetString(x.ByteData, 0, x.ByteData.Length) == NetworkConstants.DiscoveryMessage)
+                .Select(x => x.RemoteAddress)
                 .Do(x =>
                 {
                     this.Log().Info("Detected server at IP address {0}", x);

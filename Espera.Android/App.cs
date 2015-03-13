@@ -47,9 +47,10 @@ namespace Espera.Android
 
 #if DEBUG
             Locator.CurrentMutable.RegisterConstant(new AndroidLogger(), typeof(ILogger));
-#endif
-
+            Insights.Initialize(Insights.DebugModeKey, this.ApplicationContext);
+#else
             Insights.Initialize("9251496bfa10cea251b633c46bfdbd56cf6ef82a", this.ApplicationContext);
+#endif
         }
     }
 }

@@ -1,16 +1,12 @@
-﻿using Espera.Mobile.Core.Network;
-using Espera.Mobile.Core.Settings;
-using Espera.Mobile.Core.ViewModels;
+﻿using Espera.Mobile.Core.ViewModels;
 using Espera.WinPhone.Common;
 using ReactiveMarrow;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
-using System.Reactive.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -31,14 +27,14 @@ namespace Espera.WinPhone.Pages
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class ConnectionPage : Page, IViewFor<ConnectionViewModel>
+    public sealed partial class PlaylistPage : Page, IViewFor<PlaylistViewModel>
     {
         public static readonly DependencyProperty ViewModelProperty =
-            DependencyProperty.Register("ViewModel", typeof(ConnectionViewModel), typeof(ConnectionPage), new PropertyMetadata(null));
+            DependencyProperty.Register("ViewModel", typeof(PlaylistViewModel), typeof(PlaylistPage), new PropertyMetadata(null));
 
         private readonly NavigationHelper navigationHelper;
 
-        public ConnectionPage()
+        public PlaylistPage()
         {
             this.InitializeComponent();
 
@@ -46,7 +42,7 @@ namespace Espera.WinPhone.Pages
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
 
-            this.ViewModel = new ConnectionViewModel(new UserSettings(), () => "0.0.0.0");
+            this.ViewModel = new PlaylistViewModel();
 
             this.WhenActivated(() =>
             {
@@ -54,18 +50,7 @@ namespace Espera.WinPhone.Pages
 
                 var disp = new CompositeDisposable();
 
-                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.ConnectButton.Visibility, x => x ? Visibility.Collapsed : Visibility.Visible).DisposeWith(disp);
-                this.OneWayBind(this.ViewModel, x => x.IsConnected, x => x.DisconnectButton.Visibility, x => x ? Visibility.Visible : Visibility.Collapsed).DisposeWith(disp);
-
-                this.ViewModel.ConnectCommand.Subscribe(result =>
-                {
-                    switch (result.ConnectionResult)
-                    {
-                        case ConnectionResult.Successful:
-                            this.Frame.Navigate(typeof(PlaylistPage));
-                            break;
-                    }
-                });
+                this.ViewModel.LoadPlaylistCommand.Execute(null);
 
                 return disp;
             });
@@ -74,7 +59,7 @@ namespace Espera.WinPhone.Pages
         object IViewFor.ViewModel
         {
             get { return ViewModel; }
-            set { ViewModel = (ConnectionViewModel)value; }
+            set { ViewModel = (PlaylistViewModel)value; }
         }
 
         /// <summary>
@@ -85,9 +70,9 @@ namespace Espera.WinPhone.Pages
             get { return this.navigationHelper; }
         }
 
-        public ConnectionViewModel ViewModel
+        public PlaylistViewModel ViewModel
         {
-            get { return (ConnectionViewModel)GetValue(ViewModelProperty); }
+            get { return (PlaylistViewModel)GetValue(ViewModelProperty); }
             set { SetValue(ViewModelProperty, value); }
         }
 

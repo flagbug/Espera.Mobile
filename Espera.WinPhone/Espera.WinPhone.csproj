@@ -84,6 +84,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\BooleanToVisibilityConverter.cs" />
     <Compile Include="Common\NavigationHelper.cs" />
     <Compile Include="Common\ObservableDictionary.cs" />
     <Compile Include="Common\RelayCommand.cs" />
@@ -93,6 +94,9 @@
     </Compile>
     <Compile Include="Pages\ConnectionPage.xaml.cs">
       <DependentUpon>ConnectionPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\PlaylistPage.xaml.cs">
+      <DependentUpon>PlaylistPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Platform\WinPhoneDeviceIdFactory.cs" />
     <Compile Include="Platform\WinPhoneTcpClient.cs" />
@@ -122,6 +126,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\ConnectionPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\PlaylistPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

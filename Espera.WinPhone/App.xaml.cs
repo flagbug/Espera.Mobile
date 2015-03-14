@@ -48,6 +48,7 @@ namespace Espera.WinPhone
             autoSuspendHelper = new AutoSuspendHelper(this);
             Locator.CurrentMutable.RegisterConstant(new UserSettings(), typeof(UserSettings));
             Locator.CurrentMutable.Register(() => new WinPhoneUdpClient(), typeof(IUdpClient));
+            Locator.CurrentMutable.Register(() => new WinPhoneTcpClient(), typeof(ITcpClient));
             Locator.CurrentMutable.Register(() => new WinPhoneDeviceIdFactory(), typeof(IDeviceIdFactory));
 
 #if DEBUG

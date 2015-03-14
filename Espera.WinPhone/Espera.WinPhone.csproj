@@ -95,6 +95,7 @@
       <DependentUpon>ConnectionPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Platform\WinPhoneDeviceIdFactory.cs" />
+    <Compile Include="Platform\WinPhoneTcpClient.cs" />
     <Compile Include="Platform\WinPhoneUdpClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

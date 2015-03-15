@@ -39,7 +39,11 @@
         <Grid x:Name="ContentRoot"
               Grid.Row="1"
               Margin="19,9.5,19,0">
-            <ListView ItemsSource="{Binding Entries}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <ListView Grid.Row="0" ItemsSource="{Binding Entries}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
@@ -64,6 +68,33 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <Grid Grid.Row="1" Margin="0, 0, 0, 20">
+                <Grid.Resources>
+                    <ResourceDictionary>
+                        <Style TargetType="AppBarButton">
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                        </Style>
+                    </ResourceDictionary>
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <AppBarButton Grid.Column="0"
+                              Command="{Binding PlayPreviousSongCommand}"
+                              Icon="Previous"
+                              IsCompact="True" />
+                <AppBarButton Grid.Column="1"
+                              Command="{Binding PlayPauseCommand}"
+                              Icon="Play"
+                              IsCompact="True" />
+                <AppBarButton Grid.Column="2"
+                              Command="{Binding PlayNextSongCommand}"
+                              Icon="Next"
+                              IsCompact="True" />
+            </Grid>
         </Grid>
     </Grid>
 </Page>

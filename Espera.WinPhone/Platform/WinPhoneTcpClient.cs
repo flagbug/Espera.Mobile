@@ -22,7 +22,7 @@ namespace Espera.WinPhone.Platform
 
         public async Task ConnectAsync(string ipAddress, int port)
         {
-            await this.socket.ConnectAsync(new HostName(ipAddress), port.ToString(), SocketProtectionLevel.PlainSocket);
+            await this.socket.ConnectAsync(new HostName(ipAddress), port.ToString());
         }
 
         public void Dispose()

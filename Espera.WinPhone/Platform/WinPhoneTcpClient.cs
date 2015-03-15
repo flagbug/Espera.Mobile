@@ -18,6 +18,7 @@ namespace Espera.WinPhone.Platform
         public WinPhoneTcpClient()
         {
             this.socket = new StreamSocket();
+            this.socket.Control.NoDelay = true;
         }
 
         public async Task ConnectAsync(string ipAddress, int port)

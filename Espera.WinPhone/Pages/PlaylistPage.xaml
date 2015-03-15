@@ -86,7 +86,8 @@
                               Command="{Binding PlayPreviousSongCommand}"
                               Icon="Previous"
                               IsCompact="True" />
-                <AppBarButton Grid.Column="1"
+                <AppBarButton x:Name="PlayPauseButton"
+                              Grid.Column="1"
                               Command="{Binding PlayPauseCommand}"
                               Icon="Play"
                               IsCompact="True" />

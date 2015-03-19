@@ -140,5 +140,13 @@ namespace Espera.WinPhone.Pages
         }
 
         #endregion NavigationHelper registration
+
+        private void PlaylistEntryHolding(object sender, HoldingRoutedEventArgs e)
+        {
+            this.ViewModel.SelectedEntry = (PlaylistEntryViewModel)((FrameworkElement)sender).DataContext;
+
+            FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
+            e.Handled = true;
+        }
     }
 }

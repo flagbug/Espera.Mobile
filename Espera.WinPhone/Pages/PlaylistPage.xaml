@@ -44,10 +44,34 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <ListView Grid.Row="0" ItemsSource="{Binding Entries}">
+            <ListView x:Name="Entries"
+                      Grid.Row="0"
+                      ItemsSource="{Binding Entries}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Holding="PlaylistEntryHolding"
+                                    IsHoldingEnabled="True"
+                                    Orientation="Horizontal">
+                            <FlyoutBase.AttachedFlyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem Command="{Binding DataContext.PlayPlaylistSongCommand,
+                                                                      ElementName=Entries}"
+                                                    CommandParameter="{Binding}"
+                                                    Text="play now" />
+                                    <MenuFlyoutItem Command="{Binding DataContext.RemoveSongCommand,
+                                                                      ElementName=Entries}"
+                                                    CommandParameter="{Binding}"
+                                                    Text="remove song" />
+                                    <MenuFlyoutItem Command="{Binding DataContext.MoveSongUpCommand,
+                                                                      ElementName=Entries}"
+                                                    CommandParameter="{Binding}"
+                                                    Text="move song up" />
+                                    <MenuFlyoutItem Command="{Binding DataContext.MoveSongDownCommand,
+                                                                      ElementName=Entries}"
+                                                    CommandParameter="{Binding}"
+                                                    Text="move song down" />
+                                </MenuFlyout>
+                            </FlyoutBase.AttachedFlyout>
                             <Canvas Width="76"
                                     Height="76"
                                     VerticalAlignment="Center"

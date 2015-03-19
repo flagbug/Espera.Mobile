@@ -62,7 +62,7 @@ namespace Espera.WinPhone.Pages
                     switch (result.ConnectionResult)
                     {
                         case ConnectionResult.Successful:
-                            this.Frame.Navigate(typeof(PlaylistPage));
+                            this.Frame.Navigate(typeof(MainPage));
                             break;
                     }
                 });

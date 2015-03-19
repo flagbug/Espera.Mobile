@@ -42,6 +42,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <ListView Grid.Row="0" ItemsSource="{Binding Entries}">
                 <ListView.ItemTemplate>
@@ -68,7 +69,30 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Grid Grid.Row="1" Margin="0, 0, 0, 20">
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="CurrentTime"
+                           Grid.Column="0"
+                           VerticalAlignment="Center"
+                           Text="12:34" />
+                <Slider Grid.Column="1"
+                        Margin="10, 0, 10, 0"
+                        VerticalAlignment="Center"
+                        Maximum="{Binding TotalTime.TotalSeconds}"
+                        Padding="0, 12, 0, 0"
+                        Value="{Binding CurrentTimeSeconds,
+                                        Mode=TwoWay,
+                                        UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock x:Name="TotalTime"
+                           Grid.Column="2"
+                           VerticalAlignment="Center"
+                           Text="12:34" />
+            </Grid>
+            <Grid Grid.Row="2" Margin="0, -5, 0, 15">
                 <Grid.Resources>
                     <ResourceDictionary>
                         <Style TargetType="AppBarButton">

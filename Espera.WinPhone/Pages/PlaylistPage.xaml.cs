@@ -1,4 +1,5 @@
-﻿using Espera.Mobile.Core.ViewModels;
+﻿using Espera.Mobile.Core;
+using Espera.Mobile.Core.ViewModels;
 using Espera.WinPhone.Common;
 using ReactiveMarrow;
 using ReactiveUI;
@@ -51,6 +52,8 @@ namespace Espera.WinPhone.Pages
                 var disp = new CompositeDisposable();
 
                 this.OneWayBind(this.ViewModel, x => x.IsPlaying, x => x.PlayPauseButton.Icon, x => x ? new SymbolIcon(Symbol.Pause) : new SymbolIcon(Symbol.Play)).DisposeWith(disp);
+                this.OneWayBind(this.ViewModel, x => x.CurrentTime, x => x.CurrentTime.Text, x => x.FormatAdaptive()).DisposeWith(disp);
+                this.OneWayBind(this.ViewModel, x => x.TotalTime, x => x.TotalTime.Text, x => x.FormatAdaptive()).DisposeWith(disp);
 
                 this.ViewModel.LoadPlaylistCommand.Execute(null);
 

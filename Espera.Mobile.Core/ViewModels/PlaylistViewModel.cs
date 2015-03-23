@@ -1,3 +1,7 @@
+using Espera.Mobile.Core.Network;
+using Espera.Network;
+using ReactiveMarrow;
+using ReactiveUI;
 using System;
 using System.Linq;
 using System.Reactive;
@@ -5,10 +9,6 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reactive.Threading.Tasks;
-using Espera.Mobile.Core.Network;
-using Espera.Network;
-using ReactiveMarrow;
-using ReactiveUI;
 
 namespace Espera.Mobile.Core.ViewModels
 {
@@ -22,6 +22,7 @@ namespace Espera.Mobile.Core.ViewModels
         private ObservableAsPropertyHelper<bool> canModify;
         private ObservableAsPropertyHelper<bool> canVoteOnSelectedEntry;
         private ObservableAsPropertyHelper<PlaylistEntryViewModel> currentSong;
+        private ObservableAsPropertyHelper<TimeSpan> currentTime;
         private ObservableAsPropertyHelper<int> currentTimeSeconds;
         private ObservableAsPropertyHelper<bool> isPlaying;
         private ObservableAsPropertyHelper<NetworkPlaybackState> playbackState;
@@ -104,6 +105,10 @@ namespace Espera.Mobile.Core.ViewModels
                     .Subscribe()
                     .DisposeWith(disposable);
 
+                this.currentTime = this.WhenAnyValue(x => x.CurrentTimeSeconds)
+                    .Select(x => TimeSpan.FromSeconds(x))
+                    .ToProperty(this, x => x.CurrentTime);
+
                 this.totalTime = currentPlaylist.Select(x => x.TotalTime)
                     .ToProperty(this, x => x.TotalTime);
 
@@ -185,6 +190,11 @@ namespace Espera.Mobile.Core.ViewModels
         public PlaylistEntryViewModel CurrentSong
         {
             get { return this.currentSong.Value; }
+        }
+
+        public TimeSpan CurrentTime
+        {
+            get { return this.currentTime.Value; }
         }
 
         public int CurrentTimeSeconds

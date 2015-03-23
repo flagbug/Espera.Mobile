@@ -1,5 +1,3 @@
-using System;
-using System.Net.Http;
 using Android.App;
 using Android.Runtime;
 using Espera.Mobile.Core;
@@ -9,6 +7,8 @@ using Espera.Mobile.Core.SongFetchers;
 using ModernHttpClient;
 using ReactiveUI;
 using Splat;
+using System;
+using System.Net.Http;
 using Xamarin;
 
 namespace Espera.Android
